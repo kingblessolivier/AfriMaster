@@ -95,15 +95,17 @@
     }
 
     .cta-buttons a.btn, .cta-buttons button.btn {
-        border-radius: 30px;
-        padding: 6px 12px; /* Reduced Padding */
+        background-color: #2f4f4f; /* Dark Slate Gray */
+        color: white;
+        border-radius: 3px;
+        padding: 5px 10px; /* Reduced Padding */
         margin-right: 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .cta-buttons a.btn:hover, .cta-buttons button.btn:hover {
-        background-color: #d2691e; /* Chocolate */
+        background-color: #32b3b3;
         color: white;
     }
 
@@ -130,23 +132,33 @@
     .inquiry-section .form-label {
         font-weight: bold;
         color: #2f4f4f; /* Dark Slate Gray */
+        margin-bottom: 5px; /* Added Margin */
     }
 
     .inquiry-section .form-control {
-        border-radius: 30px;
-        padding: 5px 10px; /* Reduced Padding */
-        margin-bottom: 10px; /* Reduced Margin */
+        border-radius: 5px;
+        padding: 8px 15px; /* Increased Padding */
+        margin-bottom: 15px; /* Increased Margin */
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .inquiry-section .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
     .inquiry-section .btn-dark {
-        border-radius: 30px;
-        padding: 5px 10px; /* Reduced Padding */
+        background-color: #2f4f4f; /* Dark Slate Gray */
+        color: white;
+        border-radius: 5px;
+        padding: 8px 15px; /* Increased Padding */
         transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .inquiry-section .btn-dark:hover {
-        background-color: #d2691e; /* Chocolate */
+        background-color: #265959; /* Chocolate */
         color: white;
     }
 
@@ -180,6 +192,7 @@
 
     .modal .modal-body {
         padding: 20px;
+        background-color: #ffffff;
     }
 
     .modal .modal-footer {
@@ -188,20 +201,28 @@
     }
 
     .modal .form-control {
-        border-radius: 30px;
-        padding: 5px 10px; /* Reduced Padding */
-        margin-bottom: 10px; /* Reduced Margin */
+        border-radius: 5px;
+        margin-bottom: 15px; /* Increased Margin */
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .modal .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
     .modal .btn-dark {
-        border-radius: 30px;
-        padding: 5px 10px; /* Reduced Padding */
+        background-color: #2f4f4f; /* Dark Slate Gray */
+        color: white;
+        border-radius: 5px;
+        padding: 8px 15px; /* Increased Padding */
         transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .modal .btn-dark:hover {
-        background-color: #d2691e; /* Chocolate */
+        background-color: #259a9a; /* Chocolate */
         color: white;
     }
 
@@ -209,6 +230,10 @@
     .btn-like {
         background-color: #6c757d; /* Dark Gray */
         color: white;
+        border-radius: 3px;
+        padding: 5px 10px; /* Reduced Padding */
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-size: 0.8rem;
     }
 
     .btn-like:hover {
@@ -228,6 +253,10 @@
     .btn-schedule {
         background-color: #28a745; /* Green */
         color: white;
+        border-radius: 3px;
+        padding: 5px 10px; /* Reduced Padding */
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-size: 0.8rem;
     }
 
     .btn-schedule:hover {
@@ -243,8 +272,67 @@
     .btn-schedule.scheduled:hover {
         background-color: #c82333; /* Darker Red */
     }
+
+    .btn-icon {
+        margin-right: 5px;
+        font-size: 0.8rem;
+    }
+
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+
+    .carousel-item img {
+        max-height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .carousel-caption {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.6); /* Darker Background */
+        padding: 10px;
+        color: white;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center; /* Centered Text */
+    }
+
+    .carousel-caption h5 {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    .carousel-caption p {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        width: 40px; /* Smaller Width */
+        height: 40px; /* Smaller Height */
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-Transparent Background */
+        border-radius: 50%; /* Circular Shape */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        width: 20px; /* Smaller Icon Size */
+        height: 20px; /* Smaller Icon Size */
+    }
 </style>
-    <div class="container py-5">
+
+<div class="container py-5">
     <!-- Improved Above Hero Section -->
     <div class="above-hero">
         <h2>Welcome to {{ property.name }}</h2>
@@ -272,46 +360,46 @@
                     <div class="col-md-7">
                         <div class="card-body">
                             <h1 class="text-success-emphasis mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-home me-2"></i>
+                                <i class="fa-solid fa-home btn-icon"></i>
                                 {{ property.name }}
                             </h1>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-location-dot me-2"></i>
+                                <i class="fa-solid fa-location-dot btn-icon"></i>
                                 <strong>Address:</strong> {{ property.address }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-building me-2"></i>
+                                <i class="fa-solid fa-building btn-icon"></i>
                                 <strong>Type:</strong> {{ property.get_types_display }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-dollar-sign me-2"></i>
+                                <i class="fa-solid fa-dollar-sign btn-icon"></i>
                                 <strong>Price:</strong> <b>{{ property.price }} Rwf</b>
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-door-open me-2"></i>
+                                <i class="fa-solid fa-door-open btn-icon"></i>
                                 <strong>Number of Units:</strong> {{ property.number_of_units }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-bed me-2"></i>
+                                <i class="fa-solid fa-bed btn-icon"></i>
                                 <strong>Bedrooms:</strong> {{ property.bedrooms }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-shower me-2"></i>
+                                <i class="fa-solid fa-shower btn-icon"></i>
                                 <strong>Bathrooms:</strong> {{ property.bathrooms }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-circle-info me-2"></i>
+                                <i class="fa-solid fa-circle-info btn-icon"></i>
                                 <strong>Status:</strong>
                                 <span class="badge {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
                                     {{ property.status }}
                                 </span>
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-user me-2"></i>
+                                <i class="fa-solid fa-user btn-icon"></i>
                                 <strong>Owner:</strong> {{ property.owner.name }}
                             </div>
                             <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-file-lines me-2"></i>
+                                <i class="fa-solid fa-file-lines btn-icon"></i>
                                 <strong>Description:</strong> {{ property.description }}
                             </div>
                             <!-- Call-to-Action Buttons -->
@@ -319,38 +407,38 @@
                                 {% if user.is_authenticated %}
                                     {% if liked_properties %}
                                         <button id="likeButton" class="btn btn-like liked btn-sm me-3 d-flex align-items-center" disabled>
-                                            <i class="fa-solid fa-thumbs-up me-1"></i>
+                                            <i class="fa-solid fa-thumbs-up btn-icon"></i>
                                             Liked
                                         </button>
                                     {% else %}
                                         <a href="{% url 'like_property' property.id %}" id="likeButton" class="btn btn-like btn-sm me-3 d-flex align-items-center">
-                                            <i class="fa-solid fa-thumbs-up me-1"></i>
+                                            <i class="fa-solid fa-thumbs-up btn-icon"></i>
                                             Like Property
                                         </a>
                                     {% endif %}
                                     {% if tenant_visits %}
                                         <button type="button" class="btn btn-schedule scheduled btn-sm me-3 d-flex align-items-center" disabled>
-                                            <i class="fa-solid fa-calendar-check me-1"></i>
+                                            <i class="fa-solid fa-calendar-check btn-icon"></i>
                                             Scheduled
                                         </button>
                                     {% else %}
                                         <button type="button" class="btn btn-schedule btn-sm me-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal">
-                                            <i class="fa-solid fa-calendar-plus me-1"></i>
+                                            <i class="fa-solid fa-calendar-plus btn-icon"></i>
                                             Schedule Visit
                                         </button>
                                     {% endif %}
                                 {% endif %}
                                 <a href="#" class="btn btn-dark btn-sm me-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-envelope me-1"></i>
+                                    <i class="fa-solid fa-envelope btn-icon"></i>
                                     Contact Owner
                                 </a>
                                 <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn btn-outline-success btn-sm me-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-map me-1"></i>
+                                    <i class="fa-solid fa-map btn-icon"></i>
                                     View on Map
                                 </a>
                                 <!-- Back to List Button -->
                                 <a href="{% url 'property_list' %}" class="btn btn-outline-dark btn-sm ms-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-arrow-left me-1"></i>
+                                    <i class="fa-solid fa-arrow-left btn-icon"></i>
                                     Back to Properties
                                 </a>
                             </div>
@@ -361,31 +449,43 @@
         </div>
     </div>
 
+    <!-- Featured Properties Carousel -->
+
+
     <!-- Inquiry Section -->
-    <div class="row inquiry-section">
+    <div class="row inquiry-section mt-5">
         <div class="col-12">
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-dark text-white d-flex align-items-center">
-                    <i class="fa-solid fa-paper-plane me-2"></i>
+                    <i class="fa-solid fa-paper-plane btn-icon"></i>
                     <h3 class="mb-0">Send an Inquiry</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="/customer_enquiry/{{ property.id }}">
+                    <form method="POST" action="/customer_enquiry/{{ property.id }}" class="form">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Your Name</label>
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                <i class="fa-solid fa-user btn-icon"></i>
+                                Your Name
+                            </label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <i class="fa-solid fa-envelope btn-icon"></i>
+                                Email Address
+                            </label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message</label>
+                        <div class="form-group">
+                            <label for="message" class="form-label">
+                                <i class="fa-solid fa-file-lines btn-icon"></i>
+                                Message
+                            </label>
                             <textarea class="form-control" id="message" name="enquiry" rows="4" placeholder="Write your message here" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-dark w-100 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-paper-plane me-2"></i>
+                        <button type="submit" class="btn btn-dark d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-paper-plane btn-icon"></i>
                             Send Inquiry
                         </button>
                     </form>
@@ -399,25 +499,34 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="scheduleVisitModalLabel">Schedule a Visit</h5>
+                    <h5 class="modal-title" id="scheduleVisitModalLabel">
+                        <i class="fa-solid fa-calendar-plus btn-icon"></i>
+                        Schedule a Visit
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{% url 'schedule_visit' property.id %}">
+                <form method="POST" action="{% url 'schedule_visit' property.id %}" class="form">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="visit_date" class="form-label">Visit Date</label>
+                        <div class="form-group">
+                            <label for="visit_date" class="form-label">
+                                <i class="fa-solid fa-calendar btn-icon"></i>
+                                Visit Date
+                            </label>
                             <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                <i class="fa-solid fa-file-lines btn-icon"></i>
+                                Description
+                            </label>
                             <textarea class="form-control" id="description" name="description" rows="4" placeholder="Add any notes here" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-dark d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-calendar-check me-2"></i>
+                            <i class="fa-solid fa-calendar-check btn-icon"></i>
                             Schedule Visit
                         </button>
                     </div>
@@ -433,6 +542,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-
+    // Optional JavaScript for handling like button state
+    document.getElementById('likeButton').addEventListener('click', function() {
+        if (!this.classList.contains('liked')) {
+            this.classList.add('liked');
+            this.querySelector('.fa-thumbs-up').classList.remove('fa-thumbs-up');
+            this.querySelector('.fa-thumbs-up').classList.add('fa-thumbs-up');
+        }
+    });
 </script>
 {% endblock %}

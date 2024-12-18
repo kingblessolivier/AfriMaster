@@ -469,19 +469,28 @@ def add_property(request):
     # Render the form with owner list
     return render(request, 'admin/properties/add_property.html', {'owner_list': owner_list})
 def property_view(request, id):
-    property = Property.objects.get(id=id)
-    liked_properties = LikedProperties.objects.filter(user=request.user, property=property).exists()
-    tenant_visits = Visit.objects.filter(property=property).exists()
-    context = {'property': property, 'liked_properties': liked_properties, 'tenant_visits': tenant_visits}
-    if property:
-        return render(request, 'home/details.html', context)
-    else:
+    try:
+        property = Property.objects.get(id=id)
+    except Property.DoesNotExist:
         messages.error(request, 'Property not found')
-        return redirect('property_view')
+        return redirect('property_list')  # Assuming 'property_list' is the correct redirect target
 
+    user = request.user
+    if user.is_authenticated:
+        liked_properties = LikedProperties.objects.filter(user=user, property=property).exists()
+        tenant_visits = Visit.objects.filter(property=property).exists()
+    else:
+        liked_properties = False
+        tenant_visits = False
+    featured_properties = Property.objects.all().order_by('-date_added')[:6]
+    context = {
+        'property': property,
+        'liked_properties': liked_properties,
+        'tenant_visits': tenant_visits,
+        'featured_properties': featured_properties
+    }
+    return render(request, 'home/details.html', context)
 
-def addproperty(request):
-    return None
 
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='/user_login')
