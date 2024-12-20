@@ -1,39 +1,31 @@
-
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.http import HttpResponse
 from .forms import TenantProfileForm
-
-from .forms import TenantProfileForm
+from django.views.decorators.csrf import csrf_exempt
 from .models import Lease, Payment, MaintenanceRequest, Message, LikedProperties, Visit
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
-
 from django.utils.timezone import now, timedelta
 from rest_framework.decorators import api_view
-
 from rest_framework.response import Response
-
 from .models import CustomerMessage, Owner, User, Updates, CustRequest
 from django.utils import timezone
-
 from .serializers import *
 from django.shortcuts import get_object_or_404, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
-
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, user_passes_test
 import os
 from django.shortcuts import render
-def is_admin(user):
 
+def is_admin(user):
     return user.is_authenticated and user.role == 'Admin'
 
 
-
+@csrf_exempt
 @api_view(['GET', 'POST', 'DELETE'])
 def properties(request):
     if request.method == 'GET':
@@ -51,6 +43,7 @@ def properties(request):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def property_details(request, pk):
     try:
@@ -72,6 +65,7 @@ def property_details(request, pk):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'POST', 'DELETE'])
 def tenants(request):
     if request.method == 'GET':
@@ -89,6 +83,7 @@ def tenants(request):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def tenant_details(request, pk):
     try:
@@ -110,6 +105,7 @@ def tenant_details(request, pk):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'POST', 'DELETE'])
 def units(request):
     if request.method == 'GET':
@@ -127,6 +123,7 @@ def units(request):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def unit_details(request, pk):
     try:
@@ -148,6 +145,7 @@ def unit_details(request, pk):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'POST', 'DELETE'])
 def leases(request):
     if request.method == 'GET':
@@ -165,6 +163,7 @@ def leases(request):
         return Response(status=204)
 
 
+@csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
 def lease_details(request, pk):
     try:
@@ -185,22 +184,25 @@ def lease_details(request, pk):
         return Response(status=204)
 
 
+@csrf_exempt
 def index(request):
-    user=request.user.id
+    user = request.user.id
     owner_user = Owner.objects.filter(user_id=user).exists()
     tenant_user = Tenant.objects.filter(user_id=user).exists()
     featured_properties = Property.objects.all().order_by('-date_added')[:3]
-    tenant=Tenant.objects.all()
-    property=Property.objects.all()
-    context={'owner_user':owner_user,
-             'tenant':tenant,'property':property,
-             'featured_properties':featured_properties,
-             'tenant_user':tenant_user,
-
-             }
+    tenant = Tenant.objects.all()
+    property = Property.objects.all()
+    context = {
+        'owner_user': owner_user,
+        'tenant': tenant,
+        'property': property,
+        'featured_properties': featured_properties,
+        'tenant_user': tenant_user,
+    }
     return render(request, 'home/home.html', context)
 
 
+@csrf_exempt
 def property_list(request):
     property_list = Property.objects.all()
     context = {'property_list': property_list}
@@ -217,6 +219,7 @@ def property_list(request):
     return render(request, 'home/properties.html', context)
 
 
+@csrf_exempt
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -234,26 +237,28 @@ def user_login(request):
             if User.objects.filter(username=username).exists() and not User.objects.get(username=username).is_active:
                 messages.error(request, 'Account is not active. Please contact admin')
                 return redirect('user_login')
-
-            elif  User.objects.filter(username=username).exists() and User.objects.get(username=username).is_active:
+            elif User.objects.filter(username=username).exists() and User.objects.get(username=username).is_active:
                 messages.error(request, 'Password is incorrect')
                 return redirect('user_login')
             else:
                 messages.error(request, 'Credentials you provided is not familiar with us. Please try again')
                 return redirect('user_login')
-
     else:
         return render(request, 'home/Login.html')
 
 
+@csrf_exempt
 def user_logout(request):
     logout(request)
     return redirect('index')
 
 
+@csrf_exempt
 def register(request):
     return render(request, 'home/Register.html')
 
+
+@csrf_exempt
 def user_register(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -275,13 +280,16 @@ def user_register(request):
         return render(request, 'home/Register.html')
 
 
+@csrf_exempt
 def about(request):
     return render(request, 'home/about.html')
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='../')
 def admin_dashboard(request):
-    total_enquiries=CustRequest.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
     property_list = Property.objects.all()
     property_total = Property.objects.all().count()
     owner_list = Owner.objects.all()
@@ -299,43 +307,46 @@ def admin_dashboard(request):
     today = now().date()
     last_7_days = [today - timedelta(days=i) for i in range(6, -1, -1)]
 
-    # Mock daily registrations data (replace with your query)
     daily_data = [
         {'date': day, 'count': User.objects.filter(date_joined__date=day).count()}
         for day in last_7_days
     ]
 
-
-    context = {'property_list': property_list,
-               'property_total': property_total,
-               'owner_list': owner_list,
-               'owner_total': owner_total,
-               'tenant_list': tenant_list,
-               'tenant_total': tenant_total,
-               'message_list': message_list,
-               'message_total': message_total,
-               'all_messages': all_messages,
-               'read_messages': read_messages,
-               'unread_messages': unread_messages,
-               'total_enquiries':total_enquiries,
-                'unread_enquiries':unread_enquiries,
-                'archived_enquiries':archived_enquiries,
-                'read_enquiries':read_enquiries,
-               'daily_user_registration_dates': [data['date'].strftime('%Y-%m-%d') for data in daily_data],
-               'daily_user_registration_counts': [data['count'] for data in daily_data],
-
-               }
+    context = {
+        'property_list': property_list,
+        'property_total': property_total,
+        'owner_list': owner_list,
+        'owner_total': owner_total,
+        'tenant_list': tenant_list,
+        'tenant_total': tenant_total,
+        'message_list': message_list,
+        'message_total': message_total,
+        'all_messages': all_messages,
+        'read_messages': read_messages,
+        'unread_messages': unread_messages,
+        'total_enquiries': total_enquiries,
+        'unread_enquiries': unread_enquiries,
+        'archived_enquiries': archived_enquiries,
+        'read_enquiries': read_enquiries,
+        'daily_user_registration_dates': [data['date'].strftime('%Y-%m-%d') for data in daily_data],
+        'daily_user_registration_counts': [data['count'] for data in daily_data]
+    }
     return render(request, 'admin/admin_base/dashboard.html', context)
+
+
+@csrf_exempt
 def contact(request):
     return render(request, 'home/contact.html')
 
 
+@csrf_exempt
 def updates(request):
-    updates=Updates.objects.all().order_by('-created_at')
-    context={'updates':updates}
-
+    updates = Updates.objects.all().order_by('-created_at')
+    context = {'updates': updates}
     return render(request, 'home/updates.html', context)
 
+
+@csrf_exempt
 def property_lists(request):
     property_lists = Property.objects.all()
     context = {'property_lists': property_lists}
@@ -348,7 +359,10 @@ def property_lists(request):
     else:
         num_results = len(property_lists)
         context['num_results'] = num_results
-        return render(request, 'admin/admin_base/admin.html', context)
+    return render(request, 'admin/admin_base/admin.html', context)
+
+
+@csrf_exempt
 def tenant_list(request):
     tenant_list = Tenant.objects.all()
     context = {'tenant_list': tenant_list}
@@ -361,7 +375,10 @@ def tenant_list(request):
     else:
         num_results = len(tenant_list)
         context['num_results'] = num_results
-        return render(request, 'admin/admin_base/admin.html', context)
+    return render(request, 'admin/admin_base/admin.html', context)
+
+
+@csrf_exempt
 def message_list(request):
     message_list = CustomerMessage.objects.all()
     context = {'message_list': message_list}
@@ -374,9 +391,10 @@ def message_list(request):
     else:
         num_results = len(message_list)
         context['num_results'] = num_results
-        return render(request, 'admin/admin_base/admin.html', context)
+    return render(request, 'admin/admin_base/admin.html', context)
 
 
+@csrf_exempt
 def owner_list(request):
     owner_list = User.objects.filter(role='Owner')
     context = {'owner_list': owner_list}
@@ -389,8 +407,10 @@ def owner_list(request):
     else:
         num_results = len(owner_list)
         context['num_results'] = num_results
-        return render(request, 'admin/admin_base/admin.html', context)
+    return render(request, 'admin/admin_base/admin.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def totals(request):
@@ -399,15 +419,27 @@ def totals(request):
     unit_total = Unit.objects.all().count()
     lease_total = Lease.objects.all().count()
     message_total = CustomerMessage.objects.all().count()
-    context = {'property_total': property_total, 'tenant_total': tenant_total, 'unit_total': unit_total, 'lease_total': lease_total,'message_total': message_total}
+    context = {
+        'property_total': property_total,
+        'tenant_total': tenant_total,
+        'unit_total': unit_total,
+        'lease_total': lease_total,
+        'message_total': message_total
+    }
     return render(request, 'admin/admin_base/admin.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def delete_property(request,id):
+def delete_property(request, id):
     property = Property.objects.get(id=id)
     property.delete()
     messages.success(request, 'Property deleted successfully')
     return redirect('admin_properties')
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def add_property(request):
@@ -415,7 +447,6 @@ def add_property(request):
 
     if request.method == 'POST':
         try:
-            # Collecting main property details
             name = request.POST.get('name')
             address = request.POST.get('address')
             types = request.POST.get('property_type')
@@ -425,7 +456,6 @@ def add_property(request):
             image = request.FILES.get('image')
             owner_id = request.POST.get('owner')
 
-            # Create Property instance
             property_instance = Property.objects.create(
                 name=name,
                 address=address,
@@ -437,19 +467,16 @@ def add_property(request):
                 owner_id=owner_id,
             )
 
-            # Collecting unit details
             unit_numbers = request.POST.getlist('unit_number[]')
             bedrooms = request.POST.getlist('bedrooms[]')
             bathrooms = request.POST.getlist('bathrooms[]')
             rents = request.POST.getlist('rent[]')
             availabilities = request.POST.getlist('is_available[]')
 
-            # Validate that the number of lists match
             if not (len(unit_numbers) == len(bedrooms) == len(bathrooms) == len(rents)):
                 messages.error(request, 'Mismatched number of unit details submitted.')
                 return redirect('add_property')
 
-            # Save each unit
             for i in range(len(unit_numbers)):
                 Unit.objects.create(
                     property=property_instance,
@@ -466,25 +493,37 @@ def add_property(request):
             messages.error(request, f'Error adding property: {e}')
             return redirect('add_property')
 
-    # Render the form with owner list
     return render(request, 'admin/properties/add_property.html', {'owner_list': owner_list})
+
+
+@csrf_exempt
 def property_view(request, id):
-    property = Property.objects.get(id=id)
-    liked_properties = LikedProperties.objects.filter(user=request.user, property=property).exists()
-    tenant_visits = Visit.objects.filter(property=property).exists()
-    context = {'property': property, 'liked_properties': liked_properties, 'tenant_visits': tenant_visits}
-    if property:
-        return render(request, 'home/details.html', context)
-    else:
+    try:
+        property = Property.objects.get(id=id)
+    except Property.DoesNotExist:
         messages.error(request, 'Property not found')
-        return redirect('property_view')
+        return redirect('property_list')
+
+    user = request.user
+    if user.is_authenticated:
+        liked_properties = LikedProperties.objects.filter(user=user, property=property).exists()
+        tenant_visits = Visit.objects.filter(property=property).exists()
+    else:
+        liked_properties = False
+        tenant_visits = False
+    featured_properties = Property.objects.all().order_by('-date_added')[:6]
+    context = {
+        'property': property,
+        'liked_properties': liked_properties,
+        'tenant_visits': tenant_visits,
+        'featured_properties': featured_properties
+    }
+    return render(request, 'home/details.html', context)
 
 
-def addproperty(request):
-    return None
-
+@csrf_exempt
 @login_required(login_url='user_login')
-@user_passes_test(is_admin, login_url='/user_login')
+@user_passes_test(is_admin, login_url='user_login')
 def admin_properties(request):
     properties = Property.objects.all()
     property_total = Property.objects.all().count()
@@ -494,41 +533,48 @@ def admin_properties(request):
     tenant_total = Tenant.objects.all().count()
     message_list = CustomerMessage.objects.filter(is_read=False)
     message_total = message_list.count()
-    type_list = Property.objects.values_list('types', flat=True).values('types')
-    paginator = Paginator(properties, 10)  # Show 10 owners per page
+    type_list = Property.objects.values_list('types', flat=True).distinct()
+    paginator = Paginator(properties, 10)
     page_number = request.GET.get('page')
     properties = paginator.get_page(page_number)
-    context = {'properties': properties, 'property_total': property_total, 'owner_list': owner_list,
-               'owner_total': owner_total, 'tenant_list': tenant_list, 'tenant_total': tenant_total,
-               'message_list': message_list, 'message_total': message_total,
-               'type_list': type_list
-               }
+    context = {
+        'properties': properties,
+        'property_total': property_total,
+        'owner_list': owner_list,
+        'owner_total': owner_total,
+        'tenant_list': tenant_list,
+        'tenant_total': tenant_total,
+        'message_list': message_list,
+        'message_total': message_total,
+        'type_list': type_list
+    }
+
     query = request.GET.get('search')
-    # Get filtering parameters from the request
     property_type = request.GET.get('type')
     owner_id = request.GET.get('owner')
     search_query = request.GET.get('search')
 
-    # Apply filters
     if property_type:
-        properties =Property.objects.filter(types=property_type)
+        properties = Property.objects.filter(types=property_type)
         context['property_type'] = property_type
     if owner_id:
         properties = Property.objects.filter(owner_id=owner_id)
         context['owner_id'] = owner_id
 
     if search_query:
-       if search_query.isdigit():
-           properties = Property.objects.filter(price__lte=search_query)
-           context['search_query'] = search_query
-       else:
-           properties = Property.objects.filter(address__icontains=search_query)
-           context['search_query'] = search_query
+        if search_query.isdigit():
+            properties = Property.objects.filter(price__lte=search_query)
+            context['search_query'] = search_query
+        else:
+            properties = Property.objects.filter(address__icontains=search_query)
+            context['search_query'] = search_query
     context['properties'] = properties
     num_results = len(properties)
     context['num_results'] = num_results
     return render(request, 'admin/properties/properties.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def adding_property(request):
@@ -539,29 +585,39 @@ def adding_property(request):
     tenant_list = Tenant.objects.all()
     tenant_total = Tenant.objects.all().count()
     message_list = CustomerMessage.objects.filter(is_read=False)
-    message_total = CustomerMessage.objects.filter(is_read=False).count()
-    context = {'properties': properties, 'property_total': property_total, 'owner_list': owner_list,
-               'owner_total': owner_total, 'tenant_list': tenant_list, 'tenant_total': tenant_total,
-               'message_list': message_list, 'message_total': message_total}
+    message_total = message_list.count()
+    context = {
+        'properties': properties,
+        'property_total': property_total,
+        'owner_list': owner_list,
+        'owner_total': owner_total,
+        'tenant_list': tenant_list,
+        'tenant_total': tenant_total,
+        'message_list': message_list,
+        'message_total': message_total
+    }
     search = request.GET.get('search')
 
     return render(request, 'admin/properties/add_property.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def editing_property(request,id):
+def editing_property(request, id):
     property = Property.objects.get(id=id)
     owner_list = Owner.objects.all()
     context = {'property': property, 'owner_list': owner_list}
     return render(request, 'admin/properties/edit_property.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def edit_property(request, id):
-    # Retrieve the property to edit
     property_instance = get_object_or_404(Property, id=id)
 
     if request.method == 'POST':
-        # Get the updated data from the form
         property_instance.name = request.POST['name']
         property_instance.address = request.POST['address']
         property_instance.types = request.POST['type']
@@ -571,22 +627,19 @@ def edit_property(request, id):
         property_instance.number_of_units = request.POST['number_of_units']
         property_instance.status = request.POST['status']
 
-        # Check if a new image was uploaded
         if 'image' in request.FILES:
             property_instance.image = request.FILES['image']
 
-        # Save the updated property instance
         property_instance.save()
         messages.success(request, 'Property updated successfully!')
         return redirect('admin_properties')
 
-    # Render the edit form with the current property data
     return render(request, 'admin/properties/edit_property.html', {'property': property_instance})
 
 
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-
 def admin_users(request):
     users = User.objects.all()
     user_total = users.count()
@@ -600,7 +653,7 @@ def admin_users(request):
     message_total = message_list.count()
     role_list = User.objects.values_list('role', flat=True).distinct()
     status_list = User.objects.values_list('is_active', flat=True).distinct()
-    paginator = Paginator(users, 7)  # Show 10 users per page
+    paginator = Paginator(users, 7)
     page_number = request.GET.get('page')
     users = paginator.get_page(page_number)
     context = {
@@ -637,15 +690,15 @@ def admin_users(request):
         users = users.filter(username__icontains=search_query)
         context['search_query'] = search_query
         context['users'] = users
-
         context['num_results'] = users.count()
 
     return render(request, 'admin/users/users.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def adding_user(request):
-
     users = User.objects.all()
     user_total = User.objects.all().count()
     property_list = Property.objects.all()
@@ -656,20 +709,31 @@ def adding_user(request):
     tenant_total = Tenant.objects.all().count()
     message_list = CustomerMessage.objects.filter(is_read=False)
     message_total = message_list.count()
-    context = {'users': users, 'user_total': user_total, 'property_list': property_list, 'property_total': property_total, 'owner_list': owner_list,
-               'owner_total': owner_total, 'tenant_list': tenant_list, 'tenant_total': tenant_total,
-               'message_list': message_list, 'message_total': message_total}
+    context = {
+        'users': users,
+        'user_total': user_total,
+        'property_list': property_list,
+        'property_total': property_total,
+        'owner_list': owner_list,
+        'owner_total': owner_total,
+        'tenant_list': tenant_list,
+        'tenant_total': tenant_total,
+        'message_list': message_list,
+        'message_total': message_total
+    }
     return render(request, 'admin/users/add_users.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def editing_user(request,id):
+def editing_user(request, id):
     user = User.objects.get(id=id)
     context = {'user': user}
     return render(request, 'admin/users/edit_user.html', context)
 
 
-
-
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def edit_user(request, id):
@@ -703,52 +767,58 @@ def edit_user(request, id):
         return redirect('admin_users')
 
     return render(request, 'admin/users/edit_user.html', {'user': user})
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def add_user(request):
- try:
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
-        role = request.POST['role']
-        join_date = request.POST['join_date']
-        is_active = 'is_active' in request.POST
-        is_staff = 'is_staff' in request.POST
+    try:
+        if request.method == 'POST':
+            username = request.POST['username']
+            email = request.POST['email']
+            password = request.POST['password']
+            confirm_password = request.POST['confirm_password']
+            role = request.POST['role']
+            join_date = request.POST['join_date']
+            is_active = 'is_active' in request.POST
+            is_staff = 'is_staff' in request.POST
+
+            if password and password == confirm_password:
+                user = User.objects.create_user(username=username, email=email, password=password, role=role, is_active=is_active, is_staff=is_staff, date_joined=join_date)
+                user.save()
+                messages.success(request, 'User added successfully!')
+                return redirect('admin_users')
+            elif password != confirm_password:
+                messages.error(request, "Passwords do not match.")
+                return redirect('add_user')
+            else:
+                messages.error(request, "Error adding user.")
+                return redirect('add_user')
+        return render(request, 'admin/users/add_users.html')
+    except Exception as e:
+        messages.error(request, "Error occurred while adding user.")
+        return redirect('adding_user')
 
 
-        if password and password == confirm_password:
-            user = User.objects.create_user(username=username, email=email, password=password, role=role, is_active=is_active, is_staff=is_staff, date_joined=join_date)
-            user.save()
-            messages.success(request, 'User added successfully!')
-            return redirect('admin_users')
-        elif password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-            return redirect('add_user')
-        else:
-            messages.error(request, "Error adding user.")
-            return redirect('add_user')
-    return render(request, 'admin/users/add_users.html')
- except Exception as e:
-     messages.error(request, "Error Ocurred while adding user.")
-     return redirect('adding_user')
-
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def delete_user(request,id):
+def delete_user(request, id):
     user = User.objects.get(id=id)
     if user.is_superuser:
-        messages.error(request,'You cant delete this user')
+        messages.error(request, 'You can\'t delete this user')
         return redirect('admin_users')
     else:
         user.delete()
         messages.success(request, 'User deleted successfully')
         return redirect('admin_users')
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def disapprove_user(request,id):
+def disapprove_user(request, id):
     user = User.objects.get(id=id)
     if user.role == 'Admin':
         messages.error(request, 'Admin cannot be deactivated')
@@ -756,14 +826,16 @@ def disapprove_user(request,id):
     elif user.is_superuser:
         messages.error(request, 'Superuser cannot be deactivated')
     else:
-
         user.is_active = False
         user.save()
-        messages.success(request, 'User disactivated successfully')
+        messages.success(request, 'User deactivated successfully')
     return redirect('admin_users')
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def approve_user(request,id):
+def approve_user(request, id):
     user = User.objects.get(id=id)
     if user.role == 'Admin':
         messages.error(request, 'Admin cannot be activated')
@@ -771,13 +843,13 @@ def approve_user(request,id):
     elif user.is_superuser:
         messages.error(request, 'Superuser cannot be activated')
     else:
-
         user.is_active = True
         user.save()
     messages.success(request, 'User activated successfully')
     return redirect('admin_users')
 
 
+@csrf_exempt
 def admin_owners(request):
     owners = Owner.objects.all()
     owner_total = owners.count()
@@ -791,8 +863,7 @@ def admin_owners(request):
     if search_query:
         owners = owners.filter(name__icontains=search_query) | owners.filter(email__icontains=search_query)
 
-        # Pagination
-    paginator = Paginator(owners, 10)  # Show 10 owners per page
+    paginator = Paginator(owners, 10)
     page_number = request.GET.get('page')
     owners = paginator.get_page(page_number)
     context = {
@@ -807,6 +878,8 @@ def admin_owners(request):
     }
     return render(request, 'admin/owners/owners.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def adding_owner(request):
@@ -838,7 +911,6 @@ def adding_owner(request):
         'used_users': used_users,
     }
 
-    # Search functionality
     search = request.GET.get('search')
     if search:
         query = Owner.objects.filter(name__icontains=search)
@@ -847,6 +919,7 @@ def adding_owner(request):
     return render(request, 'admin/owners/add_owner.html', context)
 
 
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def add_owner(request):
@@ -856,8 +929,7 @@ def add_owner(request):
         phone = request.POST['phone_number']
         address = request.POST['address']
         user_id = request.POST['user_id']
-        image=request.FILES['image']
-        # Create a new Owner instance
+        image = request.FILES['image']
         new_owner = Owner.objects.create(
             name=name,
             email=email,
@@ -865,7 +937,6 @@ def add_owner(request):
             address=address,
             user_id=user_id,
             image=image
-
         )
         new_owner.save()
         messages.success(request, 'Owner added successfully!')
@@ -873,16 +944,19 @@ def add_owner(request):
     return render(request, 'admin/owners/add_owner.html')
 
 
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def editing_owner(request,id):
+def editing_owner(request, id):
     owner = Owner.objects.get(id=id)
     available_users = User.objects.exclude(id=owner.user_id)
     used_users = Owner.objects.values_list('user', flat=True)
 
-    context = {'owner': owner,'available_users':available_users,'used_users':used_users}
+    context = {'owner': owner, 'available_users': available_users, 'used_users': used_users}
     return render(request, 'admin/owners/edit_owner.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def edit_owner(request, id):
@@ -899,22 +973,25 @@ def edit_owner(request, id):
         owner.name = name
         owner.email = email
         owner.phone = phone
-        owner.User = user_id
+        owner.user = user_id
         owner.address = address
         owner.save()
         messages.success(request, 'Owner details updated successfully.')
         return redirect('admin_owners')
     return render(request, 'admin/owners/edit_owner.html', {'owner': owner})
 
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def delete_owner(request,id):
+def delete_owner(request, id):
     owner = Owner.objects.get(id=id)
     owner.delete()
     messages.success(request, 'Owner deleted successfully')
     return redirect('admin_owners')
 
 
+@csrf_exempt
 def admin_updates(request):
     updates = Updates.objects.all()
     update_total = updates.count()
@@ -944,6 +1021,9 @@ def admin_updates(request):
         context['search'] = search
         context['updates'] = query
     return render(request, 'admin/updates/updates.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def adding_update(request):
@@ -967,6 +1047,9 @@ def adding_update(request):
     }
 
     return render(request, 'admin/updates/add_update.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def add_update(request):
@@ -975,17 +1058,23 @@ def add_update(request):
         description = request.POST['description']
         created_at = request.POST['created_at']
         end_date = request.POST['end_date']
-        updates=Updates.objects.create(title=title,description=description,created_at=created_at,end_date=end_date)
+        updates = Updates.objects.create(title=title, description=description, created_at=created_at, end_date=end_date)
         updates.save()
         messages.success(request, 'Update added successfully!')
         return redirect('admin_updates')
     return render(request, 'admin/updates/add_update.html')
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
-def editing_update(request,id):
+def editing_update(request, id):
     update = Updates.objects.get(id=id)
     context = {'update': update}
     return render(request, 'admin/updates/edit_update.html', context)
+
+
+@csrf_exempt
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def edit_update(request, id):
@@ -1005,26 +1094,23 @@ def edit_update(request, id):
     return render(request, 'admin/updates/edit_update.html', {'update': update})
 
 
-def delete_update(request,id):
+@csrf_exempt
+def delete_update(request, id):
     update = Updates.objects.get(id=id)
     update.delete()
     messages.success(request, 'Update deleted successfully')
     return redirect('admin_updates')
 
 
-
-
-
-
+@csrf_exempt
 def message_list_view(request):
-
     unread_messages = CustomerMessage.objects.filter(is_read=False).order_by('-created_at')
-    read_messages =  CustomerMessage.objects.filter(is_read=True,is_archived=False).order_by('-created_at')
-    archived_messages =  CustomerMessage.objects.filter(is_archived=True,is_read=True).order_by('-created_at')
+    read_messages = CustomerMessage.objects.filter(is_read=True, is_archived=False).order_by('-created_at')
+    archived_messages = CustomerMessage.objects.filter(is_archived=True, is_read=True).order_by('-created_at')
     category_list = CustomerMessage.objects.all()
     message_total = unread_messages.count()
     total_enquiries = CustRequest.objects.filter(is_read=False).count()
-    paginator = Paginator(category_list, 10)  # Show 10 owners per page
+    paginator = Paginator(category_list, 10)
     page_number = request.GET.get('page')
     messages = paginator.get_page(page_number)
 
@@ -1033,51 +1119,53 @@ def message_list_view(request):
         'read_messages': read_messages,
         'archived_messages': archived_messages,
         'message_total': message_total,
-        'category_list':category_list,
-        'total_enquiries':total_enquiries
+        'category_list': category_list,
+        'total_enquiries': total_enquiries
     }
     return render(request, 'admin/messages/messages.html', context)
 
 
+@csrf_exempt
 def mark_as_read_view(request, message_id):
-
-
-    message = get_object_or_404( CustomerMessage, id=message_id)
+    message = get_object_or_404(CustomerMessage, id=message_id)
     if not message.is_read:
-        message.is_read=True
-        message.created_at=timezone.now()
-        message.save()
-    return redirect('message_list')
-
-
-def delete_message_view(request, message_id):
-
-    message = get_object_or_404( CustomerMessage, id=message_id)
-    message.delete()
-    return redirect('message_list')
-def archive_message_view(request, message_id):
-    message = get_object_or_404( CustomerMessage, id=message_id)
-    if not message.is_archived:
-        message.is_archived=True
+        message.is_read = True
         message.created_at = timezone.now()
         message.save()
     return redirect('message_list')
 
 
+@csrf_exempt
+def delete_message_view(request, message_id):
+    message = get_object_or_404(CustomerMessage, id=message_id)
+    message.delete()
+    return redirect('message_list')
+
+
+@csrf_exempt
+def archive_message_view(request, message_id):
+    message = get_object_or_404(CustomerMessage, id=message_id)
+    if not message.is_archived:
+        message.is_archived = True
+        message.created_at = timezone.now()
+        message.save()
+    return redirect('message_list')
+
+
+@csrf_exempt
 def customer_message(request):
     if request.method == 'POST':
         name = request.POST['name']
         email = request.POST['email']
-        message = request.POST['message']
-        message = CustomerMessage.objects.create(name=name, email=email, message=message)
+        message_content = request.POST['message']
+        message = CustomerMessage.objects.create(name=name, email=email, message=message_content)
         message.save()
         messages.success(request, 'Message sent successfully!')
         return redirect('contact')
     return render(request, 'home/contact.html')
 
 
-
-
+@csrf_exempt
 def send_email(request):
     if request.method == 'POST':
         sender_email = request.POST['sender_email']
@@ -1090,16 +1178,20 @@ def send_email(request):
     return render(request, 'admin/messages/reply.html')
 
 
-def mail(request,message_id):
+@csrf_exempt
+def mail(request, message_id):
     message = get_object_or_404(CustomerMessage, id=message_id)
     context = {'message': message}
     return render(request, 'admin/messages/reply.html', context)
 
 
-
+@csrf_exempt
 def read_message(request, message_id):
     message = get_object_or_404(CustomerMessage, id=message_id)
     return render(request, 'admin/messages/message_body.html', {'message': message})
+
+
+@csrf_exempt
 def admin_tenants(request):
     tenants = Tenant.objects.all()
     tenant_total = tenants.count()
@@ -1116,8 +1208,8 @@ def admin_tenants(request):
         'property_total': property_total,
         'owner_list': owner_list,
         'owner_total': owner_total,
-       'message_list': message_list,
-       'message_total': message_total
+        'message_list': message_list,
+        'message_total': message_total
     }
     search = request.GET.get('search')
     if search:
@@ -1128,12 +1220,15 @@ def admin_tenants(request):
     return render(request, 'admin/tenants/tenants.html', context)
 
 
+@csrf_exempt
 def delete_tenant(request, tenant_id):
     if request.method == "POST":
         tenant = get_object_or_404(Tenant, id=tenant_id)
         tenant.delete()
         return redirect('admin_tenants')
 
+
+@csrf_exempt
 def manage_leases(request):
     leases = Lease.objects.all()
     unsigned_leases = leases.filter(status='unsigned')
@@ -1148,10 +1243,14 @@ def manage_leases(request):
     }
     return render(request, 'manage_leases.html', context)
 
+
+@csrf_exempt
 def lease_details(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
     return render(request, 'lease_details.html', {'lease': lease})
 
+
+@csrf_exempt
 def sign_lease(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
     lease.status = 'signed'
@@ -1159,12 +1258,16 @@ def sign_lease(request, lease_id):
     messages.success(request, 'Lease marked as signed.')
     return redirect('manage_leases')
 
+
+@csrf_exempt
 def delete_lease(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
     lease.delete()
     messages.success(request, 'Lease deleted successfully.')
     return redirect('manage_leases')
 
+
+@csrf_exempt
 def archive_lease(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
     lease.status = 'archived'
@@ -1172,6 +1275,8 @@ def archive_lease(request, lease_id):
     messages.success(request, 'Lease archived successfully.')
     return redirect('manage_leases')
 
+
+@csrf_exempt
 def admin_inquiries(request):
     all_enquiries = CustRequest.objects.all()
     read_enquiries = CustRequest.objects.filter(is_read=True, is_archived=False).order_by('-created_at')
@@ -1188,42 +1293,46 @@ def admin_inquiries(request):
         'archived_enquiries': archived_enquiries,
         'total_enquiries': total_enquiries,
         'message_total': message_total,
-
-
-
     }
     return render(request, 'admin/Customer_Enquires/customer_enquires.html', context)
 
 
+@csrf_exempt
 def viewEnquiry(request, pk):
     enquiry = get_object_or_404(CustRequest, id=pk)
     context = {'enquiry': enquiry}
     return render(request, 'admin/Customer_Enquires/enquiry_body.html', context)
 
 
-def mark_as_read_enquiry(request,pk):
+@csrf_exempt
+def mark_as_read_enquiry(request, pk):
     enquiry = get_object_or_404(CustRequest, id=pk)
     if not enquiry.is_read:
-        enquiry.is_read=True
-        enquiry.created_at=timezone.now()
+        enquiry.is_read = True
+        enquiry.created_at = timezone.now()
         enquiry.save()
         return redirect('admin_inquiries')
 
 
+@csrf_exempt
 def delete_enquiry(request, pk):
     enquiry = get_object_or_404(CustRequest, id=pk)
     enquiry.delete()
     return redirect('admin_inquiries')
 
 
-def archive_enquiry(request,pk):
+@csrf_exempt
+def archive_enquiry(request, pk):
     enquiry = get_object_or_404(CustRequest, id=pk)
     if not enquiry.is_archived:
-        enquiry.is_archived=True
+        enquiry.is_archived = True
         enquiry.created_at = timezone.now()
         enquiry.save()
         return redirect('admin_inquiries')
-def customer_enquiry(request,id):
+
+
+@csrf_exempt
+def customer_enquiry(request, id):
     if request.method == 'POST':
         property = get_object_or_404(Property, id=id)
         name = request.POST['name']
@@ -1236,6 +1345,7 @@ def customer_enquiry(request,id):
     return render(request, 'home/details.html')
 
 
+@csrf_exempt
 def unarchive_enquiry(request, pk):
     enquiry = get_object_or_404(CustRequest, id=pk)
     enquiry.is_archived = False
@@ -1243,7 +1353,7 @@ def unarchive_enquiry(request, pk):
     return redirect('admin_inquiries')
 
 
-
+@csrf_exempt
 def send_enquiry_email(request):
     if request.method == 'POST':
         sender_email = request.POST['sender_email']
@@ -1254,13 +1364,16 @@ def send_enquiry_email(request):
         messages.success(request, 'Email sent successfully!')
         return redirect('message_list')
     return render(request, 'admin/Customer_Enquires/reply.html')
+
+
+@csrf_exempt
 def mail_enquiry(request, id):
     enquiry = get_object_or_404(CustRequest, id=id)
     context = {'enquiry': enquiry}
     return render(request, 'admin/Customer_Enquires/reply.html', context)
 
 
-# Make user Owner view
+@csrf_exempt
 @login_required
 @user_passes_test(is_admin)
 def make_owner(request, user_id):
@@ -1274,7 +1387,8 @@ def make_owner(request, user_id):
 
     return render(request, 'admin/users/users.html', {'user': user})
 
-# Make user Admin view
+
+@csrf_exempt
 @login_required
 @user_passes_test(is_admin)
 def make_admin(request, user_id):
@@ -1289,12 +1403,16 @@ def make_admin(request, user_id):
     return render(request, 'admin/users/users.html', {'user': user})
 
 
+@csrf_exempt
 def unmake_owner(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.role = 'Tenant'  # Adjust based on how you store roles
     user.save()
     messages.success(request, 'User made Tenant successfully.')
     return redirect('admin_users')
+
+
+@csrf_exempt
 def unmake_admin(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.role = 'Tenant'  # Adjust based on how you store roles
@@ -1303,36 +1421,42 @@ def unmake_admin(request, user_id):
     return redirect('admin_users')
 
 
-def owner_dashboard(request,user_id):
+@csrf_exempt
+def owner_dashboard(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     properties = Property.objects.filter(owner_id=user_id)
-    leases= Lease.objects.filter(property__owner=owner)
-    revenue=leases.aggregate(Sum('rent_amount'))['rent_amount__sum']
-    contracts_made= leases.filter(contract_accepted=False)
-    contracts_accepted= leases.filter(contract_accepted=True)
-    contracts_signed= leases.filter(contract_signed=True)
-    tenant=Tenant.objects.filter(leases__in=leases)
-    tenants=tenant.count()
+    leases = Lease.objects.filter(property__owner=owner)
+    revenue = leases.aggregate(Sum('rent_amount'))['rent_amount__sum']
+    contracts_made = leases.filter(contract_accepted=False)
+    contracts_accepted = leases.filter(contract_accepted=True)
+    contracts_signed = leases.filter(contract_signed=True)
+    tenant = Tenant.objects.filter(leases__in=leases)
+    tenants = tenant.count()
 
-    context = {'user': user, 'owner': owner,
-               'properties': properties,
-               'contracts_made': contracts_made,
-               'contracts_accepted': contracts_accepted,
-               'contracts_signed': contracts_signed,
-               'leases': leases,
-               'revenue': revenue,
-               'tenants': tenants
-               }
+    context = {
+        'user': user,
+        'owner': owner,
+        'properties': properties,
+        'contracts_made': contracts_made,
+        'contracts_accepted': contracts_accepted,
+        'contracts_signed': contracts_signed,
+        'leases': leases,
+        'revenue': revenue,
+        'tenants': tenants
+    }
     return render(request, 'Others_dashboard/owners/owner_dashboard.html', context)
 
 
-
-def owner_profile(request,user_id):
+@csrf_exempt
+def owner_profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     return render(request, 'Others_dashboard/owners/owner_profile/owner_profile.html', {'user': user, 'owner': owner})
-def edit_owner_profile(request,id):
+
+
+@csrf_exempt
+def edit_owner_profile(request, id):
     owner = get_object_or_404(Owner, id=id)
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -1346,7 +1470,7 @@ def edit_owner_profile(request,id):
         owner.name = name
         owner.email = email
         owner.phone = phone
-        owner.User = user_id
+        owner.user = user_id
         owner.address = address
         owner.save()
         messages.success(request, 'Owner details updated successfully.')
@@ -1354,11 +1478,15 @@ def edit_owner_profile(request,id):
     return render(request, 'Others_dashboard/owners/owner_profile/owner_profile.html', {'owner': owner})
 
 
-def view_profile(request,user_id):
+@csrf_exempt
+def view_profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     return render(request, 'Others_dashboard/owners/owner_profile/view_details.html', {'user': user, 'owner': owner})
-def create_owner_profile(request,user_id):
+
+
+@csrf_exempt
+def create_owner_profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -1372,19 +1500,22 @@ def create_owner_profile(request,user_id):
         messages.success(request, 'Owner profile created successfully.')
         return redirect('owner_profile', owner.user.id)
     return render(request, 'Others_dashboard/owners/owner_profile/create_profile.html', {'user': user})
-def owner_properties(request,user_id):
+
+
+@csrf_exempt
+def owner_properties(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     properties = Property.objects.filter(owner=owner)
     return render(request, 'Others_dashboard/owners/owner_properties/owner_properties.html', {'user': user, 'owner': owner, 'properties': properties})
 
 
-def owner_add_property(request,user_id):
+@csrf_exempt
+def owner_add_property(request, user_id):
     user = get_object_or_404(User, id=user_id)
-    owner= get_object_or_404(Owner, user=user)
+    owner = get_object_or_404(Owner, user=user)
     if request.method == 'POST':
         try:
-            # Collecting main property details
             name = request.POST.get('name')
             address = request.POST.get('address')
             types = request.POST.get('property_type')
@@ -1394,7 +1525,6 @@ def owner_add_property(request,user_id):
             image = request.FILES.get('image')
             owner_id = request.POST.get('owner')
 
-            # Create Property instance
             property_instance = Property.objects.create(
                 name=name,
                 address=address,
@@ -1406,19 +1536,16 @@ def owner_add_property(request,user_id):
                 owner_id=owner_id,
             )
 
-            # Collecting unit details
             unit_numbers = request.POST.getlist('unit_number[]')
             bedrooms = request.POST.getlist('bedrooms[]')
             bathrooms = request.POST.getlist('bathrooms[]')
             rents = request.POST.getlist('rent[]')
             availabilities = request.POST.getlist('is_available[]')
 
-            # Validate that the number of lists match
             if not (len(unit_numbers) == len(bedrooms) == len(bathrooms) == len(rents)):
                 messages.error(request, 'Mismatched number of unit details submitted.')
                 return redirect('owner_add_property', owner.user.id)
 
-            # Save each unit
             for i in range(len(unit_numbers)):
                 Unit.objects.create(
                     property=property_instance,
@@ -1433,13 +1560,13 @@ def owner_add_property(request,user_id):
             return redirect('owner_properties', owner.user.id)
         except Exception as e:
             messages.error(request, f'Error adding property: {e}')
-            return redirect('owner_add_property' )
+            return redirect('owner_add_property')
 
-    # Render the form with owner list
     return render(request, 'Others_dashboard/owners/owner_properties/owner_addproperty.html', {'user': user, 'owner': owner})
 
 
-def owner_contracts(request,user_id):
+@csrf_exempt
+def owner_contracts(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     properties = Property.objects.filter(owner=owner)
@@ -1447,25 +1574,32 @@ def owner_contracts(request,user_id):
     made_leases = leases.filter(contract_accepted=False)
     accepted_leases = leases.filter(contract_accepted=True)
     signed_leases = leases.filter(contract_signed=True)
-    context = {'user': user, 'owner': owner, 'properties': properties,'made_leases': made_leases, 'accepted_leases': accepted_leases,'signed_leases': signed_leases, 'leases': leases}
+    context = {
+        'user': user,
+        'owner': owner,
+        'properties': properties,
+        'made_leases': made_leases,
+        'accepted_leases': accepted_leases,
+        'signed_leases': signed_leases,
+        'leases': leases
+    }
     return render(request, 'Others_dashboard/owners/leases/owner_contracts.html', context)
 
 
-def new_contract(request,user_id):
+@csrf_exempt
+def new_contract(request, user_id):
     user = get_object_or_404(User, id=user_id)
     owner = get_object_or_404(Owner, user=user)
     properties = Property.objects.filter(owner=owner)
     tenants = Tenant.objects.all()
     if request.method == 'POST':
         try:
-            # Collecting contract details
             property_id = request.POST.get('property')
             tenant_id = request.POST.get('tenant')
             start_date = request.POST.get('start_date')
             end_date = request.POST.get('end_date')
             rent_amount = request.POST.get('rent_amount')
             contract_details = request.POST.get('contract_details')
-            # Create Lease instance
             Lease.objects.create(
                 property_id=property_id,
                 tenant_id=tenant_id,
@@ -1479,61 +1613,49 @@ def new_contract(request,user_id):
         except Exception as e:
             messages.error(request, f'Error creating contract: {e}')
             return redirect('new_contract', owner.user.id)
-    # Render the form with property and tenant list
+
     return render(request, 'Others_dashboard/owners/leases/new_contract.html', {'user': user, 'owner': owner, 'properties': properties, 'tenants': tenants})
 
 
-def owner_view_contract(request,lease_id):
+@csrf_exempt
+def owner_view_contract(request, lease_id):
     user = request.user
     owner = get_object_or_404(Owner, user=user)
     lease = get_object_or_404(Lease, id=lease_id)
     return render(request, 'Others_dashboard/owners/leases/view_contract.html', {'user': user, 'owner': owner, 'lease': lease})
 
 
+@csrf_exempt
 def download_contract(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
-    lease = get_object_or_404(Lease, id=lease_id)
 
-    # Create a response object with PDF content type
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{lease.property.name}_contract.pdf"'
 
-    # Create the PDF object, using the response object as its "file"
     p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter  # Keep the letter format
+    width, height = letter
 
-    # Set up some basic styles and content
     p.setFont("Helvetica-Bold", 16)
     p.drawString(1 * inch, height - 1 * inch, "Contract Details")
 
     p.setFont("Helvetica", 12)
     y = height - 1.5 * inch
-
     p.drawString(1 * inch, y, f"Property: {lease.property.name}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Tenant: {lease.tenant.name}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Owner: {lease.property.owner.name}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Start Date: {lease.start_date}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"End Date: {lease.end_date}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Rent Amount: {lease.rent_amount} Frw")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Property Type: {lease.property.get_types_display()}")
     y -= 0.5 * inch
-
     p.drawString(1 * inch, y, f"Address: {lease.property.address}")
     y -= 0.5 * inch
-
-
     p.drawString(1 * inch, y, f"Number of Units: {lease.property.number_of_units}")
     y -= 0.5 * inch
 
@@ -1548,7 +1670,6 @@ def download_contract(request, lease_id):
     p.setFont("Helvetica", 12)
     y -= 0.5 * inch
 
-    # Split contract details into lines to fit within the page width
     contract_details_lines = lease.contract_details.split('\n')
     for line in contract_details_lines:
         p.drawString(1 * inch, y, line)
@@ -1563,23 +1684,14 @@ def download_contract(request, lease_id):
     return response
 
 
-
-
-def get_status_display(self):
-    if self.contract_accepted and self.contract_signed:
-        return "Signed"
-    elif self.contract_accepted:
-        return "Accepted"
-    else:
-        return "Made"
-
-
-def delete_contract(request,lease_id):
+@csrf_exempt
+def delete_contract(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
     lease.delete()
     return redirect('owner_contracts', lease.property.owner.user.id)
 
 
+@csrf_exempt
 def owner_edit_property(request, property_id):
     property_instance = get_object_or_404(Property, id=property_id)
     owner = property_instance.owner
@@ -1587,7 +1699,6 @@ def owner_edit_property(request, property_id):
 
     if request.method == 'POST':
         try:
-            # Collecting main property details
             property_instance.name = request.POST.get('name')
             property_instance.address = request.POST.get('address')
             property_instance.types = request.POST.get('property_type')
@@ -1595,24 +1706,20 @@ def owner_edit_property(request, property_id):
             property_instance.number_of_units = request.POST.get('number_of_units')
             property_instance.price = request.POST.get('price')
 
-            # Handle image upload if provided
             if 'image' in request.FILES:
                 property_instance.image = request.FILES.get('image')
 
             property_instance.save()
 
-            # Collecting unit details
             unit_numbers = request.POST.getlist('unit_number[]')
             bedrooms = request.POST.getlist('bedrooms[]')
             bathrooms = request.POST.getlist('bathrooms[]')
             rents = request.POST.getlist('rent[]')
             availabilities = request.POST.getlist('is_available[]')
 
-            # Validate that the number of lists match
             if not (len(unit_numbers) == len(bedrooms) == len(bathrooms) == len(rents)):
                 messages.error(request, 'Mismatched number of unit details submitted.')
                 return redirect('owner_edit_property', property_instance.id)
-
 
             existing_units = list(property_instance.units.all())
 
@@ -1641,7 +1748,6 @@ def owner_edit_property(request, property_id):
             messages.error(request, f'Error updating property: {e}')
             return redirect('owner_edit_property', property_instance.id)
 
-    # Collect existing units for the form
     units = property_instance.units.all()
     unit_data = []
     for unit in units:
@@ -1662,16 +1768,22 @@ def owner_edit_property(request, property_id):
     })
 
 
-def owner_delete_property(request,property_id):
+@csrf_exempt
+def owner_delete_property(request, property_id):
     property_instance = get_object_or_404(Property, id=property_id)
     property_instance.delete()
     return redirect('owner_properties', property_instance.owner.user.id)
-def owner_view_property(request,property_id):
+
+
+@csrf_exempt
+def owner_view_property(request, property_id):
     user = request.user
     units = Unit.objects.filter(property_id=property_id)
     owner = get_object_or_404(Owner, user=user)
     property_instance = get_object_or_404(Property, id=property_id)
     return render(request, 'Others_dashboard/owners/owner_properties/view_properties.html', {'user': user, 'owner': owner, 'property_instance': property_instance, 'units': units})
+
+
 @login_required
 def tenant_dashboard(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -1681,8 +1793,17 @@ def tenant_dashboard(request, user_id):
     made_leases = leases.filter(contract_accepted=False)
     accepted_leases = leases.filter(contract_accepted=True)
     signed_leases = leases.filter(contract_signed=True)
-    context = {'user': user, 'tenant': tenant, 'properties': properties,'made_leases': made_leases, 'accepted_leases': accepted_leases,'signed_leases': signed_leases, 'leases': leases}
+    context = {
+        'user': user,
+        'tenant': tenant,
+        'properties': properties,
+        'made_leases': made_leases,
+        'accepted_leases': accepted_leases,
+        'signed_leases': signed_leases,
+        'leases': leases
+    }
     return render(request, 'Others_dashboard/Tenants/tenant_dashboard.html', context)
+
 
 @login_required
 def new_tenant(request, user_id):
@@ -1708,7 +1829,7 @@ def like_property(request, property_id):
         liked_property.total_likes += 1
         liked_property.save()
         messages.success(request, "You have liked this property!")
-        redirect('property_view', property.id)
+        return redirect('property_view', property.id)
     else:
         messages.info(request, "You have already liked this property!")
     return redirect('property_view', property.id)
@@ -1726,3 +1847,4 @@ def schedule_visit(request, property_id):
         return redirect('property_view', property.id)
 
     return render(request, 'home/details.html', {'property': property})
+
