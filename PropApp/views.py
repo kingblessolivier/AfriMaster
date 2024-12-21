@@ -1783,7 +1783,11 @@ def owner_view_property(request, property_id):
     property_instance = get_object_or_404(Property, id=property_id)
     return render(request, 'Others_dashboard/owners/owner_properties/view_properties.html', {'user': user, 'owner': owner, 'property_instance': property_instance, 'units': units})
 
+<<<<<<< HEAD
 @csrf_exempt
+=======
+
+>>>>>>> 98b4a710c9cb2dcdb42112fcbf342fecbcf6aaef
 @login_required
 def tenant_dashboard(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -1804,7 +1808,11 @@ def tenant_dashboard(request, user_id):
     }
     return render(request, 'Others_dashboard/Tenants/tenant_dashboard.html', context)
 
+<<<<<<< HEAD
 @csrf_exempt
+=======
+
+>>>>>>> 98b4a710c9cb2dcdb42112fcbf342fecbcf6aaef
 @login_required
 def new_tenant(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -1848,6 +1856,7 @@ def schedule_visit(request, property_id):
 
     return render(request, 'home/details.html', {'property': property})
 
+<<<<<<< HEAD
 
 @csrf_exempt
 def tenant_profile(request,user_id):
@@ -1868,3 +1877,5 @@ def tenant_edit_profile(request, user_id):
     else:
         form = TenantProfileForm(instance=tenant)
         return render(request, 'Others_dashboard/Tenants/profile/tenant_edit_profile.html', {'form': form, 'user': user})
+=======
+>>>>>>> 98b4a710c9cb2dcdb42112fcbf342fecbcf6aaef
