@@ -41,7 +41,7 @@
         }
         .main-content {
             padding: 20px;
-            margin-left: 250px; /* Adjusted for sidebar width */
+             margin-left: 105px;
         }
         .card {
             margin-bottom: 20px;
@@ -118,6 +118,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="dashboardLink"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
                 </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'tenant_profile' user.id %}" id="tenantsLink"><i class="fa fa-users"></i> Profile</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="propertiesLink"><i class="fa fa-building"></i> Properties</a>
                 </li>
@@ -127,6 +131,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="maintenanceLink"><i class="fa fa-tools"></i> Maintenance Requests</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="messagesLink"><i class="fa fa-envelope"></i> Messages <span class="badge bg-danger">{{ message_total }}</span></a>
                 </li>

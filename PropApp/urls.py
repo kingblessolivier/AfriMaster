@@ -98,9 +98,8 @@ urlpatterns = [
     path('new_tenant/<int:user_id>/', views.new_tenant, name='new_tenant'),
     path('property/<int:property_id>/like/', views.like_property, name='like_property'),
     path('property/<int:property_id>/schedule/', views.schedule_visit, name='schedule_visit'),
-
-
-
+    path('Tenant_profile/<int:user_id>/', views.tenant_profile, name='tenant_profile'),
+    path('tenant_profile/edit_profile/<int:user_id>/', views.tenant_edit_profile, name='tenant_edit_profile'),
 ]
 
 
