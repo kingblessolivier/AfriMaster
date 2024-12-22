@@ -1,3 +1,4 @@
+import paypalrestsdk
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -20,6 +21,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, user_passes_test
 import os
 from django.shortcuts import render
+from django.conf import settings
 
 def is_admin(user):
     return user.is_authenticated and user.role == 'Admin'
@@ -1873,3 +1875,237 @@ def tenant_edit_profile(request, user_id):
         form = TenantProfileForm(instance=tenant)
         return render(request, 'Others_dashboard/Tenants/profile/tenant_edit_profile.html', {'form': form, 'user': user})
 
+@csrf_exempt
+def tenant_properties(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    tenant = get_object_or_404(Tenant, user=user)
+
+    # Filter leases by the tenant and signed is true
+    leases = Lease.objects.filter(tenant=tenant , contract_signed=True)
+
+    # Initialize properties list
+    properties = [lease.property for lease in leases]
+
+    # Apply search filters
+    search_query = request.GET.get('search', '')
+    type_filter = request.GET.get('type', '')
+    owner_filter = request.GET.get('owner', '')
+
+    if search_query:
+        properties = [p for p in properties if
+                      search_query.lower() in p.address.lower() or str(search_query) in str(p.price)]
+
+    if type_filter:
+        properties = [p for p in properties if p.types == type_filter]
+
+    if owner_filter:
+        properties = [p for p in properties if p.owner.id == int(owner_filter)]
+
+    # Pagination
+    paginator = Paginator(properties, 10)  # Show 10 properties per page
+    page_number = request.GET.get('page')
+    properties = paginator.get_page(page_number)
+
+    # Prepare context
+    context = {
+        'user': user,
+        'tenant': tenant,
+        'properties': properties,
+        'type_list': Property.objects.values_list('types', flat=True).distinct(),
+        'owner_list': Property.objects.values_list('owner', flat=True).distinct()
+    }
+
+    return render(request, 'Others_dashboard/Tenants/owner_properties/tenant_properties.html', context)
+
+@csrf_exempt
+def tenant_contracts(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    tenant = get_object_or_404(Tenant, user=user)
+    leases = Lease.objects.filter(tenant=tenant)
+    signed_contracts = [lease for lease in leases if lease.contract_signed ]
+    unaccepted_contracts = [lease for lease in leases if not lease.contract_accepted and not lease.contract_signed]
+    accepted_contracts = [lease for lease in leases if lease.contract_accepted and not lease.contract_signed]
+    total_signed_contracts = len(signed_contracts)
+    total_accepted_contracts = len(accepted_contracts)
+    total_unaccepted_contracts = len(unaccepted_contracts)
+
+    context = {
+        'user': user,
+        'tenant': tenant,
+        'signed_contracts': signed_contracts,
+        'accepted_contracts': accepted_contracts,
+        'unaccepted_contracts': unaccepted_contracts,
+        'total_signed_contracts': total_signed_contracts,
+        'total_accepted_contracts': total_accepted_contracts,
+        'total_unaccepted_contracts': total_unaccepted_contracts
+    }
+    return render(request, 'Others_dashboard/Tenants/contracts/tenant_contracts.html', context)
+@csrf_exempt
+def tenant_accept_contract(request, lease_id):
+    lease = get_object_or_404(Lease, id=lease_id)
+    lease.contract_accepted = True
+    lease.save()
+    messages.success(request, "Contract accepted successfully!")
+    return redirect('tenant_contracts', lease.tenant.user.id)
+@csrf_exempt
+def tenant_sign_contract(request, lease_id):
+    lease = get_object_or_404(Lease, id=lease_id)
+    lease.contract_signed = True
+    lease.save()
+    messages.success(request, "Contract signed successfully!")
+    return redirect('tenant_contracts', lease.tenant.user.id)
+
+@csrf_exempt
+def tenant_view_contract(request, lease_id):
+    lease = get_object_or_404(Lease, id=lease_id)
+    return render(request, 'Others_dashboard/Tenants/contracts/view_contract.html', {'lease': lease})
+
+@csrf_exempt
+def tenant_download_contract(request, lease_id):
+    lease = get_object_or_404(Lease, id=lease_id)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{lease.property.name}_contract.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(1 * inch, height - 1 * inch, "Contract Details")
+
+    p.setFont("Helvetica", 12)
+    y = height - 1.5 * inch
+    p.drawString(1 * inch, y, f"Property: {lease.property.name}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Tenant: {lease.tenant.name}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Owner: {lease.property.owner.name}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Start Date: {lease.start_date}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"End Date: {lease.end_date}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Rent Amount: {lease.rent_amount} Frw")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Property Type: {lease.property.get_types_display()}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Address: {lease.property.address}")
+    y -= 0.5 * inch
+    p.drawString(1 * inch, y, f"Number of Units: {lease.property.number_of_units}")
+    y -= 0.5 * inch
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(1 * inch, y, "Status:")
+    p.setFont("Helvetica", 12)
+    p.drawString(2 * inch, y, f"{lease.get_status_display()}")
+    y -= 0.5 * inch
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(1 * inch, y, "Contract Details:")
+    p.setFont("Helvetica", 12)
+    y -= 0.5 * inch
+
+    contract_details_lines = lease.contract_details.split('\n')
+    for line in contract_details_lines:
+        p.drawString(1 * inch, y, line)
+        y -= 0.5 * inch
+        if y < 1 * inch:
+            p.showPage()
+            y = height - 1.5 * inch
+
+    p.showPage()
+    p.save()
+
+    return response
+
+@csrf_exempt
+def tenant_view_property(request, property_id):
+    property_instance = get_object_or_404(Property, id=property_id)
+    units = property_instance.units.all()
+    tenant = get_object_or_404(Tenant, user=request.user)
+    leases = Lease.objects.filter(property=property_instance, tenant=tenant)
+
+    context = {
+        'property_instance': property_instance,
+        'units': units,
+        'leases': leases,
+    }
+    return render(request, 'Others_dashboard/Tenants/owner_properties/view_property.html', context)
+
+
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,  # sandbox or live
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET
+})
+
+@csrf_exempt
+def process_payment(request):
+    if request.method == 'POST':
+        property_id = request.POST.get('property')
+        amount = request.POST.get('amount')
+        date_paid = request.POST.get('date_paid')
+
+        property_instance = get_object_or_404(Property, id=property_id)
+        tenant = get_object_or_404(Tenant, user=request.user)
+
+        # Create a payment object
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"
+            },
+            "transactions": [{
+                "amount": {
+                    "total": amount,
+                    "currency": "USD"  # Change currency as needed
+                },
+                "description": f"Payment for property {property_instance.name}"
+            }],
+            "redirect_urls": {
+                "return_url": f"{settings.SITE_URL}/payment/execute/",
+                "cancel_url": f"{settings.SITE_URL}/payment/cancel/"
+            }
+        })
+
+        if payment.create():
+            for link in payment.links:
+                if link.rel == "approval_url":
+                    return redirect(link.href)
+        else:
+            messages.error(request, 'Error creating payment on PayPal.')
+            return redirect('make_payment')
+    else:
+        tenant = get_object_or_404(Tenant, user=request.user)
+        leases = Lease.objects.filter(tenant=tenant)
+
+        context = {
+            'leases': leases,
+        }
+        return render(request, 'Others_dashboard/Tenants/payments/tenant_payment.html', context)
+
+@csrf_exempt
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    payment = paypalrestsdk.Payment.find(payment_id)
+
+    if payment.execute({"payer_id": payer_id}):
+        # Save the payment to the database
+        property_id = payment.transactions[0].description.split()[-1]
+        property_instance = get_object_or_404(Property, id=property_id)
+        tenant = get_object_or_404(Tenant, user=request.user)
+
+        Payment.objects.create(
+            property=property_instance,
+            tenant=tenant,
+            amount=payment.transactions[0].amount.total,
+            date_paid=payment.transactions[0].related_resources[0].sale.create_time
+        )
+
+        messages.success(request, 'Payment successful.')
+        return redirect('tenant_lease_management')
+    else:
+        messages.error(request, 'Error executing payment on PayPal.')
+        return redirect('make_payment')

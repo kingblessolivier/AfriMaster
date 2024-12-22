@@ -122,11 +122,16 @@
 
                         <a class="nav-link" href="{% url 'tenant_profile' user.id %}" id="tenantsLink"><i class="fa fa-users"></i> Profile</a>
                 </li>
+                  <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'tenant_contracts' user.id %}" id="contractsLink"><i class="fa fa-file-contract"></i> Contracts</a>
+                </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="propertiesLink"><i class="fa fa-building"></i> Properties</a>
+                    <a class="nav-link" href="{% url 'tenant_properties' user.id %}" id="propertiesLink"><i class="fa fa-building"></i> Properties</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="rentLink"><i class="fa fa-dollar-sign"></i> Payments</a>
+                    <a class="nav-link" href="{% url 'make_payment' %}" id="rentLink"><i class="fa fa-dollar-sign"></i> Payments</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="maintenanceLink"><i class="fa fa-tools"></i> Maintenance Requests</a>

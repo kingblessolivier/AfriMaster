@@ -1,4 +1,4 @@
-{% extends 'Others_dashboard/owners/owner_base.html' %}
+{% extends 'Others_dashboard/Tenants/tenant_base.html' %}
 {% load static %}
 
 {% block title %}
@@ -56,6 +56,7 @@ Lease Management
 
     .nav-link.active {
         background-color: #f8f9fa; /* Light background for active tab */
+        color: #007bff; /* Blue color for active tab text */
     }
 
     .nav-link:hover {
@@ -120,50 +121,14 @@ Lease Management
         {% endif %}
 
         <div class="col-md-12">
-            <h4 class="text-primary">PropApp Lease Management</h4>
+            <h4 class="text-primary">My Contracts</h4>
         </div>
     </div>
-
-    <!-- Statistics Section -->
-    <div class="stats-container">
-        <div class="card text-white bg-primary stat-card">
-            <div class="card-header"><i class="bi bi-file-earmark"></i> Total Leases</div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <h5 class="card-title mb-0">{{ lease_list.count }}</h5>
-            </div>
-        </div>
-        <div class="card text-white bg-success stat-card">
-            <div class="card-header"><i class="bi bi-check-circle"></i> Accepted Leases</div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <h5 class="card-title mb-0">{{ accepted_leases.count }}</h5>
-            </div>
-        </div>
-        <div class="card text-white bg-danger stat-card">
-            <div class="card-header"><i class="bi bi-hand-thumbs-up-fill"></i> Signed Leases</div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <h5 class="card-title mb-0">{{ signed_leases.count }}</h5>
-            </div>
-        </div>
-        <div class="card text-white bg-secondary stat-card">
-            <div class="card-header"><i class="bi bi-x-circle-fill"></i> Made Leases</div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <h5 class="card-title mb-0">{{ made_leases.count }}</h5>
-            </div>
-        </div>
-    </div>
-
 
     <!-- Search Bar -->
     <div class="search-container">
-        <input type="text" id="search-input" class="form-control" placeholder="Search leases..." onkeyup="filterLeases()">
+        <input type="text" id="search-input" class="form-control" placeholder="Search my leases..." onkeyup="filterLeases()">
     </div>
-<!-- adding a new contract button -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <a href="{% url 'new_contract' user.id %}" class="btn btn-primary btn-sm" role="button"><i class="bi bi-plus-lg"></i> Add New contract</a>
-        </div>
-
-
 
     <!-- Main card container for leases -->
     <div class="card shadow-sm border-0 mt-2">
@@ -172,31 +137,30 @@ Lease Management
             <!-- Navigation Tabs -->
             <ul class="nav nav-tabs" id="leaseTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="made-tab" data-bs-toggle="tab" data-bs-target="#made" type="button" role="tab" aria-controls="made" aria-selected="true">
-                        <i class="bi bi-x-circle-fill"></i> Made Leases <span class="badge bg-secondary">{{ made_leases.count }}</span>
+                    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="true">
+                        <i class="bi bi-hourglass-split"></i> Pending Leases <span class="badge bg-secondary">{{ total_unaccepted_contracts }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted" type="button" role="tab" aria-controls="accepted" aria-selected="false">
-                        <i class="bi bi-check-circle"></i> Accepted Leases <span class="badge bg-success">{{ accepted_leases.count }}</span>
+                        <i class="bi bi-check-circle"></i> Accepted Leases <span class="badge bg-success">{{ total_accepted_contracts }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="signed-tab" data-bs-toggle="tab" data-bs-target="#signed" type="button" role="tab" aria-controls="signed" aria-selected="false">
-                        <i class="bi bi-hand-thumbs-up-fill"></i> Signed Leases <span class="badge bg-danger">{{ signed_leases.count }}</span>
+                        <i class="bi bi-hand-thumbs-up-fill"></i> Signed Leases  <span class="badge bg-danger">{{ total_signed_contracts }}</span>
                     </button>
                 </li>
             </ul>
 
             <div class="tab-content mt-2" id="leaseTabContent">
-                <!-- Made Leases Tab -->
-                <div class="tab-pane fade show active" id="made" role="tabpanel" aria-labelledby="made-tab">
-                    <table class="table table-hover lease-table" id="made-table">
+                <!-- Pending Leases Tab -->
+                <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    <table class="table table-hover lease-table" id="pending-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Property Name</th>
-                                <th>Tenant Name</th>
                                 <th>Owner Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -206,21 +170,24 @@ Lease Management
                             </tr>
                         </thead>
                         <tbody>
-                            {% for lease in made_leases %}
-                                <tr class="lease-row made">
+                            {% for lease in unaccepted_contracts %}
+                                <tr class="lease-row pending">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ lease.property.name }}</td>
-                                    <td>{{ lease.tenant.name }}</td>
                                     <td>{{ lease.property.owner.name }}</td>
                                     <td>{{ lease.start_date }}</td>
                                     <td>{{ lease.end_date }}</td>
                                     <td>{{ lease.rent_amount }} Frw</td>
-                                    <td><span class="status-text text-secondary">Made</span></td>
+                                    <td><span class="status-text text-secondary">Pending</span></td>
                                     <td>
-                                        <a href="{% url 'owner_view_contract' lease.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                        <a href="#" class="btn btn-success btn-sm" title="Accept"><i class="bi bi-check"></i> Accept</a>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
+
+                                        <a href="{% url 'tenant_view_contract' lease.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
+                                        <a href="{% url 'tenant_accept_contract' lease.id %}" class="btn btn-success btn-sm" title="Accept"><i class="bi bi-check"></i> Accept</a>
                                     </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center">No pending leases found.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -234,7 +201,6 @@ Lease Management
                             <tr>
                                 <th>ID</th>
                                 <th>Property Name</th>
-                                <th>Tenant Name</th>
                                 <th>Owner Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -244,21 +210,23 @@ Lease Management
                             </tr>
                         </thead>
                         <tbody>
-                            {% for lease in accepted_leases %}
+                            {% for lease in accepted_contracts %}
                                 <tr class="lease-row accepted">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ lease.property.name }}</td>
-                                    <td>{{ lease.tenant.name }}</td>
                                     <td>{{ lease.property.owner.name }}</td>
                                     <td>{{ lease.start_date }}</td>
                                     <td>{{ lease.end_date }}</td>
                                     <td>{{ lease.rent_amount }} Frw</td>
                                     <td><span class="status-text text-success">Accepted</span></td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                        <a href="#" class="btn btn-primary btn-sm" title="Sign"><i class="bi bi-sign"></i> Sign</a>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
+                                        <a href="{% url 'tenant_view_contract' lease.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
+                                        <a href="{% url 'tenant_sign_contract' lease.id %}" class="btn btn-primary btn-sm" title="Sign"><i class="bi bi-sign"></i> Sign</a>
                                     </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center">No accepted leases found.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -272,7 +240,6 @@ Lease Management
                             <tr>
                                 <th>ID</th>
                                 <th>Property Name</th>
-                                <th>Tenant Name</th>
                                 <th>Owner Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -282,20 +249,22 @@ Lease Management
                             </tr>
                         </thead>
                         <tbody>
-                            {% for lease in signed_leases %}
+                            {% for lease in signed_contracts %}
                                 <tr class="lease-row signed">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ lease.property.name }}</td>
-                                    <td>{{ lease.tenant.name }}</td>
                                     <td>{{ lease.property.owner.name }}</td>
                                     <td>{{ lease.start_date }}</td>
                                     <td>{{ lease.end_date }}</td>
                                     <td>{{ lease.rent_amount }} Frw</td>
                                     <td><span class="status-text text-danger">Signed</span></td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
+                                        <a href="{% url 'tenant_view_contract' lease.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
                                     </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center">No signed leases found.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -304,27 +273,6 @@ Lease Management
             </div>
         </div>
     </div>
-
-    <!-- Delete Modals -->
-    {% for lease in lease_list %}
-        <div class="modal fade" id="deleteLeaseModal{{ lease.id }}" tabindex="-1" aria-labelledby="deleteLeaseModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Delete Lease</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this lease?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <a href="#" class="btn btn-danger">Delete</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
 </div>
 
 <!-- Bootstrap Icons CDN -->

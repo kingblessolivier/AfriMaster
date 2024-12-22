@@ -103,7 +103,7 @@
                             <div class="invalid-feedback">Please provide a tenant image.</div>
                         </div>
                         <div class="text-center">
-                            <button type="button" class="btn btn-secondary me-2" onclick="window.location.href='{% url 'admin_tenants' %}'">
+                            <button type="button" class="btn btn-secondary me-2" onclick="window.location.href='{% url 'tenant_profile' user.id %}'">
                                 <i class="fas fa-arrow-left"></i> Go Back
                             </button>
                             <button type="submit" class="btn btn-primary">

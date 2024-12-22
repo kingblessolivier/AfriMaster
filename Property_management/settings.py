@@ -179,4 +179,10 @@ EMAIL_USE_TLS = True  # Use TLS (True for Gmail, other services might differ)
 EMAIL_HOST_USER = 'nsengimanaolivier100@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'rhhf sdbf kith gnzh'  # Your email account's password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default sender email
+
+
+PAYPAL_MODE = 'sandbox'  # or 'live'
+PAYPAL_CLIENT_ID = 'FLD2Q3S3QCFLU'
+PAYPAL_CLIENT_SECRET = 'Olivier@12'
+SITE_URL = 'http://127.0.0.1:8000'
 # settings.py

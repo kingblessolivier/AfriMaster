@@ -100,6 +100,19 @@ urlpatterns = [
     path('property/<int:property_id>/schedule/', views.schedule_visit, name='schedule_visit'),
     path('Tenant_profile/<int:user_id>/', views.tenant_profile, name='tenant_profile'),
     path('tenant_profile/edit_profile/<int:user_id>/', views.tenant_edit_profile, name='tenant_edit_profile'),
+    path('tenant_properties/<int:user_id>',views.tenant_properties, name='tenant_properties'),
+    path('tenant_contracts/<int:user_id>/', views.tenant_contracts, name='tenant_contracts'),
+    path('tenant_view_contract/<int:lease_id>/', views.tenant_view_contract, name='tenant_view_contract'),
+    path('tenant_sign_contract/<int:lease_id>/', views.tenant_sign_contract, name='tenant_sign_contract'),
+    path('tenant_accepet_contract/<int:lease_id>/', views.tenant_accept_contract, name='tenant_accept_contract'),
+    path('tenant_download_contract/<int:lease_id>/',views.tenant_download_contract,name='tenant_download_contract'),
+    path('tenant_view_property/<int:property_id>', views.tenant_view_property, name='tenant_view_property'),
+   path('tenant/make_payment/', views.process_payment, name='make_payment'),
+    path('payment/execute/', views.execute_payment, name='execute_payment'),
+
 ]
+
+
+
 
 
