@@ -187,9 +187,9 @@
                                     <td>{{ enquiry.message|truncatechars:20 }}</td>
                                     <td><span class="status-text text-danger">Unread</span></td>
                                     <td>
-                                        <a href="/admin_enquiries/view_enquiry/{{ enquiry.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
-                                        <a href="admin_enquiries/reply_enquiry/{{ enquiry.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
-                                        <a href="/admin_enquiries/mark-as-read/{{ enquiry.id }}" class="btn btn-success btn-sm" title="Mark as Read"><i class="bi bi-check"></i></a>
+                                        <a href="{% url 'view_enquiry' enquiry.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+                                        <a href="{% url 'mail_enquiry' enquiry.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
+                                        <a href="{% url 'mark_as_read_enquiry' enquiry.id %}" class="btn btn-success btn-sm" title="Mark as Read"><i class="bi bi-check"></i></a>
                                         <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEnquiryModal{{ enquiry.id }}" title="Delete"><i class="bi bi-trash"></i></button>
                                     </td>
                                 </tr>
@@ -225,9 +225,9 @@
                                     <td>{{ enquiry.message|truncatechars:20 }}</td>
                                     <td><span class="status-text text-success">Read</span></td>
                                     <td>
-                                        <a href="/admin_enquiries/view_enquiry/{{ enquiry.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
-                                        <a href="admin_enquiries/reply_enquiry/{{ enquiry.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
-                                        <a href="/admin_enquiries/archive-message/{{ enquiry.id }}" class="btn btn-secondary btn-sm" title="Archive"><i class="bi bi-archive"></i></a>
+                                        <a href="{% url 'view_enquiry' enquiry.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+                                        <a href="{% url 'mail_enquiry' enquiry.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
+                                        <a href="{% url 'archive_enquiry' enquiry.id %}" class="btn btn-secondary btn-sm" title="Archive"><i class="bi bi-archive"></i></a>
 
                                         <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEnquiryModal{{ enquiry.id }}" title="Delete"><i class="bi bi-trash"></i></button>
                                     </td>
@@ -264,9 +264,9 @@
                                     <td>{{ enquiry.property.name|truncatechars:20 }}</td>
                                     <td><span class="status-text text-secondary">Archived</span></td>
                                     <td>
-                                        <a href="/admin_enquiries/view_enquiry/{{ enquiry.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
-                                        <a href="/admin_enquiries/unarchive_message/{{ enquiry.id }}" class="btn btn-success btn-sm" title="Unarchive"><i class="bi bi-archive-fill"></i></a>
-                                        <a href="/admin_enquiries/reply_enquiry/{{ enquiry.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
+                                        <a href="{% url 'view_enquiry' enquiry.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i></a>
+                                        <a href="{% url 'unarchive_enquiry' enquiry.id %}" class="btn btn-success btn-sm" title="Unarchive"><i class="bi bi-archive-fill"></i></a>
+                                        <a href="{% url 'mail_enquiry' enquiry.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i></a>
                                         <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEnquiryModal{{ enquiry.id }}" title="Delete"><i class="bi bi-trash"></i></button>
                                     </td>
                                 </tr>
@@ -293,7 +293,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <a href="/admin_enquiries/delete-message/{{ enquiry.id }}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'delete_enquiry' enquiry.id %}" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
             </div>

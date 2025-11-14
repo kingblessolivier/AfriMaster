@@ -1,149 +1,705 @@
 {% extends 'home/base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home - AfriMaster Properties{% endblock %}
 
 {% block content %}
-<!-- Home Section -->
-<section id="home" class="py-5" style="background-image: url('{% static 'images/prop.jpg' %}'); background-size: cover; background-position: center; visibility: visible; opacity: 1; transform: scale(1);">
-    <div class="container" style="position: relative; z-index: 1; text-align: center;">
-        <h1 class="display-4 p-5 mt-5" style="color: white; text-shadow: 2px 2px 2px black;">Welcome to PropApp</h1>
-        <p class="lead shadow-sm" style="color: white; text-shadow: 2px 2px 2px black;">
-            <strong>PropApp is Your One-Stop Solution for Property Management.</strong>
-        </p>
-        <a href="#what-we-do" class="btn btn-light btn-lg mt-3" style="background-color: darkslategrey; border-color: darkslategrey; color: white;">
-            <i class="bi bi-box-arrow-in-right me-2"></i>Learn More
-        </a>
+<style>
+   
+    .hero-section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(47, 79, 79, 0.9) 0%, rgba(40, 167, 69, 0.8) 100%), 
+                    url('{% static 'images/prop.jpg' %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        animation: fadeInUp 1s ease;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-content .lead {
+        font-size: 1.4rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .btn-hero {
+        background: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: var(--transition);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-hero:hover {
+        background: transparent;
+        border-color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: white;
+        padding: 60px 0;
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: block;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        color: var(--secondary-color);
+        font-weight: 500;
+    }
+
+    /* Enhanced Service Cards */
+    .services-section {
+        padding: 100px 0;
+        background: var(--light-bg);
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        height: 100%;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2rem;
+        color: white;
+        transition: var(--transition);
+    }
+
+    .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .service-card h3 {
+        color: var(--secondary-color);
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+    }
+
+    .service-card p {
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    /* Featured Properties */
+    .properties-section {
+        padding: 100px 0;
+        background: white;
+    }
+
+    .property-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        background: white;
+        height: 100%;
+    }
+
+    .property-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .property-image {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .property-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .property-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .property-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--primary-color);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .property-card .card-body {
+        padding: 25px;
+    }
+
+    .property-card h5 {
+        color: var(--secondary-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .property-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .property-features {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .property-feature {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .feature-icon {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .feature-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .property-address {
+        color: #6c757d;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-property {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: var(--transition);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-property:hover {
+        background: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+        padding: 100px 0;
+        background: var(--light-bg);
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        height: 100%;
+        border: none;
+        position: relative;
+    }
+
+    .testimonial-card:before {
+        content: '"';
+        position: absolute;
+        top: 20px;
+        left: 25px;
+        font-size: 4rem;
+        color: rgba(40, 167, 69, 0.1);
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .testimonial-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .testimonial-text {
+        font-style: italic;
+        color: #555;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .testimonial-author {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 5px;
+    }
+
+    .testimonial-role {
+        color: var(--primary-color);
+        font-size: 0.9rem;
+    }
+
+    /* News Section */
+    .news-section {
+        padding: 100px 0;
+        background: white;
+    }
+
+    .news-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        height: 100%;
+        border: none;
+    }
+
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .news-image {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .news-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .news-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .news-card .card-body {
+        padding: 25px;
+    }
+
+    .news-date {
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .news-card h5 {
+        color: var(--secondary-color);
+        font-weight: 600;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .news-card p {
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 100px 0;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('{% static 'images/pattern.png' %}') repeat;
+        opacity: 0.1;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-section h2 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-cta {
+        background: white;
+        color: var(--secondary-color);
+        border: 2px solid white;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 0 10px 15px;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-cta:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .hero-content h1 {
+            font-size: 2.8rem;
+        }
+        
+        .hero-content .lead {
+            font-size: 1.2rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 2.3rem;
+        }
+        
+        .hero-content .lead {
+            font-size: 1.1rem;
+        }
+        
+        .btn-hero, .btn-cta {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.2rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+        }
+        
+        .service-card, .property-card, .testimonial-card, .news-card {
+            margin-bottom: 30px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+        
+        .btn-cta {
+            display: block;
+            margin: 10px auto;
+            max-width: 250px;
+        }
+        
+        .property-features {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .property-feature {
+            flex: 1 0 45%;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="hero-content animate-on-scroll">
+                    <h1>Welcome to AfriMaster Properties</h1>
+                    <p class="lead">Your One-Stop Solution for Modern Property Management</p>
+                    <a href="#services" class="btn btn-hero">
+                        <i class="bi bi-arrow-down-circle me-2"></i>Discover More
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- What We Do Section -->
-<section id="what-we-do" class="py-5 bg-light">
+<!-- Stats Section -->
+<section class="stats-section">
     <div class="container">
-        <h2 class="text-center mb-4 text-success" style="border-left: 5px solid darkslategrey; padding-left: 10px;">What We Do</h2>
-        <p class="text-center text-muted">At PropApp, we aim to revolutionize property management by providing a comprehensive platform for property owners, tenants, and real estate professionals. Our services are designed to simplify and streamline the property management process, ensuring efficiency, transparency, and convenience for all parties involved.</p>
-
         <div class="row">
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-house-door text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Property Listings</h3>
-                        <p class="card-text">Manage and list your properties with ease. The intuitive interface allows quick uploads and modifications, ensuring your listings are always up-to-date.</p>
-                    </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-item animate-on-scroll">
+                    <span class="stat-number" data-count="1500">0</span>
+                    <span class="stat-label">Properties Managed</span>
                 </div>
             </div>
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-person-circle text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Tenant Management</h3>
-                        <p class="card-text">We offer robust tenant management features including screening, background checks, and lease tracking, ensuring a seamless experience for both landlords and tenants.</p>
-                    </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-item animate-on-scroll" style="animation-delay: 0.1s;">
+                    <span class="stat-number" data-count="500">0</span>
+                    <span class="stat-label">Happy Clients</span>
                 </div>
             </div>
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-bell text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Updates & Notifications</h3>
-                        <p class="card-text">Stay informed with real-time updates and notifications about your properties, tenants, and market insights through our integrated communication tools.</p>
-                    </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-item animate-on-scroll" style="animation-delay: 0.2s;">
+                    <span class="stat-number" data-count="50">0</span>
+                    <span class="stat-label">Real Estate Partners</span>
                 </div>
             </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-telephone text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Customer Support</h3>
-                        <p class="card-text">Our dedicated customer support team is here to help, ensuring all your queries are resolved promptly for a smooth management experience.</p>
-                    </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-item animate-on-scroll" style="animation-delay: 0.3s;">
+                    <span class="stat-number" data-count="3">0</span>
+                    <span class="stat-label">Years of Excellence</span>
                 </div>
-            </div>
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-shield-lock text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Secure Transactions</h3>
-                        <p class="card-text">We ensure all transactions and data are secure, giving you peace of mind when managing your properties and finances.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center mb-4">
-                <div class="card border-success shadow-sm animated fadeInUp">
-                    <div class="card-body">
-                        <i class="bi bi-graph-up text-success" style="font-size: 2rem;"></i>
-                        <h3 class="card-title text-success">Market Insights</h3>
-                        <p class="card-text">Gain valuable insights into the real estate market with our analytics tools, helping you make informed decisions.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 text-center mt-4">
-                <h3 class="text-success" style="border-left: 5px solid darkslategrey; padding-left: 10px;">Why Choose PropApp?</h3>
-                <p class="text-muted">Our commitment to innovation, customer service, and security makes us the ideal partner in property management.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Featured Properties Section -->
-<section id="featured-properties" class="py-5 bg-light">
+<!-- Services Section -->
+<section id="services" class="services-section">
     <div class="container">
-        <h2 class="text-center mb-4 text-success" style="border-right: 5px solid darkslategrey; padding-right: 10px;">Featured Properties</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <h2 class="section-title text-center">What We Do</h2>
+        <p class="text-center text-muted mb-5">At AfriMaster Properties, we revolutionize property management with innovative solutions for owners, tenants, and real estate professionals.</p>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">
+                        <i class="bi bi-house-door"></i>
+                    </div>
+                    <h3>Property Listings</h3>
+                    <p>Manage and list your properties with ease using our intuitive interface for quick uploads and modifications.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll" style="animation-delay: 0.1s;">
+                    <div class="service-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h3>Tenant Management</h3>
+                    <p>Comprehensive tenant management with screening, background checks, and lease tracking features.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="service-icon">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <h3>Real-time Updates</h3>
+                    <p>Stay informed with instant notifications and updates through our integrated communication system.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll" style="animation-delay: 0.3s;">
+                    <div class="service-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h3>Customer Support</h3>
+                    <p>Our dedicated support team ensures all your queries are resolved promptly for a seamless experience.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll" style="animation-delay: 0.4s;">
+                    <div class="service-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h3>Secure Transactions</h3>
+                    <p>All transactions and data are protected with advanced security measures for your peace of mind.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card animate-on-scroll" style="animation-delay: 0.5s;">
+                    <div class="service-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3>Market Insights</h3>
+                    <p>Gain valuable real estate market insights with our advanced analytics and reporting tools.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties -->
+<section class="properties-section">
+    <div class="container">
+        <h2 class="section-title">Featured Properties</h2>
+        <p class="text-muted mb-5">Discover our handpicked selection of premium properties</p>
+
+        <div class="row">
             {% for property in featured_properties %}
-            <div class="col">
-                <div class="card property-card h-100 shadow">
-                    <img src="{{ property.image.url }}" class="card-img-top" alt="{{ property.name }}" style="max-height: 300px; object-fit: cover;">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="property-card animate-on-scroll">
+                    <div class="property-image">
+                        <img src="{{ property.image.url }}" alt="{{ property.name }}">
+                        <div class="property-badge">{{ property.get_types_display }}</div>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title d-flex align-items-center">
-                            <i class="bi bi-home me-2"></i>
-                            {{ property.name }}
-                        </h5>
-                        <p class="card-text text-truncate" title="{{ property.description }}">
-                            <strong></strong> {{ property.description|truncatewords:20 }}
-                        </p>
-                        <div class="details-item d-flex align-items-center">
+                        <h5>{{ property.name }}</h5>
+                        <div class="property-price">{{ property.price }} Frw</div>
+                        <div class="property-address">
                             <i class="bi bi-geo-alt me-2"></i>
-                            <strong>Address:</strong> {{ property.address }}
+                            {{ property.address }}
                         </div>
-                        <div class="details-item d-flex align-items-center">
-                            <i class="bi bi-building me-2"></i>
-                            <strong>Type:</strong> {{ property.get_types_display }}
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <i class="bi bi-door-closed feature-icon"></i>
+                                <span class="feature-text">{{ property.bedrooms }} Bed</span>
+                            </div>
+                            <div class="property-feature">
+                                <i class="bi bi-droplet feature-icon"></i>
+                                <span class="feature-text">{{ property.bathrooms }} Bath</span>
+                            </div>
+                            <div class="property-feature">
+                                <i class="bi bi-layers feature-icon"></i>
+                                <span class="feature-text">{{ property.number_of_units }} Units</span>
+                            </div>
                         </div>
-                        <div class="details-item d-flex align-items-center">
-                            <i class="bi bi-cash me-2"></i>
-                            <strong>Price:</strong> <b>{{ property.price }} Rwf</b>
-                        </div>
-                        <div class="details-item d-flex align-items-center">
-                            <i class="bi bi-door-open me-2"></i>
-                            <strong>Number of Units:</strong> {{ property.number_of_units }}
-                        </div>
-
-                        <div class="details-item d-flex align-items-center">
-                            <i class="bi bi-calendar me-2"></i>
-                            <strong>Status:</strong>
-                            <span class="badge {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
-                                {{ property.status }}
-                            </span>
-                        </div>
-                        <div class="details-item d-flex align-items-center">
-                            <i class="bi bi-person me-2"></i>
-                            <strong>Owner:</strong> {{ property.owner.name }}
-                        </div>
-                        <!-- Call-to-Action Button -->
-                        <div class="d-flex justify-content-center mt-4">
-                            <a href="{% url 'property_view' property.id %}" class="btn btn-dark d-flex align-items-center justify-content-center">
-                                <i class="bi bi-eye me-2"></i>
-                                View Details
-                            </a>
-                        </div>
+                        <p class="card-text">{{ property.description|truncatewords:20 }}</p>
+                        <button class="btn btn-property" onclick="window.location.href='{% url 'property_view' property.id %}'">
+                            <i class="bi bi-eye me-2"></i>View Details
+                        </button>
                     </div>
                 </div>
             </div>
@@ -152,171 +708,178 @@
     </div>
 </section>
 
-<!-- Testimonials Section -->
-<section id="testimonials" class="py-5 bg-light">
-    <div class="container py-5">
-        <h2 class="text-center mb-4 text-success" style="border-left: 5px solid darkslategrey; padding-left: 10px;">What Our Users Say</h2>
-        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man5.jpeg' %}" alt="Sarah K." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"PropApp has transformed my property management experience!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">Sarah K., Property Owner</footer>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man0.jpeg' %}" alt="Mike T." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"The customer support is phenomenal!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">Mike T., Tenant</footer>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man3.jpeg' %}" alt="Lisa M." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"Market insights feature helps me make educated decisions!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">Lisa M., Real Estate Professional</footer>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man2.jpeg' %}" alt="John D." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"User-friendly interface that's easy to navigate!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">John D., Property Manager</footer>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man1.jpeg' %}" alt="Emma L." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"PropApp has made it simple to manage multiple properties!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">Emma L., Investor</footer>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{% static 'images/man0.jpeg' %}" alt="Tom R." class="card-img-top rounded-circle mx-auto" style="width: 100px; height: 100px; padding-top: 5px;">
-                                <div class="card-body">
-                                    <blockquote class="blockquote">
-                                        <p class="mb-0">"The updates feature keeps everyone in the loop!"</p>
-                                    </blockquote>
-                                    <footer class="blockquote-footer text-success" style="font-size: 14px; margin-bottom: 0;">Tom R., Tenant</footer>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- FAQs Section -->
-<section id="faqs" class="py-5 bg-light">
+<!-- Testimonials -->
+<section class="testimonials-section">
     <div class="container">
-        <h2 class="text-center mb-4 text-success" style="border-left: 5px solid darkslategrey; padding-left: 10px;">Frequently Asked Questions</h2>
+        <h2 class="section-title text-center">What Our Clients Say</h2>
+        <p class="text-center text-muted mb-5">Hear from property owners and tenants who have transformed their experience with AfriMaster Properties</p>
+
         <div class="row">
-            <div class="col-md-6 mb-4">
-                <h5 class="faq-title" style="cursor: pointer;" onclick="toggleFAQ('faq1', this);">
-                    <i class="bi bi-question-circle me-2"></i>
-                    1. How do I list my property? <span class="faq-toggle">+</span>
-                </h5>
-                <p class="faq-content" id="faq1" style="display: none; margin-top: 10px; padding: 10px; background-color: #f1f3f5; border-radius: 10px;">
-                    Listing your property is easy with PropApp. Simply create an account, navigate to the "Property Listings" section, and follow the prompts to upload your listing details and images.
-                </p>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-content text-center">
+                        <img src="{% static 'images/man5.jpeg' %}" alt="Sarah K." class="testimonial-img">
+                        <p class="testimonial-text">"AfriMaster Properties has completely transformed how I manage my rental properties. Everything is streamlined and efficient!"</p>
+                        <h5 class="testimonial-author">Sarah K.</h5>
+                        <p class="testimonial-role">Property Owner</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 mb-4">
-                <h5 class="faq-title" style="cursor: pointer;" onclick="toggleFAQ('faq2', this);">
-                    <i class="bi bi-shield-lock me-2"></i>
-                    2. Is PropApp secure? <span class="faq-toggle">+</span>
-                </h5>
-                <p class="faq-content" id="faq2" style="display: none; margin-top: 10px; padding: 10px; background-color: #f1f3f5; border-radius: 10px;">
-                    Yes! We prioritize security and use advanced encryption methods to protect your data and transactions.
-                </p>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card animate-on-scroll" style="animation-delay: 0.1s;">
+                    <div class="testimonial-content text-center">
+                        <img src="{% static 'images/man0.jpeg' %}" alt="Mike T." class="testimonial-img">
+                        <p class="testimonial-text">"The customer support team is exceptional! They're always responsive and helpful with any questions I have."</p>
+                        <h5 class="testimonial-author">Mike T.</h5>
+                        <p class="testimonial-role">Tenant</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 mb-4">
-                <h5 class="faq-title" style="cursor: pointer;" onclick="toggleFAQ('faq3', this);">
-                    <i class="bi bi-list me-2"></i>
-                    3. Can I manage multiple properties? <span class="faq-toggle">+</span>
-                </h5>
-                <p class="faq-content" id="faq3" style="display: none; margin-top: 10px; padding: 10px; background-color: #f1f3f5; border-radius: 10px;">
-                    Absolutely! PropApp is designed for property managers and owners with multiple listings, making it easy to keep track of each property.
-                </p>
-            </div>
-            <div class="col-md-6 mb-4">
-                <h5 class="faq-title" style="cursor: pointer;" onclick="toggleFAQ('faq4', this);">
-                    <i class="bi bi-chat-dots me-2"></i>
-                    4. Who do I contact for support? <span class="faq-toggle">+</span>
-                </h5>
-                <p class="faq-content" id="faq4" style="display: none; margin-top: 10px; padding: 10px; background-color: #f1f3f5; border-radius: 10px;">
-                    You can reach our customer support team via the Contact Us section or by directly emailing support@propapp.com.
-                </p>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="testimonial-content text-center">
+                        <img src="{% static 'images/man3.jpeg' %}" alt="Lisa M." class="testimonial-img">
+                        <p class="testimonial-text">"The market insights feature has helped me make smarter investment decisions. This platform is a game-changer!"</p>
+                        <h5 class="testimonial-author">Lisa M.</h5>
+                        <p class="testimonial-role">Real Estate Professional</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Call-to-Action Section -->
-<section id="cta" class="py-5 text-center" style=" color: black; margin-bottom: 0;">
+<!-- News Section -->
+<section class="news-section">
     <div class="container">
-        <h2 class="mt-5">Ready to Get Started?</h2>
-        <p class="lead">Join us today and experience hassle-free property management!</p>
-        <a href="{% url 'user_login' %}" class="btn btn-light btn-lg" style="background-color: darkslategrey; color: white;">
-            <i class="bi bi-box-arrow-in-right me-2"></i>Login
-        </a>
-        <a href="{% url 'register' %}" class="btn btn-light btn-lg" style="background-color: darkslategrey; color: white;">
-            <i class="bi bi-person-plus me-2"></i>Sign Up
-        </a>
+        <h2 class="section-title">Latest News & Updates</h2>
+        <p class="text-muted mb-5">Stay informed with the latest trends and updates in property management</p>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="news-card animate-on-scroll">
+                    <div class="news-image">
+                        <img src="{% static 'images/p1.jpg' %}" alt="Property Market Trends">
+                    </div>
+                    <div class="card-body">
+                        <div class="news-date">October 15, 2023</div>
+                        <h5>Property Market Trends in 2023</h5>
+                        <p>Discover the latest trends shaping the property market this year, including rising demand in urban areas and sustainable housing options.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="news-card animate-on-scroll" style="animation-delay: 0.1s;">
+                    <div class="news-image">
+                        <img src="{% static 'images/p2.webp' %}" alt="New Features">
+                    </div>
+                    <div class="card-body">
+                        <div class="news-date">October 10, 2023</div>
+                        <h5>New Features Added to AfriMaster Properties</h5>
+                        <p>We've enhanced our platform with advanced analytics and improved tenant communication tools for better property management.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="news-card animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="news-image">
+                        <img src="{% static 'images/p3.jpeg' %}" alt="Investment Opportunities">
+                    </div>
+                    <div class="card-body">
+                        <div class="news-date">October 5, 2023</div>
+                        <h5>Investment Opportunities in Real Estate</h5>
+                        <p>Explore emerging markets and investment strategies to maximize returns in the current real estate landscape.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Property Management Experience?</h2>
+            <p>Join thousands of satisfied property owners and tenants who have simplified their real estate journey with AfriMaster Properties</p>
+            <a href="{% url 'user_login' %}" class="btn btn-cta">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login to Your Account
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-cta">
+                <i class="bi bi-person-plus me-2"></i>Create New Account
+            </a>
+        </div>
     </div>
 </section>
 
 <script>
-    // FAQ Toggle
-    function toggleFAQ(id, element) {
-        var content = document.getElementById(id);
-        var toggle = element.querySelector('.faq-toggle');
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-            toggle.textContent = '-';
-        } else {
-            content.style.display = 'none';
-            toggle.textContent = '+';
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scroll animation
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animatedElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Stats counter animation
+        const statNumbers = document.querySelectorAll('.stat-number');
+        
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    statNumbers.forEach(stat => {
+                        const target = parseInt(stat.getAttribute('data-count'));
+                        let current = 0;
+                        const increment = target / 50;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                stat.textContent = target;
+                                clearInterval(timer);
+                            } else {
+                                stat.textContent = Math.floor(current);
+                            }
+                        }, 30);
+                    });
+                    
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
         }
-    }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
 </script>
 
 {% endblock %}

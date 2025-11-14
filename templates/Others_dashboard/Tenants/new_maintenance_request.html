@@ -1,0 +1,30 @@
+{% extends 'Others_dashboard/Tenants/tenant_base.html' %}
+
+{% block title %}New Maintenance Request{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3><i class="fa fa-tools text-primary me-2"></i> Submit a Maintenance Request</h3>
+    <div class="card mt-3">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.property.label_tag }}
+                    {{ form.property }}
+                </div>
+                <div class="mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+                <button class="btn btn-accent" type="submit"><i class="fa fa-paper-plane me-1"></i> Submit Request</button>
+                <a href="{% url 'tenant_maintenance' user.id %}" class="btn btn-link">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

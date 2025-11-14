@@ -3,15 +3,65 @@
 {% block title %}Tenant Dashboard | PropApp{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="mt-4">Welcome to Your Tenant Dashboard</h2>
+<div class="main-content ">
+<div class="container  ">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <div>
+            <h2 class="mb-0">Welcome, {{ user.username }}</h2>
+            <small class="text-muted">Tenant dashboard — account overview</small>
+        </div>
+        {% if next_expiry %}
+        <div class="text-end">
+            <div class="small text-muted">Next contract expires in</div>
+            <div class="h4 mb-0">{{ next_expiry.days_left }} days</div>
+            <div class="text-muted">on {{ next_expiry.end_date|date:"F j, Y" }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick actions -->
+    <div class="mb-4 quick-actions d-flex flex-wrap gap-2">
+        <a href="{% url 'tenant_properties' user.id %}" class="btn btn-accent"><i class="fa fa-building me-2"></i>My Properties</a>
+        <a href="{% url 'tenant_contracts' user.id %}" class="btn btn-outline-secondary"><i class="fa fa-file-contract me-2"></i>Contracts</a>
+        <a href="{% url 'make_payment' %}" class="btn btn-outline-success"><i class="fa fa-dollar-sign me-2"></i>Make Payment</a>
+        <a href="{% url 'tenant_profile' user.id %}" class="btn btn-outline-info"><i class="fa fa-user me-2"></i>Profile</a>
+    </div>
+
+    <!-- Top metrics -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <div class="h6 text-muted">Properties</div>
+                <div class="h3">{{ properties|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <div class="h6 text-muted">Active Leases</div>
+                <div class="h3">{{ leases|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <div class="h6 text-muted">Total Paid</div>
+                <div class="h3">${{ total_paid }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center">
+                <div class="h6 text-muted">Pending Requests</div>
+                <div class="h3">{{ maintenance_requests|length }}</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Properties Card -->
-    <div class="card">
-        <div class="card-header">
-            <h5>Properties</h5>
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fa fa-building me-2 text-primary"></i> Properties</h5>
         </div>
         <div class="card-body">
+            <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
@@ -26,45 +76,41 @@
                     <tr>
                         <td>{{ property.name }}</td>
                         <td>{{ property.address }}</td>
-                        <td>${{ property.rent }}</td>
+                        <td>${{ property.price }}</td>
                         <td>{{ property.number_of_units }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
-    <!-- Payment Card -->
-    <div class="card">
+    <!-- Payment Card with chart -->
+    <div class="card mb-3">
         <div class="card-header">
-            <h5>Payment Status</h5>
+            <h5>Recent Payments</h5>
         </div>
         <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Month</th>
-                        <th>Amount Due</th>
-                        <th>Payment Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for payment in payments %}
-                    <tr>
-                        <td>{{ payment.date_paid|date:"F Y" }}</td>
-                        <td>${{ payment.amount }}</td>
-                        <td>
-                            {% if payment.is_paid %}
-                            <span class="badge bg-success">Paid</span>
-                            {% else %}
-                            <span class="badge bg-danger">Not Paid</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-8">
+                    <canvas id="paymentsChart" class="chart-container"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="mb-2">Recent transactions</h6>
+                    <ul class="list-group">
+                        {% for payment in payments|slice:":5" %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div>{{ payment.date_paid|date:"M d, Y" }}</div>
+                                <small class="text-muted">{{ payment.property.name }}</small>
+                            </div>
+                            <div class="fw-bold">${{ payment.amount }}</div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -102,7 +148,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="#" class="btn btn-primary">Submit New Request</a>
+            <a href="{% url 'new_maintenance_request' user.id %}" class="btn btn-primary">Submit New Request</a>
         </div>
     </div>
 
@@ -125,7 +171,74 @@
             {% else %}
             <p>No messages available.</p>
             {% endif %}
+            <a href="{% url 'tenant_messages' user.id %}" class="btn btn-link mt-2">View all messages</a>
+        </div>
+    </div>
+    <!-- Contracts countdown -->
+    <div class="card mb-3">
+        <div class="card-header"><h5>Leases & Expiry</h5></div>
+        <div class="card-body">
+            {% if contract_countdowns %}
+                <div class="row">
+                    {% for c in contract_countdowns|slice:":5" %}
+                    <div class="col-md-4 mb-2">
+                        <div class="card p-2">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{ c.lease.property.name }}</strong>
+                                    <div class="small text-muted">Ends: {{ c.end_date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="text-end">
+                                    {% if c.days_left is not None %}
+                                        <div class="h5">{{ c.days_left }}d</div>
+                                        <div class="small text-muted">left</div>
+                                    {% else %}
+                                        <div class="small text-muted">N/A</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No active leases.</p>
+            {% endif %}
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    // Render payments chart
+    (function(){
+        const labels = {{ payment_labels_json|default:'[]'|safe }};
+        const amounts = {{ payment_amounts_json|default:'[]'|safe }};
+        const ctxEl = document.getElementById('paymentsChart');
+        if (!ctxEl) return;
+        const ctx = ctxEl.getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Payments (USD)',
+                    data: amounts,
+                    borderColor: 'rgba(11,110,253,0.9)',
+                    backgroundColor: 'rgba(11,110,253,0.12)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    })();
+</script>
 {% endblock %}

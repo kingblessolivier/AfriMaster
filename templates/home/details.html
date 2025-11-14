@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-{{ property.name }} - Details
+{{ property.name }} - AfriMaster Properties
 {% endblock %}
 
 {% block content %}
@@ -10,545 +10,880 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <style>
-    /* General Styles */
-    body {
-        background-color: #f8f9fa;
-        font-family: Arial, sans-serif;
+    /* Custom CSS Variables - Consistent with Base Template */
+    :root {
+        --primary-color: #28a745;
+        --secondary-color: #2f4f4f;
+        --accent-color: #20c997;
+        --light-bg: #f8f9fa;
+        --dark-text: #343a40;
+        --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
     }
 
-    .container {
-        max-width: 1200px;
-        margin-top: 20px;
-    }
-
-    /* Hero Section */
-    .hero-section {
-        background-color: #2f4f4f; /* Dark Slate Gray */
+    /* Property Details Page Styles */
+    .property-hero {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
         color: white;
+        padding: 100px 0 60px;
+        margin-top: 80px;
         text-align: center;
-        padding: 30px 20px;
-        margin-top: 20px;
-        border-top: 5px solid #d2691e; /* Chocolate */
-        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
     }
 
-    .hero-section h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
+    .property-hero:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('{% static "images/pattern.png" %}') repeat;
+        opacity: 0.1;
+    }
+
+    .property-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .property-hero h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .property-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
     }
 
     /* Property Details Section */
     .property-details-section {
-        margin-top: 30px;
+        padding: 60px 0;
+        background: var(--light-bg);
     }
 
     .property-card {
-        border: 1px solid #eaeaea;
-        border-radius: 10px;
+        background: white;
+        border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        margin-bottom: 30px;
     }
 
     .property-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
     }
 
-    .property-card img {
-        max-height: 400px;
-        object-fit: cover;
+    .property-image-container {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .property-image-container img {
         width: 100%;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
     }
 
-    .property-card .card-body {
-        padding: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        box-sizing: border-box;
-        margin-left: 30px;
-        background-color: #ffffff;
+    .property-card:hover .property-image-container img {
+        transform: scale(1.03);
     }
 
-    .property-card .details-item {
-        font-size: 1rem;
-        margin-bottom: 5px; /* Reduced Margin */
+    .property-badges {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .property-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .property-status {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .property-content {
+        padding: 30px;
+    }
+
+    .property-header {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .property-title {
+        color: var(--secondary-color);
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 1.8rem;
+    }
+
+    .property-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .property-address {
+        color: #6c757d;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
     }
 
-    .property-card .details-item strong {
-        color: #2f4f4f; /* Dark Slate Gray */
-        margin-right: 5px; /* Reduced Margin */
+    .property-features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
     }
 
-    .property-card .details-item .badge {
-        font-size: 1rem;
-        padding: 3px 8px; /* Reduced Padding */
-        border-radius: 5px;
+    .property-feature {
+        text-align: center;
+        padding: 15px;
+        background: var(--light-bg);
+        border-radius: 10px;
+        transition: var(--transition);
     }
 
-    /* Call-to-Action Buttons */
-    .cta-buttons {
-        margin-top: 15px; /* Added Margin */
+    .property-feature:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow);
     }
 
-    .cta-buttons a.btn, .cta-buttons button.btn {
-        background-color: #2f4f4f; /* Dark Slate Gray */
+    .feature-icon {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .feature-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 5px;
+    }
+
+    .feature-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .property-description {
+        color: #555;
+        line-height: 1.7;
+        margin-bottom: 25px;
+        font-size: 1.05rem;
+    }
+
+    .property-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .btn-action i {
+        margin-right: 8px;
+    }
+
+    .btn-primary-action {
+        background: var(--primary-color);
         color: white;
-        border-radius: 3px;
-        padding: 5px 10px; /* Reduced Padding */
-        margin-right: 10px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.8rem;
     }
 
-    .cta-buttons a.btn:hover, .cta-buttons button.btn:hover {
-        background-color: #32b3b3;
+    .btn-primary-action:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-secondary-action {
+        background: var(--secondary-color);
         color: white;
+    }
+
+    .btn-secondary-action:hover {
+        background: #1e3e3e;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(47, 79, 79, 0.3);
+    }
+
+    .btn-outline-action {
+        background: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+    .btn-outline-action:hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-success-action {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-success-action:hover {
+        background: #218838;
+        transform: translateY(-2px);
+    }
+
+    .btn-disabled {
+        background: #6c757d;
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .btn-disabled:hover {
+        transform: none;
+        box-shadow: none;
     }
 
     /* Inquiry Section */
     .inquiry-section {
-        margin-top: 30px; /* Reduced Margin */
-        background-color: #ffffff;
-        border: 1px solid #eaeaea; /* Light Gray Border */
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 60px 0;
+        background: white;
     }
 
-    .inquiry-section .card-header {
-        background-color: #2f4f4f; /* Dark Slate Gray */
+    .inquiry-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .inquiry-header {
+        background: var(--secondary-color);
         color: white;
-        padding: 10px;
-        border-radius: 10px 10px 0 0; /* Rounded Top Corners */
+        padding: 20px 30px;
     }
 
-    .inquiry-section .card-body {
-        padding: 15px;
+    .inquiry-header h3 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
     }
 
-    .inquiry-section .form-label {
-        font-weight: bold;
-        color: #2f4f4f; /* Dark Slate Gray */
-        margin-bottom: 5px; /* Added Margin */
+    .inquiry-header i {
+        margin-right: 10px;
     }
 
-    .inquiry-section .form-control {
-        border-radius: 5px;
-        padding: 8px 15px; /* Increased Padding */
-        margin-bottom: 15px; /* Increased Margin */
-        border: 1px solid #ced4da;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    .inquiry-body {
+        padding: 30px;
     }
 
-    .inquiry-section .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    .form-group {
+        margin-bottom: 20px;
     }
 
-    .inquiry-section .btn-dark {
-        background-color: #2f4f4f; /* Dark Slate Gray */
-        color: white;
-        border-radius: 5px;
-        padding: 8px 15px; /* Increased Padding */
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.8rem;
+    .form-label {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
     }
 
-    .inquiry-section .btn-dark:hover {
-        background-color: #265959; /* Chocolate */
-        color: white;
+    .form-label i {
+        margin-right: 8px;
+        color: var(--primary-color);
     }
 
-    /* Improved Above Hero Section */
-    .above-hero {
-        background-color: #ffffff;
-        padding: 20px;
-        margin-top: 0;
-        text-align: center;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .above-hero h2 {
-        font-size: 2rem;
-        margin-bottom: 10px;
-        color: #2f4f4f; /* Dark Slate Gray */
-    }
-
-    .above-hero p {
+    .form-control {
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        padding: 12px 15px;
         font-size: 1rem;
-        color: #6c757d; /* Muted text color */
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .btn-submit {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Modal Styles */
-    .modal .modal-header {
-        background-color: #2f4f4f; /* Dark Slate Gray */
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        background: var(--secondary-color);
         color: white;
-        border-radius: 10px 10px 0 0; /* Rounded Top Corners */
+        padding: 20px 25px;
+        border-bottom: none;
     }
 
-    .modal .modal-body {
-        padding: 20px;
-        background-color: #ffffff;
+    .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
     }
 
-    .modal .modal-footer {
-        background-color: #ffffff;
-        border-radius: 0 0 10px 10px; /* Rounded Bottom Corners */
+    .modal-title i {
+        margin-right: 10px;
     }
 
-    .modal .form-control {
-        border-radius: 5px;
-        margin-bottom: 15px; /* Increased Margin */
-        border: 1px solid #ced4da;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    .modal-body {
+        padding: 25px;
     }
 
-    .modal .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    .modal-footer {
+        border-top: 1px solid #eaeaea;
+        padding: 20px 25px;
     }
 
-    .modal .btn-dark {
-        background-color: #2f4f4f; /* Dark Slate Gray */
-        color: white;
-        border-radius: 5px;
-        padding: 8px 15px; /* Increased Padding */
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.8rem;
+    /* Alert Styles */
+    .alert-container {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 400px;
     }
 
-    .modal .btn-dark:hover {
-        background-color: #259a9a; /* Chocolate */
-        color: white;
+    /* Back to Properties */
+    .back-to-properties {
+        display: inline-flex;
+        align-items: center;
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 20px;
+        transition: var(--transition);
     }
 
-    /* Additional Styles for Consistency */
-    .btn-like {
-        background-color: #6c757d; /* Dark Gray */
-        color: white;
-        border-radius: 3px;
-        padding: 5px 10px; /* Reduced Padding */
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.8rem;
+    .back-to-properties:hover {
+        color: var(--primary-color);
+        transform: translateX(-5px);
     }
 
-    .btn-like:hover {
-        background-color: #545b62; /* Darker Gray */
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .property-hero h1 {
+            font-size: 2.3rem;
+        }
+        
+        .property-image-container {
+            height: 350px;
+        }
+        
+        .property-features-grid {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        }
     }
 
-    .btn-like.liked {
-        background-color: #28a745; /* Green */
-        color: white;
-        cursor: not-allowed;
+    @media (max-width: 768px) {
+        .property-hero {
+            padding: 80px 0 40px;
+        }
+        
+        .property-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .property-hero p {
+            font-size: 1.1rem;
+        }
+        
+        .property-image-container {
+            height: 300px;
+        }
+        
+        .property-content {
+            padding: 25px;
+        }
+        
+        .property-title {
+            font-size: 1.6rem;
+        }
+        
+        .property-price {
+            font-size: 1.7rem;
+        }
+        
+        .property-features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .property-actions {
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            width: 100%;
+        }
+        
+        .inquiry-body {
+            padding: 25px;
+        }
+        
+        .alert-container {
+            left: 20px;
+            right: 20px;
+            max-width: none;
+        }
     }
 
-    .btn-like.liked:hover {
-        background-color: #218838; /* Darker Green */
+    @media (max-width: 576px) {
+        .property-hero h1 {
+            font-size: 1.8rem;
+        }
+        
+        .property-image-container {
+            height: 250px;
+        }
+        
+        .property-content {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 1.4rem;
+        }
+        
+        .property-price {
+            font-size: 1.5rem;
+        }
+        
+        .property-features-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .property-feature {
+            padding: 12px;
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+        }
+        
+        .feature-value {
+            font-size: 1.1rem;
+        }
+        
+        .inquiry-body {
+            padding: 20px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
     }
 
-    .btn-schedule {
-        background-color: #28a745; /* Green */
-        color: white;
-        border-radius: 3px;
-        padding: 5px 10px; /* Reduced Padding */
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-size: 0.8rem;
-    }
-
-    .btn-schedule:hover {
-        background-color: #218838; /* Darker Green */
-    }
-
-    .btn-schedule.scheduled {
-        background-color: #dc3545; /* Red */
-        color: white;
-        cursor: not-allowed;
-    }
-
-    .btn-schedule.scheduled:hover {
-        background-color: #c82333; /* Darker Red */
-    }
-
-    .btn-icon {
-        margin-right: 5px;
-        font-size: 0.8rem;
-    }
-
-    /* Form Group Styles */
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-
-    .carousel-item img {
-        max-height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-        width: auto;
-        max-width: 100%;
-    }
-
-    .carousel-caption {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.6); /* Darker Background */
-        padding: 10px;
-        color: white;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        text-align: center; /* Centered Text */
-    }
-
-    .carousel-caption h5 {
-        font-size: 1.5rem;
-        margin-bottom: 5px;
-    }
-
-    .carousel-caption p {
-        font-size: 1rem;
-        margin-bottom: 0;
-    }
-
-    .carousel-control-prev, .carousel-control-next {
-        width: 40px; /* Smaller Width */
-        height: 40px; /* Smaller Height */
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-Transparent Background */
-        border-radius: 50%; /* Circular Shape */
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .carousel-control-prev-icon, .carousel-control-next-icon {
-        width: 20px; /* Smaller Icon Size */
-        height: 20px; /* Smaller Icon Size */
+    @media (max-width: 400px) {
+        .property-features-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .property-badges {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
     }
 </style>
 
-<div class="container py-5">
-    <!-- Improved Above Hero Section -->
-    <div class="above-hero">
-        <h2>Welcome to {{ property.name }}</h2>
-        <p class="text-muted">{{ property.description }}.</p>
-    </div>
-
+<!-- Alert Container for Messages -->
+<div class="alert-container">
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                    <div>{{ message }}</div>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
-    <!-- Property Details Section -->
-    <div class="row property-details-section">
-        <div class="col-12">
-            <div class="card property-card">
-                <div class="row g-0">
-                    <!-- Image Column -->
-                    <div class="col-md-5">
-                        <img src="{{ property.image.url }}" class="img-fluid rounded-start" alt="{{ property.name }}">
+</div>
+
+<!-- Property Hero Section -->
+<section class="property-hero">
+    <div class="container">
+        <div class="property-hero-content">
+            <h1>{{ property.name }}</h1>
+            <p>{{ property.description|truncatewords:20 }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Property Details Section -->
+<section class="property-details-section">
+    <div class="container">
+        <a href="{% url 'property_list' %}" class="back-to-properties">
+            <i class="fas fa-arrow-left me-2"></i> Back to Properties
+        </a>
+        
+        <div class="property-card">
+            <div class="property-image-container">
+                <img src="{{ property.image.url }}" alt="{{ property.name }}">
+                <div class="property-badges">
+                    <div class="property-badge">{{ property.get_types_display }}</div>
+                    <div class="property-status {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ property.status }}
                     </div>
-                    <!-- Details Column -->
-                    <div class="col-md-7">
-                        <div class="card-body">
-                            <h1 class="text-success-emphasis mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-home btn-icon"></i>
-                                {{ property.name }}
-                            </h1>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-location-dot btn-icon"></i>
-                                <strong>Address:</strong> {{ property.address }}
+                </div>
+            </div>
+            
+            <div class="property-content">
+                <div class="property-header">
+                    <h1 class="property-title">{{ property.name }}</h1>
+                    <div class="property-price">{{ property.price }} Frw</div>
+                    <div class="property-address">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        {{ property.address }}
+                    </div>
+                </div>
+                
+                <div class="property-features-grid">
+                    <div class="property-feature">
+                        <i class="fas fa-bed feature-icon"></i>
+                        <div class="feature-value">{{ property.bedrooms }}</div>
+                        <div class="feature-label">Bedrooms</div>
+                    </div>
+                    <div class="property-feature">
+                        <i class="fas fa-bath feature-icon"></i>
+                        <div class="feature-value">{{ property.bathrooms }}</div>
+                        <div class="feature-label">Bathrooms</div>
+                    </div>
+                    <div class="property-feature">
+                        <i class="fas fa-door-open feature-icon"></i>
+                        <div class="feature-value">{{ property.number_of_units }}</div>
+                        <div class="feature-label">Units</div>
+                    </div>
+                    <div class="property-feature">
+                        <i class="fas fa-building feature-icon"></i>
+                        <div class="feature-value">{{ property.get_types_display }}</div>
+                        <div class="feature-label">Property Type</div>
+                    </div>
+                </div>
+                
+                <div class="property-description">
+                    <p>{{ property.description }}</p>
+                </div>
+                
+                <div class="property-details">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item mb-3">
+                                <strong><i class="fas fa-user me-2 text-primary"></i>Owner:</strong> {{ property.owner.name }}
                             </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-building btn-icon"></i>
-                                <strong>Type:</strong> {{ property.get_types_display }}
+                            <div class="detail-item mb-3">
+                                <strong><i class="fas fa-phone me-2 text-primary"></i>Contact:</strong> {{ property.owner.phone|default:"Not provided" }}
                             </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-dollar-sign btn-icon"></i>
-                                <strong>Price:</strong> <b>{{ property.price }} Rwf</b>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item mb-3">
+                                <strong><i class="fas fa-calendar me-2 text-primary"></i>Listed:</strong> {{ property.created_at|date:"M d, Y" }}
                             </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-door-open btn-icon"></i>
-                                <strong>Number of Units:</strong> {{ property.number_of_units }}
-                            </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-bed btn-icon"></i>
-                                <strong>Bedrooms:</strong> {{ property.bedrooms }}
-                            </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-shower btn-icon"></i>
-                                <strong>Bathrooms:</strong> {{ property.bathrooms }}
-                            </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-circle-info btn-icon"></i>
-                                <strong>Status:</strong>
-                                <span class="badge {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
-                                    {{ property.status }}
-                                </span>
-                            </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-user btn-icon"></i>
-                                <strong>Owner:</strong> {{ property.owner.name }}
-                            </div>
-                            <div class="details-item d-flex align-items-center">
-                                <i class="fa-solid fa-file-lines btn-icon"></i>
-                                <strong>Description:</strong> {{ property.description }}
-                            </div>
-                            <!-- Call-to-Action Buttons -->
-                            <div class="cta-buttons d-flex mt-4">
-                                {% if user.is_authenticated %}
-                                    {% if liked_properties %}
-                                        <button id="likeButton" class="btn btn-like liked btn-sm me-3 d-flex align-items-center" disabled>
-                                            <i class="fa-solid fa-thumbs-up btn-icon"></i>
-                                            Liked
-                                        </button>
-                                    {% else %}
-                                        <a href="{% url 'like_property' property.id %}" id="likeButton" class="btn btn-like btn-sm me-3 d-flex align-items-center">
-                                            <i class="fa-solid fa-thumbs-up btn-icon"></i>
-                                            Like Property
-                                        </a>
-                                    {% endif %}
-                                    {% if tenant_visits %}
-                                        <button type="button" class="btn btn-schedule scheduled btn-sm me-3 d-flex align-items-center" disabled>
-                                            <i class="fa-solid fa-calendar-check btn-icon"></i>
-                                            Scheduled
-                                        </button>
-                                    {% else %}
-                                        <button type="button" class="btn btn-schedule btn-sm me-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal">
-                                            <i class="fa-solid fa-calendar-plus btn-icon"></i>
-                                            Schedule Visit
-                                        </button>
-                                    {% endif %}
-                                {% endif %}
-                                <a href="#" class="btn btn-dark btn-sm me-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-envelope btn-icon"></i>
-                                    Contact Owner
-                                </a>
-                                <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn btn-outline-success btn-sm me-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-map btn-icon"></i>
-                                    View on Map
-                                </a>
-                                <!-- Back to List Button -->
-                                <a href="{% url 'property_list' %}" class="btn btn-outline-dark btn-sm ms-3 d-flex align-items-center">
-                                    <i class="fa-solid fa-arrow-left btn-icon"></i>
-                                    Back to Properties
-                                </a>
+                            <div class="detail-item mb-3">
+                                <strong><i class="fas fa-sync me-2 text-primary"></i>Updated:</strong> {{ property.updated_at|date:"M d, Y" }}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Featured Properties Carousel -->
-
-
-    <!-- Inquiry Section -->
-    <div class="row inquiry-section mt-5">
-        <div class="col-12">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-dark text-white d-flex align-items-center">
-                    <i class="fa-solid fa-paper-plane btn-icon"></i>
-                    <h3 class="mb-0">Send an Inquiry</h3>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="/customer_enquiry/{{ property.id }}" class="form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="name" class="form-label">
-                                <i class="fa-solid fa-user btn-icon"></i>
-                                Your Name
-                            </label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="form-label">
-                                <i class="fa-solid fa-envelope btn-icon"></i>
-                                Email Address
-                            </label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message" class="form-label">
-                                <i class="fa-solid fa-file-lines btn-icon"></i>
-                                Message
-                            </label>
-                            <textarea class="form-control" id="message" name="enquiry" rows="4" placeholder="Write your message here" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-dark d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-paper-plane btn-icon"></i>
-                            Send Inquiry
-                        </button>
-                    </form>
+                
+                <div class="property-actions">
+                    {% if user.is_authenticated %}
+                        {% if liked_properties %}
+                            <button class="btn-action btn-disabled">
+                                <i class="fas fa-thumbs-up"></i> Liked
+                            </button>
+                        {% else %}
+                            <a href="{% url 'like_property' property.id %}" class="btn-action btn-primary-action">
+                                <i class="fas fa-thumbs-up"></i> Like Property
+                            </a>
+                        {% endif %}
+                        
+                        {% if tenant_visits %}
+                            <button class="btn-action btn-disabled">
+                                <i class="fas fa-calendar-check"></i> Visit Scheduled
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn-action btn-success-action" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal">
+                                <i class="fas fa-calendar-plus"></i> Schedule Visit
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn-action btn-outline-action">
+                        <i class="fas fa-map"></i> View on Map
+                    </a>
+                    
+                    <button type="button" class="btn-action btn-secondary-action" data-bs-toggle="modal" data-bs-target="#contactOwnerModal">
+                        <i class="fas fa-envelope"></i> Contact Owner
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Schedule Visit Modal -->
-    <div class="modal fade" id="scheduleVisitModal" tabindex="-1" aria-labelledby="scheduleVisitModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="scheduleVisitModalLabel">
-                        <i class="fa-solid fa-calendar-plus btn-icon"></i>
-                        Schedule a Visit
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="POST" action="{% url 'schedule_visit' property.id %}" class="form">
+<!-- Inquiry Section -->
+<section class="inquiry-section">
+    <div class="container">
+        <div class="inquiry-card">
+            <div class="inquiry-header">
+                <h3><i class="fas fa-paper-plane"></i> Send an Inquiry</h3>
+            </div>
+            <div class="inquiry-body">
+                <form method="POST" action="/customer_enquiry/{{ property.id }}" class="form">
                     {% csrf_token %}
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="visit_date" class="form-label">
-                                <i class="fa-solid fa-calendar btn-icon"></i>
-                                Visit Date
-                            </label>
-                            <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i> Your Name
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="description" class="form-label">
-                                <i class="fa-solid fa-file-lines btn-icon"></i>
-                                Description
-                            </label>
-                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Add any notes here" required></textarea>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-dark d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-calendar-check btn-icon"></i>
-                            Schedule Visit
-                        </button>
+                    <div class="form-group">
+                        <label for="message" class="form-label">
+                            <i class="fas fa-file-lines"></i> Message
+                        </label>
+                        <textarea class="form-control" id="message" name="enquiry" rows="5" placeholder="Write your message here. Be sure to mention any specific questions about {{ property.name }}." required></textarea>
                     </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane me-2"></i> Send Inquiry
+                    </button>
                 </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Schedule Visit Modal -->
+<div class="modal fade" id="scheduleVisitModal" tabindex="-1" aria-labelledby="scheduleVisitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleVisitModalLabel">
+                    <i class="fas fa-calendar-plus"></i> Schedule a Visit
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'schedule_visit' property.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="visit_date" class="form-label">
+                            <i class="fas fa-calendar"></i> Visit Date & Time
+                        </label>
+                        <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-file-lines"></i> Additional Notes
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Add any specific requirements or questions for the property owner..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calendar-check me-2"></i> Schedule Visit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Owner Modal -->
+<div class="modal fade" id="contactOwnerModal" tabindex="-1" aria-labelledby="contactOwnerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactOwnerModalLabel">
+                    <i class="fas fa-user"></i> Contact Property Owner
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="owner-info mb-4">
+                    <h6 class="mb-3">Owner Details</h6>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="owner-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <strong>{{ property.owner.name }}</strong>
+                            <div class="text-muted small">Property Owner</div>
+                        </div>
+                    </div>
+                    {% if property.owner.phone %}
+                    <div class="mb-2">
+                        <i class="fas fa-phone text-primary me-2"></i>
+                        <a href="tel:{{ property.owner.phone }}" class="text-decoration-none">{{ property.owner.phone }}</a>
+                    </div>
+                    {% endif %}
+                    {% if property.owner.email %}
+                    <div class="mb-2">
+                        <i class="fas fa-envelope text-primary me-2"></i>
+                        <a href="mailto:{{ property.owner.email }}" class="text-decoration-none">{{ property.owner.email }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    For detailed inquiries, please use the inquiry form above to ensure all necessary details are captured.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                {% if property.owner.phone %}
+                <a href="tel:{{ property.owner.phone }}" class="btn btn-primary">
+                    <i class="fas fa-phone me-2"></i> Call Owner
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<!-- JavaScript -->
 <script>
-    // Optional JavaScript for handling like button state
-    document.getElementById('likeButton').addEventListener('click', function() {
-        if (!this.classList.contains('liked')) {
-            this.classList.add('liked');
-            this.querySelector('.fa-thumbs-up').classList.remove('fa-thumbs-up');
-            this.querySelector('.fa-thumbs-up').classList.add('fa-thumbs-up');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set minimum date for visit scheduling to today
+        const visitDateInput = document.getElementById('visit_date');
+        if (visitDateInput) {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Format to YYYY-MM-DDTHH:MM
+            const year = tomorrow.getFullYear();
+            const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const day = String(tomorrow.getDate()).padStart(2, '0');
+            const hours = String(tomorrow.getHours()).padStart(2, '0');
+            const minutes = String(tomorrow.getMinutes()).padStart(2, '0');
+            
+            const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            visitDateInput.min = minDateTime;
+            
+            // Set default value to tomorrow at 10:00 AM
+            const defaultDateTime = `${year}-${month}-${day}T10:00`;
+            visitDateInput.value = defaultDateTime;
+        }
+        
+        // Auto-dismiss alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        });
+        
+        // Handle like button state
+        const likeButton = document.querySelector('a[href*="like_property"]');
+        if (likeButton) {
+            likeButton.addEventListener('click', function(e) {
+                // In a real application, this would be handled by the server
+                // For demo purposes, we'll show a success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <div>Property added to your favorites!</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.alert-container').appendChild(alertDiv);
+                
+                // Auto-dismiss the new alert
+                setTimeout(() => {
+                    if (alertDiv) {
+                        const bsAlert = new bootstrap.Alert(alertDiv);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            });
         }
     });
 </script>
+
 {% endblock %}

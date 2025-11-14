@@ -8,53 +8,130 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
-        margin-bottom: 10px; /* Reduced margin */
+        margin-bottom: 20px;
+        gap: 15px;
     }
 
     .stat-card {
         flex: 1;
-        margin: 0 5px; /* Small margin for spacing */
-        height: 60px; /* Reduced height for compactness */
+        margin: 0;
+        height: 80px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
 
     .section-header {
         border-bottom: 2px solid #e9ecef;
-        padding-bottom: 10px;
-        margin-bottom: 10px; /* Reduced margin */
+        padding-bottom: 15px;
+        margin-bottom: 20px;
     }
 
     .card-title {
-        font-size: 1.2em; /* Adjust font size for better visibility */
+        font-size: 1.4em;
+        font-weight: 700;
     }
 
     .search-container {
-        margin-bottom: 10px; /* Reduced margin */
+        margin-bottom: 20px;
     }
 
     .card-body {
-        padding: 0; /* Reduced padding */
+        padding: 20px;
     }
 
     /* Button transitions */
     .btn {
-        transition: background-color 0.3s ease, transform 0.2s ease;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        font-weight: 500;
     }
 
     .btn:hover {
-        transform: scale(1.05); /* Slightly enlarge button */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     /* Tab transitions */
     .nav-link {
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease;
+        border-radius: 8px 8px 0 0;
+        font-weight: 500;
     }
 
     .nav-link.active {
-        background-color: #f8f9fa; /* Light background for active tab */
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        border-color: var(--primary) var(--accent) #fff;
     }
 
     .nav-link:hover {
-        background-color: #e9ecef; /* Change background on hover */
+        background-color: rgba(11,110,253,0.1);
+        color: var(--primary);
+    }
+
+    /* Enhanced table styles */
+    .table-hover tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(11,110,253,0.05);
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Status badges */
+    .status-text {
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.85em;
+    }
+
+    .text-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .text-success {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+
+    .text-secondary {
+        background-color: rgba(108, 117, 125, 0.1);
+    }
+
+    /* Gradient text for header */
+    .gradient-text {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Animation classes */
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 <div class="main-content flex-grow-1 p-4">
@@ -87,7 +164,7 @@
     {% endif %}
 
         <div class="col-md-12">
-            <h4 class="text-primary">PropApp Customer Messages</h4>
+            <h4 class="gradient-text">PropApp Customer Messages</h4>
         </div>
     </div>
 
@@ -170,12 +247,12 @@
                                 <td>{{ message.email }}</td>
                                 <td>{{ message.message|truncatechars:20 }}</td>
                                 <td><span class="status-text text-danger">Unread</span></td>
-                                <td>
-                                      <a href="/read-message/{{ message.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                    <a href="/mail/{{ message.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
-                                    <a href="/mark-as-read/{{ message.id }}" class="btn btn-success btn-sm" title="Mark as Read"><i class="bi bi-check"></i> Mark as Read</a>
-                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
-                                </td>
+                                                                <td>
+                                                                        <a href="{% url 'read_message' message.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
+                                                                        <a href="{% url 'mail' message.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
+                                                                        <a href="{% url 'mark_as_read' message.id %}" class="btn btn-success btn-sm" title="Mark as Read"><i class="bi bi-check"></i> Mark as Read</a>
+                                                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
+                                                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -204,9 +281,9 @@
                                 <td>{{ message.message|truncatechars:20 }}</td>
                                 <td><span class="status-text text-success">Read</span></td>
                                 <td>
-                                      <a href="/read-message/{{ message.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                    <a href="/mail/{{ message.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
-                                    <a href="/archive-message/{{ message.id }}" class="btn btn-secondary btn-sm" title="Archive"><i class="bi bi-archive"></i> Archive</a>
+                                    <a href="{% url 'read_message' message.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
+                                    <a href="{% url 'mail' message.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
+                                    <a href="{% url 'archive_message' message.id %}" class="btn btn-secondary btn-sm" title="Archive"><i class="bi bi-archive"></i> Archive</a>
                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
                                 </td>
                             </tr>
@@ -237,8 +314,8 @@
                                 <td>{{ message.message|truncatechars:20 }}</td>
                                 <td><span class="status-text text-secondary">Archived</span></td>
                                 <td>
-                                      <a href="/read-message/{{ message.id }}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
-                                    <a href="/mail/{{ message.id }}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
+                                    <a href="{% url 'read_message' message.id %}" class="btn btn-info btn-sm" title="View"><i class="bi bi-eye"></i> View</a>
+                                    <a href="{% url 'mail' message.id %}" class="btn btn-primary btn-sm" title="Reply"><i class="bi bi-reply"></i> Reply</a>
                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><i class="bi bi-trash"></i> Delete</button>
                                 </td>
                             </tr>
@@ -264,7 +341,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <a href="/delete-message/{{ message.id }}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'delete_message' message.id %}" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
             </div>

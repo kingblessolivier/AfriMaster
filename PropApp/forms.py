@@ -82,6 +82,28 @@ class ContactForm(forms.Form):
     message = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
 
 
+# Forms for tenant messaging and maintenance requests
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['recipient', 'content']
+        widgets = {
+            'recipient': forms.Select(attrs={'class': 'form-select'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Write your message...'}),
+        }
+
+
+class MaintenanceRequestForm(forms.ModelForm):
+    class Meta:
+        model = MaintenanceRequest
+        fields = ['property', 'title', 'description']
+        widgets = {
+            'property': forms.Select(attrs={'class': 'form-select'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Brief title of the issue'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe the problem in detail'}),
+        }
+
+
 
 
 

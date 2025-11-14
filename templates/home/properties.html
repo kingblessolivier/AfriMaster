@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Properties
+Properties - AfriMaster Properties
 {% endblock %}
 
 {% block content %}
@@ -10,240 +10,966 @@ Properties
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <style>
+    /* Custom CSS Variables - Consistent with Base Template */
+    :root {
+        --primary-color: #28a745;
+        --secondary-color: #2f4f4f;
+        --accent-color: #20c997;
+        --light-bg: #f8f9fa;
+        --dark-text: #343a40;
+        --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     /* Hero Search Section */
     .search-section {
-        padding: 60px 20px;
+        padding: 100px 20px 80px;
         margin-top: 80px;
-        background-color: #2f4f4f; /* Dark Slate Gray */
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
         color: white;
         text-align: center;
-        border-top: 5px solid #d2691e; /* Chocolate */
-        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
     }
 
-    .search-section form {
-        max-width: 500px;
+    .search-section:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('{% static "images/property-bg.jpg" %}') center/cover no-repeat;
+        opacity: 0.2;
+        z-index: 0;
+    }
+
+    .search-section .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .search-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-section p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+
+    .search-form {
+        max-width: 600px;
         margin: 0 auto;
         display: flex;
-        align-items: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 50px;
+        overflow: hidden;
     }
 
-    .search-section input {
-        border-radius: 30px 0 0 30px;
-        padding: 10px 20px;
-        font-size: 1rem;
+    .search-form input {
+        flex: 1;
         border: none;
-        background-color: rgba(255, 255, 255, 0.15);
+        padding: 15px 25px;
+        font-size: 1rem;
+        background: white;
     }
 
-    .search-section button {
-        border-radius: 0 30px 30px 0;
-        background-color: forestgreen;
+    .search-form button {
+        background: var(--accent-color);
         color: white;
-        padding: 10px 20px;
         border: none;
+        padding: 15px 30px;
         font-size: 1rem;
-        transition: background-color 0.3s ease;
+        font-weight: 600;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .search-section button:hover {
-        background-color: #d2691e; /* Chocolate */
+    .search-form button:hover {
+        background: #1ba87e;
+    }
+
+    /* Mobile Search Toggle */
+    .mobile-search-toggle {
+        display: none;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 25px;
+        font-weight: 600;
+        margin: 15px auto;
+        transition: var(--transition);
+    }
+
+    /* Filters Section */
+    .filters-section {
+        background: white;
+        padding: 20px 0;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 80px;
+        z-index: 100;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        margin-right: 10px;
+        color: var(--secondary-color);
+        min-width: 80px;
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background: var(--light-bg);
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .sort-options {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .sort-select {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 8px 15px;
+        background: white;
+        min-width: 180px;
+    }
+
+    /* Mobile Filters */
+    .mobile-filters {
+        display: none;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+    }
+
+    .mobile-filter-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .mobile-filter-title {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin: 0;
+    }
+
+    .close-filters {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #6c757d;
     }
 
     /* Search Results Count */
     .search-results-count {
-        background-color: #f1f3f5; /* Light Gray Background */
-        border: 1px solid #eaeaea; /* Light Gray Border */
+        background-color: white;
         border-radius: 10px;
-        margin-top: 20px;
-        padding: 10px 20px;
-        text-align: center;
+        margin: 20px 0;
+        padding: 15px 20px;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    /* Properties Section */
+    .results-text {
+        font-weight: 600;
+        color: var(--secondary-color);
+    }
+
+    .view-options {
+        display: flex;
+        gap: 10px;
+    }
+
+    .view-option {
+        background: var(--light-bg);
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .view-option.active, .view-option:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    /* Properties Grid */
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin: 20px 0;
+    }
+
     .property-card {
-        border: 1px solid #eaeaea;
-        border-radius: 10px;
+        border: none;
+        border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
         background-color: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .property-card:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .property-image {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
     }
 
     .property-card img {
-        max-height: 200px;
-        object-fit: cover;
         width: 100%;
-        border-radius: 10px 10px 0 0; /* Rounded Top Corners */
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .property-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .property-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--primary-color);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    .property-status {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    .property-card .card-body {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .property-card h5 {
-        color: #2f4f4f; /* Dark Slate Gray */
+        color: var(--secondary-color);
         font-size: 1.2rem;
         margin-bottom: 10px;
-        padding: 10px;
-        background-color: #e9ecef; /* Light Gray Background */
-        border-bottom: 1px solid #dee2e6; /* Light Gray Border */
+        font-weight: 600;
+        line-height: 1.3;
     }
 
-    .property-card .details-item {
-        font-size: 0.9rem;
-        color: #6c757d; /* Muted text color */
+    .property-card .property-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .property-card .property-address {
+        color: #6c757d;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .property-card .property-features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .property-feature {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .feature-icon {
+        color: var(--primary-color);
+        font-size: 1.2rem;
         margin-bottom: 5px;
-        padding: 10px;
-        background-color: #ffffff;
-        border-bottom: 1px solid #dee2e6; /* Light Gray Border */
     }
 
-    .property-card .details-item:last-child {
-        border-bottom: none;
+    .feature-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+        line-height: 1.2;
     }
 
-    .property-card .details-item strong {
-        margin-right: 5px;
+    .property-card .property-description {
+        color: #555;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    .property-card .details-item .badge {
-        font-size: 1rem;
-        padding: 5px 10px;
+    .property-card .card-footer {
+        background: white;
+        border-top: 1px solid #eaeaea;
+        padding: 15px 20px;
     }
 
-    /* Call-to-Action Buttons */
-    .cta-buttons a.btn {
-        border-radius: 30px;
-        padding: 5px 10px;
-        margin-bottom: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        margin-right: 5px;
-        font-size: 0.9rem;
-    }
-
-    .cta-buttons a.btn:hover {
-        background-color: #d2691e; /* Chocolate */
-        color: white;
-    }
-
-    /* Enquiry Button */
-    .enquiry-button {
-        background-color: #d2691e; /* Chocolate */
+    .btn-view-details {
+        background: var(--secondary-color);
         color: white;
         border: none;
-        border-radius: 30px;
-        padding: 5px 10px;
-        font-size: 0.9rem;
-        margin: 10px auto;
-        display: block;
-        transition: background-color 0.3s ease;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: var(--transition);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .enquiry-button:hover {
-        background-color: forestgreen; /* Chocolate */
+    .btn-view-details:hover {
+        background: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    /* View More Button */
-    .view-more-button {
-        background-color: #2f4f4f; /* Dark Slate Gray */
+    /* Properties List View */
+    .properties-list .property-card {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+    }
+
+    .properties-list .property-image {
+        width: 300px;
+        height: 200px;
+        flex-shrink: 0;
+    }
+
+    .properties-list .card-body {
+        flex-grow: 1;
+    }
+
+    /* Pagination */
+    .pagination-section {
+        margin: 40px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination .page-link {
+        color: var(--secondary-color);
+        border: 1px solid #dee2e6;
+        padding: 10px 15px;
+        margin: 0 3px;
+        border-radius: 5px;
+        transition: var(--transition);
+    }
+
+    .pagination .page-link:hover {
+        background: var(--primary-color);
         color: white;
-        border: none;
-        border-radius: 30px;
-        padding: 15px 30px;
-        font-size: 1rem;
-        margin: 20px auto;
-        display: block;
-        transition: background-color 0.3s ease;
+        border-color: var(--primary-color);
     }
 
-    .view-more-button:hover {
-        background-color: forestgreen; /* Chocolate */
+    .pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    /* No Results */
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        grid-column: 1 / -1;
+    }
+
+    .no-results i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+
+    .no-results h3 {
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+    }
+
+    /* Quick Action Buttons */
+    .quick-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+        background: var(--light-bg);
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .quick-action-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+        .properties-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+    }
+
+    @media (max-width: 992px) {
+        .filters-section {
+            display: none;
+        }
+        
+        .mobile-search-toggle {
+            display: block;
+        }
+        
+        .properties-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        
+        .properties-list .property-card {
+            flex-direction: column;
+        }
+        
+        .properties-list .property-image {
+            width: 100%;
+            height: 220px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .search-section {
+            padding: 80px 15px 60px;
+        }
+        
+        .search-section h1 {
+            font-size: 2rem;
+        }
+        
+        .search-form {
+            flex-direction: column;
+            border-radius: 10px;
+        }
+        
+        .search-form input {
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .search-form button {
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .search-results-count {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .properties-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .property-features {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .sort-options {
+            justify-content: flex-start;
+        }
+        
+        .sort-select {
+            min-width: 150px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .search-section h1 {
+            font-size: 1.8rem;
+        }
+        
+        .search-section p {
+            font-size: 1rem;
+        }
+        
+        .property-card .property-features {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .filter-options {
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .quick-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .quick-action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            padding: 8px 12px;
+            margin: 0 2px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .property-card .property-features {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .filter-options {
+            justify-content: center;
+        }
     }
 </style>
 
 <!-- Hero Search Section -->
 <div class="search-section">
-    <h1 class="mb-4">Find Your Perfect Property</h1>
-    <form>
-        <input class="form-control" type="search" placeholder="Search for properties" aria-label="Search" name="search">
-        <button class="btn btn-success" type="submit" aria-label="Search properties">Search</button>
-    </form>
+    <div class="container">
+        <h1>Find Your Perfect Property</h1>
+        <p>Browse through our extensive collection of properties to find your dream home or investment opportunity</p>
+        <form class="search-form">
+            <input class="form-control" type="search" placeholder="Search by location, property type, or features..." aria-label="Search" name="search">
+            <button class="btn" type="submit" aria-label="Search properties">
+                <i class="fas fa-search me-2"></i> Search
+            </button>
+        </form>
+        
+        <!-- Mobile Search Toggle -->
+        <button class="mobile-search-toggle" id="mobileFiltersToggle">
+            <i class="fas fa-filter me-2"></i> Filter Properties
+        </button>
+    </div>
+</div>
+
+<!-- Mobile Filters (Hidden by default) -->
+<div class="mobile-filters" id="mobileFilters">
+    <div class="mobile-filter-header">
+        <h4 class="mobile-filter-title">Filter Properties</h4>
+        <button class="close-filters" id="closeFilters">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="filter-group">
+        <span class="filter-label">Property Type:</span>
+        <div class="filter-options">
+            <div class="filter-btn active">All</div>
+            <div class="filter-btn">House</div>
+            <div class="filter-btn">Apartment</div>
+            <div class="filter-btn">Villa</div>
+            <div class="filter-btn">Commercial</div>
+        </div>
+    </div>
+    
+    <div class="filter-group">
+        <span class="filter-label">Price Range:</span>
+        <div class="filter-options">
+            <div class="filter-btn">Any</div>
+            <div class="filter-btn">Under 100K</div>
+            <div class="filter-btn">100K-500K</div>
+            <div class="filter-btn">500K+</div>
+        </div>
+    </div>
+    
+    <div class="filter-group">
+        <span class="filter-label">Bedrooms:</span>
+        <div class="filter-options">
+            <div class="filter-btn">Any</div>
+            <div class="filter-btn">1</div>
+            <div class="filter-btn">2</div>
+            <div class="filter-btn">3</div>
+            <div class="filter-btn">4+</div>
+        </div>
+    </div>
+    
+    <div class="filter-group">
+        <span class="filter-label">Sort by:</span>
+        <select class="sort-select w-100">
+            <option>Newest First</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Most Popular</option>
+        </select>
+    </div>
+    
+    <button class="btn btn-primary w-100 mt-3" id="applyFilters">
+        <i class="fas fa-check me-2"></i> Apply Filters
+    </button>
+</div>
+
+<!-- Desktop Filters Section -->
+<div class="filters-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="filter-group">
+                    <span class="filter-label">Property Type:</span>
+                    <div class="filter-options">
+                        <div class="filter-btn active">All</div>
+                        <div class="filter-btn">House</div>
+                        <div class="filter-btn">Apartment</div>
+                        <div class="filter-btn">Villa</div>
+                        <div class="filter-btn">Commercial</div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Price Range:</span>
+                    <div class="filter-options">
+                        <div class="filter-btn">Any</div>
+                        <div class="filter-btn">Under 100,000 Frw</div>
+                        <div class="filter-btn">100,000 - 500,000 Frw</div>
+                        <div class="filter-btn">500,000+ Frw</div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Bedrooms:</span>
+                    <div class="filter-options">
+                        <div class="filter-btn">Any</div>
+                        <div class="filter-btn">1</div>
+                        <div class="filter-btn">2</div>
+                        <div class="filter-btn">3</div>
+                        <div class="filter-btn">4+</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="sort-options">
+                    <span class="filter-label me-3">Sort by:</span>
+                    <select class="sort-select">
+                        <option>Newest First</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Most Popular</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Search Results Count -->
-<div class="container search-results-count">
-    <p class="text-muted">Showing {{ property_list|length }} of {{ num_results }} total properties</p>
+<div class="container">
+    <div class="search-results-count">
+        <div class="results-text">Showing {{ property_list|length }} of {{ num_results }} properties</div>
+        <div class="view-options">
+            <div class="view-option active" data-view="grid">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <div class="view-option" data-view="list">
+                <i class="fas fa-list"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Properties Grid -->
 <div class="container">
-    <div class="row row-cols-1 row-cols-md-3 g-4 mt-4">
-        {% for property in property_list %}
-        <div class="col">
-            <div class="card property-card h-100">
-                <img src="{{ property.image.url }}" class="card-img-top" alt="{{ property.name }}">
+    <div class="properties-grid" id="propertiesContainer">
+        {% if property_list %}
+            {% for property in property_list %}
+            <div class="property-card">
+                <div class="property-image">
+                    <img src="{{ property.image.url }}" class="card-img-top" alt="{{ property.name }}">
+                    <div class="property-badge">{{ property.get_types_display }}</div>
+                    <div class="property-status {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ property.status }}
+                    </div>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title d-flex align-items-center">
-                        <i class="fa-solid fa-home me-2"></i>
-                        {{ property.name }}
-                    </h5>
-                    <p class="card-text text-truncate" title="{{ property.description }}">
-                        {{ property.description }}
-                    </p>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-location-dot me-2"></i>
+                    <h5 class="card-title">{{ property.name }}</h5>
+                    <div class="property-price">{{ property.price }} Frw</div>
+                    <div class="property-address">
+                        <i class="fas fa-map-marker-alt me-2 mt-1"></i>
                         <span>{{ property.address }}</span>
                     </div>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-dollar-sign me-2"></i>
-                        <span>{{ property.price }} Frw</span>
+                    <div class="property-features">
+                        <div class="property-feature">
+                            <i class="fas fa-bed feature-icon"></i>
+                            <span class="feature-text">{{ property.bedrooms }} Bed</span>
+                        </div>
+                        <div class="property-feature">
+                            <i class="fas fa-bath feature-icon"></i>
+                            <span class="feature-text">{{ property.bathrooms }} Bath</span>
+                        </div>
+                        <div class="property-feature">
+                            <i class="fas fa-layer-group feature-icon"></i>
+                            <span class="feature-text">{{ property.number_of_units }} Units</span>
+                        </div>
                     </div>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-circle-info me-2"></i>
-                        <span class="badge {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
-                            {{ property.status }}
-                        </span>
-                    </div>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-bed me-2"></i>
-                        <span>{{ property.bedrooms }} Bedrooms</span>
-                    </div>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-shower me-2"></i>
-                        <span>{{ property.bathrooms }} Bathrooms</span>
-                    </div>
-                    <div class="details-item d-flex align-items-center">
-                        <i class="fa-solid fa-door-open me-2"></i>
-                        <span>{{ property.number_of_units }} unit(s)</span>
-                    </div>
-
-
-
+                    <p class="property-description">{{ property.description }}</p>
                 </div>
-                <div class="card-footer border-0 text-center" style="background-color: #2f4f4f;">
-                    <button class="btn text-white w-100" onclick="window.location.href='{% url 'property_view' property.id %}'">
-                        <i class="fa-solid fa-eye me-2"></i>
+                <div class="card-footer">
+                    <button class="btn btn-view-details" onclick="window.location.href='{% url 'property_view' property.id %}'">
+                        <i class="fas fa-eye me-2"></i>
                         View Details
                     </button>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <i class="fas fa-home"></i>
+                <h3>No Properties Found</h3>
+                <p>Try adjusting your search filters or browse all properties</p>
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="resetFilters()">
+                        <i class="fas fa-redo me-2"></i>Reset Filters
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="window.location.href='{% url 'contact' %}'">
+                        <i class="fas fa-headset me-2"></i>Contact Support
+                    </button>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 
-<!-- View More Button -->
-<div class="container text-center">
-    <button class="view-more-button" onclick="window.location.href='{% url 'property_list' %}'">
-        <i class="fa-solid fa-angle-right me-2"></i>
-        View More
-    </button>
+<!-- Pagination -->
+<div class="container">
+    <div class="pagination-section">
+        <nav aria-label="Property pagination">
+            <ul class="pagination">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- JavaScript for Interactive Features -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile filters toggle
+        const mobileFiltersToggle = document.getElementById('mobileFiltersToggle');
+        const mobileFilters = document.getElementById('mobileFilters');
+        const closeFilters = document.getElementById('closeFilters');
+        const applyFilters = document.getElementById('applyFilters');
+        
+        if (mobileFiltersToggle && mobileFilters) {
+            mobileFiltersToggle.addEventListener('click', function() {
+                mobileFilters.style.display = mobileFilters.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            closeFilters.addEventListener('click', function() {
+                mobileFilters.style.display = 'none';
+            });
+            
+            applyFilters.addEventListener('click', function() {
+                mobileFilters.style.display = 'none';
+                // In a real app, you would apply the filters here
+                alert('Filters applied!');
+            });
+        }
+        
+        // View options functionality
+        const viewOptions = document.querySelectorAll('.view-option');
+        const propertiesContainer = document.getElementById('propertiesContainer');
+        
+        viewOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                this.classList.add('active');
+                
+                const viewType = this.getAttribute('data-view');
+                
+                // Toggle between grid and list view
+                if (viewType === 'list') {
+                    propertiesContainer.classList.add('properties-list');
+                } else {
+                    propertiesContainer.classList.remove('properties-list');
+                }
+            });
+        });
+        
+        // Filter buttons functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons in the same group
+                const parentGroup = this.closest('.filter-options');
+                if (parentGroup) {
+                    parentGroup.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                }
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // In a real application, you would filter the properties here
+                console.log('Filter applied:', this.textContent);
+            });
+        });
+        
+        // Sort functionality
+        const sortSelects = document.querySelectorAll('.sort-select');
+        
+        sortSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Sort by:', this.value);
+                // In a real application, you would sort the properties here
+            });
+        });
+        
+        // Property card hover effect
+        const propertyCards = document.querySelectorAll('.property-card');
+        
+        propertyCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                if (window.innerWidth > 768) { // Only on desktop
+                    this.style.transform = 'translateY(-10px)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                if (window.innerWidth > 768) { // Only on desktop
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Hide mobile filters on larger screens
+            if (window.innerWidth > 992 && mobileFilters) {
+                mobileFilters.style.display = 'none';
+            }
+        });
+    });
+    
+    // Reset filters function
+    function resetFilters() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            if (btn.textContent === 'All') {
+                btn.click();
+            }
+        });
+        
+        const sortSelects = document.querySelectorAll('.sort-select');
+        sortSelects.forEach(select => {
+            select.value = 'Newest First';
+        });
+        
+        // In a real app, you would reload the page or reset the filters via AJAX
+        window.location.reload();
+    }
+</script>
+
 {% endblock %}

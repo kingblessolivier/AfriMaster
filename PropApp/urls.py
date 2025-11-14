@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/leases/<pk>', views.lease_details, name='lease_details'),
     path("", views.index, name='index'),
     path("properties", views.property_list, name='property_list'),
-    path("login", views.user_login, name='user_login'),
+    path("logins", views.user_login, name='user_login'),
     path("logout", views.user_logout, name='user_logout'),
     path("register", views.register, name='register'),
     path("about",views.about,name='about'),
@@ -107,8 +107,11 @@ urlpatterns = [
     path('tenant_accepet_contract/<int:lease_id>/', views.tenant_accept_contract, name='tenant_accept_contract'),
     path('tenant_download_contract/<int:lease_id>/',views.tenant_download_contract,name='tenant_download_contract'),
     path('tenant_view_property/<int:property_id>', views.tenant_view_property, name='tenant_view_property'),
+    path('tenant/messages/<int:user_id>/', views.tenant_messages, name='tenant_messages'),
    path('tenant/make_payment/', views.process_payment, name='make_payment'),
     path('payment/execute/', views.execute_payment, name='execute_payment'),
+    path('tenant/maintenance/<int:user_id>/', views.tenant_maintenance, name='tenant_maintenance'),
+    path('tenant/maintenance/new/<int:user_id>/', views.new_maintenance_request, name='new_maintenance_request'),
 
 ]
 

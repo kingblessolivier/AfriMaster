@@ -60,25 +60,25 @@
             <!-- Button Group -->
             <div class="btn-group d-flex justify-content-between" role="group" aria-label="Enquiry Actions">
                 {% if not enquiry.is_read %}
-                    <a href="/admin_enquiries/mark-as-read/{{ enquiry.id }}" class="btn btn-success" title="Mark as Read">
+                    <a href="{% url 'mark_as_read_enquiry' enquiry.id %}" class="btn btn-success" title="Mark as Read">
                         <i class="bi bi-check"></i> Mark as Read
                     </a>
                 {% elif enquiry.is_read and not enquiry.is_archived %}
-                    <a href="/admin_enquiries/archive-message/{{ enquiry.id }}" class="btn btn-secondary" title="Archive">
+                    <a href="{% url 'archive_enquiry' enquiry.id %}" class="btn btn-secondary" title="Archive">
                         <i class="bi bi-archive"></i> Archive
                     </a>
                 {% endif %}
             {% if enquiry.is_read and  enquiry.is_archived %}
-                <a href="/admin_enquiries/unarchive_message/{{ enquiry.id }}" class="btn btn-success" title="Unarchive">
+                <a href="{% url 'unarchive_enquiry' enquiry.id %}" class="btn btn-success" title="Unarchive">
                     <i class="bi bi-archive"></i> Unarchive
                 </a>
             {% endif %}
 
-                <a href="/admin_enquiries/reply_enquiry/{{ enquiry.id }}" class="btn btn-primary" title="Reply">
+                <a href="{% url 'mail_enquiry' enquiry.id %}" class="btn btn-primary" title="Reply">
                     <i class="bi bi-reply"></i> Reply
                 </a>
 
-                <a href="/admin_enquiries/delete-message/{{ enquiry.id }}" class="btn btn-danger" title="Delete">
+                <a href="{% url 'delete_enquiry' enquiry.id %}" class="btn btn-danger" title="Delete">
                     <i class="bi bi-trash"></i> Delete
                 </a>
             </div>

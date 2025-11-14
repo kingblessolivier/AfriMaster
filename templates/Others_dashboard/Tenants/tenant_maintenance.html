@@ -1,0 +1,48 @@
+{% extends 'Others_dashboard/Tenants/tenant_base.html' %}
+
+{% block title %}Maintenance Requests | Tenant{% endblock %}
+
+{% block content %}
+<style>
+    .main-content {
+        margin-left: 90px;
+    }
+</style>
+<div class="main-content ">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="fa fa-tools text-primary me-2"></i> Maintenance Requests</h3>
+        <a href="{% url 'new_maintenance_request' user.id %}" class="btn btn-accent"><i class="fa fa-plus me-1"></i> New Request</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if maintenance_requests %}
+                <ul class="list-group">
+                    {% for req in maintenance_requests %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ req.title }}</strong>
+                            <p class="mb-1">{{ req.description|truncatechars:150 }}</p>
+                            <small class="text-muted">{{ req.request_date|date:"F j, Y, g:i a" }}</small>
+                        </div>
+                        <div class="text-end">
+                            {% if req.status == 'open' %}
+                                <span class="badge bg-warning">Open</span>
+                            {% elif req.status == 'in_progress' %}
+                                <span class="badge bg-info">In Progress</span>
+                            {% elif req.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No maintenance requests yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

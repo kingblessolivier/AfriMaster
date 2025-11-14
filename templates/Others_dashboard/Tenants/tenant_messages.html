@@ -1,0 +1,87 @@
+{% extends 'Others_dashboard/Tenants/tenant_base.html' %}
+
+{% block title %}Messages | Tenant{% endblock %}
+
+{% block content %}
+<div class="main-content ">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="fa fa-envelope"></i> Messages</h3>
+        <a href="{% url 'tenant_maintenance' user.id %}" class="btn btn-outline-secondary"><i class="fa fa-tools me-1"></i> Maintenance</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">Inbox</div>
+                <div class="card-body">
+                    {% if inbox %}
+                        <ul class="list-group">
+                            {% for msg in inbox %}
+                            <li class="list-group-item">
+                                <div class="inbox-item">
+                                    <div class="inbox-avatar">{{ msg.sender.username|slice:":1"|upper }}</div>
+                                    <div>
+                                        <div class="d-flex justify-content-between">
+                                            <strong>{{ msg.sender.username }}</strong>
+                                            <small class="text-muted">{{ msg.sent_date|date:"F j, Y, g:i a" }}</small>
+                                        </div>
+                                        <p class="mb-1">{{ msg.content|truncatechars:200 }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No messages in inbox.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card mb-3">
+                <div class="card-header">Compose</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.recipient.label_tag }}
+                            {{ form.recipient }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.content.label_tag }}
+                            {{ form.content }}
+                        </div>
+                        <button class="btn btn-accent" type="submit"><i class="fa fa-paper-plane me-1"></i> Send</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Sent</div>
+                <div class="card-body">
+                    {% if sent %}
+                        <ul class="list-group">
+                            {% for s in sent %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <strong>To {{ s.recipient.username }}</strong>
+                                        <p class="mb-1">{{ s.content|truncatechars:100 }}</p>
+                                    </div>
+                                    <small class="text-muted">{{ s.sent_date|date:"F j, Y, g:i a" }}</small>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No sent messages.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

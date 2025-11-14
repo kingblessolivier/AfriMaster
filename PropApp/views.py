@@ -1,8 +1,9 @@
 import paypalrestsdk
+import json
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Sum
 from django.http import HttpResponse
-from .forms import TenantProfileForm
+from .forms import TenantProfileForm, MessageForm, MaintenanceRequestForm
 from django.views.decorators.csrf import csrf_exempt
 from .models import Lease, Payment, MaintenanceRequest, Message, LikedProperties, Visit
 from reportlab.lib.pagesizes import letter
@@ -194,12 +195,21 @@ def index(request):
     featured_properties = Property.objects.all().order_by('-date_added')[:3]
     tenant = Tenant.objects.all()
     property = Property.objects.all()
+    # Add statistics
+    total_properties = Property.objects.count()
+    total_users = User.objects.count()
+    total_owners = Owner.objects.count()
+    total_tenants = Tenant.objects.count()
     context = {
         'owner_user': owner_user,
         'tenant': tenant,
         'property': property,
         'featured_properties': featured_properties,
         'tenant_user': tenant_user,
+        'total_properties': total_properties,
+        'total_users': total_users,
+        'total_owners': total_owners,
+        'total_tenants': total_tenants,
     }
     return render(request, 'home/home.html', context)
 
@@ -306,6 +316,11 @@ def admin_dashboard(request):
     read_enquiries = CustRequest.objects.filter(is_read=True).count()
     unread_enquiries = CustRequest.objects.filter(is_read=False).count()
     archived_enquiries = CustRequest.objects.filter(is_archived=True).count()
+    unit_total = Unit.objects.all().count()
+    lease_total = Lease.objects.all().count()
+    maintenance_total = MaintenanceRequest.objects.all().count()
+    payment_total = Payment.objects.all().count()
+    revenue_total = Payment.objects.aggregate(Sum('amount'))['amount__sum'] or 0
     today = now().date()
     last_7_days = [today - timedelta(days=i) for i in range(6, -1, -1)]
 
@@ -330,6 +345,11 @@ def admin_dashboard(request):
         'unread_enquiries': unread_enquiries,
         'archived_enquiries': archived_enquiries,
         'read_enquiries': read_enquiries,
+        'unit_total': unit_total,
+        'lease_total': lease_total,
+        'maintenance_total': maintenance_total,
+        'payment_total': payment_total,
+        'revenue_total': revenue_total,
         'daily_user_registration_dates': [data['date'].strftime('%Y-%m-%d') for data in daily_data],
         'daily_user_registration_counts': [data['count'] for data in daily_data]
     }
@@ -343,7 +363,7 @@ def contact(request):
 
 @csrf_exempt
 def updates(request):
-    updates = Updates.objects.all().order_by('-created_at')
+    updates = Updates.objects.filter(end_date__gte=now()).order_by('-created_at')
     context = {'updates': updates}
     return render(request, 'home/updates.html', context)
 
@@ -1792,11 +1812,57 @@ def owner_view_property(request, property_id):
 def tenant_dashboard(request, user_id):
     user = get_object_or_404(User, id=user_id)
     tenant = get_object_or_404(Tenant, user=user)
-    properties = Property.objects.filter(leases__tenant__user_id__in=[user_id])
+    # Authorization: allow if the logged-in user is the tenant themselves or an admin
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission to view this dashboard.')
+        return redirect('index')
+    # Properties related to tenant via leases (only include properties for which tenant has a lease)
+    properties = Property.objects.filter(leases__tenant__user_id__in=[user_id]).distinct()
+
+    # Lease breakdown for dashboard cards
     leases = Lease.objects.filter(tenant=tenant)
     made_leases = leases.filter(contract_accepted=False)
-    accepted_leases = leases.filter(contract_accepted=True)
+    accepted_leases = leases.filter(contract_accepted=True, contract_signed=False)
     signed_leases = leases.filter(contract_signed=True)
+
+    # Payments made by this tenant
+    payments = Payment.objects.filter(tenant=tenant).order_by('-date_paid')
+
+    # Prepare payment chart data (last 6 payments, chronological)
+    payment_list = list(payments[:6])
+    payment_list.reverse()
+    payment_labels = [p.date_paid.strftime('%b %d') for p in payment_list]
+    payment_amounts = [p.amount for p in payment_list]
+
+    # Total paid amount
+    total_paid = payments.aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Maintenance requests for this tenant
+    maintenance_requests = MaintenanceRequest.objects.filter(tenant=tenant).order_by('-request_date')
+
+    # Messages involving this user (sent or received)
+    user_messages = Message.objects.filter(recipient__id=user.id).order_by('-sent_date')
+
+    # Contract countdowns: days until end_date for active leases
+    today = now().date()
+    contract_countdowns = []
+    for lease in leases:
+        try:
+            end = lease.end_date
+            days_left = (end - today).days
+        except Exception:
+            days_left = None
+        contract_countdowns.append({
+            'lease': lease,
+            'days_left': days_left,
+            'end_date': lease.end_date,
+        })
+
+    # Determine next contract to expire
+    upcoming = [c for c in contract_countdowns if c['days_left'] is not None and c['days_left'] >= 0]
+    upcoming_sorted = sorted(upcoming, key=lambda x: x['days_left'])
+    next_expiry = upcoming_sorted[0] if upcoming_sorted else None
+
     context = {
         'user': user,
         'tenant': tenant,
@@ -1804,7 +1870,15 @@ def tenant_dashboard(request, user_id):
         'made_leases': made_leases,
         'accepted_leases': accepted_leases,
         'signed_leases': signed_leases,
-        'leases': leases
+        'leases': leases,
+        'payments': payments,
+        'payment_labels_json': json.dumps(payment_labels),
+        'payment_amounts_json': json.dumps(payment_amounts),
+        'total_paid': total_paid,
+        'next_expiry': next_expiry,
+        'contract_countdowns': contract_countdowns,
+        'maintenance_requests': maintenance_requests,
+        'messages': user_messages,
     }
     return render(request, 'Others_dashboard/Tenants/tenant_dashboard.html', context)
 
@@ -1838,6 +1912,95 @@ def like_property(request, property_id):
     else:
         messages.info(request, "You have already liked this property!")
     return redirect('property_view', property.id)
+
+
+@csrf_exempt
+@login_required
+def tenant_messages(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    # authorization
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission to view these messages.')
+        return redirect('index')
+
+    inbox = Message.objects.filter(recipient__id=user.id).order_by('-sent_date')
+    sent = Message.objects.filter(sender__id=user.id).order_by('-sent_date')
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            msg = form.save(commit=False)
+            msg.sender = request.user
+            msg.sent_date = now()
+            msg.save()
+            messages.success(request, 'Message sent successfully')
+            return redirect('tenant_messages', user.id)
+    else:
+        form = MessageForm()
+
+    context = {
+        'user': user,
+        'inbox': inbox,
+        'sent': sent,
+        'form': form,
+    }
+    return render(request, 'Others_dashboard/Tenants/tenant_messages.html', context)
+
+
+@csrf_exempt
+@login_required
+def tenant_maintenance(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    tenant = get_object_or_404(Tenant, user=user)
+    # authorization
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission to view maintenance requests.')
+        return redirect('index')
+
+    maintenance_requests = MaintenanceRequest.objects.filter(tenant=tenant).order_by('-request_date')
+
+    context = {
+        'user': user,
+        'tenant': tenant,
+        'maintenance_requests': maintenance_requests,
+    }
+    return render(request, 'Others_dashboard/Tenants/tenant_maintenance.html', context)
+
+
+@csrf_exempt
+@login_required
+def new_maintenance_request(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    tenant = get_object_or_404(Tenant, user=user)
+    # authorization
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission to create requests.')
+        return redirect('index')
+
+    # restrict property choices to properties tenant has leases for
+    allowed_properties = Property.objects.filter(leases__tenant=tenant).distinct()
+
+    if request.method == 'POST':
+        form = MaintenanceRequestForm(request.POST)
+        form.fields['property'].queryset = allowed_properties
+        if form.is_valid():
+            req = form.save(commit=False)
+            req.tenant = tenant
+            req.request_date = now()
+            req.status = 'open'
+            req.save()
+            messages.success(request, 'Maintenance request submitted')
+            return redirect('tenant_maintenance', user.id)
+    else:
+        form = MaintenanceRequestForm()
+        form.fields['property'].queryset = allowed_properties
+
+    context = {
+        'user': user,
+        'tenant': tenant,
+        'form': form,
+    }
+    return render(request, 'Others_dashboard/Tenants/new_maintenance_request.html', context)
 
 @csrf_exempt
 @login_required
@@ -2105,7 +2268,12 @@ def execute_payment(request):
         )
 
         messages.success(request, 'Payment successful.')
-        return redirect('tenant_lease_management')
+        # Redirect tenant back to their dashboard after successful payment
+        try:
+            return redirect('tenant_dashboard', request.user.id)
+        except Exception:
+            # Fallback to index if tenant dashboard reverse fails
+            return redirect('index')
     else:
         messages.error(request, 'Error executing payment on PayPal.')
         return redirect('make_payment')
