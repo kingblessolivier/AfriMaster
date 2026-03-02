@@ -1,768 +1,358 @@
 {% extends "home/base.html" %}
 {% load static %}
 
-{% block title %}
-{{ property.name }} - AfriMaster Properties
-{% endblock %}
+{% block title %}{{ property.name }} - AfriMaster Properties{% endblock %}
 
 {% block content %}
-<!-- Font Awesome CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
 <style>
-    /* Custom CSS Variables - Consistent with Base Template */
-    :root {
-        --primary-color: #28a745;
-        --secondary-color: #2f4f4f;
-        --accent-color: #20c997;
-        --light-bg: #f8f9fa;
-        --dark-text: #343a40;
-        --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-    }
+    :root{--primary:#28a745;--primary-dark:#1e7e34;--primary-light:#d4edda;--secondary:#2f4f4f;--accent:#20c997;--radius:16px;--transition:all .4s cubic-bezier(.4,0,.2,1)}
 
-    /* Property Details Page Styles */
-    .property-hero {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        color: white;
-        padding: 100px 0 60px;
-        margin-top: 80px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
+    /* Hero */
+    .detail-hero{margin-top:76px;padding:60px 0 50px;background:linear-gradient(160deg,#1a2f2f 0%,var(--secondary) 50%,var(--primary-dark) 100%);position:relative;overflow:hidden}
+    .detail-hero::before{content:'';position:absolute;width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
+    .detail-hero-inner{position:relative;z-index:2}
+    .breadcrumb-nav{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .breadcrumb-nav a,.breadcrumb-nav span{font-size:.85rem;text-decoration:none}
+    .breadcrumb-nav a{color:rgba(255,255,255,.6);transition:color .2s}
+    .breadcrumb-nav a:hover{color:#fff}
+    .breadcrumb-nav .sep{color:rgba(255,255,255,.3)}
+    .breadcrumb-nav .current{color:#7ddf9b;font-weight:600}
+    .detail-hero h1{font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2}
+    .detail-hero-meta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .hero-badge-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;font-size:.78rem;font-weight:600;letter-spacing:.3px}
+    .badge-type{background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(8px)}
+    .badge-avail{background:rgba(40,167,69,.3);color:#7ddf9b}
+    .badge-rented{background:rgba(220,53,69,.3);color:#ff8a98}
+    .hero-location{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font-size:.9rem}
+    .hero-location i{color:#7ddf9b}
 
-    .property-hero:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('{% static "images/pattern.png" %}') repeat;
-        opacity: 0.1;
-    }
+    /* Main Layout */
+    .detail-main{padding:40px 0 80px;background:#f0f2f5}
 
-    .property-hero-content {
-        position: relative;
-        z-index: 1;
-    }
+    /* Image Card */
+    .img-card{border-radius:var(--radius);overflow:hidden;position:relative;margin-bottom:30px;box-shadow:0 8px 30px rgba(0,0,0,.1)}
+    .img-card img{width:100%;height:450px;object-fit:cover;display:block}
+    .img-price-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+    .detail-price{font-size:2rem;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .detail-price small{font-size:.8rem;font-weight:500;opacity:.8}
 
-    .property-hero h1 {
-        font-size: 2.8rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
+    /* Info Cards */
+    .info-card{background:#fff;border-radius:var(--radius);padding:28px;border:1px solid #e9ecef;margin-bottom:24px}
+    .info-card-title{font-size:1rem;font-weight:700;color:var(--secondary);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .info-card-title i{color:var(--primary);font-size:.9rem}
 
-    .property-hero p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-        max-width: 600px;
-        margin: 0 auto;
-    }
+    /* Features Grid */
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px}
+    .feat-item{text-align:center;padding:20px 12px;background:#f8f9fa;border-radius:12px;transition:var(--transition)}
+    .feat-item:hover{background:var(--primary-light);transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+    .feat-icon{font-size:1.4rem;color:var(--primary);margin-bottom:8px}
+    .feat-val{font-size:1.1rem;font-weight:700;color:var(--secondary);margin-bottom:2px}
+    .feat-lbl{font-size:.75rem;color:#6c757d}
 
-    /* Property Details Section */
-    .property-details-section {
-        padding: 60px 0;
-        background: var(--light-bg);
-    }
+    /* Description */
+    .desc-text{color:#555;line-height:1.8;font-size:1rem}
 
-    .property-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        margin-bottom: 30px;
-    }
+    /* Owner Info */
+    .owner-row{display:flex;align-items:center;gap:16px;padding:16px;background:#f8f9fa;border-radius:12px}
+    .owner-avatar{width:50px;height:50px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem}
+    .owner-name{font-weight:700;color:var(--secondary);font-size:.95rem}
+    .owner-lbl{font-size:.75rem;color:#6c757d}
 
-    .property-card:hover {
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    /* Action Buttons */
+    .action-btns{display:flex;flex-direction:column;gap:12px}
+    .btn-action{
+        display:flex;align-items:center;justify-content:center;gap:8px;
+        padding:14px 20px;border-radius:12px;font-weight:600;font-size:.9rem;
+        transition:var(--transition);text-decoration:none;border:none;cursor:pointer;
     }
-
-    .property-image-container {
-        position: relative;
-        height: 400px;
-        overflow: hidden;
-    }
-
-    .property-image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--transition);
-    }
-
-    .property-card:hover .property-image-container img {
-        transform: scale(1.03);
-    }
-
-    .property-badges {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .property-badge {
-        background: var(--primary-color);
-        color: white;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-
-    .property-status {
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-
-    .property-content {
-        padding: 30px;
-    }
-
-    .property-header {
-        margin-bottom: 25px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eaeaea;
-    }
-
-    .property-title {
-        color: var(--secondary-color);
-        font-weight: 700;
-        margin-bottom: 10px;
-        font-size: 1.8rem;
-    }
-
-    .property-price {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 15px;
-    }
-
-    .property-address {
-        color: #6c757d;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .property-features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .property-feature {
-        text-align: center;
-        padding: 15px;
-        background: var(--light-bg);
-        border-radius: 10px;
-        transition: var(--transition);
-    }
-
-    .property-feature:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow);
-    }
-
-    .feature-icon {
-        font-size: 1.8rem;
-        color: var(--primary-color);
-        margin-bottom: 10px;
-    }
-
-    .feature-value {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--secondary-color);
-        margin-bottom: 5px;
-    }
-
-    .feature-label {
-        font-size: 0.9rem;
-        color: #6c757d;
-    }
-
-    .property-description {
-        color: #555;
-        line-height: 1.7;
-        margin-bottom: 25px;
-        font-size: 1.05rem;
-    }
-
-    .property-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-top: 25px;
-    }
-
-    .btn-action {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px 25px;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: var(--transition);
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        flex: 1;
-        min-width: 160px;
-    }
-
-    .btn-action i {
-        margin-right: 8px;
-    }
-
-    .btn-primary-action {
-        background: var(--primary-color);
-        color: white;
-    }
-
-    .btn-primary-action:hover {
-        background: #218838;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-    }
-
-    .btn-secondary-action {
-        background: var(--secondary-color);
-        color: white;
-    }
-
-    .btn-secondary-action:hover {
-        background: #1e3e3e;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(47, 79, 79, 0.3);
-    }
-
-    .btn-outline-action {
-        background: transparent;
-        color: var(--secondary-color);
-        border: 2px solid var(--secondary-color);
-    }
-
-    .btn-outline-action:hover {
-        background: var(--secondary-color);
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .btn-success-action {
-        background: #28a745;
-        color: white;
-    }
-
-    .btn-success-action:hover {
-        background: #218838;
-        transform: translateY(-2px);
-    }
-
-    .btn-disabled {
-        background: #6c757d;
-        color: white;
-        cursor: not-allowed;
-        opacity: 0.7;
-    }
-
-    .btn-disabled:hover {
-        transform: none;
-        box-shadow: none;
-    }
+    .btn-action:hover{transform:translateY(-2px)}
+    .btn-act-primary{background:var(--primary);color:#fff}
+    .btn-act-primary:hover{background:var(--primary-dark);box-shadow:0 8px 20px rgba(40,167,69,.3);color:#fff}
+    .btn-act-secondary{background:var(--secondary);color:#fff}
+    .btn-act-secondary:hover{background:#1e3e3e;box-shadow:0 8px 20px rgba(47,79,79,.3);color:#fff}
+    .btn-act-outline{background:transparent;color:var(--secondary);border:1.5px solid #e9ecef}
+    .btn-act-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+    .btn-act-disabled{background:#e9ecef;color:#adb5bd;cursor:not-allowed}
 
     /* Inquiry Section */
-    .inquiry-section {
-        padding: 60px 0;
-        background: white;
-    }
+    .inquiry-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid #e9ecef}
+    .inquiry-header{background:var(--secondary);color:#fff;padding:20px 28px;font-weight:700;display:flex;align-items:center;gap:10px}
+    .inquiry-body{padding:28px}
+    .inquiry-body .form-control{border-radius:12px;border:1.5px solid #e9ecef;padding:14px 16px;transition:var(--transition)}
+    .inquiry-body .form-control:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(40,167,69,.1)}
+    .inquiry-body label{font-weight:600;color:var(--secondary);font-size:.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .inquiry-body label i{color:var(--primary)}
+    .btn-submit-inquiry{width:100%;padding:14px;background:var(--secondary);color:#fff;border:none;border-radius:12px;font-weight:600;font-size:.95rem;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+    .btn-submit-inquiry:hover{background:var(--primary);transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,167,69,.2)}
 
-    .inquiry-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-    }
+    /* Featured Properties */
+    .featured-strip{padding:60px 0;background:#fff}
+    .strip-title{font-size:1.4rem;font-weight:800;color:var(--secondary);margin-bottom:30px;display:flex;align-items:center;gap:10px}
+    .strip-title i{color:var(--primary)}
+    .mini-prop{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e9ecef;transition:var(--transition)}
+    .mini-prop:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08);border-color:transparent}
+    .mini-prop-img{height:160px;overflow:hidden}
+    .mini-prop-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+    .mini-prop:hover .mini-prop-img img{transform:scale(1.06)}
+    .mini-prop-body{padding:16px}
+    .mini-prop-body h6{font-weight:700;color:var(--secondary);font-size:.9rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mini-prop-price{font-weight:700;color:var(--primary);font-size:.9rem}
 
-    .inquiry-header {
-        background: var(--secondary-color);
-        color: white;
-        padding: 20px 30px;
-    }
+    /* Alert */
+    .alert-float{position:fixed;top:100px;right:20px;z-index:1050;max-width:400px}
 
-    .inquiry-header h3 {
-        margin: 0;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-    }
+    /* Modal */
+    .modal-content{border-radius:var(--radius);border:none;overflow:hidden}
+    .modal-header{background:var(--secondary);color:#fff;border:none;padding:18px 24px}
+    .modal-body{padding:24px}
+    .modal-footer{border-top:1px solid #e9ecef;padding:16px 24px}
 
-    .inquiry-header i {
-        margin-right: 10px;
+    @media(max-width:992px){.img-card img{height:350px}}
+    @media(max-width:768px){
+        .detail-hero h1{font-size:1.8rem}
+        .img-card img{height:280px}
+        .feat-grid{grid-template-columns:repeat(2,1fr)}
+        .detail-price{font-size:1.6rem}
     }
-
-    .inquiry-body {
-        padding: 30px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: var(--secondary-color);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-    }
-
-    .form-label i {
-        margin-right: 8px;
-        color: var(--primary-color);
-    }
-
-    .form-control {
-        border: 1px solid #eaeaea;
-        border-radius: 8px;
-        padding: 12px 15px;
-        font-size: 1rem;
-        transition: var(--transition);
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
-
-    .btn-submit {
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 30px;
-        font-weight: 600;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .btn-submit:hover {
-        background: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Modal Styles */
-    .modal-content {
-        border-radius: 15px;
-        overflow: hidden;
-        border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-header {
-        background: var(--secondary-color);
-        color: white;
-        padding: 20px 25px;
-        border-bottom: none;
-    }
-
-    .modal-title {
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-    }
-
-    .modal-title i {
-        margin-right: 10px;
-    }
-
-    .modal-body {
-        padding: 25px;
-    }
-
-    .modal-footer {
-        border-top: 1px solid #eaeaea;
-        padding: 20px 25px;
-    }
-
-    /* Alert Styles */
-    .alert-container {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        z-index: 1050;
-        max-width: 400px;
-    }
-
-    /* Back to Properties */
-    .back-to-properties {
-        display: inline-flex;
-        align-items: center;
-        color: var(--secondary-color);
-        text-decoration: none;
-        font-weight: 500;
-        margin-bottom: 20px;
-        transition: var(--transition);
-    }
-
-    .back-to-properties:hover {
-        color: var(--primary-color);
-        transform: translateX(-5px);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 992px) {
-        .property-hero h1 {
-            font-size: 2.3rem;
-        }
-        
-        .property-image-container {
-            height: 350px;
-        }
-        
-        .property-features-grid {
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        }
-    }
-
-    @media (max-width: 768px) {
-        .property-hero {
-            padding: 80px 0 40px;
-        }
-        
-        .property-hero h1 {
-            font-size: 2rem;
-        }
-        
-        .property-hero p {
-            font-size: 1.1rem;
-        }
-        
-        .property-image-container {
-            height: 300px;
-        }
-        
-        .property-content {
-            padding: 25px;
-        }
-        
-        .property-title {
-            font-size: 1.6rem;
-        }
-        
-        .property-price {
-            font-size: 1.7rem;
-        }
-        
-        .property-features-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .property-actions {
-            flex-direction: column;
-        }
-        
-        .btn-action {
-            width: 100%;
-        }
-        
-        .inquiry-body {
-            padding: 25px;
-        }
-        
-        .alert-container {
-            left: 20px;
-            right: 20px;
-            max-width: none;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .property-hero h1 {
-            font-size: 1.8rem;
-        }
-        
-        .property-image-container {
-            height: 250px;
-        }
-        
-        .property-content {
-            padding: 20px;
-        }
-        
-        .property-title {
-            font-size: 1.4rem;
-        }
-        
-        .property-price {
-            font-size: 1.5rem;
-        }
-        
-        .property-features-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
-        .property-feature {
-            padding: 12px;
-        }
-        
-        .feature-icon {
-            font-size: 1.5rem;
-        }
-        
-        .feature-value {
-            font-size: 1.1rem;
-        }
-        
-        .inquiry-body {
-            padding: 20px;
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-    }
-
-    @media (max-width: 400px) {
-        .property-features-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .property-badges {
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
+    @media(max-width:576px){
+        .img-card img{height:220px}
+        .detail-hero h1{font-size:1.5rem}
+        .feat-grid{grid-template-columns:1fr 1fr}
     }
 </style>
 
-<!-- Alert Container for Messages -->
-<div class="alert-container">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
-                    <div>{{ message }}</div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
+<!-- Alerts -->
+<div class="alert-float">
+    {% if messages %}{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius:12px;border:none">
+        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}{% endif %}
 </div>
 
-<!-- Property Hero Section -->
-<section class="property-hero">
+<!-- Hero -->
+<section class="detail-hero">
     <div class="container">
-        <div class="property-hero-content">
+        <div class="detail-hero-inner">
+            <div class="breadcrumb-nav">
+                <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
+                <span class="sep"><i class="fas fa-chevron-right"></i></span>
+                <a href="{% url 'property_list' %}">Properties</a>
+                <span class="sep"><i class="fas fa-chevron-right"></i></span>
+                <span class="current">{{ property.name }}</span>
+            </div>
             <h1>{{ property.name }}</h1>
-            <p>{{ property.description|truncatewords:20 }}</p>
+            <div class="detail-hero-meta">
+                <span class="hero-badge-pill badge-type"><i class="fas fa-tag"></i> {{ property.get_types_display }}</span>
+                <span class="hero-badge-pill {% if property.status == 'Available' %}badge-avail{% else %}badge-rented{% endif %}">
+                    <i class="fas fa-{% if property.status == 'Available' %}check-circle{% else %}key{% endif %}"></i> {{ property.status }}
+                </span>
+                <span class="hero-location"><i class="fas fa-map-marker-alt"></i> {{ property.address }}</span>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Property Details Section -->
-<section class="property-details-section">
+<!-- Main Content -->
+<section class="detail-main">
     <div class="container">
-        <a href="{% url 'property_list' %}" class="back-to-properties">
-            <i class="fas fa-arrow-left me-2"></i> Back to Properties
-        </a>
-        
-        <div class="property-card">
-            <div class="property-image-container">
-                <img src="{{ property.image.url }}" alt="{{ property.name }}">
-                <div class="property-badges">
-                    <div class="property-badge">{{ property.get_types_display }}</div>
-                    <div class="property-status {% if property.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">
-                        {{ property.status }}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="property-content">
-                <div class="property-header">
-                    <h1 class="property-title">{{ property.name }}</h1>
-                    <div class="property-price">{{ property.price }} Frw</div>
-                    <div class="property-address">
-                        <i class="fas fa-map-marker-alt me-2"></i>
-                        {{ property.address }}
-                    </div>
-                </div>
-                
-                <div class="property-features-grid">
-                    <div class="property-feature">
-                        <i class="fas fa-bed feature-icon"></i>
-                        <div class="feature-value">{{ property.bedrooms }}</div>
-                        <div class="feature-label">Bedrooms</div>
-                    </div>
-                    <div class="property-feature">
-                        <i class="fas fa-bath feature-icon"></i>
-                        <div class="feature-value">{{ property.bathrooms }}</div>
-                        <div class="feature-label">Bathrooms</div>
-                    </div>
-                    <div class="property-feature">
-                        <i class="fas fa-door-open feature-icon"></i>
-                        <div class="feature-value">{{ property.number_of_units }}</div>
-                        <div class="feature-label">Units</div>
-                    </div>
-                    <div class="property-feature">
-                        <i class="fas fa-building feature-icon"></i>
-                        <div class="feature-value">{{ property.get_types_display }}</div>
-                        <div class="feature-label">Property Type</div>
-                    </div>
-                </div>
-                
-                <div class="property-description">
-                    <p>{{ property.description }}</p>
-                </div>
-                
-                <div class="property-details">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="detail-item mb-3">
-                                <strong><i class="fas fa-user me-2 text-primary"></i>Owner:</strong> {{ property.owner.name }}
-                            </div>
-                            <div class="detail-item mb-3">
-                                <strong><i class="fas fa-phone me-2 text-primary"></i>Contact:</strong> {{ property.owner.phone|default:"Not provided" }}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="detail-item mb-3">
-                                <strong><i class="fas fa-calendar me-2 text-primary"></i>Listed:</strong> {{ property.created_at|date:"M d, Y" }}
-                            </div>
-                            <div class="detail-item mb-3">
-                                <strong><i class="fas fa-sync me-2 text-primary"></i>Updated:</strong> {{ property.updated_at|date:"M d, Y" }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="property-actions">
-                    {% if user.is_authenticated %}
-                        {% if liked_properties %}
-                            <button class="btn-action btn-disabled">
-                                <i class="fas fa-thumbs-up"></i> Liked
-                            </button>
-                        {% else %}
-                            <a href="{% url 'like_property' property.id %}" class="btn-action btn-primary-action">
-                                <i class="fas fa-thumbs-up"></i> Like Property
-                            </a>
-                        {% endif %}
-                        
-                        {% if tenant_visits %}
-                            <button class="btn-action btn-disabled">
-                                <i class="fas fa-calendar-check"></i> Visit Scheduled
-                            </button>
-                        {% else %}
-                            <button type="button" class="btn-action btn-success-action" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal">
-                                <i class="fas fa-calendar-plus"></i> Schedule Visit
-                            </button>
-                        {% endif %}
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Image -->
+                <div class="img-card">
+                    {% if property.image %}
+                        <img src="{{ property.image.url }}" alt="{{ property.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">
                     {% endif %}
-                    
-                    <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn-action btn-outline-action">
-                        <i class="fas fa-map"></i> View on Map
-                    </a>
-                    
-                    <button type="button" class="btn-action btn-secondary-action" data-bs-toggle="modal" data-bs-target="#contactOwnerModal">
-                        <i class="fas fa-envelope"></i> Contact Owner
-                    </button>
+                    <div class="img-price-overlay">
+                        <div class="detail-price">{{ property.price|floatformat:0 }} Frw <small>/month</small></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="info-card">
+                    <div class="info-card-title"><i class="fas fa-th-large"></i> Property Details</div>
+                    <div class="feat-grid">
+                        <div class="feat-item">
+                            <div class="feat-icon"><i class="fas fa-bed"></i></div>
+                            <div class="feat-val">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                            <div class="feat-lbl">Bedrooms</div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-icon"><i class="fas fa-bath"></i></div>
+                            <div class="feat-val">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                            <div class="feat-lbl">Bathrooms</div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-icon"><i class="fas fa-door-open"></i></div>
+                            <div class="feat-val">{{ property.number_of_units }}</div>
+                            <div class="feat-lbl">Units</div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-icon"><i class="fas fa-building"></i></div>
+                            <div class="feat-val">{{ property.get_types_display }}</div>
+                            <div class="feat-lbl">Type</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="info-card">
+                    <div class="info-card-title"><i class="fas fa-align-left"></i> Description</div>
+                    <p class="desc-text">{{ property.description }}</p>
+                </div>
+
+                <!-- Owner Info -->
+                <div class="info-card">
+                    <div class="info-card-title"><i class="fas fa-user-tie"></i> Property Owner</div>
+                    <div class="owner-row">
+                        <div class="owner-avatar">
+                            {% if property.owner.image %}
+                                <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="owner-name">{{ property.owner.name }}</div>
+                            <div class="owner-lbl">Property Owner</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inquiry Form -->
+                <div class="inquiry-card">
+                    <div class="inquiry-header"><i class="fas fa-paper-plane"></i> Send an Inquiry</div>
+                    <div class="inquiry-body">
+                        <form method="POST" action="/customer_enquiry/{{ property.id }}">
+                            {% csrf_token %}
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="name"><i class="fas fa-user"></i> Your Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message"><i class="fas fa-comment-dots"></i> Message</label>
+                                <textarea class="form-control" id="message" name="enquiry" rows="4" placeholder="Write your message about {{ property.name }}..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit-inquiry">
+                                <i class="fas fa-paper-plane"></i> Send Inquiry
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+                <!-- Price Card -->
+                <div class="info-card" style="background:linear-gradient(135deg,var(--secondary),var(--primary-dark));color:#fff;border:none">
+                    <div style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px">Monthly Price</div>
+                    <div style="font-size:2rem;font-weight:800;margin-bottom:16px">{{ property.price|floatformat:0 }} <span style="font-size:.9rem;font-weight:500;opacity:.7">Frw</span></div>
+                    <div style="display:flex;gap:10px;margin-bottom:16px">
+                        <div style="flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:10px;text-align:center">
+                            <div style="font-weight:700">{{ property.number_of_units }}</div>
+                            <div style="font-size:.72rem;opacity:.6">Units</div>
+                        </div>
+                        <div style="flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:10px;text-align:center">
+                            <div style="font-weight:700">{{ property.status }}</div>
+                            <div style="font-size:.72rem;opacity:.6">Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="info-card">
+                    <div class="info-card-title"><i class="fas fa-bolt"></i> Quick Actions</div>
+                    <div class="action-btns">
+                        {% if user.is_authenticated %}
+                            {% if liked_properties %}
+                                <button class="btn-action btn-act-disabled" disabled><i class="fas fa-heart"></i> Already Liked</button>
+                            {% else %}
+                                <a href="{% url 'like_property' property.id %}" class="btn-action btn-act-primary"><i class="fas fa-heart"></i> Like Property</a>
+                            {% endif %}
+                            {% if tenant_visits %}
+                                <button class="btn-action btn-act-disabled" disabled><i class="fas fa-calendar-check"></i> Visit Scheduled</button>
+                            {% else %}
+                                <button type="button" class="btn-action btn-act-secondary" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal"><i class="fas fa-calendar-plus"></i> Schedule Visit</button>
+                            {% endif %}
+                        {% endif %}
+                        <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn-action btn-act-outline"><i class="fas fa-map-marked-alt"></i> View on Map</a>
+                        <button type="button" class="btn-action btn-act-outline" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><i class="fas fa-envelope"></i> Contact Owner</button>
+                    </div>
+                </div>
+
+                <!-- Listed Date -->
+                <div class="info-card">
+                    <div class="info-card-title"><i class="fas fa-calendar"></i> Listing Info</div>
+                    <div style="display:flex;align-items:center;gap:10px;color:#6c757d;font-size:.88rem">
+                        <i class="fas fa-clock" style="color:var(--primary)"></i>
+                        Listed {{ property.date_added|date:"M d, Y" }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Inquiry Section -->
-<section class="inquiry-section">
+<!-- Featured Properties -->
+{% if featured_properties %}
+<section class="featured-strip">
     <div class="container">
-        <div class="inquiry-card">
-            <div class="inquiry-header">
-                <h3><i class="fas fa-paper-plane"></i> Send an Inquiry</h3>
-            </div>
-            <div class="inquiry-body">
-                <form method="POST" action="/customer_enquiry/{{ property.id }}" class="form">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="name" class="form-label">
-                                    <i class="fas fa-user"></i> Your Name
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-                            </div>
+        <div class="strip-title"><i class="fas fa-star"></i> You May Also Like</div>
+        <div class="row g-4">
+            {% for fp in featured_properties %}
+            <div class="col-lg-2 col-md-4 col-6">
+                <a href="{% url 'property_view' fp.id %}" class="text-decoration-none">
+                    <div class="mini-prop">
+                        <div class="mini-prop-img">
+                            {% if fp.image %}<img src="{{ fp.image.url }}" alt="{{ fp.name }}" loading="lazy">
+                            {% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ fp.name }}">{% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope"></i> Email Address
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                            </div>
+                        <div class="mini-prop-body">
+                            <h6>{{ fp.name }}</h6>
+                            <div class="mini-prop-price">{{ fp.price|floatformat:0 }} Frw</div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="message" class="form-label">
-                            <i class="fas fa-file-lines"></i> Message
-                        </label>
-                        <textarea class="form-control" id="message" name="enquiry" rows="5" placeholder="Write your message here. Be sure to mention any specific questions about {{ property.name }}." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-paper-plane me-2"></i> Send Inquiry
-                    </button>
-                </form>
+                </a>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- Schedule Visit Modal -->
-<div class="modal fade" id="scheduleVisitModal" tabindex="-1" aria-labelledby="scheduleVisitModalLabel" aria-hidden="true">
+<div class="modal fade" id="scheduleVisitModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="scheduleVisitModalLabel">
-                    <i class="fas fa-calendar-plus"></i> Schedule a Visit
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Schedule a Visit</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{% url 'schedule_visit' property.id %}">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="visit_date" class="form-label">
-                            <i class="fas fa-calendar"></i> Visit Date & Time
-                        </label>
-                        <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold"><i class="fas fa-calendar me-1 text-success"></i> Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required style="border-radius:12px;padding:12px 16px">
                     </div>
-                    <div class="form-group">
-                        <label for="description" class="form-label">
-                            <i class="fas fa-file-lines"></i> Additional Notes
-                        </label>
-                        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Add any specific requirements or questions for the property owner..." required></textarea>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold"><i class="fas fa-comment me-1 text-success"></i> Notes</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Any specific requirements..." required style="border-radius:12px;padding:12px 16px"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-calendar-check me-2"></i> Schedule Visit
-                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:10px">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="border-radius:10px;padding:10px 24px"><i class="fas fa-check me-1"></i> Schedule</button>
                 </div>
             </form>
         </div>
@@ -770,120 +360,47 @@
 </div>
 
 <!-- Contact Owner Modal -->
-<div class="modal fade" id="contactOwnerModal" tabindex="-1" aria-labelledby="contactOwnerModalLabel" aria-hidden="true">
+<div class="modal fade" id="contactOwnerModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="contactOwnerModalLabel">
-                    <i class="fas fa-user"></i> Contact Property Owner
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="fas fa-user me-2"></i>Contact Owner</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="owner-info mb-4">
-                    <h6 class="mb-3">Owner Details</h6>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="owner-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <strong>{{ property.owner.name }}</strong>
-                            <div class="text-muted small">Property Owner</div>
-                        </div>
+                <div class="owner-row mb-3">
+                    <div class="owner-avatar"><i class="fas fa-user"></i></div>
+                    <div>
+                        <div class="owner-name">{{ property.owner.name }}</div>
+                        <div class="owner-lbl">Property Owner</div>
                     </div>
-                    {% if property.owner.phone %}
-                    <div class="mb-2">
-                        <i class="fas fa-phone text-primary me-2"></i>
-                        <a href="tel:{{ property.owner.phone }}" class="text-decoration-none">{{ property.owner.phone }}</a>
-                    </div>
-                    {% endif %}
-                    {% if property.owner.email %}
-                    <div class="mb-2">
-                        <i class="fas fa-envelope text-primary me-2"></i>
-                        <a href="mailto:{{ property.owner.email }}" class="text-decoration-none">{{ property.owner.email }}</a>
-                    </div>
-                    {% endif %}
                 </div>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    For detailed inquiries, please use the inquiry form above to ensure all necessary details are captured.
+                {% if property.owner.phone_number %}
+                <div class="mb-2"><i class="fas fa-phone text-success me-2"></i><a href="tel:{{ property.owner.phone_number }}" class="text-decoration-none">{{ property.owner.phone_number }}</a></div>
+                {% endif %}
+                {% if property.owner.email %}
+                <div class="mb-3"><i class="fas fa-envelope text-success me-2"></i><a href="mailto:{{ property.owner.email }}" class="text-decoration-none">{{ property.owner.email }}</a></div>
+                {% endif %}
+                <div class="alert alert-info" style="border-radius:12px;border:none;font-size:.88rem">
+                    <i class="fas fa-info-circle me-2"></i>For detailed inquiries, use the inquiry form on this page.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                {% if property.owner.phone %}
-                <a href="tel:{{ property.owner.phone }}" class="btn btn-primary">
-                    <i class="fas fa-phone me-2"></i> Call Owner
-                </a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:10px">Close</button>
+                {% if property.owner.phone_number %}
+                <a href="tel:{{ property.owner.phone_number }}" class="btn btn-success" style="border-radius:10px"><i class="fas fa-phone me-1"></i> Call</a>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
 
-<!-- JavaScript -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set minimum date for visit scheduling to today
-        const visitDateInput = document.getElementById('visit_date');
-        if (visitDateInput) {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            // Format to YYYY-MM-DDTHH:MM
-            const year = tomorrow.getFullYear();
-            const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-            const day = String(tomorrow.getDate()).padStart(2, '0');
-            const hours = String(tomorrow.getHours()).padStart(2, '0');
-            const minutes = String(tomorrow.getMinutes()).padStart(2, '0');
-            
-            const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-            visitDateInput.min = minDateTime;
-            
-            // Set default value to tomorrow at 10:00 AM
-            const defaultDateTime = `${year}-${month}-${day}T10:00`;
-            visitDateInput.value = defaultDateTime;
-        }
-        
-        // Auto-dismiss alerts after 5 seconds
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            setTimeout(() => {
-                if (alert) {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }
-            }, 5000);
-        });
-        
-        // Handle like button state
-        const likeButton = document.querySelector('a[href*="like_property"]');
-        if (likeButton) {
-            likeButton.addEventListener('click', function(e) {
-                // In a real application, this would be handled by the server
-                // For demo purposes, we'll show a success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show';
-                alertDiv.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <div>Property added to your favorites!</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                `;
-                document.querySelector('.alert-container').appendChild(alertDiv);
-                
-                // Auto-dismiss the new alert
-                setTimeout(() => {
-                    if (alertDiv) {
-                        const bsAlert = new bootstrap.Alert(alertDiv);
-                        bsAlert.close();
-                    }
-                }, 5000);
-            });
-        }
-    });
+document.addEventListener('DOMContentLoaded', function(){
+    const v=document.getElementById('visit_date');
+    if(v){const d=new Date();d.setDate(d.getDate()+1);const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');v.min=`${y}-${m}-${day}T08:00`;v.value=`${y}-${m}-${day}T10:00`}
+    document.querySelectorAll('.alert-float .alert').forEach(a=>{setTimeout(()=>{try{new bootstrap.Alert(a).close()}catch(e){}},5000)});
+});
 </script>
 
 {% endblock %}

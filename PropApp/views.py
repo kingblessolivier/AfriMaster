@@ -216,17 +216,79 @@ def index(request):
 
 @csrf_exempt
 def property_list(request):
-    property_list = Property.objects.all()
-    context = {'property_list': property_list}
-    if search := request.GET.get('search'):
-        query = Property.objects.filter(name__icontains=search)
-        context['property_list'] = query
-        context['search'] = search
-        num_results = len(query)
-        context['num_results'] = num_results
+    from django.db.models import Q, Min
+
+    properties = Property.objects.all()
+
+    # Search filter
+    search = request.GET.get('search', '')
+    if search:
+        properties = properties.filter(
+            Q(name__icontains=search) |
+            Q(address__icontains=search) |
+            Q(description__icontains=search)
+        )
+
+    # Property type filter
+    prop_type = request.GET.get('type', '')
+    if prop_type and prop_type != 'All':
+        properties = properties.filter(types=prop_type)
+
+    # Status filter
+    status = request.GET.get('status', '')
+    if status and status != 'All':
+        properties = properties.filter(status=status)
+
+    # Price range filter
+    price_range = request.GET.get('price', '')
+    if price_range == 'under_100k':
+        properties = properties.filter(price__lt=100000)
+    elif price_range == '100k_500k':
+        properties = properties.filter(price__gte=100000, price__lte=500000)
+    elif price_range == '500k_plus':
+        properties = properties.filter(price__gt=500000)
+
+    # Bedrooms filter (through units)
+    bedrooms = request.GET.get('bedrooms', '')
+    if bedrooms and bedrooms != 'Any':
+        if bedrooms == '4+':
+            properties = properties.filter(units__bedrooms__gte=4).distinct()
+        else:
+            properties = properties.filter(units__bedrooms=int(bedrooms)).distinct()
+
+    num_results = properties.count()
+
+    # Sorting
+    sort = request.GET.get('sort', 'newest')
+    if sort == 'price_asc':
+        properties = properties.order_by('price')
+    elif sort == 'price_desc':
+        properties = properties.order_by('-price')
+    elif sort == 'name':
+        properties = properties.order_by('name')
     else:
-        num_results = len(property_list)
-        context['num_results'] = num_results
+        properties = properties.order_by('-date_added')
+
+    # Pagination
+    paginator = Paginator(properties, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Get distinct property types for filter options
+    type_choices = Property.objects.values_list('types', flat=True).distinct()
+
+    context = {
+        'property_list': page_obj,
+        'page_obj': page_obj,
+        'num_results': num_results,
+        'search': search,
+        'current_type': prop_type,
+        'current_price': price_range,
+        'current_bedrooms': bedrooms,
+        'current_sort': sort,
+        'current_status': status,
+        'type_choices': type_choices,
+    }
 
     return render(request, 'home/properties.html', context)
 
