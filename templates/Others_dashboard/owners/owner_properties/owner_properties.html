@@ -1,16 +1,9 @@
 {% extends 'Others_dashboard/owners/owner_base.html' %}
 {% load static %}
 {% block content %}
-    <style>
-
-    .main-content{
-        margin-left: 90px;
-    }
-    </style>
-    <div class="main-content">
-    <div class="row mb-1">
+    <div class="row mb-3">
         <div class="col-md-12">
-            <form class="d-flex" method="GET" action="#">
+            <form class="d-flex gap-2" method="GET" action="#">
                 <select class="form-select me-1" id="typeSelect" onchange="filterProperties()">
                     <option value="" selected disabled>Filter by Type</option>
                     {% for type in type_list %}

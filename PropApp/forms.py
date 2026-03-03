@@ -89,8 +89,14 @@ class MessageForm(forms.ModelForm):
         fields = ['recipient', 'content']
         widgets = {
             'recipient': forms.Select(attrs={'class': 'form-select'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Write your message...'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Write your message...'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        allowed_recipients = kwargs.pop('allowed_recipients', None)
+        super().__init__(*args, **kwargs)
+        if allowed_recipients is not None:
+            self.fields['recipient'].queryset = allowed_recipients
 
 
 class MaintenanceRequestForm(forms.ModelForm):

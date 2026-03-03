@@ -1,462 +1,193 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AfriMaster Properties | {% block title %}{% endblock %}</title>
-    
-    <!-- CSS & Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="{% static 'css/m3-theme.css' %}">
     <style>
-        :root {
-            --primary-color: #28a745;
-            --secondary-color: #2f4f4f;
-            --accent-color: #20c997;
-            --light-bg: #f8f9fa;
-            --dark-text: #343a40;
-            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+    .navbar-m3{background:var(--md-sys-color-surface);box-shadow:var(--md-sys-elevation-2);padding:8px 16px;transition:all 300ms var(--md-sys-motion-easing-standard);position:fixed;top:0;left:0;right:0;z-index:1000}
+    .navbar-m3.scrolled{background:var(--md-sys-color-surface-container);box-shadow:var(--md-sys-elevation-3)}
+    .navbar-m3 .navbar-brand{font:500 1.5rem/1.5 'Inter',sans-serif;color:var(--md-sys-color-on-surface)!important;display:flex;align-items:center;gap:10px;text-decoration:none}
+    .navbar-m3 .navbar-brand img{border-radius:var(--md-sys-shape-corner-medium);transition:transform 300ms var(--md-sys-motion-easing-emphasized)}
+    .navbar-m3 .navbar-brand:hover img{transform:scale(1.05)}
+    .navbar-m3 .nav-link{color:var(--md-sys-color-on-surface-variant)!important;font:var(--md-sys-typescale-label-large);padding:8px 16px!important;margin:0 2px;border-radius:var(--md-sys-shape-corner-full);transition:all 200ms var(--md-sys-motion-easing-standard);display:flex;align-items:center;gap:8px;position:relative}
+    .navbar-m3 .nav-link:hover{color:var(--md-sys-color-on-surface)!important;background:var(--md-sys-color-surface-container-high)}
+    .navbar-m3 .nav-link.active{color:var(--md-sys-color-on-primary-container)!important;background:var(--md-sys-color-primary-container)}
+    .navbar-m3 .nav-link.active .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24}
+    .navbar-m3 .nav-link .material-symbols-outlined{font-size:20px}
+    .navbar-m3 .navbar-toggler{border:none;padding:8px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface)}
+    .navbar-m3 .navbar-toggler:focus{box-shadow:none}
+    .navbar-m3 .navbar-toggler:hover{background:var(--md-sys-color-surface-container-high)}
+    .navbar-m3 .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23191c19' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")}
+    .navbar-m3 .dropdown-menu{border:none;border-radius:var(--md-sys-shape-corner-medium);box-shadow:var(--md-sys-elevation-2);background:var(--md-sys-color-surface-container);padding:4px 0;min-width:200px}
+    .navbar-m3 .dropdown-item{font:var(--md-sys-typescale-body-large);padding:12px 16px;color:var(--md-sys-color-on-surface);display:flex;align-items:center;gap:12px;transition:background 150ms}
+    .navbar-m3 .dropdown-item:hover{background:var(--md-sys-color-surface-container-high)}
+    .navbar-m3 .dropdown-item .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-on-surface-variant)}
+    .btn-m3-login{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:transparent;color:var(--md-sys-color-primary);border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 200ms}
+    .btn-m3-login:hover{background:rgba(40,167,69,.08);color:var(--md-sys-color-primary)}
+    .btn-m3-signup{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;margin-left:8px;transition:all 200ms}
+    .btn-m3-signup:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-primary)}
+    .user-chip{display:flex;align-items:center;gap:10px;padding:4px 16px 4px 4px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface);text-decoration:none;transition:background 150ms}
+    .user-chip:hover{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface)}
+    .user-chip-avatar{width:36px;height:36px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center}
+    .user-chip-name{font:var(--md-sys-typescale-label-large)}
+    .main-content{min-height:calc(100vh - 200px)}
+    .footer-m3{background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);color:#fff;padding:48px 0 24px;margin-top:0}
+    .footer-m3 .footer-section h5{font:var(--md-sys-typescale-title-medium);color:#fff;margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
+    .footer-m3 .footer-section h5::after{content:none}
+    .footer-m3 .footer-section h5 .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-inverse-primary)}
+    .footer-m3 .footer-section p{font:var(--md-sys-typescale-body-medium);color:rgba(255,255,255,.7)}
+    .footer-m3 .footer-section p a{color:var(--md-sys-color-inverse-primary)!important}
+    .footer-m3 .footer-links{list-style:none;padding:0;margin:0}
+    .footer-m3 .footer-links li{margin-bottom:4px}
+    .footer-m3 .footer-links a{font:var(--md-sys-typescale-body-medium);color:rgba(255,255,255,.65);text-decoration:none;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--md-sys-shape-corner-full);transition:all 150ms}
+    .footer-m3 .footer-links a:hover{background:rgba(255,255,255,.1);color:var(--md-sys-color-inverse-primary)}
+    .social-icons-m3{display:flex;gap:8px;flex-wrap:wrap}
+    .social-icons-m3 a{width:40px;height:40px;border-radius:var(--md-sys-shape-corner-full);background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 200ms}
+    .social-icons-m3 a:hover{background:var(--md-sys-color-inverse-primary);color:#1a2a1a;transform:translateY(-2px)}
+    .footer-bottom-m3{border-top:1px solid rgba(255,255,255,.15);padding-top:20px;margin-top:32px;text-align:center}
+    .footer-bottom-m3 p{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.5);margin:0}
+    @media(max-width:992px){.navbar-m3 .navbar-collapse{padding:16px 0}.navbar-m3 .nav-link{margin:2px 0}.btn-m3-login,.btn-m3-signup{margin:8px 4px 0 0}.user-chip{margin-top:12px}}
+    @media(max-width:768px){.navbar-m3 .navbar-brand{font-size:1.25rem}.footer-m3 .footer-section{margin-bottom:24px;text-align:center}.social-icons-m3{justify-content:center}}
+    .fade-in{animation:m3FadeIn 500ms cubic-bezier(.05,.7,.1,1)}
+    @keyframes m3FadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* ===== BigPipe Page Loader ===== */
+    .bigpipe-loader{position:fixed;inset:0;z-index:9999;background:var(--md-sys-color-surface);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease}
+    .bigpipe-loader.done{opacity:0;visibility:hidden;pointer-events:none}
+    .bigpipe-spinner{position:relative;width:56px;height:56px;margin-bottom:24px}
+    .bigpipe-spinner::before{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid var(--md-sys-color-surface-container-high);border-top-color:var(--md-sys-color-primary);animation:bp-spin .8s linear infinite}
+    @keyframes bp-spin{to{transform:rotate(360deg)}}
+    .bigpipe-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .bigpipe-logo img{width:40px;height:40px;border-radius:var(--md-sys-shape-corner-medium)}
+    .bigpipe-logo span{font:500 1.3rem/1 'Inter',sans-serif;color:var(--md-sys-color-on-surface)}
+    .bigpipe-bar{width:220px;height:4px;background:var(--md-sys-color-surface-container-high);border-radius:2px;overflow:hidden}
+    .bigpipe-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));border-radius:2px;transition:width .3s ease}
+    .bigpipe-status{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant);margin-top:12px;letter-spacing:.3px}
 
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--dark-text);
-        }
+    /* ===== Pagelet Progressive Rendering ===== */
+    .pagelet{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.05,.7,.1,1),transform .6s cubic-bezier(.05,.7,.1,1)}
+    .pagelet.loaded{opacity:1;transform:translateY(0)}
+    .pagelet:nth-child(2){transition-delay:80ms}
+    .pagelet:nth-child(3){transition-delay:160ms}
+    .pagelet:nth-child(4){transition-delay:240ms}
+    .pagelet:nth-child(5){transition-delay:320ms}
+    .pagelet:nth-child(6){transition-delay:400ms}
 
-        .container {
-            max-width: 1200px;
-        }
+    /* Skeleton shimmer placeholders */
+    .skeleton{position:relative;overflow:hidden;background:var(--md-sys-color-surface-container-high);border-radius:var(--md-sys-shape-corner-medium)}
+    .skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:bp-shimmer 1.5s infinite}
+    @keyframes bp-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .skeleton-text{height:14px;margin-bottom:10px;border-radius:4px}
+    .skeleton-text.w75{width:75%}
+    .skeleton-text.w50{width:50%}
+    .skeleton-text.w100{width:100%}
+    .skeleton-title{height:24px;width:60%;margin-bottom:16px;border-radius:6px}
+    .skeleton-card{height:280px;border-radius:var(--md-sys-shape-corner-large)}
+    .skeleton-circle{width:48px;height:48px;border-radius:50%}
+    .skeleton-btn{height:40px;width:140px;border-radius:var(--md-sys-shape-corner-full)}
 
-        /* Enhanced Navbar */
-        .navbar-custom {
-            background-color: var(--secondary-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 0.8rem 1rem;
-            transition: var(--transition);
-        }
+    /* Enhanced md-reveal with stagger */
+    .md-reveal{opacity:0;transform:translateY(20px);transition:opacity .55s cubic-bezier(.05,.7,.1,1),transform .55s cubic-bezier(.05,.7,.1,1)}
+    .md-reveal.visible{opacity:1;transform:translateY(0)}
+    .md-reveal:nth-child(2){transition-delay:60ms}
+    .md-reveal:nth-child(3){transition-delay:120ms}
+    .md-reveal:nth-child(4){transition-delay:180ms}
+    .md-reveal:nth-child(5){transition-delay:240ms}
+    .md-reveal:nth-child(6){transition-delay:300ms}
 
-        .navbar-custom.scrolled {
-            padding: 0.5rem 1rem;
-            background-color: rgba(47, 79, 79, 0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: white !important;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-brand img {
-            transition: var(--transition);
-        }
-
-        .navbar-brand:hover img {
-            transform: rotate(5deg);
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            margin: 0 0.2rem;
-            border-radius: 5px;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-link:hover, .nav-link:focus {
-            color: white !important;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-link.active {
-            color: white !important;
-            background-color: rgba(40, 167, 69, 0.2);
-        }
-
-        .nav-link.active:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 15%;
-            width: 70%;
-            height: 2px;
-            background: var(--primary-color);
-        }
-
-        .navbar-toggler {
-            border: none;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: none;
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        /* Dropdown Menu */
-        .dropdown-menu {
-            border: none;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-        }
-
-        .dropdown-item {
-            padding: 0.6rem 1.5rem;
-            transition: var(--transition);
-        }
-
-        .dropdown-item:hover {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--primary-color);
-        }
-
-        /* Buttons */
-        .btn-login, .btn-signup {
-            border-radius: 5px;
-            padding: 0.5rem 1.2rem;
-            font-weight: 500;
-            transition: var(--transition);
-            margin-left: 0.5rem;
-        }
-
-        .btn-login {
-            background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-        }
-
-        .btn-login:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-signup {
-            background-color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            color: white;
-        }
-
-        .btn-signup:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* User Dropdown */
-        .user-dropdown {
-            color: white;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 5px;
-            transition: var(--transition);
-        }
-
-        .user-dropdown:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.5rem;
-            font-size: 1rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            min-height: calc(100vh - 200px);
-            
-        }
-
-        /* Enhanced Footer */
-        footer {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #1e3e3e 100%);
-            color: white;
-            padding: 3rem 0 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .footer-section h5 {
-            font-weight: 600;
-            margin-bottom: 1.2rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .footer-section h5:after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background: var(--primary-color);
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.6rem;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .social-icons a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: white;
-            margin-right: 0.8rem;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .social-icons a:hover {
-            background: var(--primary-color);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.5rem;
-            margin-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) {
-            .navbar-collapse {
-                padding: 1rem 0;
-            }
-            
-            .nav-link {
-                margin: 0.2rem 0;
-            }
-            
-            .btn-login, .btn-signup {
-                margin: 0.5rem 0.5rem 0 0;
-            }
-            
-            .user-dropdown {
-                justify-content: center;
-                margin-top: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            
-            
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-            
-            .footer-section {
-                margin-bottom: 2rem;
-                text-align: center;
-            }
-            
-            .footer-section h5:after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
-
-        /* Animation Classes */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+    /* NProgress-style top bar */
+    .bigpipe-topbar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));z-index:10000;transition:width .4s ease;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(40,167,69,.4)}
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
-
 <body>
-    <!-- Enhanced Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <!-- BigPipe Page Loader -->
+    <div class="bigpipe-loader" id="bigpipeLoader">
+        <div class="bigpipe-logo">
+            <img src="{% static 'images/afrimaster.png' %}" alt="AfriMaster">
+            <span>AfriMaster</span>
+        </div>
+        <div class="bigpipe-spinner"></div>
+        <div class="bigpipe-bar"><div class="bigpipe-bar-fill" id="bigpipeBarFill"></div></div>
+        <div class="bigpipe-status" id="bigpipeStatus">Loading pagelets...</div>
+    </div>
+    <div class="bigpipe-topbar" id="bigpipeTopbar" style="width:0%"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-m3">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
-                <img src="{% static 'images/afrimaster.png' %}" alt="AfriMaster Properties Logo" width="50" height="50" class="d-inline-block align-top me-2">
-                AfriMaster
+                <img src="{% static 'images/afrimaster.png' %}" alt="AfriMaster" width="40" height="40">AfriMaster
             </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
-                            <i class="bi bi-house-door me-2"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
-                            <i class="bi bi-info-circle me-2"></i>About
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">
-                            <i class="bi bi-telephone me-2"></i>Contact
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'updates' %}active{% endif %}" href="{% url 'updates' %}">
-                            <i class="bi bi-bell me-2"></i>Updates
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'property_list' %}active{% endif %}" href="{% url 'property_list' %}">
-                            <i class="bi bi-building me-2"></i>Properties
-                        </a>
-                    </li>
-
-                    <!-- Role-based Navigation -->
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}"><span class="material-symbols-outlined">home</span>Home</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}"><span class="material-symbols-outlined">info</span>About</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}"><span class="material-symbols-outlined">call</span>Contact</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'updates' %}active{% endif %}" href="{% url 'updates' %}"><span class="material-symbols-outlined">notifications</span>Updates</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'property_list' %}active{% endif %}" href="{% url 'property_list' %}"><span class="material-symbols-outlined">apartment</span>Properties</a></li>
                     {% if user.is_authenticated and user.role == "Admin" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin_dashboard' %}">
-                            <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}"><span class="material-symbols-outlined">dashboard</span>Admin</a></li>
                     {% elif user.is_authenticated and user.role == 'Owner' %}
                         {% if owner_user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'owner_dashboard' user.id %}">
-                                <i class="bi bi-speedometer2 me-2"></i>Owner Dashboard
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'owner_dashboard' user.id %}"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'create_owner_profile' user.id %}">
-                                <i class="bi bi-person-plus me-2"></i>Register as Owner
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'create_owner_profile' user.id %}"><span class="material-symbols-outlined">person_add</span>Register</a></li>
                         {% endif %}
                     {% elif user.is_authenticated and user.role == "Tenant" %}
                         {% if tenant_user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tenant_dashboard' user.id %}">
-                                <i class="bi bi-speedometer2 me-2"></i>Tenant Dashboard
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tenant_dashboard' user.id %}"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'new_tenant' user.id %}">
-                                <i class="bi bi-person-plus me-2"></i>Register as Tenant
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'new_tenant' user.id %}"><span class="material-symbols-outlined">person_add</span>Register</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>
-
                 <div class="d-flex align-items-center">
                     {% if user.is_authenticated %}
                     <div class="dropdown">
-                        <a class="user-dropdown dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="user-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            {{ user.username }}
+                        <a class="user-chip dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <div class="user-chip-avatar"><span class="material-symbols-outlined" style="font-size:20px">person</span></div>
+                            <span class="user-chip-name">{{ user.username }}</span>
                         </a>
-                        <ul class="dropdown-menu shadow" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="#">
-                                <i class="bi bi-person me-2"></i>View Profile
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'user_logout' %}">
-                                <i class="bi bi-box-arrow-right me-2"></i>Logout
-                            </a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" href="#"><span class="material-symbols-outlined">account_circle</span>View Profile</a></li>
+                            <li><hr class="dropdown-divider" style="margin:4px 0;border-color:var(--md-sys-color-outline-variant)"></li>
+                            <li><a class="dropdown-item" href="{% url 'user_logout' %}"><span class="material-symbols-outlined">logout</span>Logout</a></li>
                         </ul>
                     </div>
                     {% else %}
-                    <a class="btn btn-login" href="{% url 'user_login' %}">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                    </a>
-                    <a class="btn btn-signup" href="{% url 'register' %}">
-                        <i class="bi bi-person-plus me-2"></i>Sign Up
-                    </a>
+                    <a class="btn-m3-login" href="{% url 'user_login' %}"><span class="material-symbols-outlined" style="font-size:18px">login</span>Login</a>
+                    <a class="btn-m3-signup" href="{% url 'register' %}"><span class="material-symbols-outlined" style="font-size:18px">person_add</span>Sign Up</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
-
-    <!-- Main Content -->
-    <main class="main-content fade-in">
-        {% block content %}
-        <!-- Page content will be inserted here -->
-        {% endblock %}
-    </main>
-
-    <!-- Enhanced Footer -->
-    <footer>
+    <main class="main-content fade-in">{% block content %}{% endblock %}</main>
+    <footer class="footer-m3">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 footer-section">
-                    <h5>Contact Us</h5>
+                    <h5><span class="material-symbols-outlined">mail</span>Contact Us</h5>
                     <p>For inquiries, please reach out to us:</p>
-                    <p><i class="bi bi-envelope me-2"></i> <a href="mailto:support@afrimasterproperties.com" class="text-white text-decoration-none">support@afrimasterproperties.com</a></p>
-                    <p><i class="bi bi-telephone me-2"></i> <a href="tel:+250788123456" class="text-white text-decoration-none">+250 788 123 456</a></p>
-                    <p><i class="bi bi-geo-alt me-2"></i> Kigali, Rwanda</p>
+                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">email</span> <a href="mailto:support@afrimasterproperties.com" style="color:var(--md-sys-color-primary);text-decoration:none">support@afrimasterproperties.com</a></p>
+                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">phone</span> <a href="tel:+250788123456" style="color:rgba(255,255,255,.7);text-decoration:none">+250 788 123 456</a></p>
+                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">location_on</span> Kigali, Rwanda</p>
                 </div>
                 <div class="col-lg-4 col-md-6 footer-section">
-                    <h5>Quick Links</h5>
+                    <h5><span class="material-symbols-outlined">link</span>Quick Links</h5>
                     <ul class="footer-links">
-                        <li><a href="{% url 'index' %}#what-we-do">What We Do</a></li>
-                        <li><a href="{% url 'index' %}#featured-properties">Featured Properties</a></li>
+                        <li><a href="{% url 'index' %}#services">What We Do</a></li>
+                        <li><a href="{% url 'index' %}#featured">Featured Properties</a></li>
                         <li><a href="{% url 'index' %}#testimonials">Testimonials</a></li>
                         <li><a href="{% url 'about' %}">About Us</a></li>
                         <li><a href="#">Privacy Policy</a></li>
@@ -464,71 +195,138 @@
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-12 footer-section">
-                    <h5>Follow Us</h5>
+                    <h5><span class="material-symbols-outlined">share</span>Follow Us</h5>
                     <p>Stay connected with us on social media</p>
-                    <div class="social-icons mt-3">
-                        <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-                        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                        <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                    <div class="social-icons-m3 mt-3">
+                        <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                        <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
+                        <a href="https://github.com" target="_blank"><i class="bi bi-github"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p class="mb-0">&copy; 2023 AfriMaster Properties. All rights reserved.</p>
-            </div>
+            <div class="footer-bottom-m3"><p>&copy; 2026 AfriMaster Properties. All rights reserved.</p></div>
         </div>
     </footer>
-
-    <!-- Tawk.to Script -->
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/69a609c92f01051c35610a97/1jio9cfl9';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];s1.async=true;s1.src='https://embed.tawk.to/69a609c92f01051c35610a97/1jio9cfl9';s1.charset='UTF-8';s1.setAttribute('crossorigin','*');s0.parentNode.insertBefore(s1,s0);})();
 </script>
 <!--End of Tawk.to Script-->
-
-    <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script>
-        // Navbar scroll effect
-        $(window).scroll(function() {
-            if ($(window).scrollTop() > 50) {
-                $('.navbar-custom').addClass('scrolled');
-            } else {
-                $('.navbar-custom').removeClass('scrolled');
+    /* ===== BigPipe Progressive Loading Engine ===== */
+    (function(){
+        var loader=document.getElementById('bigpipeLoader');
+        var barFill=document.getElementById('bigpipeBarFill');
+        var status=document.getElementById('bigpipeStatus');
+        var topbar=document.getElementById('bigpipeTopbar');
+        var pagelets=document.querySelectorAll('.pagelet');
+        var totalPagelets=pagelets.length||1;
+        var loadedCount=0;
+        var stages=['Initializing layout...','Loading navigation...','Rendering hero section...','Loading content blocks...','Rendering cards & media...','Finalizing page...'];
+        var stageIndex=0;
+
+        function updateProgress(pct){
+            if(barFill)barFill.style.width=pct+'%';
+            if(topbar)topbar.style.width=pct+'%';
+        }
+
+        function updateStatus(){
+            if(status && stageIndex<stages.length){
+                status.textContent=stages[stageIndex];
+                stageIndex++;
             }
-        });
+        }
 
-        // Add active class to current page in navigation
-        $(document).ready(function() {
-            var currentUrl = window.location.pathname;
-            $('.nav-link').each(function() {
-                var linkUrl = $(this).attr('href');
-                if (currentUrl === linkUrl) {
-                    $(this).addClass('active');
-                }
+        /* Phase 1: Quick initial progress */
+        updateProgress(10);
+        updateStatus();
+
+        /* Phase 2: Simulate pagelet streaming */
+        function loadNextPagelet(){
+            if(loadedCount<totalPagelets){
+                var pagelet=pagelets[loadedCount];
+                pagelet.classList.add('loaded');
+                loadedCount++;
+                var pct=20+Math.floor((loadedCount/totalPagelets)*60);
+                updateProgress(pct);
+                updateStatus();
+                setTimeout(loadNextPagelet,80);
+            } else {
+                finishLoading();
+            }
+        }
+
+        function finishLoading(){
+            updateProgress(100);
+            if(status)status.textContent='Complete!';
+            setTimeout(function(){
+                if(loader)loader.classList.add('done');
+                if(topbar){topbar.style.width='100%';setTimeout(function(){topbar.style.opacity='0'},300)}
+                /* If no pagelets exist, just fade in normally */
+                document.querySelectorAll('.pagelet').forEach(function(p){p.classList.add('loaded')});
+            },250);
+        }
+
+        /* Start when DOM is ready */
+        if(document.readyState==='loading'){
+            document.addEventListener('DOMContentLoaded',function(){
+                updateProgress(20);updateStatus();
+                setTimeout(function(){
+                    if(totalPagelets>0 && pagelets.length>0){loadNextPagelet()}
+                    else{finishLoading()}
+                },200);
             });
-            
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+        } else {
+            updateProgress(20);updateStatus();
+            setTimeout(function(){
+                if(totalPagelets>0 && pagelets.length>0){loadNextPagelet()}
+                else{finishLoading()}
+            },200);
+        }
+
+        /* Safety: auto-dismiss after 4s max */
+        setTimeout(function(){
+            if(loader && !loader.classList.contains('done'))finishLoading();
+        },4000);
+
+        /* Also complete on window load */
+        window.addEventListener('load',function(){
+            setTimeout(function(){
+                if(loader && !loader.classList.contains('done'))finishLoading();
+            },300);
         });
+    })();
+
+    /* ===== Scroll & UI Logic ===== */
+    $(window).scroll(function(){$('.navbar-m3').toggleClass('scrolled',$(window).scrollTop()>50)});
+    $(document).ready(function(){
+        var tt=[].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));tt.map(function(e){return new bootstrap.Tooltip(e)});
+        /* IntersectionObserver for md-reveal elements */
+        var reveals=document.querySelectorAll('.md-reveal');
+        if(reveals.length){
+            var obs=new IntersectionObserver(function(entries){
+                entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('visible');obs.unobserve(en.target)}});
+            },{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+            reveals.forEach(function(el){obs.observe(el)});
+        }
+    });
+
+    /* ===== SPA-like navigation with BigPipe topbar ===== */
+    document.querySelectorAll('a[href]').forEach(function(a){
+        if(a.hostname===location.hostname && !a.getAttribute('href').startsWith('#') && !a.getAttribute('target') && !a.getAttribute('data-bs-toggle')){
+            a.addEventListener('click',function(){
+                var topbar=document.getElementById('bigpipeTopbar');
+                if(topbar){topbar.style.opacity='1';topbar.style.width='30%';topbar.style.transition='width .6s ease'}
+            });
+        }
+    });
     </script>
+    {% block extra_js %}{% endblock %}
 </body>
-
 </html>

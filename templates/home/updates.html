@@ -5,594 +5,288 @@
 
 {% block content %}
 <style>
-    /* Updates Page Styles */
-    .updates-hero {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        color: white;
-        padding: 100px 0 80px;
-        text-align: center;
-        margin-top: 80px;
-        position: relative;
-        overflow: hidden;
-    }
+    /* ===== Hero ===== */
+    .m3-updates-hero{margin-top:76px;padding:90px 0 80px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden;text-align:center;color:#fff}
+    .m3-updates-hero::before{content:'';position:absolute;width:500px;height:500px;top:-150px;right:-150px;background:radial-gradient(circle,rgba(40,167,69,.12) 0%,transparent 70%);border-radius:50%}
+    .m3-updates-hero::after{content:'';position:absolute;width:350px;height:350px;bottom:-100px;left:-100px;background:radial-gradient(circle,rgba(32,201,151,.1) 0%,transparent 70%);border-radius:50%}
+    .m3-updates-hero-inner{position:relative;z-index:2}
+    .m3-updates-hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(184,245,176,.12);color:var(--md-sys-color-inverse-primary);padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;border:1px solid rgba(184,245,176,.2);margin-bottom:20px}
+    .m3-updates-hero-badge .material-symbols-outlined{font-size:16px}
+    .m3-updates-hero h1{font:500 3rem/1.15 'Inter',sans-serif;margin-bottom:16px}
+    .m3-updates-hero h1 span{background:linear-gradient(135deg,var(--md-sys-color-inverse-primary),var(--md-sys-color-tertiary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .m3-updates-hero p{color:rgba(255,255,255,.6);font:var(--md-sys-typescale-body-large);max-width:550px;margin:0 auto;line-height:1.7}
+    /* Hero stats row */
+    .m3-hero-stats-row{display:flex;justify-content:center;gap:48px;margin-top:36px;flex-wrap:wrap}
+    .m3-hero-stat-item{text-align:center}
+    .m3-hero-stat-item .val{font:500 1.6rem/1 'Inter',sans-serif;color:#fff}
+    .m3-hero-stat-item .lbl{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
 
-    .updates-hero:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('{% static 'images/pattern.png' %}') repeat;
-        opacity: 0.1;
-    }
+    /* ===== Section Headers ===== */
+    .m3-sec{padding:90px 0}.m3-sec-s{background:var(--md-sys-color-surface)}.m3-sec-c{background:var(--md-sys-color-surface-container)}
+    .m3-sh{text-align:center;margin-bottom:56px}
+    .m3-tag{display:inline-flex;align-items:center;gap:8px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+    .m3-tag .material-symbols-outlined{font-size:16px}
+    .m3-stitle{font:var(--md-sys-typescale-headline-large);color:var(--md-sys-color-on-surface);margin-bottom:14px}
+    .m3-ssub{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-large);max-width:560px;margin:0 auto;line-height:1.7}
 
-    .updates-hero-content {
-        position: relative;
-        z-index: 1;
-    }
+    /* ===== Filter Chips (improved) ===== */
+    .m3-filter-bar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:48px;padding:16px 24px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-extra-large);box-shadow:var(--md-sys-elevation-1);max-width:680px;margin-left:auto;margin-right:auto}
+    .m3-filter-chip{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 18px;background:transparent;color:var(--md-sys-color-on-surface-variant);border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms var(--md-sys-motion-easing-standard);text-decoration:none}
+    .m3-filter-chip:hover{background:rgba(40,167,69,.06);color:var(--md-sys-color-on-surface);border-color:var(--md-sys-color-primary)}
+    .m3-filter-chip.active{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border-color:var(--md-sys-color-primary);box-shadow:var(--md-sys-elevation-1)}
+    .m3-filter-chip .material-symbols-outlined{font-size:16px}
 
-    .updates-hero h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
+    /* ===== Featured Update (hero card) ===== */
+    .m3-featured{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;border:2px solid var(--md-sys-color-primary);margin-bottom:56px;position:relative;transition:all 300ms var(--md-sys-motion-easing-emphasized)}
+    .m3-featured:hover{box-shadow:var(--md-sys-elevation-3);transform:translateY(-4px)}
+    .m3-featured-badge{position:absolute;top:20px;left:20px;z-index:2;display:inline-flex;align-items:center;gap:6px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);padding:6px 18px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.3px;box-shadow:var(--md-sys-elevation-1)}
+    .m3-featured-content{display:flex;flex-direction:column}
+    @media(min-width:992px){.m3-featured-content{flex-direction:row}}
+    .m3-featured-visual{flex:0 0 380px;min-height:300px;background:linear-gradient(135deg,#1a2a1a,#0d4a25);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:16px;padding:40px}
+    .m3-featured-visual .material-symbols-outlined{font-size:4rem;opacity:.7}
+    .m3-featured-visual-label{font:var(--md-sys-typescale-label-medium);color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px}
+    .m3-featured-details{flex:1;padding:40px}
+    .m3-featured-title{font:var(--md-sys-typescale-headline-medium);color:var(--md-sys-color-on-surface);margin-bottom:16px;line-height:1.3}
+    .m3-featured-meta{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+    .m3-featured-meta-item{display:inline-flex;align-items:center;gap:6px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);background:var(--md-sys-color-surface-container);padding:6px 14px;border-radius:var(--md-sys-shape-corner-full)}
+    .m3-featured-meta-item .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-primary)}
+    .m3-featured-desc{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-large);line-height:1.8;margin-bottom:28px}
+    .m3-featured-btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;text-decoration:none;transition:all 200ms;box-shadow:var(--md-sys-elevation-1)}
+    .m3-featured-btn:hover{box-shadow:var(--md-sys-elevation-2);color:var(--md-sys-color-on-primary);transform:translateY(-1px)}
+    .m3-featured-btn .material-symbols-outlined{font-size:18px;transition:transform .3s}
+    .m3-featured-btn:hover .material-symbols-outlined{transform:translateX(4px)}
 
-    .updates-hero p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-        max-width: 600px;
-        margin: 0 auto;
-    }
+    /* ===== Update Cards (timeline style) ===== */
+    .m3-updates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:24px}
+    @media(max-width:768px){.m3-updates-grid{grid-template-columns:1fr}}
+    .m3-update-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized);display:flex;flex-direction:column}
+    .m3-update-card:hover{transform:translateY(-6px);box-shadow:var(--md-sys-elevation-3);border-color:transparent}
+    .m3-update-card-accent{height:4px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary))}
+    .m3-update-card-header{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .m3-update-card-icon{width:44px;height:44px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .m3-update-card-icon .material-symbols-outlined{font-size:22px;color:var(--md-sys-color-on-primary-container)}
+    .m3-update-card-badge{display:inline-flex;align-items:center;gap:4px;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);padding:4px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);white-space:nowrap}
+    .m3-update-card-badge .material-symbols-outlined{font-size:14px}
+    .m3-update-card-body{padding:16px 24px 24px;flex:1;display:flex;flex-direction:column}
+    .m3-update-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:12px;line-height:1.4}
+    .m3-update-card-meta{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+    .m3-update-card-meta-item{display:flex;align-items:center;gap:5px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small)}
+    .m3-update-card-meta-item .material-symbols-outlined{font-size:15px;color:var(--md-sys-color-primary)}
+    .m3-update-card-desc{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-medium);line-height:1.7;flex:1;margin-bottom:20px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .m3-update-card-footer{display:flex;justify-content:space-between;align-items:center;padding:0 24px 24px;flex-wrap:wrap;gap:12px}
+    .m3-update-card-tags{display:flex;flex-wrap:wrap;gap:6px}
+    .m3-update-card-tag{display:inline-flex;align-items:center;gap:4px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);padding:4px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small)}
+    .m3-update-card-tag .material-symbols-outlined{font-size:12px}
+    .m3-btn-read{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 20px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;text-decoration:none;transition:all 200ms}
+    .m3-btn-read:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:var(--md-sys-elevation-1)}
+    .m3-btn-read .material-symbols-outlined{font-size:16px;transition:transform .3s}
+    .m3-btn-read:hover .material-symbols-outlined{transform:translateX(3px)}
 
-    /* Updates Section */
-    .updates-section {
-        padding: 80px 0;
-        background: var(--light-bg);
-    }
+    /* ===== Empty State ===== */
+    .m3-no-updates{text-align:center;padding:80px 24px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-extra-large);border:2px dashed var(--md-sys-color-outline-variant)}
+    .m3-no-updates-icon{width:80px;height:80px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-surface-container);display:flex;align-items:center;justify-content:center;margin:0 auto 24px}
+    .m3-no-updates-icon .material-symbols-outlined{font-size:2.4rem;color:var(--md-sys-color-on-surface-variant)}
+    .m3-no-updates h3{font:var(--md-sys-typescale-headline-small);color:var(--md-sys-color-on-surface);margin-bottom:12px}
+    .m3-no-updates p{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-large);margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7}
 
-    .updates-header {
-        text-align: center;
-        margin-bottom: 50px;
-    }
+    /* ===== Pagination ===== */
+    .m3-pagination{display:flex;justify-content:center;margin-top:48px;gap:6px}
+    .m3-pagination .page-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--md-sys-shape-corner-medium);font:var(--md-sys-typescale-label-large);border:1.5px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-lowest);transition:all 200ms}
+    .m3-pagination .page-link:hover{background:var(--md-sys-color-primary-container);border-color:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary-container)}
+    .m3-pagination .page-item.active .page-link{background:var(--md-sys-color-primary);border-color:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:var(--md-sys-elevation-1)}
 
-    .section-title {
-        position: relative;
-        margin-bottom: 50px;
-        font-weight: 700;
-        color: var(--secondary-color);
-    }
+    /* ===== Subscribe CTA ===== */
+    .m3-subscribe-section{padding:100px 0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--md-sys-color-inverse-surface) 0%,#0d4a25 100%)}
+    .m3-subscribe-section::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="1.5" fill="rgba(255,255,255,.04)"/></svg>');background-size:40px 40px}
+    .m3-subscribe-inner{position:relative;z-index:2;text-align:center}
+    .m3-subscribe-inner h3{font:500 2rem/1.3 'Inter',sans-serif;color:#fff;margin-bottom:14px}
+    .m3-subscribe-inner p{color:rgba(255,255,255,.6);font:var(--md-sys-typescale-body-large);max-width:480px;margin:0 auto 32px;line-height:1.7}
+    .m3-subscribe-form{display:flex;max-width:480px;margin:0 auto;box-shadow:var(--md-sys-elevation-2);border-radius:var(--md-sys-shape-corner-full);overflow:hidden;background:var(--md-sys-color-surface-container-lowest)}
+    .m3-subscribe-form input{flex:1;border:none;padding:16px 24px;font:var(--md-sys-typescale-body-large);background:transparent;color:var(--md-sys-color-on-surface);outline:none}
+    .m3-subscribe-form input::placeholder{color:var(--md-sys-color-on-surface-variant)}
+    .m3-subscribe-form button{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;padding:16px 28px;font:var(--md-sys-typescale-label-large);cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 200ms;white-space:nowrap}
+    .m3-subscribe-form button:hover{background:#1e7e34}
+    .m3-subscribe-form button .material-symbols-outlined{font-size:18px}
 
-    .section-title:after {
-        content: '';
-        position: absolute;
-        bottom: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 4px;
-        background: var(--primary-color);
-        border-radius: 2px;
-    }
+    /* ===== Skeleton loading states ===== */
+    .update-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:24px;margin-bottom:48px}
+    @media(max-width:768px){.update-skeleton{grid-template-columns:1fr}}
+    .skel-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:24px;border:1px solid var(--md-sys-color-outline-variant)}
+    .skel-card .skeleton{margin-bottom:12px}
 
-    .updates-filter {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 40px;
+    @media(max-width:768px){
+        .m3-updates-hero h1{font-size:2.2rem}
+        .m3-updates-hero{padding:70px 0 60px}
+        .m3-sec{padding:60px 0}
+        .m3-featured-visual{flex:none;min-height:200px}
+        .m3-featured-details{padding:28px}
+        .m3-update-card-footer{flex-direction:column;align-items:flex-start}
+        .m3-hero-stats-row{gap:24px}
+        .m3-subscribe-form{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}
+        .m3-subscribe-form input{border-radius:var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0}
+        .m3-subscribe-form button{border-radius:0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium);justify-content:center;width:100%}
     }
-
-    .filter-btn {
-        background: white;
-        border: 2px solid var(--primary-color);
-        color: var(--primary-color);
-        padding: 8px 20px;
-        border-radius: 25px;
-        font-weight: 500;
-        transition: var(--transition);
-        cursor: pointer;
-    }
-
-    .filter-btn:hover, .filter-btn.active {
-        background: var(--primary-color);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-    }
-
-    /* Update Cards */
-    .update-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        margin-bottom: 30px;
-        border: none;
-        height: 100%;
-    }
-
-    .update-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    }
-
-    .update-header {
-        padding: 25px 25px 15px;
-        border-bottom: 1px solid #eaeaea;
-        position: relative;
-    }
-
-    .update-badge {
-        position: absolute;
-        top: 20px;
-        right: 25px;
-        background: var(--primary-color);
-        color: white;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-
-    .update-title {
-        color: var(--secondary-color);
-        font-weight: 600;
-        margin-bottom: 10px;
-        font-size: 1.3rem;
-        line-height: 1.4;
-    }
-
-    .update-meta {
-        display: flex;
-        align-items: center;
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
-    .update-meta i {
-        margin-right: 8px;
-        color: var(--primary-color);
-    }
-
-    .update-date {
-        margin-right: 20px;
-        display: flex;
-        align-items: center;
-    }
-
-    .update-body {
-        padding: 20px 25px 25px;
-    }
-
-    .update-description {
-        color: #555;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    .update-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .update-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .tag {
-        background: rgba(40, 167, 69, 0.1);
-        color: var(--primary-color);
-        padding: 4px 12px;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-
-    .btn-read-more {
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 5px;
-        font-weight: 500;
-        transition: var(--transition);
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .btn-read-more:hover {
-        background: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Featured Update */
-    .featured-update {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        margin-bottom: 50px;
-        border: 3px solid var(--primary-color);
-        position: relative;
-    }
-
-    .featured-badge {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background: var(--primary-color);
-        color: white;
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-weight: 600;
-        z-index: 2;
-    }
-
-    .featured-update-content {
-        display: flex;
-        flex-direction: column;
-    }
-
-    @media (min-width: 992px) {
-        .featured-update-content {
-            flex-direction: row;
-        }
-    }
-
-    .featured-update-image {
-        flex: 1;
-        min-height: 300px;
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 4rem;
-    }
-
-    .featured-update-details {
-        flex: 1;
-        padding: 30px;
-    }
-
-    .featured-update-title {
-        color: var(--secondary-color);
-        font-weight: 700;
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-    }
-
-    .featured-update-meta {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-        color: #6c757d;
-    }
-
-    .featured-update-description {
-        color: #555;
-        line-height: 1.7;
-        margin-bottom: 25px;
-        font-size: 1.1rem;
-    }
-
-    .btn-featured {
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 5px;
-        font-weight: 600;
-        transition: var(--transition);
-    }
-
-    .btn-featured:hover {
-        background: var(--primary-color);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    /* No Updates State */
-    .no-updates {
-        text-align: center;
-        padding: 60px 20px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: var(--shadow);
-    }
-
-    .no-updates i {
-        font-size: 4rem;
-        color: #dee2e6;
-        margin-bottom: 20px;
-    }
-
-    .no-updates h3 {
-        color: var(--secondary-color);
-        margin-bottom: 15px;
-    }
-
-    .no-updates p {
-        color: #6c757d;
-        margin-bottom: 25px;
-    }
-
-    /* Pagination */
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 50px;
-    }
-
-    .pagination .page-link {
-        color: var(--secondary-color);
-        border: 1px solid #dee2e6;
-        padding: 10px 15px;
-        margin: 0 5px;
-        border-radius: 5px;
-        transition: var(--transition);
-    }
-
-    .pagination .page-link:hover {
-        background: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-    }
-
-    .pagination .page-item.active .page-link {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-    }
-
-    /* Subscription Section */
-    .subscription-section {
-        background: white;
-        padding: 80px 0;
-        text-align: center;
-    }
-
-    .subscription-content {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .subscription-title {
-        color: var(--secondary-color);
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-
-    .subscription-text {
-        color: #6c757d;
-        margin-bottom: 30px;
-    }
-
-    .subscription-form {
-        display: flex;
-        max-width: 500px;
-        margin: 0 auto;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        border-radius: 50px;
-        overflow: hidden;
-    }
-
-    .subscription-form input {
-        flex: 1;
-        border: none;
-        padding: 15px 25px;
-        font-size: 1rem;
-    }
-
-    .subscription-form button {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        font-weight: 600;
-        transition: var(--transition);
-    }
-
-    .subscription-form button:hover {
-        background: #218838;
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-on-scroll {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .animate-on-scroll.animated {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .updates-hero h1 {
-            font-size: 2.3rem;
-        }
-        
-        .updates-hero p {
-            font-size: 1.1rem;
-        }
-        
-        .update-header {
-            padding: 20px 20px 10px;
-        }
-        
-        .update-body {
-            padding: 15px 20px 20px;
-        }
-        
-        .update-actions {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-        }
-        
-        .subscription-form {
-            flex-direction: column;
-            border-radius: 10px;
-        }
-        
-        .subscription-form input {
-            border-radius: 10px 10px 0 0;
-        }
-        
-        .subscription-form button {
-            border-radius: 0 0 10px 10px;
-        }
-    }
+    @media(max-width:576px){.m3-updates-hero h1{font-size:1.8rem}}
 </style>
 
-<!-- Hero Section -->
-<section class="updates-hero">
+<!-- Pagelet: Hero -->
+<div class="pagelet" data-pagelet="hero">
+<section class="m3-updates-hero">
     <div class="container">
-        <div class="updates-hero-content">
-            <h1>Stay Updated</h1>
-            <p>Get the latest news, announcements, and important updates from AfriMaster Properties</p>
-        </div>
-    </div>
-</section>
-
-<!-- Updates Section -->
-<section class="updates-section">
-    <div class="container">
-        <div class="updates-header">
-            <h2 class="section-title">Latest Updates</h2>
-            <p class="text-muted">Stay informed about new features, property listings, and important announcements</p>
-        </div>
-
-        <!-- Updates Filter -->
-        <div class="updates-filter">
-            <button class="filter-btn active" data-filter="all">All Updates</button>
-            <button class="filter-btn" data-filter="announcement">Announcements</button>
-            <button class="filter-btn" data-filter="maintenance">Maintenance</button>
-            <button class="filter-btn" data-filter="feature">New Features</button>
-            <button class="filter-btn" data-filter="property">Property Listings</button>
-        </div>
-
-        <!-- Featured Update -->
-        {% if updates %}
-        <div class="featured-update animate-on-scroll">
-            <div class="featured-badge">Featured</div>
-            <div class="featured-update-content">
-                <div class="featured-update-image">
-                    <i class="bi bi-megaphone"></i>
+        <div class="m3-updates-hero-inner">
+            <div class="m3-updates-hero-badge"><span class="material-symbols-outlined">notifications_active</span>Stay Informed</div>
+            <h1>News & <span>Updates</span></h1>
+            <p>Get the latest announcements, feature releases, and important updates from AfriMaster Properties</p>
+            <div class="m3-hero-stats-row">
+                <div class="m3-hero-stat-item">
+                    <div class="val">{% if updates %}{{ updates|length }}{% else %}0{% endif %}</div>
+                    <div class="lbl">Updates</div>
                 </div>
-                <div class="featured-update-details">
-                    <h3 class="featured-update-title">{{ updates.0.title }}</h3>
-                    <div class="featured-update-meta">
-                        <span class="update-date">
-                            <i class="bi bi-calendar me-1"></i>
-                            {{ updates.0.created_at|date:"F j, Y" }} - {{ updates.0.end_date|date:"F j, Y" }}
-                        </span>
-                    </div>
-                    <p class="featured-update-description">{{ updates.0.description }}</p>
-                    <button class="btn-featured">
-                        <i class="bi bi-arrow-right me-2"></i>Read Full Update
-                    </button>
+                <div class="m3-hero-stat-item">
+                    <div class="val">24/7</div>
+                    <div class="lbl">Support</div>
+                </div>
+                <div class="m3-hero-stat-item">
+                    <div class="val">Live</div>
+                    <div class="lbl">Status</div>
                 </div>
             </div>
         </div>
-        {% endif %}
+    </div>
+</section>
+</div>
 
-        <!-- Updates Grid -->
-        <div class="row">
+<!-- Pagelet: Filters + Featured -->
+<div class="pagelet" data-pagelet="filters">
+<section class="m3-sec m3-sec-c">
+    <div class="container">
+        <div class="m3-sh">
+            <div class="m3-tag"><span class="material-symbols-outlined">feed</span>Latest Updates</div>
+            <h2 class="m3-stitle">What's New</h2>
+            <p class="m3-ssub">Stay informed about new features, property listings, and important announcements</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="m3-filter-bar">
+            <button class="m3-filter-chip active" data-filter="all"><span class="material-symbols-outlined">apps</span>All</button>
+            <button class="m3-filter-chip" data-filter="announcement"><span class="material-symbols-outlined">campaign</span>Announcements</button>
+            <button class="m3-filter-chip" data-filter="maintenance"><span class="material-symbols-outlined">build</span>Maintenance</button>
+            <button class="m3-filter-chip" data-filter="feature"><span class="material-symbols-outlined">new_releases</span>Features</button>
+            <button class="m3-filter-chip" data-filter="property"><span class="material-symbols-outlined">apartment</span>Properties</button>
+        </div>
+</div>
+</section>
+</div>
+
+<!-- Pagelet: Featured Update -->
+{% if updates %}
+<div class="pagelet" data-pagelet="featured">
+<section style="padding:0 0 40px;background:var(--md-sys-color-surface-container)">
+    <div class="container">
+        <div class="m3-featured md-reveal">
+            <div class="m3-featured-badge"><span class="material-symbols-outlined" style="font-size:16px">star</span>Featured Update</div>
+            <div class="m3-featured-content">
+                <div class="m3-featured-visual">
+                    <span class="material-symbols-outlined">campaign</span>
+                    <div class="m3-featured-visual-label">Latest Announcement</div>
+                </div>
+                <div class="m3-featured-details">
+                    <h3 class="m3-featured-title">{{ updates.0.title }}</h3>
+                    <div class="m3-featured-meta">
+                        <span class="m3-featured-meta-item">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            {{ updates.0.created_at|date:"F j, Y" }}
+                        </span>
+                        <span class="m3-featured-meta-item">
+                            <span class="material-symbols-outlined">event_busy</span>
+                            Until {{ updates.0.end_date|date:"F j, Y" }}
+                        </span>
+                    </div>
+                    <p class="m3-featured-desc">{{ updates.0.description }}</p>
+                    <button class="m3-featured-btn">Read Full Update <span class="material-symbols-outlined">arrow_forward</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+{% endif %}
+
+<!-- Pagelet: Update Cards Grid -->
+<div class="pagelet" data-pagelet="updates-grid">
+<section style="padding:0 0 90px;background:var(--md-sys-color-surface-container)">
+    <div class="container">
+
+        <!-- Skeleton loading placeholder (hidden by JS after load) -->
+        <div class="update-skeleton" id="updateSkeleton">
+            <div class="skel-card"><div class="skeleton" style="height:4px;border-radius:4px;margin-bottom:20px"></div><div class="skeleton skeleton-circle"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w100"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-btn"></div></div>
+            <div class="skel-card"><div class="skeleton" style="height:4px;border-radius:4px;margin-bottom:20px"></div><div class="skeleton skeleton-circle"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w100"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-btn"></div></div>
+            <div class="skel-card"><div class="skeleton" style="height:4px;border-radius:4px;margin-bottom:20px"></div><div class="skeleton skeleton-circle"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w100"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-btn"></div></div>
+            <div class="skel-card"><div class="skeleton" style="height:4px;border-radius:4px;margin-bottom:20px"></div><div class="skeleton skeleton-circle"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w100"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-btn"></div></div>
+        </div>
+
+        <!-- Actual cards -->
+        <div class="m3-updates-grid" id="updatesGrid" style="display:none">
             {% for update in updates %}
-            {% if forloop.counter0 > 0 %} <!-- Skip the first one as it's featured -->
-            <div class="col-lg-6 mb-4">
-                <div class="update-card animate-on-scroll">
-                    <div class="update-header">
-                        <div class="update-badge">
-                            {% if forloop.counter0 == 1 %}New{% else %}Update{% endif %}
-                        </div>
-                        <h4 class="update-title">{{ update.title }}</h4>
-                        <div class="update-meta">
-                            <span class="update-date">
-                                <i class="bi bi-calendar me-1"></i>
-                                {{ update.created_at|date:"M j, Y" }}
-                            </span>
-                            <span class="update-date">
-                                <i class="bi bi-clock me-1"></i>
-                                Until {{ update.end_date|date:"M j, Y" }}
-                            </span>
-                        </div>
+            {% if forloop.counter0 > 0 %}
+            <div class="m3-update-card md-reveal" data-category="{% cycle 'announcement' 'maintenance' 'feature' 'property' %}">
+                <div class="m3-update-card-accent"></div>
+                <div class="m3-update-card-header">
+                    <div class="m3-update-card-icon">
+                        <span class="material-symbols-outlined">{% cycle 'campaign' 'build' 'new_releases' 'apartment' %}</span>
                     </div>
-                    <div class="update-body">
-                        <p class="update-description">{{ update.description }}</p>
-                        <div class="update-actions">
-                            <div class="update-tags">
-                                <span class="tag">Announcement</span>
-                                <span class="tag">Important</span>
-                            </div>
-                            <button class="btn-read-more">
-                                <i class="bi bi-arrow-right me-1"></i>Read More
-                            </button>
-                        </div>
+                    <div class="m3-update-card-badge">
+                        <span class="material-symbols-outlined">{% if forloop.counter0 == 1 %}fiber_new{% else %}update{% endif %}</span>
+                        {% if forloop.counter0 == 1 %}New{% else %}Update{% endif %}
                     </div>
+                </div>
+                <div class="m3-update-card-body">
+                    <h4 class="m3-update-card-title">{{ update.title }}</h4>
+                    <div class="m3-update-card-meta">
+                        <span class="m3-update-card-meta-item">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            {{ update.created_at|date:"M j, Y" }}
+                        </span>
+                        <span class="m3-update-card-meta-item">
+                            <span class="material-symbols-outlined">schedule</span>
+                            Until {{ update.end_date|date:"M j, Y" }}
+                        </span>
+                    </div>
+                    <p class="m3-update-card-desc">{{ update.description }}</p>
+                </div>
+                <div class="m3-update-card-footer">
+                    <div class="m3-update-card-tags">
+                        <span class="m3-update-card-tag"><span class="material-symbols-outlined">{% cycle 'campaign' 'build' 'new_releases' 'apartment' %}</span>{% cycle 'Announcement' 'Maintenance' 'Feature' 'Property' %}</span>
+                    </div>
+                    <button class="m3-btn-read">Read More <span class="material-symbols-outlined">arrow_forward</span></button>
                 </div>
             </div>
             {% endif %}
             {% empty %}
-            <div class="col-12">
-                <div class="no-updates animate-on-scroll">
-                    <i class="bi bi-inbox"></i>
-                    <h3>No Updates Available</h3>
-                    <p>There are no updates at the moment. Please check back later for the latest news and announcements.</p>
-                    <button class="btn btn-primary" onclick="window.location.href='{% url 'index' %}'">
-                        <i class="bi bi-house me-2"></i>Return to Home
-                    </button>
-                </div>
+            <div class="m3-no-updates md-reveal" style="grid-column:1/-1">
+                <div class="m3-no-updates-icon"><span class="material-symbols-outlined">inbox</span></div>
+                <h3>No Updates Yet</h3>
+                <p>There are no updates at the moment. Check back later for news and announcements.</p>
+                <a href="{% url 'index' %}" class="md-btn-filled" style="height:48px;padding:0 28px">
+                    <span class="material-symbols-outlined" style="font-size:18px">home</span>Return to Home
+                </a>
             </div>
             {% endfor %}
         </div>
 
         <!-- Pagination -->
         {% if updates.has_other_pages %}
-        <div class="pagination-container">
+        <div class="m3-pagination">
             <nav aria-label="Updates pagination">
                 <ul class="pagination">
                     {% if updates.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ updates.previous_page_number }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
+                    <li class="page-item"><a class="page-link" href="?page={{ updates.previous_page_number }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_left</span></a></li>
                     {% endif %}
-
                     {% for i in updates.paginator.page_range %}
-                    <li class="page-item {% if updates.number == i %}active{% endif %}">
-                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                    </li>
+                    <li class="page-item {% if updates.number == i %}active{% endif %}"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                     {% endfor %}
-
                     {% if updates.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ updates.next_page_number }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
+                    <li class="page-item"><a class="page-link" href="?page={{ updates.next_page_number }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_right</span></a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -600,109 +294,101 @@
         {% endif %}
     </div>
 </section>
+</div>
 
-<!-- Subscription Section -->
-<section class="subscription-section">
+<!-- Pagelet: Subscribe CTA -->
+<div class="pagelet" data-pagelet="subscribe">
+<section class="m3-subscribe-section">
     <div class="container">
-        <div class="subscription-content animate-on-scroll">
-            <h3 class="subscription-title">Never Miss an Update</h3>
-            <p class="subscription-text">Subscribe to our newsletter and get the latest updates delivered directly to your inbox</p>
-            <form class="subscription-form">
-                <input type="email" class="form-control" placeholder="Enter your email address" required>
-                <button type="submit" class="btn">
-                    <i class="bi bi-envelope me-2"></i>Subscribe
-                </button>
+        <div class="m3-subscribe-inner md-reveal">
+            <h3>Never Miss an Update</h3>
+            <p>Subscribe to our newsletter and receive the latest updates directly in your inbox</p>
+            <form class="m3-subscribe-form" id="subscribeForm">
+                <input type="email" placeholder="Enter your email address" aria-label="Email address for newsletter" required>
+                <button type="submit"><span class="material-symbols-outlined">mail</span>Subscribe</button>
             </form>
         </div>
     </div>
 </section>
+</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Scroll animation
-        const animatedElements = document.querySelectorAll('.animate-on-scroll');
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        animatedElements.forEach(element => {
-            observer.observe(element);
-        });
-
-        // Filter functionality
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const updateCards = document.querySelectorAll('.update-card');
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                const filterValue = this.getAttribute('data-filter');
-                
-                // Filter updates (in a real app, this would be done server-side)
-                // For now, we'll just simulate filtering with a simple animation
-                updateCards.forEach(card => {
-                    if (filterValue === 'all') {
-                        card.style.display = 'block';
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, 100);
-                    } else {
-                        card.style.opacity = '0.5';
-                        card.style.transform = 'translateY(10px)';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300);
-                    }
+document.addEventListener('DOMContentLoaded', function() {
+    /* BigPipe-style: show skeleton first, then reveal real content */
+    var skeleton = document.getElementById('updateSkeleton');
+    var grid = document.getElementById('updatesGrid');
+    if (skeleton && grid) {
+        setTimeout(function() {
+            skeleton.style.transition = 'opacity .3s ease';
+            skeleton.style.opacity = '0';
+            setTimeout(function() {
+                skeleton.style.display = 'none';
+                grid.style.display = '';
+                /* Stagger card reveals */
+                var cards = grid.querySelectorAll('.m3-update-card');
+                cards.forEach(function(card, i) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(function() {
+                        card.style.transition = 'opacity .4s ease, transform .4s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, i * 100);
                 });
-                
-                // Show message if no updates match filter
-                if (filterValue !== 'all' && updateCards.length > 0) {
-                    setTimeout(() => {
-                        const visibleCards = document.querySelectorAll('.update-card[style*="display: block"]');
-                        if (visibleCards.length === 0) {
-                            // In a real app, you would show a "no results" message
-                            console.log('No updates match the selected filter');
-                        }
-                    }, 350);
+            }, 300);
+        }, 600);
+    }
+
+    /* Filter chips */
+    var filterBtns = document.querySelectorAll('.m3-filter-chip');
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            var filter = this.getAttribute('data-filter');
+            var cards = document.querySelectorAll('.m3-update-card');
+            cards.forEach(function(card, i) {
+                var cat = card.getAttribute('data-category') || '';
+                var show = (filter === 'all' || cat === filter);
+                if (show) {
+                    card.style.display = '';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(16px)';
+                    setTimeout(function() {
+                        card.style.transition = 'opacity .35s ease, transform .35s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, i * 60);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(function() { card.style.display = 'none'; }, 250);
                 }
             });
-        });
-
-        // Read more functionality
-        const readMoreButtons = document.querySelectorAll('.btn-read-more, .btn-featured');
-        readMoreButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // In a real application, this would navigate to a detailed update page
-                // For now, we'll just show an alert
-                alert('In a real application, this would open the full update details.');
-            });
-        });
-
-        // Subscription form
-        const subscriptionForm = document.querySelector('.subscription-form');
-        subscriptionForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const emailInput = this.querySelector('input[type="email"]');
-            const email = emailInput.value;
-            
-            if (email) {
-                // Simulate subscription success
-                alert(`Thank you for subscribing with ${email}! You'll receive our latest updates.`);
-                emailInput.value = '';
-            }
         });
     });
-</script>
 
+    /* Subscribe form */
+    var subForm = document.getElementById('subscribeForm');
+    if (subForm) {
+        subForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = this.querySelector('input[type="email"]').value;
+            if (email) {
+                var btn = this.querySelector('button');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">check_circle</span>Subscribed!';
+                btn.style.background = '#1e7e34';
+                this.querySelector('input[type="email"]').value = '';
+                setTimeout(function() {
+                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">mail</span>Subscribe';
+                    btn.style.background = '';
+                }, 3000);
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
+
+
+

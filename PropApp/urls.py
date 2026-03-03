@@ -62,6 +62,9 @@ urlpatterns = [
     path('admin_dashboard/tenants',views.admin_tenants,name='admin_tenants'),
     path('delete_tenant/<int:tenant_id>/', views.delete_tenant, name='delete_tenant'),
     path('admin_dashboard/leases', views.manage_leases, name='manage_leases'),
+    path('admin_dashboard/leases/add/', views.add_lease, name='add_lease'),
+    path('admin_dashboard/leases/edit/<int:lease_id>/', views.edit_lease, name='edit_lease'),
+    path('owner/contracts/<int:user_id>/edit/<int:lease_id>/', views.owner_edit_contract, name='owner_edit_contract'),
     path('lease-details/<int:lease_id>/', views.lease_details, name='lease_details'),
     path('sign-lease/<int:lease_id>/', views.sign_lease, name='sign_lease'),
     path('delete-lease/<int:lease_id>/', views.delete_lease, name='delete_lease'),
@@ -108,10 +111,25 @@ urlpatterns = [
     path('tenant_download_contract/<int:lease_id>/',views.tenant_download_contract,name='tenant_download_contract'),
     path('tenant_view_property/<int:property_id>', views.tenant_view_property, name='tenant_view_property'),
     path('tenant/messages/<int:user_id>/', views.tenant_messages, name='tenant_messages'),
+    path('tenant/messages/<int:user_id>/conversation/<int:contact_id>/', views.tenant_conversation, name='tenant_conversation'),
+    path('tenant/messages/<int:user_id>/delete/<int:message_id>/', views.tenant_delete_message, name='tenant_delete_message'),
+    path('admin/tenant-messages/', views.admin_tenant_inbox, name='admin_tenant_inbox'),
+    path('admin/tenant-messages/conversation/<int:contact_id>/', views.admin_conversation, name='admin_conversation'),
+    path('admin/tenant-messages/delete/<int:message_id>/', views.admin_delete_message, name='admin_delete_message'),
    path('tenant/make_payment/', views.process_payment, name='make_payment'),
     path('payment/execute/', views.execute_payment, name='execute_payment'),
     path('tenant/maintenance/<int:user_id>/', views.tenant_maintenance, name='tenant_maintenance'),
     path('tenant/maintenance/new/<int:user_id>/', views.new_maintenance_request, name='new_maintenance_request'),
+    # Owner messaging
+    path('owner/messages/<int:user_id>/', views.owner_messages, name='owner_messages'),
+    path('owner/messages/<int:user_id>/conversation/<int:contact_id>/', views.owner_conversation, name='owner_conversation'),
+    path('owner/messages/<int:user_id>/delete/<int:message_id>/', views.owner_delete_message, name='owner_delete_message'),
+    # Admin maintenance management
+    path('admin/maintenance/', views.admin_maintenance, name='admin_maintenance'),
+    path('admin/maintenance/update/<int:request_id>/', views.admin_update_maintenance, name='admin_update_maintenance'),
+    # Owner maintenance management
+    path('owner/maintenance/<int:user_id>/', views.owner_maintenance, name='owner_maintenance'),
+    path('owner/maintenance/<int:user_id>/update/<int:request_id>/', views.owner_update_maintenance, name='owner_update_maintenance'),
 
 ]
 

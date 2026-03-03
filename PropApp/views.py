@@ -1,7 +1,7 @@
 import paypalrestsdk
 import json
 from django.contrib.auth import login, authenticate, logout
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.http import HttpResponse
 from .forms import TenantProfileForm, MessageForm, MaintenanceRequestForm
 from django.views.decorators.csrf import csrf_exempt
@@ -1315,17 +1315,21 @@ def delete_tenant(request, tenant_id):
 @csrf_exempt
 def manage_leases(request):
     leases = Lease.objects.all()
-    unsigned_leases = leases.filter(status='unsigned')
-    signed_leases = leases.filter(status='signed')
-    archived_leases = leases.filter(status='archived')
+    unsigned_leases = leases.filter(contract_signed=False, contract_archived=False)
+    signed_leases = leases.filter(contract_signed=True, contract_archived=False)
+    archived_leases = leases.filter(contract_archived=True)
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
 
     context = {
         'leases': leases,
         'unsigned_leases': unsigned_leases,
         'signed_leases': signed_leases,
         'archived_leases': archived_leases,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
     }
-    return render(request, 'manage_leases.html', context)
+    return render(request, 'admin/Leases/leases.html', context)
 
 
 @csrf_exempt
@@ -1337,7 +1341,7 @@ def lease_details(request, lease_id):
 @csrf_exempt
 def sign_lease(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
-    lease.status = 'signed'
+    lease.contract_signed = True
     lease.save()
     messages.success(request, 'Lease marked as signed.')
     return redirect('manage_leases')
@@ -1354,7 +1358,7 @@ def delete_lease(request, lease_id):
 @csrf_exempt
 def archive_lease(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
-    lease.status = 'archived'
+    lease.contract_archived = True
     lease.save()
     messages.success(request, 'Lease archived successfully.')
     return redirect('manage_leases')
@@ -1712,59 +1716,9 @@ def owner_view_contract(request, lease_id):
 @csrf_exempt
 def download_contract(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
-
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{lease.property.name}_contract.pdf"'
-
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
-
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(1 * inch, height - 1 * inch, "Contract Details")
-
-    p.setFont("Helvetica", 12)
-    y = height - 1.5 * inch
-    p.drawString(1 * inch, y, f"Property: {lease.property.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Tenant: {lease.tenant.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Owner: {lease.property.owner.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Start Date: {lease.start_date}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"End Date: {lease.end_date}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Rent Amount: {lease.rent_amount} Frw")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Property Type: {lease.property.get_types_display()}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Address: {lease.property.address}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Number of Units: {lease.property.number_of_units}")
-    y -= 0.5 * inch
-
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(1 * inch, y, "Status:")
-    p.setFont("Helvetica", 12)
-    p.drawString(2 * inch, y, f"{lease.get_status_display()}")
-    y -= 0.5 * inch
-
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(1 * inch, y, "Contract Details:")
-    p.setFont("Helvetica", 12)
-    y -= 0.5 * inch
-
-    contract_details_lines = lease.contract_details.split('\n')
-    for line in contract_details_lines:
-        p.drawString(1 * inch, y, line)
-        y -= 0.5 * inch
-        if y < 1 * inch:
-            p.showPage()
-            y = height - 1.5 * inch
-
-    p.showPage()
-    p.save()
-
+    _generate_contract_pdf(response, lease)
     return response
 
 
@@ -1976,37 +1930,181 @@ def like_property(request, property_id):
     return redirect('property_view', property.id)
 
 
-@csrf_exempt
-@login_required
+def _get_conversations(current_user):
+    """Return sorted list of dicts {contact, last_message, unread} for current_user."""
+    contact_ids = set(
+        Message.objects.filter(sender=current_user).values_list('recipient_id', flat=True)
+    ) | set(
+        Message.objects.filter(recipient=current_user).values_list('sender_id', flat=True)
+    )
+    convos = []
+    for contact in User.objects.filter(id__in=contact_ids):
+        thread = Message.objects.filter(
+            Q(sender=current_user, recipient=contact) | Q(sender=contact, recipient=current_user)
+        ).order_by('-sent_date')
+        convos.append({
+            'contact': contact,
+            'last_message': thread.first(),
+            'unread': thread.filter(recipient=current_user, is_read=False).count(),
+        })
+    convos = [c for c in convos if c['last_message'] is not None]
+    convos.sort(key=lambda x: x['last_message'].sent_date, reverse=True)
+    return convos
+
+
 def tenant_messages(request, user_id):
     user = get_object_or_404(User, id=user_id)
-    # authorization
     if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
         messages.error(request, 'You do not have permission to view these messages.')
         return redirect('index')
 
-    inbox = Message.objects.filter(recipient__id=user.id).order_by('-sent_date')
-    sent = Message.objects.filter(sender__id=user.id).order_by('-sent_date')
+    allowed_recipients = User.objects.filter(role__in=['Admin', 'Owner']).exclude(id=user.id)
 
     if request.method == 'POST':
-        form = MessageForm(request.POST)
+        form = MessageForm(request.POST, allowed_recipients=allowed_recipients)
         if form.is_valid():
             msg = form.save(commit=False)
             msg.sender = request.user
-            msg.sent_date = now()
             msg.save()
-            messages.success(request, 'Message sent successfully')
-            return redirect('tenant_messages', user.id)
+            messages.success(request, 'Message sent.')
+            return redirect('tenant_conversation', user.id, msg.recipient.id)
     else:
-        form = MessageForm()
+        form = MessageForm(allowed_recipients=allowed_recipients)
+
+    conversations = _get_conversations(user)
+    total_unread = sum(c['unread'] for c in conversations)
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
 
     context = {
         'user': user,
-        'inbox': inbox,
-        'sent': sent,
+        'conversations': conversations,
+        'total_unread': total_unread,
         'form': form,
+        'message_total': message_total,
     }
     return render(request, 'Others_dashboard/Tenants/tenant_messages.html', context)
+
+
+@csrf_exempt
+@login_required
+def tenant_conversation(request, user_id, contact_id):
+    user = get_object_or_404(User, id=user_id)
+    contact = get_object_or_404(User, id=contact_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission.')
+        return redirect('index')
+
+    # Mark messages from contact to user as read
+    Message.objects.filter(sender=contact, recipient=user, is_read=False).update(is_read=True)
+
+    if request.method == 'POST':
+        content = request.POST.get('content', '').strip()
+        if content:
+            Message.objects.create(sender=request.user, recipient=contact, content=content)
+        return redirect('tenant_conversation', user.id, contact.id)
+
+    thread_messages = Message.objects.filter(
+        Q(sender=user, recipient=contact) | Q(sender=contact, recipient=user)
+    ).order_by('sent_date')
+
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
+    context = {
+        'user': user,
+        'contact': contact,
+        'thread_messages': thread_messages,
+        'message_total': message_total,
+    }
+    return render(request, 'Others_dashboard/Tenants/tenant_conversation.html', context)
+
+
+@csrf_exempt
+@login_required
+def tenant_delete_message(request, user_id, message_id):
+    user = get_object_or_404(User, id=user_id)
+    msg = get_object_or_404(Message, id=message_id)
+    if request.user == msg.sender or request.user == msg.recipient:
+        contact_id = msg.recipient.id if msg.sender == request.user else msg.sender.id
+        msg.delete()
+        return redirect('tenant_conversation', user.id, contact_id)
+    messages.error(request, 'You cannot delete this message.')
+    return redirect('tenant_messages', user.id)
+
+
+@login_required
+def admin_tenant_inbox(request):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    all_users = User.objects.exclude(id=request.user.id)
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST, allowed_recipients=all_users)
+        if form.is_valid():
+            msg = form.save(commit=False)
+            msg.sender = request.user
+            msg.save()
+            messages.success(request, 'Message sent.')
+            return redirect('admin_conversation', msg.recipient.id)
+    else:
+        form = MessageForm(allowed_recipients=all_users)
+
+    conversations = _get_conversations(request.user)
+    total_unread = sum(c['unread'] for c in conversations)
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
+
+    context = {
+        'conversations': conversations,
+        'total_unread': total_unread,
+        'form': form,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
+    }
+    return render(request, 'admin/messages/admin_inbox.html', context)
+
+
+@csrf_exempt
+@login_required
+def admin_conversation(request, contact_id):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    contact = get_object_or_404(User, id=contact_id)
+    admin_user = request.user
+
+    Message.objects.filter(sender=contact, recipient=admin_user, is_read=False).update(is_read=True)
+
+    if request.method == 'POST':
+        content = request.POST.get('content', '').strip()
+        if content:
+            Message.objects.create(sender=admin_user, recipient=contact, content=content)
+        return redirect('admin_conversation', contact.id)
+
+    thread_messages = Message.objects.filter(
+        Q(sender=admin_user, recipient=contact) | Q(sender=contact, recipient=admin_user)
+    ).order_by('sent_date')
+
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
+    context = {
+        'contact': contact,
+        'thread_messages': thread_messages,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
+    }
+    return render(request, 'admin/messages/admin_conversation.html', context)
+
+
+@csrf_exempt
+@login_required
+def admin_delete_message(request, message_id):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+    msg = get_object_or_404(Message, id=message_id)
+    contact_id = msg.recipient.id if msg.sender == request.user else msg.sender.id
+    if request.user == msg.sender or request.user == msg.recipient:
+        msg.delete()
+    return redirect('admin_conversation', contact_id)
 
 
 @csrf_exempt
@@ -2188,59 +2286,9 @@ def tenant_view_contract(request, lease_id):
 @csrf_exempt
 def tenant_download_contract(request, lease_id):
     lease = get_object_or_404(Lease, id=lease_id)
-
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{lease.property.name}_contract.pdf"'
-
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
-
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(1 * inch, height - 1 * inch, "Contract Details")
-
-    p.setFont("Helvetica", 12)
-    y = height - 1.5 * inch
-    p.drawString(1 * inch, y, f"Property: {lease.property.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Tenant: {lease.tenant.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Owner: {lease.property.owner.name}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Start Date: {lease.start_date}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"End Date: {lease.end_date}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Rent Amount: {lease.rent_amount} Frw")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Property Type: {lease.property.get_types_display()}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Address: {lease.property.address}")
-    y -= 0.5 * inch
-    p.drawString(1 * inch, y, f"Number of Units: {lease.property.number_of_units}")
-    y -= 0.5 * inch
-
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(1 * inch, y, "Status:")
-    p.setFont("Helvetica", 12)
-    p.drawString(2 * inch, y, f"{lease.get_status_display()}")
-    y -= 0.5 * inch
-
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(1 * inch, y, "Contract Details:")
-    p.setFont("Helvetica", 12)
-    y -= 0.5 * inch
-
-    contract_details_lines = lease.contract_details.split('\n')
-    for line in contract_details_lines:
-        p.drawString(1 * inch, y, line)
-        y -= 0.5 * inch
-        if y < 1 * inch:
-            p.showPage()
-            y = height - 1.5 * inch
-
-    p.showPage()
-    p.save()
-
+    _generate_contract_pdf(response, lease)
     return response
 
 @csrf_exempt
@@ -2339,3 +2387,496 @@ def execute_payment(request):
     else:
         messages.error(request, 'Error executing payment on PayPal.')
         return redirect('make_payment')
+
+
+# ─── PDF Helper ─────────────────────────────────────────────────────────────
+
+def _generate_contract_pdf(response, lease):
+    """Shared PDF generation for download_contract and tenant_download_contract."""
+    from reportlab.lib import colors
+    import textwrap
+    from datetime import date as date_type
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+    margin = 0.75 * inch
+
+    # ── Header bar ──────────────────────────────────────────────────────────
+    header_h = 1.1 * inch
+    p.setFillColorRGB(0.184, 0.310, 0.310)  # #2F4F4F dark slate green
+    p.rect(0, height - header_h, width, header_h, fill=1, stroke=0)
+
+    p.setFillColorRGB(1, 1, 1)
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(margin, height - 0.55 * inch, "AFRIMASTER PROPERTIES")
+    p.setFont("Helvetica", 11)
+    p.drawString(margin, height - 0.82 * inch, "Rental Agreement / Lease Contract")
+
+    # Contract # and date top-right
+    p.setFont("Helvetica", 9)
+    today_str = date_type.today().strftime("%B %d, %Y")
+    ref = f"Contract #{lease.id}   |   Generated: {today_str}"
+    p.drawRightString(width - margin, height - 0.55 * inch, ref)
+
+    # ── Thin accent line below header ────────────────────────────────────────
+    p.setFillColorRGB(0.82, 0.55, 0.12)  # gold accent
+    p.rect(0, height - header_h - 0.04 * inch, width, 0.04 * inch, fill=1, stroke=0)
+
+    y = height - header_h - 0.35 * inch
+
+    # ── Two-column property/party info ────────────────────────────────────────
+    col1_x = margin
+    col2_x = width / 2 + 0.1 * inch
+    col_w = width / 2 - margin - 0.1 * inch
+
+    def label_val(canvas_obj, x, y_pos, label, value, font_size=10):
+        canvas_obj.setFont("Helvetica-Bold", font_size)
+        canvas_obj.setFillColorRGB(0.184, 0.310, 0.310)
+        canvas_obj.drawString(x, y_pos, label + ":")
+        canvas_obj.setFont("Helvetica", font_size)
+        canvas_obj.setFillColorRGB(0.2, 0.2, 0.2)
+        canvas_obj.drawString(x + 1.1 * inch, y_pos, str(value))
+
+    # Section: Property Details
+    p.setFont("Helvetica-Bold", 11)
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.drawString(col1_x, y, "PROPERTY DETAILS")
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(col2_x, y, "PARTIES INVOLVED")
+    y -= 0.22 * inch
+
+    # Horizontal rule under section headers
+    p.setStrokeColorRGB(0.8, 0.8, 0.8)
+    p.line(col1_x, y, col1_x + col_w, y)
+    p.line(col2_x, y, col2_x + col_w, y)
+    y -= 0.25 * inch
+
+    row_gap = 0.28 * inch
+    prop = lease.property
+    tenant = lease.tenant
+
+    label_val(p, col1_x, y, "Property", prop.name)
+    label_val(p, col2_x, y, "Owner", prop.owner.name)
+    y -= row_gap
+    label_val(p, col1_x, y, "Address", prop.address[:35] if prop.address else "-")
+    label_val(p, col2_x, y, "Tenant", tenant.name)
+    y -= row_gap
+    label_val(p, col1_x, y, "Type", prop.get_types_display())
+    label_val(p, col2_x, y, "Phone", getattr(tenant, 'phone_number', '-') or '-')
+    y -= row_gap
+    label_val(p, col1_x, y, "Units", str(prop.number_of_units))
+    label_val(p, col2_x, y, "Email", tenant.email[:30] if tenant.email else '-')
+    y -= row_gap * 1.4
+
+    # ── Lease Terms section ──────────────────────────────────────────────────
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(margin, y, "LEASE TERMS")
+    y -= 0.22 * inch
+    p.setStrokeColorRGB(0.8, 0.8, 0.8)
+    p.line(margin, y, width - margin, y)
+    y -= 0.28 * inch
+
+    # Big rent display
+    p.setFont("Helvetica-Bold", 18)
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.drawString(margin, y, f"Frw {lease.rent_amount:,} / month")
+    y -= 0.32 * inch
+
+    # Dates and status in one row
+    p.setFont("Helvetica-Bold", 10)
+    p.setFillColorRGB(0.3, 0.3, 0.3)
+    p.drawString(margin, y, "Start Date:")
+    p.setFont("Helvetica", 10)
+    p.setFillColorRGB(0.2, 0.2, 0.2)
+    p.drawString(margin + 0.9 * inch, y, str(lease.start_date))
+
+    p.setFont("Helvetica-Bold", 10)
+    p.setFillColorRGB(0.3, 0.3, 0.3)
+    p.drawString(width / 2 - 0.5 * inch, y, "End Date:")
+    p.setFont("Helvetica", 10)
+    p.setFillColorRGB(0.2, 0.2, 0.2)
+    p.drawString(width / 2 + 0.35 * inch, y, str(lease.end_date))
+
+    status = lease.get_status_display()
+    p.setFont("Helvetica-Bold", 10)
+    p.setFillColorRGB(0.3, 0.3, 0.3)
+    p.drawString(width - 3 * inch, y, "Status:")
+    p.setFont("Helvetica", 10)
+    p.setFillColorRGB(0.0, 0.5, 0.2)
+    p.drawString(width - 2.3 * inch, y, status)
+    y -= row_gap * 1.4
+
+    # ── Contract Details section ─────────────────────────────────────────────
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(margin, y, "CONTRACT DETAILS")
+    y -= 0.22 * inch
+    p.setStrokeColorRGB(0.8, 0.8, 0.8)
+    p.line(margin, y, width - margin, y)
+    y -= 0.28 * inch
+
+    details_text = lease.contract_details or "(No contract details provided)"
+    wrapped_lines = []
+    for paragraph in details_text.split('\n'):
+        wrapped_lines.extend(textwrap.wrap(paragraph, width=95) or [''])
+
+    p.setFont("Helvetica", 10)
+    p.setFillColorRGB(0.15, 0.15, 0.15)
+    for line in wrapped_lines:
+        if y < 2.5 * inch:
+            p.showPage()
+            p.setFillColorRGB(0.184, 0.310, 0.310)
+            p.rect(0, height - 0.35 * inch, width, 0.35 * inch, fill=1, stroke=0)
+            p.setFillColorRGB(1, 1, 1)
+            p.setFont("Helvetica-Bold", 9)
+            p.drawString(margin, height - 0.22 * inch, "AFRIMASTER PROPERTIES — Rental Agreement (continued)")
+            y = height - 0.6 * inch
+            p.setFont("Helvetica", 10)
+            p.setFillColorRGB(0.15, 0.15, 0.15)
+        p.drawString(margin, y, line)
+        y -= 0.22 * inch
+
+    y -= 0.2 * inch
+
+    # ── Signature section ────────────────────────────────────────────────────
+    if y < 2.0 * inch:
+        p.showPage()
+        y = height - 1.2 * inch
+
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(margin, y, "SIGNATURES")
+    y -= 0.22 * inch
+    p.setStrokeColorRGB(0.8, 0.8, 0.8)
+    p.line(margin, y, width - margin, y)
+    y -= 0.5 * inch
+
+    sig_col1 = margin
+    sig_col2 = width / 2 + 0.2 * inch
+    sig_line_w = 2.4 * inch
+
+    # Owner signature
+    p.setStrokeColorRGB(0.4, 0.4, 0.4)
+    p.line(sig_col1, y, sig_col1 + sig_line_w, y)
+    p.line(sig_col2, y, sig_col2 + sig_line_w, y)
+    y -= 0.18 * inch
+
+    p.setFont("Helvetica-Bold", 9)
+    p.setFillColorRGB(0.3, 0.3, 0.3)
+    p.drawString(sig_col1, y, f"Owner: {prop.owner.name}")
+    p.drawString(sig_col2, y, f"Tenant: {tenant.name}")
+    y -= 0.18 * inch
+
+    p.setFont("Helvetica", 9)
+    p.setFillColorRGB(0.5, 0.5, 0.5)
+    p.drawString(sig_col1, y, "Date: ____________________")
+    p.drawString(sig_col2, y, "Date: ____________________")
+
+    # ── Footer bar ────────────────────────────────────────────────────────────
+    p.setFillColorRGB(0.184, 0.310, 0.310)
+    p.rect(0, 0, width, 0.4 * inch, fill=1, stroke=0)
+    p.setFillColorRGB(1, 1, 1)
+    p.setFont("Helvetica", 8)
+    p.drawCentredString(width / 2, 0.15 * inch,
+                        "AfriMaster Properties — Confidential Rental Agreement — Not valid without authorized signatures")
+
+    p.showPage()
+    p.save()
+
+
+# ─── Admin Lease CRUD ───────────────────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+def add_lease(request):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    tenants = Tenant.objects.all()
+    properties = Property.objects.all()
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
+
+    if request.method == 'POST':
+        try:
+            Lease.objects.create(
+                tenant_id=request.POST.get('tenant_id'),
+                property_id=request.POST.get('property_id'),
+                start_date=request.POST.get('start_date'),
+                end_date=request.POST.get('end_date'),
+                rent_amount=request.POST.get('rent_amount'),
+                contract_details=request.POST.get('contract_details', ''),
+                contract_signed=request.POST.get('contract_signed') == 'true',
+                contract_accepted=request.POST.get('contract_accepted') == 'true',
+            )
+            messages.success(request, 'Lease created successfully.')
+            return redirect('manage_leases')
+        except Exception as e:
+            messages.error(request, f'Error creating lease: {e}')
+
+    context = {
+        'tenants': tenants,
+        'properties': properties,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
+    }
+    return render(request, 'admin/Leases/add_lease.html', context)
+
+
+@csrf_exempt
+@login_required
+def edit_lease(request, lease_id):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    lease = get_object_or_404(Lease, id=lease_id)
+    tenants = Tenant.objects.all()
+    properties = Property.objects.all()
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
+
+    if request.method == 'POST':
+        try:
+            lease.tenant_id = request.POST.get('tenant_id')
+            lease.property_id = request.POST.get('property_id')
+            lease.start_date = request.POST.get('start_date')
+            lease.end_date = request.POST.get('end_date')
+            lease.rent_amount = request.POST.get('rent_amount')
+            lease.contract_details = request.POST.get('contract_details', '')
+            lease.contract_signed = request.POST.get('contract_signed') == 'true'
+            lease.contract_accepted = request.POST.get('contract_accepted') == 'true'
+            lease.save()
+            messages.success(request, 'Lease updated successfully.')
+            return redirect('manage_leases')
+        except Exception as e:
+            messages.error(request, f'Error updating lease: {e}')
+
+    context = {
+        'lease': lease,
+        'tenants': tenants,
+        'properties': properties,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
+    }
+    return render(request, 'admin/Leases/edit_lease.html', context)
+
+
+# ─── Owner Edit Contract ────────────────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+def owner_edit_contract(request, user_id, lease_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    lease = get_object_or_404(Lease, id=lease_id)
+    try:
+        owner = Owner.objects.get(user=user)
+    except Owner.DoesNotExist:
+        owner = None
+    properties = Property.objects.filter(owner=owner) if owner else Property.objects.none()
+    tenants = Tenant.objects.all()
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
+
+    if request.method == 'POST':
+        try:
+            lease.property_id = request.POST.get('property_id')
+            lease.tenant_id = request.POST.get('tenant_id')
+            lease.start_date = request.POST.get('start_date')
+            lease.end_date = request.POST.get('end_date')
+            lease.rent_amount = request.POST.get('rent_amount')
+            lease.contract_details = request.POST.get('contract_details', '')
+            lease.save()
+            messages.success(request, 'Contract updated successfully.')
+            return redirect('owner_contracts', user.id)
+        except Exception as e:
+            messages.error(request, f'Error updating contract: {e}')
+
+    context = {
+        'user': user,
+        'owner': owner,
+        'lease': lease,
+        'properties': properties,
+        'tenants': tenants,
+        'message_total': message_total,
+    }
+    return render(request, 'Others_dashboard/owners/leases/owner_edit_contract.html', context)
+
+
+# ─── Owner Messaging ────────────────────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+def owner_messages(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission to view these messages.')
+        return redirect('index')
+
+    allowed_recipients = User.objects.filter(role__in=['Admin', 'Tenant']).exclude(id=user.id)
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST, allowed_recipients=allowed_recipients)
+        if form.is_valid():
+            msg = form.save(commit=False)
+            msg.sender = request.user
+            msg.save()
+            messages.success(request, 'Message sent.')
+            return redirect('owner_conversation', user.id, msg.recipient.id)
+    else:
+        form = MessageForm(allowed_recipients=allowed_recipients)
+
+    conversations = _get_conversations(user)
+    total_unread = sum(c['unread'] for c in conversations)
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
+    try:
+        owner = Owner.objects.get(user=user)
+    except Owner.DoesNotExist:
+        owner = None
+
+    context = {
+        'user': user,
+        'owner': owner,
+        'conversations': conversations,
+        'total_unread': total_unread,
+        'form': form,
+        'message_total': message_total,
+    }
+    return render(request, 'Others_dashboard/owners/owner_messages.html', context)
+
+
+@csrf_exempt
+@login_required
+def owner_conversation(request, user_id, contact_id):
+    user = get_object_or_404(User, id=user_id)
+    contact = get_object_or_404(User, id=contact_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        messages.error(request, 'You do not have permission.')
+        return redirect('index')
+
+    Message.objects.filter(sender=contact, recipient=user, is_read=False).update(is_read=True)
+
+    if request.method == 'POST':
+        content = request.POST.get('content', '').strip()
+        if content:
+            Message.objects.create(sender=request.user, recipient=contact, content=content)
+        return redirect('owner_conversation', user.id, contact.id)
+
+    thread_messages = Message.objects.filter(
+        Q(sender=user, recipient=contact) | Q(sender=contact, recipient=user)
+    ).order_by('sent_date')
+
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
+    try:
+        owner = Owner.objects.get(user=user)
+    except Owner.DoesNotExist:
+        owner = None
+
+    context = {
+        'user': user,
+        'owner': owner,
+        'contact': contact,
+        'thread_messages': thread_messages,
+        'message_total': message_total,
+    }
+    return render(request, 'Others_dashboard/owners/owner_conversation.html', context)
+
+
+@csrf_exempt
+@login_required
+def owner_delete_message(request, user_id, message_id):
+    user = get_object_or_404(User, id=user_id)
+    msg = get_object_or_404(Message, id=message_id)
+    if request.user == msg.sender or request.user == msg.recipient:
+        contact_id = msg.recipient.id if msg.sender == request.user else msg.sender.id
+        msg.delete()
+        return redirect('owner_conversation', user.id, contact_id)
+    return redirect('owner_messages', user.id)
+
+
+# ─── Admin Maintenance Management ───────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+def admin_maintenance(request):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    status_filter = request.GET.get('status', '')
+    qs = MaintenanceRequest.objects.select_related('property', 'tenant__user').order_by('-request_date')
+    if status_filter:
+        qs = qs.filter(status=status_filter)
+
+    message_total = CustomerMessage.objects.filter(is_read=False).count()
+    total_enquiries = CustRequest.objects.filter(is_read=False).count()
+
+    context = {
+        'maintenance_requests': qs,
+        'status_filter': status_filter,
+        'message_total': message_total,
+        'total_enquiries': total_enquiries,
+    }
+    return render(request, 'admin/maintenance/admin_maintenance.html', context)
+
+
+@csrf_exempt
+@login_required
+def admin_update_maintenance(request, request_id):
+    if not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+    maint = get_object_or_404(MaintenanceRequest, id=request_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['open', 'in_progress', 'completed']:
+            maint.status = new_status
+            if new_status == 'completed' and not maint.completion_date:
+                maint.completion_date = now()
+            maint.save()
+    return redirect('admin_maintenance')
+
+
+# ─── Owner Maintenance Management ───────────────────────────────────────────
+
+@csrf_exempt
+@login_required
+def owner_maintenance(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+
+    try:
+        owner = Owner.objects.get(user=user)
+        maintenance_requests = MaintenanceRequest.objects.filter(
+            property__owner=owner
+        ).select_related('property', 'tenant__user').order_by('-request_date')
+    except Owner.DoesNotExist:
+        owner = None
+        maintenance_requests = MaintenanceRequest.objects.none()
+
+    message_total = Message.objects.filter(recipient=user, is_read=False).count()
+    context = {
+        'user': user,
+        'owner': owner,
+        'maintenance_requests': maintenance_requests,
+        'message_total': message_total,
+    }
+    return render(request, 'Others_dashboard/owners/owner_maintenance.html', context)
+
+
+@csrf_exempt
+@login_required
+def owner_update_maintenance(request, user_id, request_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id and not (hasattr(request.user, 'role') and request.user.role == 'Admin'):
+        return redirect('index')
+    maint = get_object_or_404(MaintenanceRequest, id=request_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['open', 'in_progress', 'completed']:
+            maint.status = new_status
+            if new_status == 'completed' and not maint.completion_date:
+                maint.completion_date = now()
+            maint.save()
+    return redirect('owner_maintenance', user.id)

@@ -5,246 +5,261 @@
 
 {% block content %}
 <style>
-    :root{--primary:#28a745;--primary-dark:#1e7e34;--primary-light:#d4edda;--secondary:#2f4f4f;--accent:#20c997;--radius:16px;--transition:all .4s cubic-bezier(.4,0,.2,1)}
-
     /* Hero */
-    .detail-hero{margin-top:76px;padding:60px 0 50px;background:linear-gradient(160deg,#1a2f2f 0%,var(--secondary) 50%,var(--primary-dark) 100%);position:relative;overflow:hidden}
-    .detail-hero::before{content:'';position:absolute;width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .detail-hero-inner{position:relative;z-index:2}
-    .breadcrumb-nav{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-    .breadcrumb-nav a,.breadcrumb-nav span{font-size:.85rem;text-decoration:none}
-    .breadcrumb-nav a{color:rgba(255,255,255,.6);transition:color .2s}
-    .breadcrumb-nav a:hover{color:#fff}
-    .breadcrumb-nav .sep{color:rgba(255,255,255,.3)}
-    .breadcrumb-nav .current{color:#7ddf9b;font-weight:600}
-    .detail-hero h1{font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2}
-    .detail-hero-meta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-    .hero-badge-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;font-size:.78rem;font-weight:600;letter-spacing:.3px}
-    .badge-type{background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(8px)}
-    .badge-avail{background:rgba(40,167,69,.3);color:#7ddf9b}
-    .badge-rented{background:rgba(220,53,69,.3);color:#ff8a98}
-    .hero-location{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font-size:.9rem}
-    .hero-location i{color:#7ddf9b}
+    .m3-detail-hero{margin-top:76px;padding:60px 0 50px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden}
+    .m3-detail-hero::before{content:'';position:absolute;width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
+    .m3-detail-hero-inner{position:relative;z-index:2}
+    .m3-breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .m3-breadcrumb a,.m3-breadcrumb span{font:var(--md-sys-typescale-body-small);text-decoration:none}
+    .m3-breadcrumb a{color:rgba(255,255,255,.6);transition:color .2s;display:inline-flex;align-items:center;gap:4px}
+    .m3-breadcrumb a:hover{color:#fff}
+    .m3-breadcrumb .m3-bc-sep{color:rgba(255,255,255,.3)}
+    .m3-breadcrumb .m3-bc-sep .material-symbols-outlined{font-size:16px}
+    .m3-breadcrumb .m3-bc-current{color:var(--md-sys-color-inverse-primary);font-weight:600}
+    .m3-detail-hero h1{font:500 2.4rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:14px}
+    .m3-detail-hero-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .m3-hero-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);letter-spacing:.3px}
+    .m3-pill-type{background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(8px)}
+    .m3-pill-avail{background:rgba(40,167,69,.3);color:#7ddf9b}
+    .m3-pill-rented{background:rgba(220,53,69,.3);color:#ff8a98}
+    .m3-hero-loc{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font:var(--md-sys-typescale-body-small)}
+    .m3-hero-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-inverse-primary)}
 
-    /* Main Layout */
-    .detail-main{padding:40px 0 80px;background:#f0f2f5}
+    /* Main */
+    .m3-detail-main{padding:40px 0 80px;background:var(--md-sys-color-surface-container)}
 
     /* Image Card */
-    .img-card{border-radius:var(--radius);overflow:hidden;position:relative;margin-bottom:30px;box-shadow:0 8px 30px rgba(0,0,0,.1)}
-    .img-card img{width:100%;height:450px;object-fit:cover;display:block}
-    .img-price-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
-    .detail-price{font-size:2rem;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-    .detail-price small{font-size:.8rem;font-weight:500;opacity:.8}
+    .m3-img-card{border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;position:relative;margin-bottom:28px;box-shadow:var(--md-sys-elevation-2)}
+    .m3-img-card img{width:100%;height:450px;object-fit:cover;display:block}
+    .m3-img-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+    .m3-detail-price{font:500 2rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .m3-detail-price small{font:var(--md-sys-typescale-label-small);font-weight:500;opacity:.85}
 
     /* Info Cards */
-    .info-card{background:#fff;border-radius:var(--radius);padding:28px;border:1px solid #e9ecef;margin-bottom:24px}
-    .info-card-title{font-size:1rem;font-weight:700;color:var(--secondary);margin-bottom:20px;display:flex;align-items:center;gap:8px}
-    .info-card-title i{color:var(--primary);font-size:.9rem}
+    .m3-info-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:28px;border:1px solid var(--md-sys-color-outline-variant);margin-bottom:24px;transition:all 300ms var(--md-sys-motion-easing-standard)}
+    .m3-info-card:hover{box-shadow:var(--md-sys-elevation-1)}
+    .m3-info-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .m3-info-card-title .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-primary)}
 
     /* Features Grid */
-    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px}
-    .feat-item{text-align:center;padding:20px 12px;background:#f8f9fa;border-radius:12px;transition:var(--transition)}
-    .feat-item:hover{background:var(--primary-light);transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
-    .feat-icon{font-size:1.4rem;color:var(--primary);margin-bottom:8px}
-    .feat-val{font-size:1.1rem;font-weight:700;color:var(--secondary);margin-bottom:2px}
-    .feat-lbl{font-size:.75rem;color:#6c757d}
+    .m3-feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px}
+    .m3-feat-item{text-align:center;padding:20px 12px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium);transition:all 300ms var(--md-sys-motion-easing-standard)}
+    .m3-feat-item:hover{background:var(--md-sys-color-primary-container);transform:translateY(-4px);box-shadow:var(--md-sys-elevation-1)}
+    .m3-feat-item .material-symbols-outlined{font-size:1.4rem;color:var(--md-sys-color-primary);margin-bottom:8px;display:block}
+    .m3-feat-val{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:2px}
+    .m3-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
 
     /* Description */
-    .desc-text{color:#555;line-height:1.8;font-size:1rem}
+    .m3-desc-text{color:var(--md-sys-color-on-surface-variant);line-height:1.8;font:var(--md-sys-typescale-body-large)}
 
     /* Owner Info */
-    .owner-row{display:flex;align-items:center;gap:16px;padding:16px;background:#f8f9fa;border-radius:12px}
-    .owner-avatar{width:50px;height:50px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem}
-    .owner-name{font-weight:700;color:var(--secondary);font-size:.95rem}
-    .owner-lbl{font-size:.75rem;color:#6c757d}
+    .m3-owner-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium)}
+    .m3-owner-avatar{width:50px;height:50px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-primary-container);overflow:hidden}
+    .m3-owner-avatar .material-symbols-outlined{font-size:1.4rem}
+    .m3-owner-name{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface)}
+    .m3-owner-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
 
     /* Action Buttons */
-    .action-btns{display:flex;flex-direction:column;gap:12px}
-    .btn-action{
-        display:flex;align-items:center;justify-content:center;gap:8px;
-        padding:14px 20px;border-radius:12px;font-weight:600;font-size:.9rem;
-        transition:var(--transition);text-decoration:none;border:none;cursor:pointer;
-    }
-    .btn-action:hover{transform:translateY(-2px)}
-    .btn-act-primary{background:var(--primary);color:#fff}
-    .btn-act-primary:hover{background:var(--primary-dark);box-shadow:0 8px 20px rgba(40,167,69,.3);color:#fff}
-    .btn-act-secondary{background:var(--secondary);color:#fff}
-    .btn-act-secondary:hover{background:#1e3e3e;box-shadow:0 8px 20px rgba(47,79,79,.3);color:#fff}
-    .btn-act-outline{background:transparent;color:var(--secondary);border:1.5px solid #e9ecef}
-    .btn-act-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
-    .btn-act-disabled{background:#e9ecef;color:#adb5bd;cursor:not-allowed}
+    .m3-action-btns{display:flex;flex-direction:column;gap:12px}
+    .m3-btn-action{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:var(--md-sys-shape-corner-medium);font:var(--md-sys-typescale-label-large);transition:all 200ms var(--md-sys-motion-easing-standard);text-decoration:none;border:none;cursor:pointer}
+    .m3-btn-action:hover{transform:translateY(-2px)}
+    .m3-btn-action .material-symbols-outlined{font-size:20px}
+    .m3-btn-act-primary{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
+    .m3-btn-act-primary:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-primary)}
+    .m3-btn-act-secondary{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
+    .m3-btn-act-secondary:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-secondary-container)}
+    .m3-btn-act-outline{background:transparent;color:var(--md-sys-color-on-surface);border:1px solid var(--md-sys-color-outline-variant)}
+    .m3-btn-act-outline:hover{border-color:var(--md-sys-color-primary);color:var(--md-sys-color-primary);background:rgba(40,167,69,.04)}
+    .m3-btn-act-disabled{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface-variant);cursor:not-allowed;opacity:.7}
 
     /* Inquiry Section */
-    .inquiry-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid #e9ecef}
-    .inquiry-header{background:var(--secondary);color:#fff;padding:20px 28px;font-weight:700;display:flex;align-items:center;gap:10px}
-    .inquiry-body{padding:28px}
-    .inquiry-body .form-control{border-radius:12px;border:1.5px solid #e9ecef;padding:14px 16px;transition:var(--transition)}
-    .inquiry-body .form-control:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(40,167,69,.1)}
-    .inquiry-body label{font-weight:600;color:var(--secondary);font-size:.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-    .inquiry-body label i{color:var(--primary)}
-    .btn-submit-inquiry{width:100%;padding:14px;background:var(--secondary);color:#fff;border:none;border-radius:12px;font-weight:600;font-size:.95rem;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
-    .btn-submit-inquiry:hover{background:var(--primary);transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,167,69,.2)}
+    .m3-inquiry-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;box-shadow:var(--md-sys-elevation-1);border:1px solid var(--md-sys-color-outline-variant)}
+    .m3-inquiry-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);padding:20px 28px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
+    .m3-inquiry-header .material-symbols-outlined{font-size:20px}
+    .m3-inquiry-body{padding:28px}
+    .m3-inquiry-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
+    .m3-inquiry-body .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
+    .m3-inquiry-body label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .m3-inquiry-body label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
+    .m3-btn-submit{width:100%;height:48px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 200ms}
+    .m3-btn-submit:hover{box-shadow:var(--md-sys-elevation-1)}
 
-    /* Featured Properties */
-    .featured-strip{padding:60px 0;background:#fff}
-    .strip-title{font-size:1.4rem;font-weight:800;color:var(--secondary);margin-bottom:30px;display:flex;align-items:center;gap:10px}
-    .strip-title i{color:var(--primary)}
-    .mini-prop{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e9ecef;transition:var(--transition)}
-    .mini-prop:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08);border-color:transparent}
-    .mini-prop-img{height:160px;overflow:hidden}
-    .mini-prop-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-    .mini-prop:hover .mini-prop-img img{transform:scale(1.06)}
-    .mini-prop-body{padding:16px}
-    .mini-prop-body h6{font-weight:700;color:var(--secondary);font-size:.9rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .mini-prop-price{font-weight:700;color:var(--primary);font-size:.9rem}
+    /* Featured Strip */
+    .m3-featured-strip{padding:60px 0;background:var(--md-sys-color-surface)}
+    .m3-strip-title{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:28px;display:flex;align-items:center;gap:10px}
+    .m3-strip-title .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:24px}
+    .m3-mini-prop{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-medium);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized)}
+    .m3-mini-prop:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
+    .m3-mini-prop-img{height:160px;overflow:hidden}
+    .m3-mini-prop-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+    .m3-mini-prop:hover .m3-mini-prop-img img{transform:scale(1.06)}
+    .m3-mini-prop-body{padding:16px}
+    .m3-mini-prop-body h6{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .m3-mini-prop-price{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-primary)}
 
     /* Alert */
-    .alert-float{position:fixed;top:100px;right:20px;z-index:1050;max-width:400px}
+    .m3-alert-float{position:fixed;top:100px;right:20px;z-index:1050;max-width:400px}
+    .m3-alert-float .alert{border-radius:var(--md-sys-shape-corner-medium);border:none;display:flex;align-items:center;gap:10px;font:var(--md-sys-typescale-body-medium)}
 
     /* Modal */
-    .modal-content{border-radius:var(--radius);border:none;overflow:hidden}
-    .modal-header{background:var(--secondary);color:#fff;border:none;padding:18px 24px}
-    .modal-body{padding:24px}
-    .modal-footer{border-top:1px solid #e9ecef;padding:16px 24px}
+    .m3-modal .modal-content{border-radius:var(--md-sys-shape-corner-extra-large);border:none;overflow:hidden}
+    .m3-modal .modal-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;padding:20px 28px}
+    .m3-modal .modal-header .modal-title{font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
+    .m3-modal .modal-body{padding:28px}
+    .m3-modal .modal-footer{border-top:1px solid var(--md-sys-color-outline-variant);padding:16px 28px}
+    .m3-modal .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms}
+    .m3-modal .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
+    .m3-modal .form-label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);display:flex;align-items:center;gap:6px}
+    .m3-modal .form-label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
 
-    @media(max-width:992px){.img-card img{height:350px}}
+    /* Price Card */
+    .m3-price-card{background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-large);padding:28px}
+    .m3-price-label{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.6);margin-bottom:4px}
+    .m3-price-val{font:500 2rem/1 'Inter',sans-serif;margin-bottom:16px}
+    .m3-price-val span{font:var(--md-sys-typescale-body-medium);opacity:.7}
+    .m3-price-stats{display:flex;gap:10px;margin-bottom:16px}
+    .m3-price-stat{flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:var(--md-sys-shape-corner-medium);text-align:center}
+    .m3-price-stat-v{font:var(--md-sys-typescale-title-small)}
+    .m3-price-stat-l{font:var(--md-sys-typescale-label-small);opacity:.6}
+
+    @media(max-width:992px){.m3-img-card img{height:350px}}
     @media(max-width:768px){
-        .detail-hero h1{font-size:1.8rem}
-        .img-card img{height:280px}
-        .feat-grid{grid-template-columns:repeat(2,1fr)}
-        .detail-price{font-size:1.6rem}
+        .m3-detail-hero h1{font-size:1.8rem}
+        .m3-img-card img{height:280px}
+        .m3-feat-grid{grid-template-columns:repeat(2,1fr)}
+        .m3-detail-price{font-size:1.6rem}
     }
     @media(max-width:576px){
-        .img-card img{height:220px}
-        .detail-hero h1{font-size:1.5rem}
-        .feat-grid{grid-template-columns:1fr 1fr}
+        .m3-img-card img{height:220px}
+        .m3-detail-hero h1{font-size:1.5rem}
+        .m3-feat-grid{grid-template-columns:1fr 1fr}
     }
 </style>
 
 <!-- Alerts -->
-<div class="alert-float">
+<div class="m3-alert-float">
     {% if messages %}{% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius:12px;border:none">
-        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>{{ message }}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <span class="material-symbols-outlined" style="font-size:20px">{% if message.tags == 'success' %}check_circle{% else %}warning{% endif %}</span>{{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endfor %}{% endif %}
 </div>
 
 <!-- Hero -->
-<section class="detail-hero">
+<section class="m3-detail-hero">
     <div class="container">
-        <div class="detail-hero-inner">
-            <div class="breadcrumb-nav">
-                <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
-                <span class="sep"><i class="fas fa-chevron-right"></i></span>
+        <div class="m3-detail-hero-inner">
+            <div class="m3-breadcrumb">
+                <a href="{% url 'index' %}"><span class="material-symbols-outlined" style="font-size:16px">home</span> Home</a>
+                <span class="m3-bc-sep"><span class="material-symbols-outlined">chevron_right</span></span>
                 <a href="{% url 'property_list' %}">Properties</a>
-                <span class="sep"><i class="fas fa-chevron-right"></i></span>
-                <span class="current">{{ property.name }}</span>
+                <span class="m3-bc-sep"><span class="material-symbols-outlined">chevron_right</span></span>
+                <span class="m3-bc-current">{{ property.name }}</span>
             </div>
             <h1>{{ property.name }}</h1>
-            <div class="detail-hero-meta">
-                <span class="hero-badge-pill badge-type"><i class="fas fa-tag"></i> {{ property.get_types_display }}</span>
-                <span class="hero-badge-pill {% if property.status == 'Available' %}badge-avail{% else %}badge-rented{% endif %}">
-                    <i class="fas fa-{% if property.status == 'Available' %}check-circle{% else %}key{% endif %}"></i> {{ property.status }}
+            <div class="m3-detail-hero-meta">
+                <span class="m3-hero-pill m3-pill-type"><span class="material-symbols-outlined" style="font-size:14px">label</span> {{ property.get_types_display }}</span>
+                <span class="m3-hero-pill {% if property.status == 'Available' %}m3-pill-avail{% else %}m3-pill-rented{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size:14px">{% if property.status == 'Available' %}check_circle{% else %}key{% endif %}</span> {{ property.status }}
                 </span>
-                <span class="hero-location"><i class="fas fa-map-marker-alt"></i> {{ property.address }}</span>
+                <span class="m3-hero-loc"><span class="material-symbols-outlined">location_on</span> {{ property.address }}</span>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Main Content -->
-<section class="detail-main">
+<section class="m3-detail-main">
     <div class="container">
         <div class="row">
             <!-- Left Column -->
             <div class="col-lg-8">
                 <!-- Image -->
-                <div class="img-card">
+                <div class="m3-img-card">
                     {% if property.image %}
                         <img src="{{ property.image.url }}" alt="{{ property.name }}">
                     {% else %}
                         <img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">
                     {% endif %}
-                    <div class="img-price-overlay">
-                        <div class="detail-price">{{ property.price|floatformat:0 }} Frw <small>/month</small></div>
+                    <div class="m3-img-overlay">
+                        <div class="m3-detail-price">{{ property.price|floatformat:0 }} Frw <small>/month</small></div>
                     </div>
                 </div>
 
                 <!-- Features -->
-                <div class="info-card">
-                    <div class="info-card-title"><i class="fas fa-th-large"></i> Property Details</div>
-                    <div class="feat-grid">
-                        <div class="feat-item">
-                            <div class="feat-icon"><i class="fas fa-bed"></i></div>
-                            <div class="feat-val">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
-                            <div class="feat-lbl">Bedrooms</div>
+                <div class="m3-info-card">
+                    <div class="m3-info-card-title"><span class="material-symbols-outlined">grid_view</span> Property Details</div>
+                    <div class="m3-feat-grid">
+                        <div class="m3-feat-item">
+                            <span class="material-symbols-outlined">bed</span>
+                            <div class="m3-feat-val">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                            <div class="m3-feat-lbl">Bedrooms</div>
                         </div>
-                        <div class="feat-item">
-                            <div class="feat-icon"><i class="fas fa-bath"></i></div>
-                            <div class="feat-val">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
-                            <div class="feat-lbl">Bathrooms</div>
+                        <div class="m3-feat-item">
+                            <span class="material-symbols-outlined">bathtub</span>
+                            <div class="m3-feat-val">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                            <div class="m3-feat-lbl">Bathrooms</div>
                         </div>
-                        <div class="feat-item">
-                            <div class="feat-icon"><i class="fas fa-door-open"></i></div>
-                            <div class="feat-val">{{ property.number_of_units }}</div>
-                            <div class="feat-lbl">Units</div>
+                        <div class="m3-feat-item">
+                            <span class="material-symbols-outlined">door_open</span>
+                            <div class="m3-feat-val">{{ property.number_of_units }}</div>
+                            <div class="m3-feat-lbl">Units</div>
                         </div>
-                        <div class="feat-item">
-                            <div class="feat-icon"><i class="fas fa-building"></i></div>
-                            <div class="feat-val">{{ property.get_types_display }}</div>
-                            <div class="feat-lbl">Type</div>
+                        <div class="m3-feat-item">
+                            <span class="material-symbols-outlined">apartment</span>
+                            <div class="m3-feat-val">{{ property.get_types_display }}</div>
+                            <div class="m3-feat-lbl">Type</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Description -->
-                <div class="info-card">
-                    <div class="info-card-title"><i class="fas fa-align-left"></i> Description</div>
-                    <p class="desc-text">{{ property.description }}</p>
+                <div class="m3-info-card">
+                    <div class="m3-info-card-title"><span class="material-symbols-outlined">description</span> Description</div>
+                    <p class="m3-desc-text">{{ property.description }}</p>
                 </div>
 
                 <!-- Owner Info -->
-                <div class="info-card">
-                    <div class="info-card-title"><i class="fas fa-user-tie"></i> Property Owner</div>
-                    <div class="owner-row">
-                        <div class="owner-avatar">
+                <div class="m3-info-card">
+                    <div class="m3-info-card-title"><span class="material-symbols-outlined">person</span> Property Owner</div>
+                    <div class="m3-owner-row">
+                        <div class="m3-owner-avatar">
                             {% if property.owner.image %}
-                                <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">
+                                <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--md-sys-shape-corner-medium)">
                             {% else %}
-                                <i class="fas fa-user"></i>
+                                <span class="material-symbols-outlined">person</span>
                             {% endif %}
                         </div>
                         <div>
-                            <div class="owner-name">{{ property.owner.name }}</div>
-                            <div class="owner-lbl">Property Owner</div>
+                            <div class="m3-owner-name">{{ property.owner.name }}</div>
+                            <div class="m3-owner-lbl">Property Owner</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Inquiry Form -->
-                <div class="inquiry-card">
-                    <div class="inquiry-header"><i class="fas fa-paper-plane"></i> Send an Inquiry</div>
-                    <div class="inquiry-body">
+                <div class="m3-inquiry-card">
+                    <div class="m3-inquiry-header"><span class="material-symbols-outlined">send</span> Send an Inquiry</div>
+                    <div class="m3-inquiry-body">
                         <form method="POST" action="/customer_enquiry/{{ property.id }}">
                             {% csrf_token %}
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label for="name"><i class="fas fa-user"></i> Your Name</label>
+                                    <label for="name"><span class="material-symbols-outlined">person</span> Your Name</label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                                    <label for="email"><span class="material-symbols-outlined">email</span> Email</label>
                                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="message"><i class="fas fa-comment-dots"></i> Message</label>
+                                <label for="message"><span class="material-symbols-outlined">chat</span> Message</label>
                                 <textarea class="form-control" id="message" name="enquiry" rows="4" placeholder="Write your message about {{ property.name }}..." required></textarea>
                             </div>
-                            <button type="submit" class="btn-submit-inquiry">
-                                <i class="fas fa-paper-plane"></i> Send Inquiry
+                            <button type="submit" class="m3-btn-submit">
+                                <span class="material-symbols-outlined" style="font-size:20px">send</span> Send Inquiry
                             </button>
                         </form>
                     </div>
@@ -254,47 +269,47 @@
             <!-- Right Sidebar -->
             <div class="col-lg-4">
                 <!-- Price Card -->
-                <div class="info-card" style="background:linear-gradient(135deg,var(--secondary),var(--primary-dark));color:#fff;border:none">
-                    <div style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px">Monthly Price</div>
-                    <div style="font-size:2rem;font-weight:800;margin-bottom:16px">{{ property.price|floatformat:0 }} <span style="font-size:.9rem;font-weight:500;opacity:.7">Frw</span></div>
-                    <div style="display:flex;gap:10px;margin-bottom:16px">
-                        <div style="flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:10px;text-align:center">
-                            <div style="font-weight:700">{{ property.number_of_units }}</div>
-                            <div style="font-size:.72rem;opacity:.6">Units</div>
+                <div class="m3-info-card m3-price-card" style="margin-bottom:24px">
+                    <div class="m3-price-label">Monthly Price</div>
+                    <div class="m3-price-val">{{ property.price|floatformat:0 }} <span>Frw</span></div>
+                    <div class="m3-price-stats">
+                        <div class="m3-price-stat">
+                            <div class="m3-price-stat-v">{{ property.number_of_units }}</div>
+                            <div class="m3-price-stat-l">Units</div>
                         </div>
-                        <div style="flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:10px;text-align:center">
-                            <div style="font-weight:700">{{ property.status }}</div>
-                            <div style="font-size:.72rem;opacity:.6">Status</div>
+                        <div class="m3-price-stat">
+                            <div class="m3-price-stat-v">{{ property.status }}</div>
+                            <div class="m3-price-stat-l">Status</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Actions -->
-                <div class="info-card">
-                    <div class="info-card-title"><i class="fas fa-bolt"></i> Quick Actions</div>
-                    <div class="action-btns">
+                <div class="m3-info-card">
+                    <div class="m3-info-card-title"><span class="material-symbols-outlined">bolt</span> Quick Actions</div>
+                    <div class="m3-action-btns">
                         {% if user.is_authenticated %}
                             {% if liked_properties %}
-                                <button class="btn-action btn-act-disabled" disabled><i class="fas fa-heart"></i> Already Liked</button>
+                                <button class="m3-btn-action m3-btn-act-disabled" disabled><span class="material-symbols-outlined">favorite</span> Already Liked</button>
                             {% else %}
-                                <a href="{% url 'like_property' property.id %}" class="btn-action btn-act-primary"><i class="fas fa-heart"></i> Like Property</a>
+                                <a href="{% url 'like_property' property.id %}" class="m3-btn-action m3-btn-act-primary"><span class="material-symbols-outlined">favorite</span> Like Property</a>
                             {% endif %}
                             {% if tenant_visits %}
-                                <button class="btn-action btn-act-disabled" disabled><i class="fas fa-calendar-check"></i> Visit Scheduled</button>
+                                <button class="m3-btn-action m3-btn-act-disabled" disabled><span class="material-symbols-outlined">event_available</span> Visit Scheduled</button>
                             {% else %}
-                                <button type="button" class="btn-action btn-act-secondary" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal"><i class="fas fa-calendar-plus"></i> Schedule Visit</button>
+                                <button type="button" class="m3-btn-action m3-btn-act-secondary" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal"><span class="material-symbols-outlined">calendar_add_on</span> Schedule Visit</button>
                             {% endif %}
                         {% endif %}
-                        <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="btn-action btn-act-outline"><i class="fas fa-map-marked-alt"></i> View on Map</a>
-                        <button type="button" class="btn-action btn-act-outline" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><i class="fas fa-envelope"></i> Contact Owner</button>
+                        <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="m3-btn-action m3-btn-act-outline"><span class="material-symbols-outlined">map</span> View on Map</a>
+                        <button type="button" class="m3-btn-action m3-btn-act-outline" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><span class="material-symbols-outlined">mail</span> Contact Owner</button>
                     </div>
                 </div>
 
                 <!-- Listed Date -->
-                <div class="info-card">
-                    <div class="info-card-title"><i class="fas fa-calendar"></i> Listing Info</div>
-                    <div style="display:flex;align-items:center;gap:10px;color:#6c757d;font-size:.88rem">
-                        <i class="fas fa-clock" style="color:var(--primary)"></i>
+                <div class="m3-info-card">
+                    <div class="m3-info-card-title"><span class="material-symbols-outlined">calendar_today</span> Listing Info</div>
+                    <div style="display:flex;align-items:center;gap:10px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-medium)">
+                        <span class="material-symbols-outlined" style="font-size:18px;color:var(--md-sys-color-primary)">schedule</span>
                         Listed {{ property.date_added|date:"M d, Y" }}
                     </div>
                 </div>
@@ -305,21 +320,21 @@
 
 <!-- Featured Properties -->
 {% if featured_properties %}
-<section class="featured-strip">
+<section class="m3-featured-strip">
     <div class="container">
-        <div class="strip-title"><i class="fas fa-star"></i> You May Also Like</div>
+        <div class="m3-strip-title"><span class="material-symbols-outlined">star</span> You May Also Like</div>
         <div class="row g-4">
             {% for fp in featured_properties %}
             <div class="col-lg-2 col-md-4 col-6">
                 <a href="{% url 'property_view' fp.id %}" class="text-decoration-none">
-                    <div class="mini-prop">
-                        <div class="mini-prop-img">
+                    <div class="m3-mini-prop">
+                        <div class="m3-mini-prop-img">
                             {% if fp.image %}<img src="{{ fp.image.url }}" alt="{{ fp.name }}" loading="lazy">
                             {% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ fp.name }}">{% endif %}
                         </div>
-                        <div class="mini-prop-body">
+                        <div class="m3-mini-prop-body">
                             <h6>{{ fp.name }}</h6>
-                            <div class="mini-prop-price">{{ fp.price|floatformat:0 }} Frw</div>
+                            <div class="m3-mini-prop-price">{{ fp.price|floatformat:0 }} Frw</div>
                         </div>
                     </div>
                 </a>
@@ -331,28 +346,28 @@
 {% endif %}
 
 <!-- Schedule Visit Modal -->
-<div class="modal fade" id="scheduleVisitModal" tabindex="-1">
+<div class="modal fade m3-modal" id="scheduleVisitModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Schedule a Visit</h5>
+                <h5 class="modal-title"><span class="material-symbols-outlined">calendar_add_on</span>Schedule a Visit</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{% url 'schedule_visit' property.id %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold"><i class="fas fa-calendar me-1 text-success"></i> Date & Time</label>
-                        <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required style="border-radius:12px;padding:12px 16px">
+                        <label class="form-label"><span class="material-symbols-outlined">event</span> Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold"><i class="fas fa-comment me-1 text-success"></i> Notes</label>
-                        <textarea class="form-control" name="description" rows="3" placeholder="Any specific requirements..." required style="border-radius:12px;padding:12px 16px"></textarea>
+                        <label class="form-label"><span class="material-symbols-outlined">notes</span> Notes</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Any specific requirements..." required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:10px">Cancel</button>
-                    <button type="submit" class="btn btn-success" style="border-radius:10px;padding:10px 24px"><i class="fas fa-check me-1"></i> Schedule</button>
+                    <button type="button" class="md-btn-outlined" data-bs-dismiss="modal" style="height:40px;padding:0 20px">Cancel</button>
+                    <button type="submit" class="md-btn-filled" style="height:40px;padding:0 20px"><span class="material-symbols-outlined" style="font-size:18px">check</span> Schedule</button>
                 </div>
             </form>
         </div>
@@ -360,35 +375,42 @@
 </div>
 
 <!-- Contact Owner Modal -->
-<div class="modal fade" id="contactOwnerModal" tabindex="-1">
+<div class="modal fade m3-modal" id="contactOwnerModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user me-2"></i>Contact Owner</h5>
+                <h5 class="modal-title"><span class="material-symbols-outlined">person</span>Contact Owner</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="owner-row mb-3">
-                    <div class="owner-avatar"><i class="fas fa-user"></i></div>
+                <div class="m3-owner-row mb-3">
+                    <div class="m3-owner-avatar"><span class="material-symbols-outlined">person</span></div>
                     <div>
-                        <div class="owner-name">{{ property.owner.name }}</div>
-                        <div class="owner-lbl">Property Owner</div>
+                        <div class="m3-owner-name">{{ property.owner.name }}</div>
+                        <div class="m3-owner-lbl">Property Owner</div>
                     </div>
                 </div>
                 {% if property.owner.phone_number %}
-                <div class="mb-2"><i class="fas fa-phone text-success me-2"></i><a href="tel:{{ property.owner.phone_number }}" class="text-decoration-none">{{ property.owner.phone_number }}</a></div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font:var(--md-sys-typescale-body-medium)">
+                    <span class="material-symbols-outlined" style="font-size:20px;color:var(--md-sys-color-primary)">phone</span>
+                    <a href="tel:{{ property.owner.phone_number }}" style="color:var(--md-sys-color-on-surface);text-decoration:none">{{ property.owner.phone_number }}</a>
+                </div>
                 {% endif %}
                 {% if property.owner.email %}
-                <div class="mb-3"><i class="fas fa-envelope text-success me-2"></i><a href="mailto:{{ property.owner.email }}" class="text-decoration-none">{{ property.owner.email }}</a></div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;font:var(--md-sys-typescale-body-medium)">
+                    <span class="material-symbols-outlined" style="font-size:20px;color:var(--md-sys-color-primary)">email</span>
+                    <a href="mailto:{{ property.owner.email }}" style="color:var(--md-sys-color-on-surface);text-decoration:none">{{ property.owner.email }}</a>
+                </div>
                 {% endif %}
-                <div class="alert alert-info" style="border-radius:12px;border:none;font-size:.88rem">
-                    <i class="fas fa-info-circle me-2"></i>For detailed inquiries, use the inquiry form on this page.
+                <div style="background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border-radius:var(--md-sys-shape-corner-medium);padding:14px 18px;font:var(--md-sys-typescale-body-small);display:flex;align-items:center;gap:10px">
+                    <span class="material-symbols-outlined" style="font-size:18px">info</span>
+                    For detailed inquiries, use the inquiry form on this page.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:10px">Close</button>
+                <button type="button" class="md-btn-outlined" data-bs-dismiss="modal" style="height:40px;padding:0 20px">Close</button>
                 {% if property.owner.phone_number %}
-                <a href="tel:{{ property.owner.phone_number }}" class="btn btn-success" style="border-radius:10px"><i class="fas fa-phone me-1"></i> Call</a>
+                <a href="tel:{{ property.owner.phone_number }}" class="md-btn-filled" style="height:40px;padding:0 20px"><span class="material-symbols-outlined" style="font-size:18px">phone</span> Call</a>
                 {% endif %}
             </div>
         </div>
@@ -397,10 +419,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const v=document.getElementById('visit_date');
-    if(v){const d=new Date();d.setDate(d.getDate()+1);const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');v.min=`${y}-${m}-${day}T08:00`;v.value=`${y}-${m}-${day}T10:00`}
-    document.querySelectorAll('.alert-float .alert').forEach(a=>{setTimeout(()=>{try{new bootstrap.Alert(a).close()}catch(e){}},5000)});
+    var v=document.getElementById('visit_date');
+    if(v){var d=new Date();d.setDate(d.getDate()+1);var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');v.min=y+'-'+m+'-'+day+'T08:00';v.value=y+'-'+m+'-'+day+'T10:00'}
+    document.querySelectorAll('.m3-alert-float .alert').forEach(function(a){setTimeout(function(){try{new bootstrap.Alert(a).close()}catch(e){}},5000)});
 });
 </script>
-
 {% endblock %}
+

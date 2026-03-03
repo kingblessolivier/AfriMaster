@@ -1,0 +1,478 @@
+/* ============================================================
+   MATERIAL DESIGN 3 — AFRIMASTER PROPERTIES DESIGN SYSTEM
+   Based on Google's Material Design 3 with green primary color
+   ============================================================ */
+
+/* ===== M3 COLOR TOKENS (Generated from primary #28a745) ===== */
+:root {
+    /* --- Primary --- */
+    --md-sys-color-primary: #28a745;
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-primary-container: #b8f5b0;
+    --md-sys-color-on-primary-container: #00210b;
+
+    /* --- Secondary --- */
+    --md-sys-color-secondary: #2f4f4f;
+    --md-sys-color-on-secondary: #ffffff;
+    --md-sys-color-secondary-container: #cce8e8;
+    --md-sys-color-on-secondary-container: #0b2121;
+
+    /* --- Tertiary (accent) --- */
+    --md-sys-color-tertiary: #20c997;
+    --md-sys-color-on-tertiary: #ffffff;
+    --md-sys-color-tertiary-container: #a8f2d9;
+    --md-sys-color-on-tertiary-container: #002117;
+
+    /* --- Error --- */
+    --md-sys-color-error: #ba1a1a;
+    --md-sys-color-on-error: #ffffff;
+    --md-sys-color-error-container: #ffdad6;
+    --md-sys-color-on-error-container: #410002;
+
+    /* --- Surface --- */
+    --md-sys-color-surface: #f8faf4;
+    --md-sys-color-on-surface: #191c19;
+    --md-sys-color-surface-variant: #dee5d9;
+    --md-sys-color-on-surface-variant: #424940;
+    --md-sys-color-surface-container-lowest: #ffffff;
+    --md-sys-color-surface-container-low: #f2f5ee;
+    --md-sys-color-surface-container: #ecefe8;
+    --md-sys-color-surface-container-high: #e7eae3;
+    --md-sys-color-surface-container-highest: #e1e4dd;
+    --md-sys-color-surface-dim: #d8dbd4;
+    --md-sys-color-surface-bright: #f8faf4;
+
+    /* --- Outline --- */
+    --md-sys-color-outline: #72796f;
+    --md-sys-color-outline-variant: #c2c9bd;
+
+    /* --- Inverse --- */
+    --md-sys-color-inverse-surface: #2e312d;
+    --md-sys-color-inverse-on-surface: #eff2eb;
+    --md-sys-color-inverse-primary: #6ddf74;
+
+    /* --- Scrim & Shadow --- */
+    --md-sys-color-scrim: #000000;
+    --md-sys-color-shadow: #000000;
+
+    /* ===== M3 TYPOGRAPHY TOKENS ===== */
+    --md-sys-typescale-display-large: 500 3.5625rem/4rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-display-medium: 500 2.8125rem/3.25rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-display-small: 500 2.25rem/2.75rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-headline-large: 500 2rem/2.5rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-headline-medium: 500 1.75rem/2.25rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-headline-small: 500 1.5rem/2rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-title-large: 500 1.375rem/1.75rem 'Google Sans', 'Inter', sans-serif;
+    --md-sys-typescale-title-medium: 600 1rem/1.5rem 'Inter', sans-serif;
+    --md-sys-typescale-title-small: 600 0.875rem/1.25rem 'Inter', sans-serif;
+    --md-sys-typescale-body-large: 400 1rem/1.5rem 'Inter', sans-serif;
+    --md-sys-typescale-body-medium: 400 0.875rem/1.25rem 'Inter', sans-serif;
+    --md-sys-typescale-body-small: 400 0.75rem/1rem 'Inter', sans-serif;
+    --md-sys-typescale-label-large: 600 0.875rem/1.25rem 'Inter', sans-serif;
+    --md-sys-typescale-label-medium: 600 0.75rem/1rem 'Inter', sans-serif;
+    --md-sys-typescale-label-small: 600 0.6875rem/1rem 'Inter', sans-serif;
+
+    /* ===== M3 SHAPE TOKENS ===== */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 9999px;
+
+    /* ===== M3 ELEVATION TOKENS (tonal + shadow) ===== */
+    --md-sys-elevation-0: none;
+    --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+    --md-sys-elevation-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+    --md-sys-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+    --md-sys-elevation-4: 0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px rgba(0,0,0,0.3);
+    --md-sys-elevation-5: 0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3);
+
+    /* ===== M3 MOTION TOKENS ===== */
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+    --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+    --md-sys-motion-duration-short1: 50ms;
+    --md-sys-motion-duration-short2: 100ms;
+    --md-sys-motion-duration-short3: 150ms;
+    --md-sys-motion-duration-short4: 200ms;
+    --md-sys-motion-duration-medium1: 250ms;
+    --md-sys-motion-duration-medium2: 300ms;
+    --md-sys-motion-duration-medium3: 350ms;
+    --md-sys-motion-duration-medium4: 400ms;
+    --md-sys-motion-duration-long1: 450ms;
+    --md-sys-motion-duration-long2: 500ms;
+
+    /* ===== STATE LAYER OPACITIES ===== */
+    --md-sys-state-hover-opacity: 0.08;
+    --md-sys-state-focus-opacity: 0.12;
+    --md-sys-state-pressed-opacity: 0.12;
+    --md-sys-state-dragged-opacity: 0.16;
+}
+
+/* ===== GLOBAL RESET & BASE ===== */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    background-color: var(--md-sys-color-surface);
+    font: var(--md-sys-typescale-body-large);
+    color: var(--md-sys-color-on-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== M3 TYPOGRAPHY CLASSES ===== */
+.md-display-large  { font: var(--md-sys-typescale-display-large);  }
+.md-display-medium { font: var(--md-sys-typescale-display-medium); }
+.md-display-small  { font: var(--md-sys-typescale-display-small);  }
+.md-headline-large { font: var(--md-sys-typescale-headline-large); }
+.md-headline-medium{ font: var(--md-sys-typescale-headline-medium);}
+.md-headline-small { font: var(--md-sys-typescale-headline-small); }
+.md-title-large    { font: var(--md-sys-typescale-title-large);    }
+.md-title-medium   { font: var(--md-sys-typescale-title-medium);   }
+.md-title-small    { font: var(--md-sys-typescale-title-small);    }
+.md-body-large     { font: var(--md-sys-typescale-body-large);     }
+.md-body-medium    { font: var(--md-sys-typescale-body-medium);     }
+.md-body-small     { font: var(--md-sys-typescale-body-small);     }
+.md-label-large    { font: var(--md-sys-typescale-label-large);    }
+.md-label-medium   { font: var(--md-sys-typescale-label-medium);   }
+.md-label-small    { font: var(--md-sys-typescale-label-small);    }
+
+/* ===== M3 BUTTONS ===== */
+
+/* Filled Button */
+.md-btn-filled {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 24px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none; border-radius: var(--md-sys-shape-corner-full);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+                background var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    position: relative; overflow: hidden;
+}
+.md-btn-filled:hover {
+    box-shadow: var(--md-sys-elevation-1);
+    color: var(--md-sys-color-on-primary);
+}
+.md-btn-filled::after {
+    content: ''; position: absolute; inset: 0;
+    background: currentColor; opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-btn-filled:hover::after { opacity: var(--md-sys-state-hover-opacity); }
+.md-btn-filled:active::after { opacity: var(--md-sys-state-pressed-opacity); }
+
+/* Filled Tonal Button */
+.md-btn-tonal {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 24px;
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border: none; border-radius: var(--md-sys-shape-corner-full);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+    position: relative; overflow: hidden;
+}
+.md-btn-tonal:hover {
+    box-shadow: var(--md-sys-elevation-1);
+    color: var(--md-sys-color-on-secondary-container);
+}
+.md-btn-tonal::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--md-sys-color-on-secondary-container); opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-btn-tonal:hover::after { opacity: var(--md-sys-state-hover-opacity); }
+
+/* Outlined Button */
+.md-btn-outlined {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 24px;
+    background: transparent;
+    color: var(--md-sys-color-primary);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    position: relative; overflow: hidden;
+}
+.md-btn-outlined:hover {
+    color: var(--md-sys-color-primary);
+    background: rgba(40, 167, 69, 0.08);
+}
+
+/* Text Button */
+.md-btn-text {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 16px;
+    background: transparent;
+    color: var(--md-sys-color-primary);
+    border: none; border-radius: var(--md-sys-shape-corner-full);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    position: relative; overflow: hidden;
+}
+.md-btn-text:hover { background: rgba(40, 167, 69, 0.08); color: var(--md-sys-color-primary); }
+
+/* Extended FAB */
+.md-fab-extended {
+    display: inline-flex; align-items: center; gap: 12px;
+    height: 56px; padding: 0 20px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border: none; border-radius: var(--md-sys-shape-corner-large);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    box-shadow: var(--md-sys-elevation-3);
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.md-fab-extended:hover { box-shadow: var(--md-sys-elevation-4); color: var(--md-sys-color-on-primary-container); }
+
+/* ===== M3 CARDS ===== */
+
+/* Elevated Card */
+.md-card-elevated {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: var(--md-sys-shape-corner-medium);
+    box-shadow: var(--md-sys-elevation-1);
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+                transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+    overflow: hidden;
+}
+.md-card-elevated:hover {
+    box-shadow: var(--md-sys-elevation-2);
+    transform: translateY(-2px);
+}
+
+/* Filled Card */
+.md-card-filled {
+    background: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-medium);
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+    overflow: hidden;
+}
+.md-card-filled:hover { box-shadow: var(--md-sys-elevation-1); }
+
+/* Outlined Card */
+.md-card-outlined {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-medium);
+    transition: box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+                transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+    overflow: hidden;
+}
+.md-card-outlined:hover {
+    box-shadow: var(--md-sys-elevation-1);
+    transform: translateY(-2px);
+}
+
+/* ===== M3 CHIPS ===== */
+.md-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 32px; padding: 0 16px;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-small);
+    font: var(--md-sys-typescale-label-large);
+    cursor: pointer; text-decoration: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-chip:hover { background: rgba(66, 73, 64, 0.08); color: var(--md-sys-color-on-surface-variant); }
+.md-chip.active {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: transparent;
+}
+
+.md-chip-assist {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 32px; padding: 0 16px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border: none;
+    border-radius: var(--md-sys-shape-corner-small);
+    font: var(--md-sys-typescale-label-large);
+}
+
+/* ===== M3 TEXT FIELD ===== */
+.md-text-field {
+    position: relative;
+    margin-bottom: 24px;
+}
+.md-text-field input,
+.md-text-field textarea {
+    width: 100%;
+    padding: 20px 16px 8px;
+    background: var(--md-sys-color-surface-container-highest);
+    border: none;
+    border-bottom: 2px solid var(--md-sys-color-on-surface-variant);
+    border-radius: var(--md-sys-shape-corner-extra-small) var(--md-sys-shape-corner-extra-small) 0 0;
+    font: var(--md-sys-typescale-body-large);
+    color: var(--md-sys-color-on-surface);
+    outline: none;
+    transition: border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-text-field textarea { min-height: 120px; resize: vertical; }
+.md-text-field input:focus,
+.md-text-field textarea:focus {
+    border-bottom-color: var(--md-sys-color-primary);
+    border-bottom-width: 3px;
+}
+.md-text-field label {
+    position: absolute; left: 16px; top: 16px;
+    font: var(--md-sys-typescale-body-large);
+    color: var(--md-sys-color-on-surface-variant);
+    pointer-events: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    transform-origin: left top;
+}
+.md-text-field input:focus ~ label,
+.md-text-field input:not(:placeholder-shown) ~ label,
+.md-text-field textarea:focus ~ label,
+.md-text-field textarea:not(:placeholder-shown) ~ label {
+    transform: translateY(-12px) scale(0.75);
+    color: var(--md-sys-color-primary);
+    font-weight: 600;
+}
+
+/* Outlined Text Field */
+.md-text-field-outlined input,
+.md-text-field-outlined textarea {
+    background: transparent;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    padding: 16px;
+}
+.md-text-field-outlined input:focus,
+.md-text-field-outlined textarea:focus {
+    border: 2px solid var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+}
+
+/* ===== M3 NAVIGATION BAR (Top) ===== */
+.md-top-app-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    box-shadow: var(--md-sys-elevation-2);
+    transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+.md-top-app-bar.scrolled {
+    background: var(--md-sys-color-surface-container);
+}
+
+/* ===== M3 NAVIGATION RAIL / TABS ===== */
+.md-nav-tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; color: var(--md-sys-color-on-surface-variant);
+    text-decoration: none; position: relative;
+    font: var(--md-sys-typescale-label-large);
+    border-radius: var(--md-sys-shape-corner-full);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.md-nav-tab:hover {
+    background: rgba(40, 167, 69, 0.08);
+    color: var(--md-sys-color-on-surface);
+}
+.md-nav-tab.active {
+    color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-primary-container);
+}
+.md-nav-tab.active::after {
+    content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 3px;
+    background: var(--md-sys-color-primary);
+    border-radius: 3px 3px 0 0;
+}
+
+/* ===== M3 DIVIDER ===== */
+.md-divider {
+    height: 1px;
+    background: var(--md-sys-color-outline-variant);
+    border: none;
+    margin: 0;
+}
+
+/* ===== M3 ICON CONTAINER ===== */
+.md-icon-container {
+    width: 40px; height: 40px;
+    border-radius: var(--md-sys-shape-corner-full);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    font-size: 1.25rem;
+}
+.md-icon-container-lg {
+    width: 56px; height: 56px;
+    border-radius: var(--md-sys-shape-corner-large);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    font-size: 1.5rem;
+}
+
+/* ===== M3 BADGE ===== */
+.md-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; height: 24px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-radius: var(--md-sys-shape-corner-full);
+    font: var(--md-sys-typescale-label-small);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ===== M3 SNACKBAR / ALERT ===== */
+.md-snackbar {
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    padding: 14px 16px;
+    box-shadow: var(--md-sys-elevation-3);
+    display: flex; align-items: center; gap: 12px;
+    font: var(--md-sys-typescale-body-medium);
+}
+
+/* ===== SCROLL REVEAL ===== */
+.md-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate),
+                transform var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.md-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== UTILITY CLASSES ===== */
+.md-surface { background: var(--md-sys-color-surface); }
+.md-surface-container { background: var(--md-sys-color-surface-container); }
+.md-surface-container-low { background: var(--md-sys-color-surface-container-low); }
+.md-surface-container-high { background: var(--md-sys-color-surface-container-high); }
+.md-on-surface { color: var(--md-sys-color-on-surface); }
+.md-on-surface-variant { color: var(--md-sys-color-on-surface-variant); }
+.md-primary-text { color: var(--md-sys-color-primary); }
+.md-secondary-text { color: var(--md-sys-color-secondary); }
+
+/* ===== MATERIAL SYMBOLS ICON ADJUSTMENTS ===== */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+.material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+

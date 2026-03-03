@@ -1,135 +1,63 @@
 {% extends 'Others_dashboard/Tenants/tenant_base.html' %}
 {% load static %}
 
-{% block title %}
-Make Payment
-{% endblock %}
+{% block title %}Make Payment{% endblock %}
 
 {% block content %}
+<h3 style="display:flex;align-items:center;gap:10px;margin-bottom:24px"><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">payments</span> Make Payment</h3>
 
-<style>
-    /* Styling for the overall layout */
-    .main-content {
-        margin-left: 90px;
-    }
-    .background-overlay {
-        background: rgba(255, 255, 255, 0.9); /* White with transparency */
-        padding: 20px; /* Space around the card */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
-    }
-    .form-control, .form-select {
-        border: 1px solid rgba(0, 123, 255, 0.5); /* Subtle blue border */
-        background: transparent; /* No background color */
-        color: #000; /* Black text for contrast */
-    }
-    .form-control:focus, .form-select:focus {
-        border-color: #007bff; /* Darker blue border on focus */
-        box-shadow: none; /* Remove shadow on focus */
-    }
-    .card-header {
-        background: rgba(0, 123, 255, 0.8); /* Darker blue background */
-    }
-    .card-header h2 {
-        font-size: 1.5rem;
-        font-weight: 500;
-    }
-    .btn-primary {
-        background-color: #007bff; /* Professional blue */
-        border-color: #007bff;
-    }
-    .btn-primary:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-    }
-    .btn-secondary {
-        background-color: #6c757d; /* Professional grey */
-        border-color: #6c757d;
-    }
-    .btn-secondary:hover {
-        background-color: #5a6268; /* Darker grey on hover */
-    }
-</style>
-
-<div class="main-content flex-grow-1 p-4">
-    <!-- Header section -->
-    <div class="row mb-4 section-header">
-        <div class="col-md-12">
-            <h4 class="text-primary"><i class="bi bi-cash"></i> Make Payment</h4>
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header" style="background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)">
+                <h5 class="mb-0 text-center" style="color:#fff">Payment Details</h5>
+            </div>
+            <div class="card-body p-4">
+                <form id="payment-form" method="post" action="{% url 'make_payment' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="property" class="form-label">Property</label>
+                        <select id="property" class="form-select" name="property">
+                            {% for lease in leases %}
+                                <option value="{{ lease.property.id }}">{{ lease.property.name }} — Rent: ${{ lease.rent_amount|default:lease.property.price }}</option>
+                            {% empty %}
+                                <option value="" disabled>No properties found.</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount to Pay</label>
+                        <input type="number" id="amount" class="form-control" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_paid" class="form-label">Date Paid</label>
+                        <input type="datetime-local" id="date_paid" class="form-control" name="date_paid" required>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="submit" class="m3-btn-filled"><span class="material-symbols-outlined" style="font-size:18px">credit_card</span> Pay Now</button>
+                        <a href="{% url 'tenant_dashboard' user.id %}" class="m3-btn-outlined">Back</a>
+                        <span style="color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);margin-left:auto">Payments are processed securely.</span>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <!-- Payment Form -->
-    <div class="container">
-        <div class="background-overlay">
-            <div class="row g-4">
-                <div class="col-md-8">
-                    <div class="card shadow-lg border-0 rounded-lg">
-                        <div class="card-header text-white text-center rounded-top bg-primary">
-                            <h2 class="mb-0">Payment Details</h2>
-                        </div>
-                        <div class="card-body p-4">
-                            <form id="payment-form" method="post" action="{% url 'make_payment' %}">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="property" class="form-label">Property</label>
-                                    <select id="property" class="form-select" name="property">
-                                        {% for lease in leases %}
-                                            <option value="{{ lease.property.id }}">{{ lease.property.name }} — Rent: ${{ lease.rent_amount|default:lease.property.price }}</option>
-                                        {% empty %}
-                                            <option value="" disabled>No properties found.</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="amount" class="form-label">Amount to Pay</label>
-                                    <input type="number" id="amount" class="form-control" name="amount" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="date_paid" class="form-label">Date Paid</label>
-                                    <input type="datetime-local" id="date_paid" class="form-control" name="date_paid" required>
-                                </div>
-                                <div class="d-flex gap-2 justify-content-between align-items-center">
-                                    <div>
-                                        <button type="submit" class="btn btn-accent">
-                                            <i class="fa fa-paypal me-1"></i> Pay with PayPal
-                                        </button>
-                                        <a href="{% url 'tenant_dashboard' user.id %}#leases" class="btn btn-link ms-2">
-                                            <i class="bi bi-arrow-left"></i> Back
-                                        </a>
-                                    </div>
-                                    <div class="text-muted small">Payments are processed securely via PayPal.</div>
-                                </div>
-                            </form>
-                        </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header"><h6 class="mb-0">Recent Payments</h6></div>
+            <div class="card-body" style="padding:12px 20px">
+                {% for p in payments|slice:":5" %}
+                <div class="m3-list-item">
+                    <div>
+                        <div class="m3-list-item-title">${{ p.amount }}</div>
+                        <div class="m3-list-item-sub">{{ p.date_paid|date:"M d, Y" }} · {{ p.property.name }}</div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100 p-3">
-                        <h6>Recent payments</h6>
-                        <ul class="list-group list-group-flush mt-2">
-                            {% for p in payments|slice:":5" %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-bold">${{ p.amount }}</div>
-                                    <div class="small text-muted">{{ p.date_paid|date:"M d, Y" }}</div>
-                                    <div class="small text-muted">{{ p.property.name }}</div>
-                                </div>
-                            </li>
-                            {% empty %}
-                            <li class="list-group-item">No payments yet.</li>
-                            {% endfor %}
-                        </ul>
-                        <div class="mt-3">
-                            <a href="{% url 'tenant_dashboard' user.id %}" class="btn btn-outline-secondary btn-sm">Back to Dashboard</a>
-                        </div>
-                    </div>
-                </div>
+                {% empty %}
+                <div class="m3-empty"><span class="material-symbols-outlined">receipt_long</span><p>No payments yet</p></div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
-
-<!-- Bootstrap Icons CDN -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.js"></script>
-
 {% endblock %}

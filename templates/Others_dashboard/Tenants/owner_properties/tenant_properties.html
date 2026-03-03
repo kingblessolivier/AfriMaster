@@ -1,50 +1,13 @@
 {% extends 'Others_dashboard/Tenants/tenant_base.html' %}
 {% load static %}
 {% block content %}
-<style>
-    .main-content {
-        margin-left: 120px;
-    }
-    .section-heading {
-        color: #343a40;
-    }
-    .section-divider {
-        border: 0;
-        border-top: 2px solid #28a745;
-    }
-    .table-responsive {
-        background: white;
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .table-light {
-        background: #007bff;
-        color: white;
-        border-top: 4px solid #0056b3;
-    }
-    .table-bordered th, .table-bordered td {
-        border: 1px solid #dee2e6;
-    }
-    .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #0056b3;
-    }
-    .pagination .page-link {
-        color: #007bff;
-    }
-    .pagination .page-item.active .page-link:hover {
-        background-color: #0056b3;
-    }
-    .pagination .page-link:hover {
-        color: #0056b3;
-    }
-</style>
 
-<div class="main-content">
-    <div class="row mb-1">
+<h3 style="display:flex;align-items:center;gap:10px;margin-bottom:24px"><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">apartment</span> My Properties</h3>
+
+<div>
+    <div class="row mb-3">
         <div class="col-md-12">
-            <form class="d-flex" method="GET" action="{% url 'tenant_properties' user.id %}">
+            <form class="d-flex gap-2" method="GET" action="{% url 'tenant_properties' user.id %}">
                 <select class="form-select me-1" id="typeSelect" name="type">
                     <option value="" selected disabled>Filter by Type</option>
                     {% for type in type_list %}
