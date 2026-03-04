@@ -113,9 +113,9 @@ urlpatterns = [
     path('tenant/messages/<int:user_id>/', views.tenant_messages, name='tenant_messages'),
     path('tenant/messages/<int:user_id>/conversation/<int:contact_id>/', views.tenant_conversation, name='tenant_conversation'),
     path('tenant/messages/<int:user_id>/delete/<int:message_id>/', views.tenant_delete_message, name='tenant_delete_message'),
-    path('admin/tenant-messages/', views.admin_tenant_inbox, name='admin_tenant_inbox'),
-    path('admin/tenant-messages/conversation/<int:contact_id>/', views.admin_conversation, name='admin_conversation'),
-    path('admin/tenant-messages/delete/<int:message_id>/', views.admin_delete_message, name='admin_delete_message'),
+    path('admin_dashboard/tenant-messages/', views.admin_tenant_inbox, name='admin_tenant_inbox'),
+    path('admin_dashboard/tenant-messages/conversation/<int:contact_id>/', views.admin_conversation, name='admin_conversation'),
+    path('admin_dashboard/tenant-messages/delete/<int:message_id>/', views.admin_delete_message, name='admin_delete_message'),
    path('tenant/make_payment/', views.process_payment, name='make_payment'),
     path('payment/execute/', views.execute_payment, name='execute_payment'),
     path('tenant/maintenance/<int:user_id>/', views.tenant_maintenance, name='tenant_maintenance'),
@@ -125,8 +125,8 @@ urlpatterns = [
     path('owner/messages/<int:user_id>/conversation/<int:contact_id>/', views.owner_conversation, name='owner_conversation'),
     path('owner/messages/<int:user_id>/delete/<int:message_id>/', views.owner_delete_message, name='owner_delete_message'),
     # Admin maintenance management
-    path('admin/maintenance/', views.admin_maintenance, name='admin_maintenance'),
-    path('admin/maintenance/update/<int:request_id>/', views.admin_update_maintenance, name='admin_update_maintenance'),
+    path('admin_dashboard/maintenance/', views.admin_maintenance, name='admin_maintenance'),
+    path('admin_dashboard/maintenance/update/<int:request_id>/', views.admin_update_maintenance, name='admin_update_maintenance'),
     # Owner maintenance management
     path('owner/maintenance/<int:user_id>/', views.owner_maintenance, name='owner_maintenance'),
     path('owner/maintenance/<int:user_id>/update/<int:request_id>/', views.owner_update_maintenance, name='owner_update_maintenance'),
