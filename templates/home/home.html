@@ -1,148 +1,245 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}Home - AfriMaster Properties{% endblock %}
+{% block title %}Home - PropertyHub Ltd{% endblock %}
 {% block content %}
 <style>
-    .m3-hero{position:relative;min-height:100vh;display:flex;align-items:center;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 40%,#0d4a25 100%);overflow:hidden}
-    .m3-hero::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(40,167,69,.18) 0%,transparent 70%);border-radius:50%;animation:m3f 8s ease-in-out infinite}
-    .m3-hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(32,201,151,.12) 0%,transparent 70%);border-radius:50%;animation:m3f 10s ease-in-out infinite reverse}
+    /* ===== Color Tokens ===== */
+    :root{--hp:#2E7D32;--hp-lt:#A5D6A7;--hp-dk:#1B5E20;--hp-txt:#1F2937;--hp-muted:#6B7280;--hp-bg:#F5F7FA;--hp-white:#FFFFFF;--hp-border:#E5E7EB;--hp-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--hp-shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--hp-shadow-lg:0 10px 15px rgba(0,0,0,.07),0 4px 6px rgba(0,0,0,.05);--hp-r:12px}
+
+    /* ===== Hero ===== */
+    .m3-hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding-top:112px}
+    .m3-hero::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(165,214,167,.15) 0%,transparent 70%);border-radius:50%;animation:m3f 8s ease-in-out infinite}
+    .m3-hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(102,187,106,.1) 0%,transparent 70%);border-radius:50%;animation:m3f 10s ease-in-out infinite reverse}
     @keyframes m3f{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(1.05)}}
-    .m3-hero .shape{position:absolute;border-radius:50%;opacity:.06;background:#fff}
-    .s1{width:200px;height:200px;top:15%;left:5%;animation:m3f 12s ease-in-out infinite}
-    .s2{width:120px;height:120px;top:60%;right:10%;animation:m3f 9s ease-in-out infinite 2s}
-    .s3{width:80px;height:80px;top:30%;right:25%;animation:m3f 7s ease-in-out infinite 1s}
     .m3-hero-inner{position:relative;z-index:2}
-    .m3-hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(184,245,176,.12);color:var(--md-sys-color-inverse-primary);padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;border:1px solid rgba(184,245,176,.2);margin-bottom:20px}
-    .m3-hero-title{font:500 3.2rem/1.15 'Inter',sans-serif;color:#fff;margin-bottom:20px}
-    .m3-gradient{background:linear-gradient(135deg,var(--md-sys-color-inverse-primary),var(--md-sys-color-tertiary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .m3-hero-sub{color:rgba(255,255,255,.65);font:var(--md-sys-typescale-body-large);max-width:520px;margin-bottom:36px;line-height:1.7}
-    .m3-hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+    .m3-hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(165,214,167,.15);color:var(--hp-lt);padding:8px 20px;border-radius:100px;font:500 .78rem/1 'Inter',sans-serif;letter-spacing:.6px;text-transform:uppercase;border:1px solid rgba(165,214,167,.25);margin-bottom:24px}
+    .m3-hero-badge .material-symbols-outlined{font-size:15px}
+    .m3-hero-title{font:700 3.4rem/1.1 'Inter',sans-serif;color:#fff;margin-bottom:20px;letter-spacing:-.5px}
+    .m3-gradient{background:linear-gradient(135deg,var(--hp-lt),#80CBC4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .m3-hero-sub{color:rgba(255,255,255,.7);font:400 1.05rem/1.7 'Inter',sans-serif;max-width:500px;margin-bottom:32px}
+
+    /* Search bar */
+    .m3-hero-search{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.12);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 6px 6px 20px;max-width:480px;margin-bottom:32px}
+    .m3-hero-search input{flex:1;background:transparent;border:none;outline:none;color:#fff;font:400 .95rem/1 'Inter',sans-serif;min-width:0}
+    .m3-hero-search input::placeholder{color:rgba(255,255,255,.5)}
+    .m3-hero-search button{display:flex;align-items:center;gap:6px;background:var(--hp);color:#fff;border:none;border-radius:100px;padding:10px 20px;font:500 .88rem/1 'Inter',sans-serif;cursor:pointer;transition:background 200ms;white-space:nowrap;flex-shrink:0}
+    .m3-hero-search button:hover{background:var(--hp-dk)}
+    .m3-hero-search button .material-symbols-outlined{font-size:18px}
+
+    .m3-hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+    .m3-btn-filled{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:var(--hp);color:#fff;border:none;border-radius:100px;font:600 .9rem/1 'Inter',sans-serif;text-decoration:none;transition:all 200ms;box-shadow:0 2px 8px rgba(46,125,50,.4);cursor:pointer}
+    .m3-btn-filled:hover{background:var(--hp-dk);color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.5);transform:translateY(-1px)}
+    .m3-btn-outline-w{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:100px;font:600 .9rem/1 'Inter',sans-serif;text-decoration:none;transition:all 200ms}
+    .m3-btn-outline-w:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.6);color:#fff;transform:translateY(-1px)}
+    .m3-btn-outline-g{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:transparent;color:var(--hp);border:1.5px solid var(--hp);border-radius:100px;font:600 .9rem/1 'Inter',sans-serif;text-decoration:none;transition:all 200ms}
+    .m3-btn-outline-g:hover{background:rgba(46,125,50,.06);color:var(--hp-dk);border-color:var(--hp-dk)}
+
+    /* Hero house illustration */
     .m3-hv{position:relative;display:flex;justify-content:center;align-items:center}
-    .m3-hcs{position:relative;width:100%;max-width:420px}
-    .m3-hc{background:rgba(255,255,255,.07);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:var(--md-sys-shape-corner-extra-large);padding:24px;color:#fff}
-    .m3-hc-main{position:relative;z-index:3}
-    .m3-hc-b1{position:absolute;top:20px;left:20px;right:-20px;bottom:-20px;z-index:1;opacity:.5;transform:rotate(3deg)}
-    .m3-hc-b2{position:absolute;top:40px;left:40px;right:-40px;bottom:-40px;z-index:0;opacity:.3;transform:rotate(6deg)}
-    .m3-hc-price{font:var(--md-sys-typescale-headline-large);margin-bottom:4px}
-    .m3-hc-lbl{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.5);margin-bottom:16px}
-    .m3-hc-row{display:flex;gap:16px;margin-top:12px}
-    .m3-hc-st{flex:1;background:rgba(255,255,255,.06);border-radius:var(--md-sys-shape-corner-medium);padding:12px;text-align:center}
-    .m3-hc-sv{font:var(--md-sys-typescale-title-medium)}.m3-hc-sl{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.5)}
+    .m3-house-showcase{position:relative;width:100%;max-width:520px}
+    .m3-house-illust{width:100%;height:auto;filter:drop-shadow(0 20px 40px rgba(27,94,32,.15));transition:transform .5s ease}
+    .m3-house-showcase:hover .m3-house-illust{transform:translateY(-8px)}
+    .m3-house-stats{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);z-index:6;background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:14px 28px;display:flex;gap:24px;white-space:nowrap}
+    .m3-house-stats-item{text-align:center;color:#fff}
+    .m3-house-stats-item .material-symbols-outlined{font-size:18px;color:var(--hp-lt);display:block;margin-bottom:2px}
+    .m3-house-stats-item span:last-child{font:500 .78rem/1 'Inter',sans-serif}
 
-    .m3-stats{background:var(--md-sys-color-surface);padding:0;position:relative;z-index:5}
-    .m3-stats-inner{display:grid;grid-template-columns:repeat(4,1fr);background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-extra-large);box-shadow:var(--md-sys-elevation-3);margin-top:-50px;overflow:hidden}
-    .m3-stat{padding:36px 24px;text-align:center;position:relative;transition:all 300ms var(--md-sys-motion-easing-standard)}
-    .m3-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--md-sys-color-outline-variant)}
-    .m3-stat:hover{background:var(--md-sys-color-primary-container)}
-    .m3-stat-icon{width:48px;height:48px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--md-sys-color-on-primary-container)}
-    .m3-stat:hover .m3-stat-icon{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
-    .m3-stat-val{font:500 2.2rem/1 'Inter',sans-serif;color:var(--md-sys-color-on-surface);margin-bottom:6px}
-    .m3-stat-lbl{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-on-surface-variant)}
+    /* ===== Stats ===== */
+    .m3-stats{background:transparent;padding:0;position:relative;z-index:5}
+    .m3-stats-inner{display:grid;grid-template-columns:repeat(4,1fr);background:var(--hp-white);border-radius:16px;box-shadow:var(--hp-shadow-lg);margin:-40px 0 0;overflow:hidden;border:1px solid var(--hp-border)}
+    .m3-stat{padding:32px 20px;text-align:center;position:relative;transition:all 250ms}
+    .m3-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--hp-border)}
+    .m3-stat:hover{background:#F0F7F0}
+    .m3-stat-icon{width:48px;height:48px;border-radius:12px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--hp);transition:all 250ms}
+    .m3-stat-icon .material-symbols-outlined{font-size:22px}
+    .m3-stat:hover .m3-stat-icon{background:var(--hp);color:#fff}
+    .m3-stat-val{font:700 2rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px}
+    .m3-stat-lbl{font:.8rem/1.2 'Inter',sans-serif;color:var(--hp-muted);font-weight:500}
 
-    .m3-sec{padding:100px 0}.m3-sec-s{background:var(--md-sys-color-surface)}.m3-sec-c{background:var(--md-sys-color-surface-container)}
+    /* ===== Sections ===== */
+    .m3-sec{padding:80px 0}
+    .m3-sec-w{background:var(--hp-white)}
+    .m3-sec-g{background:var(--hp-bg)}
     .m3-sh{text-align:center;margin-bottom:56px}
-    .m3-tag{display:inline-flex;align-items:center;gap:8px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
-    .m3-tag .material-symbols-outlined{font-size:16px}
-    .m3-stitle{font:var(--md-sys-typescale-headline-large);color:var(--md-sys-color-on-surface);margin-bottom:14px}
-    .m3-ssub{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-large);max-width:560px;margin:0 auto;line-height:1.7}
+    .m3-tag{display:inline-flex;align-items:center;gap:6px;background:#E8F5E9;color:var(--hp);padding:6px 16px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(46,125,50,.15)}
+    .m3-tag .material-symbols-outlined{font-size:14px}
+    .m3-stitle{font:700 2.1rem/1.2 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:14px;letter-spacing:-.3px}
+    .m3-ssub{color:var(--hp-muted);font:400 1rem/1.7 'Inter',sans-serif;max-width:560px;margin:0 auto}
 
-    .m3-svc{background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-corner-large);padding:32px 24px;text-align:center;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized);height:100%;overflow:hidden}
-    .m3-svc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent;background:var(--md-sys-color-surface-container-lowest)}
-    .m3-svc-icon{width:64px;height:64px;border-radius:var(--md-sys-shape-corner-large);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--md-sys-color-on-primary-container);transition:all 300ms}
-    .m3-svc-icon .material-symbols-outlined{font-size:28px}
-    .m3-svc:hover .m3-svc-icon{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);transform:scale(1.1)}
-    .m3-svc h3{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:10px}
-    .m3-svc p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin:0;line-height:1.65}
+    /* ===== Service Cards ===== */
+    .m3-svc{background:var(--hp-white);border-radius:var(--hp-r);padding:32px 24px;border:1px solid var(--hp-border);transition:all 280ms;height:100%;position:relative;overflow:hidden}
+    .m3-svc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--hp);transition:width 280ms;border-radius:var(--hp-r) 0 0 var(--hp-r)}
+    .m3-svc:hover{box-shadow:var(--hp-shadow-md);border-color:transparent;transform:translateY(-3px)}
+    .m3-svc:hover::before{width:4px}
+    .m3-svc-icon{width:56px;height:56px;border-radius:12px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--hp);transition:all 280ms}
+    .m3-svc-icon .material-symbols-outlined{font-size:26px}
+    .m3-svc:hover .m3-svc-icon{background:var(--hp);color:#fff}
+    .m3-svc h3{font:600 1rem/1.3 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:10px;text-align:center}
+    .m3-svc p{font:.875rem/1.65 'Inter',sans-serif;color:var(--hp-muted);margin:0;text-align:center}
 
-    .m3-pc{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized);height:100%;display:flex;flex-direction:column}
-    .m3-pc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-pc-img{position:relative;height:240px;overflow:hidden}
+    /* ===== Property Cards ===== */
+    .m3-pc{background:var(--hp-white);border-radius:var(--hp-r);overflow:hidden;border:1px solid var(--hp-border);transition:all 280ms;height:100%;display:flex;flex-direction:column}
+    .m3-pc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-lg);border-color:transparent}
+    .m3-pc-img{position:relative;height:220px;overflow:hidden}
     .m3-pc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-    .m3-pc:hover .m3-pc-img img{transform:scale(1.05)}
-    .m3-pc-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.4));pointer-events:none}
-    .m3-pc-badge{position:absolute;top:14px;left:14px;z-index:2;background:var(--md-sys-color-surface-container-lowest);padding:4px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;color:var(--md-sys-color-on-surface);box-shadow:var(--md-sys-elevation-1)}
-    .m3-pc-price{position:absolute;bottom:14px;left:14px;z-index:2;font:var(--md-sys-typescale-title-large);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-    .m3-pc-price small{font:var(--md-sys-typescale-label-small);opacity:.85}
-    .m3-pc-body{padding:20px;flex:1;display:flex;flex-direction:column}
-    .m3-pc-body h5{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    .m3-pc-loc{display:flex;align-items:center;gap:6px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);margin-bottom:16px}
-    .m3-pc-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-primary)}
-    .m3-pc-feats{display:flex;padding:14px 0;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant);margin-bottom:16px}
+    .m3-pc:hover .m3-pc-img img{transform:scale(1.06)}
+    .m3-pc-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.35));pointer-events:none}
+    .m3-pc-badge{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.95);padding:4px 12px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;text-transform:uppercase;color:var(--hp-txt);box-shadow:var(--hp-shadow)}
+    .m3-pc-price{position:absolute;bottom:12px;left:12px;z-index:2;font:700 1.15rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .m3-pc-price small{font:500 .75rem/1 'Inter',sans-serif;opacity:.85}
+    .m3-pc-body{padding:18px;flex:1;display:flex;flex-direction:column}
+    .m3-pc-body h5{font:600 1rem/1.3 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .m3-pc-loc{display:flex;align-items:center;gap:5px;color:var(--hp-muted);font:.82rem/1 'Inter',sans-serif;margin-bottom:14px}
+    .m3-pc-loc .material-symbols-outlined{font-size:15px;color:var(--hp)}
+    .m3-pc-feats{display:flex;padding:12px 0;border-top:1px solid var(--hp-border);border-bottom:1px solid var(--hp-border);margin-bottom:14px}
     .m3-pc-f{flex:1;text-align:center;position:relative}
-    .m3-pc-f:not(:last-child)::after{content:'';position:absolute;right:0;top:4px;bottom:4px;width:1px;background:var(--md-sys-color-outline-variant)}
-    .m3-pc-f .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:20px;margin-bottom:4px;display:block}
-    .m3-pc-fv{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface)}
-    .m3-pc-fl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
-    .m3-pc-desc{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:16px}
-    .m3-pc-ft{padding:0 20px 20px}
-    .m3-btn-view{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);transition:all 300ms;text-decoration:none;cursor:pointer}
-    .m3-btn-view:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:var(--md-sys-elevation-1)}
+    .m3-pc-f:not(:last-child)::after{content:'';position:absolute;right:0;top:4px;bottom:4px;width:1px;background:var(--hp-border)}
+    .m3-pc-f .material-symbols-outlined{color:var(--hp);font-size:18px;margin-bottom:3px;display:block}
+    .m3-pc-fv{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt)}
+    .m3-pc-fl{font:.72rem/1 'Inter',sans-serif;color:var(--hp-muted)}
+    .m3-pc-desc{font:.82rem/1.6 'Inter',sans-serif;color:var(--hp-muted);flex:1;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px}
+    .m3-pc-ft{padding:0 18px 18px}
+    .m3-btn-view{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#E8F5E9;color:var(--hp);border:none;border-radius:100px;font:600 .875rem/1 'Inter',sans-serif;transition:all 250ms;text-decoration:none;cursor:pointer}
+    .m3-btn-view:hover{background:var(--hp);color:#fff}
 
-    .m3-tc{background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-corner-large);padding:28px;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%;position:relative}
-    .m3-tc::before{content:'\201C';position:absolute;top:12px;right:20px;font-size:4rem;color:var(--md-sys-color-primary-container);font-family:Georgia,serif;line-height:1}
-    .m3-tc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-tc-stars{margin-bottom:16px}
-    .m3-tc-txt{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);line-height:1.7;font-style:italic;margin-bottom:24px}
-    .m3-tc-author{display:flex;align-items:center;gap:14px}
-    .m3-tc-avatar{width:48px;height:48px;border-radius:var(--md-sys-shape-corner-full);object-fit:cover;border:3px solid var(--md-sys-color-primary-container)}
-    .m3-tc-name{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:2px}
-    .m3-tc-role{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-primary)}
+    /* Skeleton cards */
+    .m3-skel-card{background:var(--hp-white);border-radius:var(--hp-r);overflow:hidden;border:1px solid var(--hp-border)}
+    .pagelet:not(.loaded) .real-card{display:none}
+    .pagelet.loaded .skel-wrap{display:none}
 
-    .m3-nc{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%;display:flex;flex-direction:column}
-    .m3-nc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-nc-img{height:200px;overflow:hidden;position:relative}
+    /* ===== Sale Property Cards ===== */
+    .m3-sp{background:var(--hp-white);border-radius:16px;overflow:hidden;border:1px solid var(--hp-border);transition:all 320ms cubic-bezier(.4,0,.2,1);height:100%;display:flex;flex-direction:column}
+    .m3-sp:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(46,125,50,.12),0 4px 12px rgba(0,0,0,.06);border-color:transparent}
+    .m3-sp-img{position:relative;height:220px;overflow:hidden}
+    .m3-sp-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+    .m3-sp:hover .m3-sp-img img{transform:scale(1.06)}
+    .m3-sp-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(transparent,rgba(0,0,0,.45));pointer-events:none}
+    .m3-sp-img-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#E8F5E9 0%,#C8E6C9 50%,#A5D6A7 100%);display:flex;align-items:center;justify-content:center}
+    .m3-sp-img-placeholder .material-symbols-outlined{font-size:52px;color:var(--hp);opacity:.5}
+    .m3-sp-type{position:absolute;top:14px;left:14px;z-index:2;background:var(--hp);color:#fff;padding:6px 14px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;letter-spacing:.3px;text-transform:uppercase;box-shadow:0 2px 8px rgba(46,125,50,.35)}
+    .m3-sp-neg{position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,152,0,.92);color:#fff;padding:5px 12px;border-radius:100px;font:600 .7rem/1 'Inter',sans-serif;backdrop-filter:blur(6px);display:flex;align-items:center;gap:4px}
+    .m3-sp-neg .material-symbols-outlined{font-size:13px}
+    .m3-sp-price{position:absolute;bottom:14px;left:14px;z-index:2;font:700 1.25rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .m3-sp-price small{font:500 .7rem/1 'Inter',sans-serif;opacity:.8;margin-left:2px}
+    .m3-sp-body{padding:18px 18px 0;flex:1;display:flex;flex-direction:column}
+    .m3-sp-body h5{font:600 1rem/1.3 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .m3-sp-loc{display:flex;align-items:center;gap:5px;color:var(--hp-muted);font:.82rem/1 'Inter',sans-serif;margin-bottom:14px}
+    .m3-sp-loc .material-symbols-outlined{font-size:15px;color:var(--hp)}
+    .m3-sp-feats{display:flex;padding:12px 0;border-top:1px solid var(--hp-border);border-bottom:1px solid var(--hp-border);margin-bottom:14px}
+    .m3-sp-f{flex:1;text-align:center;position:relative}
+    .m3-sp-f:not(:last-child)::after{content:'';position:absolute;right:0;top:4px;bottom:4px;width:1px;background:var(--hp-border)}
+    .m3-sp-f .material-symbols-outlined{color:var(--hp);font-size:17px;margin-bottom:3px;display:block}
+    .m3-sp-fv{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt)}
+    .m3-sp-fl{font:.7rem/1 'Inter',sans-serif;color:var(--hp-muted)}
+    .m3-sp-ft{padding:4px 18px 18px;margin-top:auto}
+    .m3-sp-ft a{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#E8F5E9;color:var(--hp);border:none;border-radius:100px;font:600 .875rem/1 'Inter',sans-serif;transition:all 250ms;text-decoration:none}
+    .m3-sp-ft a:hover{background:var(--hp);color:#fff}
+
+    /* ===== Agent Cards ===== */
+    .m3-ac{background:var(--hp-white);border-radius:16px;overflow:hidden;border:1px solid var(--hp-border);transition:all 320ms cubic-bezier(.4,0,.2,1);height:100%;display:flex;flex-direction:column;text-align:center}
+    .m3-ac:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(46,125,50,.12),0 4px 12px rgba(0,0,0,.06);border-color:transparent}
+    .m3-ac-header{position:relative;padding:36px 20px 50px;background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 50%,#43A047 100%);overflow:hidden}
+    .m3-ac-header::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .m3-ac-header::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.04)}
+    .m3-ac-avatar{position:relative;z-index:2;width:88px;height:88px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.9);box-shadow:0 4px 16px rgba(0,0,0,.2);margin:0 auto;display:block}
+    .m3-ac-avatar-placeholder{position:relative;z-index:2;width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);margin:0 auto;display:flex;align-items:center;justify-content:center;border:4px solid rgba(255,255,255,.3)}
+    .m3-ac-avatar-placeholder .material-symbols-outlined{font-size:36px;color:rgba(255,255,255,.8)}
+    .m3-ac-body{padding:20px;flex:1;display:flex;flex-direction:column;margin-top:-24px;position:relative;z-index:3}
+    .m3-ac-name{font:700 1.05rem/1.3 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:4px;margin-top:28px}
+    .m3-ac-spec{display:inline-flex;align-items:center;gap:4px;background:#E8F5E9;color:var(--hp);padding:4px 14px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;letter-spacing:.3px;margin:0 auto 12px}
+    .m3-ac-stats{display:flex;justify-content:center;gap:20px;padding:12px 0;border-top:1px solid var(--hp-border);border-bottom:1px solid var(--hp-border);margin-bottom:16px}
+    .m3-ac-stat-item{text-align:center}
+    .m3-ac-stat-val{font:700 1.1rem/1 'Inter',sans-serif;color:var(--hp-txt);display:block}
+    .m3-ac-stat-lbl{font:.7rem/1 'Inter',sans-serif;color:var(--hp-muted);margin-top:3px;display:block}
+    .m3-ac-rating{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:14px}
+    .m3-ac-rating .material-symbols-outlined{font-size:18px;color:#FBBF24;font-variation-settings:'FILL' 1}
+    .m3-ac-rating span{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-left:4px}
+    .m3-ac-link{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#E8F5E9;color:var(--hp);border:none;border-radius:100px;font:600 .85rem/1 'Inter',sans-serif;transition:all 250ms;text-decoration:none;margin-top:auto}
+    .m3-ac-link:hover{background:var(--hp);color:#fff}
+
+    /* ===== About Preview ===== */
+    .m3-about-preview{padding:80px 0;background:var(--hp-white)}
+    .about-preview-img{width:100%;border-radius:16px;object-fit:cover;height:400px;box-shadow:var(--hp-shadow-lg)}
+    .about-preview-text{padding-left:48px}
+    .about-preview-text h2{font:700 2rem/1.2 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:16px;letter-spacing:-.3px}
+    .about-preview-text p{font:400 1rem/1.75 'Inter',sans-serif;color:var(--hp-muted);margin-bottom:28px}
+    .about-feature{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+    .about-feature-icon{width:36px;height:36px;border-radius:8px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;color:var(--hp);flex-shrink:0}
+    .about-feature-icon .material-symbols-outlined{font-size:18px}
+    .about-feature-text strong{font:600 .9rem/1 'Inter',sans-serif;color:var(--hp-txt);display:block;margin-bottom:3px}
+    .about-feature-text span{font:.82rem/1.5 'Inter',sans-serif;color:var(--hp-muted)}
+
+    /* ===== Testimonials ===== */
+    .m3-tc{background:var(--hp-white);border-radius:var(--hp-r);padding:28px;border:1px solid var(--hp-border);transition:all 280ms;height:100%;position:relative}
+    .m3-tc::before{content:'\201C';position:absolute;top:16px;right:20px;font-size:4rem;color:#E8F5E9;font-family:Georgia,serif;line-height:1}
+    .m3-tc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-md);border-color:transparent}
+    .m3-tc-stars{margin-bottom:14px}
+    .m3-tc-txt{font:.9rem/1.7 'Inter',sans-serif;color:var(--hp-muted);font-style:italic;margin-bottom:22px}
+    .m3-tc-author{display:flex;align-items:center;gap:12px}
+    .m3-tc-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #A5D6A7}
+    .m3-tc-name{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:2px}
+    .m3-tc-role{font:.78rem/1 'Inter',sans-serif;color:var(--hp)}
+
+    /* ===== News Cards ===== */
+    .m3-nc{background:var(--hp-white);border-radius:var(--hp-r);overflow:hidden;border:1px solid var(--hp-border);transition:all 280ms;height:100%;display:flex;flex-direction:column}
+    .m3-nc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-md);border-color:transparent}
+    .m3-nc-top{position:relative}
+    .m3-nc-img{height:190px;overflow:hidden}
     .m3-nc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
     .m3-nc:hover .m3-nc-img img{transform:scale(1.05)}
-    .m3-nc-chip{position:absolute;top:14px;left:14px;background:var(--md-sys-color-surface-container-lowest);padding:4px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-primary);box-shadow:var(--md-sys-elevation-1);display:inline-flex;align-items:center;gap:4px}
-    .m3-nc-body{padding:20px;flex:1;display:flex;flex-direction:column}
-    .m3-nc-body h5{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:10px}
-    .m3-nc-body p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);line-height:1.65;flex:1;margin:0}
+    .m3-nc-chip{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.95);padding:4px 12px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;color:var(--hp);box-shadow:var(--hp-shadow);display:inline-flex;align-items:center;gap:4px}
+    .m3-nc-body{padding:18px;flex:1;display:flex;flex-direction:column}
+    .m3-nc-body h5{font:600 .95rem/1.4 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:8px}
+    .m3-nc-body p{font:.84rem/1.65 'Inter',sans-serif;color:var(--hp-muted);flex:1;margin:0}
 
-    .m3-cta{padding:100px 0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--md-sys-color-inverse-surface) 0%,#0d4a25 100%)}
-    .m3-cta::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="1.5" fill="rgba(255,255,255,.04)"/></svg>');background-size:40px 40px}
+    /* ===== CTA ===== */
+    .m3-cta{padding:80px 0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hp-dk) 0%,var(--hp) 100%)}
+    .m3-cta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
     .m3-cta-inner{position:relative;z-index:2;text-align:center}
-    .m3-cta h2{font:500 2.2rem/1.3 'Inter',sans-serif;color:#fff;margin-bottom:16px}
-    .m3-cta p{color:rgba(255,255,255,.7);font:var(--md-sys-typescale-body-large);max-width:560px;margin:0 auto 36px;line-height:1.7}
+    .m3-cta h2{font:700 2.2rem/1.3 'Inter',sans-serif;color:#fff;margin-bottom:12px;letter-spacing:-.3px}
+    .m3-cta p{color:rgba(255,255,255,.75);font:400 1rem/1.7 'Inter',sans-serif;max-width:520px;margin:0 auto 36px}
     .m3-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
-    .m3-btn-w{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 28px;background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;box-shadow:var(--md-sys-elevation-1);transition:all 300ms}
-    .m3-btn-w:hover{box-shadow:var(--md-sys-elevation-3);transform:translateY(-2px);color:var(--md-sys-color-on-surface)}
-    .m3-btn-o{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 28px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 300ms}
-    .m3-btn-o:hover{border-color:#fff;background:rgba(255,255,255,.08);transform:translateY(-2px);color:#fff}
+    .m3-btn-w{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:#fff;color:var(--hp-dk);border:none;border-radius:100px;font:600 .9rem/1 'Inter',sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:all 250ms}
+    .m3-btn-w:hover{box-shadow:0 4px 16px rgba(0,0,0,.25);transform:translateY(-2px);color:var(--hp-dk)}
+    .m3-btn-o{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 28px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.45);border-radius:100px;font:600 .9rem/1 'Inter',sans-serif;text-decoration:none;transition:all 250ms}
+    .m3-btn-o:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);color:#fff}
 
-    @media(max-width:992px){.m3-hero-title{font-size:2.6rem}.m3-stats-inner{grid-template-columns:repeat(2,1fr)}.m3-stat:nth-child(2)::after{display:none}.m3-hv{margin-top:40px}}
-    @media(max-width:768px){.m3-hero-title{font-size:2.2rem}.m3-stats-inner{margin-top:-30px}.m3-stat-val{font-size:1.8rem}.m3-sec{padding:70px 0}.m3-stitle{font-size:1.5rem}.m3-cta h2{font-size:1.8rem}}
-    @media(max-width:576px){.m3-hero-title{font-size:1.8rem}.m3-stats-inner{grid-template-columns:1fr 1fr}.m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}}
+    /* ===== Responsive ===== */
+    @media(max-width:992px){.m3-hero-title{font-size:2.6rem}.m3-stats-inner{grid-template-columns:repeat(2,1fr)}.m3-stat:nth-child(2)::after{display:none}.m3-hv{margin-top:40px}.about-preview-text{padding-left:24px}.about-preview-img{height:300px}}
+    @media(max-width:768px){.m3-hero-title{font-size:2.1rem}.m3-stats-inner{margin:0 0 0}.m3-stat-val{font-size:1.7rem}.m3-sec{padding:60px 0}.m3-stitle{font-size:1.65rem}.m3-cta h2{font-size:1.8rem}.about-preview-text{padding-left:0;margin-top:32px}.m3-hero-search{max-width:100%}}
+    @media(max-width:576px){.m3-hero-title{font-size:1.9rem}.m3-stats-inner{grid-template-columns:1fr 1fr}.m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}}
 </style>
 
-<section class="m3-hero">
-    <div class="shape s1"></div><div class="shape s2"></div><div class="shape s3"></div>
+<!-- ===== Hero ===== -->
+<section class="m3-hero hero-lattice">
+    <div class="floating-sq floating-sq--lg floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:10%;left:6%;transform:rotate(12deg)"></div>
+    <div class="floating-sq floating-sq--xl floating-sq--c3 floating-sq--a3 floating-sq--d3" style="top:18%;right:6%"></div>
+    <div class="floating-sq floating-sq--2xl floating-sq--c5 floating-sq--a6 floating-sq--d1" style="bottom:-40px;right:-40px;transform:rotate(25deg)"></div>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <div class="m3-hero-inner">
-                    <div class="m3-hero-badge"><span class="material-symbols-outlined" style="font-size:16px">workspace_premium</span>#1 Property Platform in Rwanda</div>
-                    <h1 class="m3-hero-title">Smart Property<br>Management<br><span class="m3-gradient">Made Simple.</span></h1>
-                    <p class="m3-hero-sub">Streamline your real estate journey with AfriMaster — the all-in-one platform for property owners, tenants, and professionals.</p>
+                    <div class="m3-hero-badge"><span class="material-symbols-outlined">workspace_premium</span>#1 Property Platform in Rwanda</div>
+                    <h1 class="m3-hero-title">Find Your<br>Dream Home<br><span class="m3-gradient">Buy, Rent or Sell.</span></h1>
+                    <p class="m3-hero-sub">Discover the best houses, apartments, and land across Rwanda. Whether you're buying, renting, or selling — we connect you with the right property.</p>
+                    <form class="m3-hero-search" action="{% url 'sale_listings' %}" method="get">
+                        <input type="text" name="search" placeholder="Search houses, land, apartments...">
+                        <button type="submit"><span class="material-symbols-outlined">search</span>Search</button>
+                    </form>
                     <div class="m3-hero-btns">
-                        <a href="{% url 'property_list' %}" class="md-btn-filled" style="height:48px;padding:0 28px;font-size:.95rem;box-shadow:var(--md-sys-elevation-2)"><span class="material-symbols-outlined" style="font-size:20px">search</span>Browse Properties</a>
-                        <a href="#services" class="m3-btn-o"><span class="material-symbols-outlined" style="font-size:20px">play_circle</span>Learn More</a>
+                        <a href="{% url 'sale_listings' %}" class="m3-btn-filled"><span class="material-symbols-outlined" style="font-size:20px">real_estate_agent</span>Buy Property</a>
+                        <a href="{% url 'property_list' %}" class="m3-btn-outline-w"><span class="material-symbols-outlined" style="font-size:20px">apartment</span>Rent Property</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="m3-hv">
-                    <div class="m3-hcs">
-                        <div class="m3-hc m3-hc-b2"></div><div class="m3-hc m3-hc-b1"></div>
-                        <div class="m3-hc m3-hc-main">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                                <div><div class="m3-hc-price">{{ total_properties|default:"150" }}+</div><div class="m3-hc-lbl">Listed Properties</div></div>
-                                <div style="width:56px;height:56px;border-radius:var(--md-sys-shape-corner-large);background:rgba(184,245,176,.15);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-inverse-primary)"><span class="material-symbols-outlined">apartment</span></div>
-                            </div>
-                            <div class="m3-hc-row">
-                                <div class="m3-hc-st"><div class="m3-hc-sv">{{ total_owners|default:"50" }}+</div><div class="m3-hc-sl">Owners</div></div>
-                                <div class="m3-hc-st"><div class="m3-hc-sv">{{ total_tenants|default:"200" }}+</div><div class="m3-hc-sl">Tenants</div></div>
-                                <div class="m3-hc-st"><div class="m3-hc-sv">4.8</div><div class="m3-hc-sl">Rating</div></div>
-                            </div>
+                    <div class="m3-house-showcase">
+                        <img src="{% static 'images/hero-house.svg' %}" alt="Find your dream home" class="m3-house-illust">
+                        <div class="m3-house-stats">
+                            <div class="m3-house-stats-item"><span class="material-symbols-outlined">apartment</span><span>{{ total_properties|default:"150" }}+ Listed</span></div>
+                            <div class="m3-house-stats-item"><span class="material-symbols-outlined">group</span><span>{{ total_owners|default:"50" }}+ Owners</span></div>
+                            <div class="m3-house-stats-item"><span class="material-symbols-outlined">star</span><span>4.8 Rating</span></div>
                         </div>
                     </div>
                 </div>
@@ -153,36 +250,57 @@
 
 <!-- Pagelet: Stats -->
 <div class="pagelet" data-pagelet="stats">
-<section class="m3-stats"><div class="container"><div class="m3-stats-inner">
+<div class="container">
+<section class="m3-stats"><div class="m3-stats-inner">
     <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">apartment</span></div><div class="m3-stat-val" data-count="1500">0</div><div class="m3-stat-lbl">Properties Managed</div></div>
     <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">groups</span></div><div class="m3-stat-val" data-count="500">0</div><div class="m3-stat-lbl">Happy Clients</div></div>
-    <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">handshake</span></div><div class="m3-stat-val" data-count="50">0</div><div class="m3-stat-lbl">Real Estate Partners</div></div>
+    <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">handshake</span></div><div class="m3-stat-val" data-count="50">0</div><div class="m3-stat-lbl">RE Partners</div></div>
     <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">military_tech</span></div><div class="m3-stat-val" data-count="3">0</div><div class="m3-stat-lbl">Years of Excellence</div></div>
-</div></div></section>
+</div></section>
+</div>
 </div><!-- /pagelet:stats -->
 
 <!-- Pagelet: Services -->
 <div class="pagelet" data-pagelet="services">
-<section id="services" class="m3-sec m3-sec-c"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">settings</span>Our Services</div><h2 class="m3-stitle">What We Do</h2><p class="m3-ssub">We revolutionize property management with innovative solutions for owners, tenants, and real estate professionals.</p></div>
+<section id="services" class="m3-sec m3-sec-g" style="padding-top:100px"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">star</span>Why PropertyHub</div>
+        <h2 class="m3-stitle">Everything You Need</h2>
+        <p class="m3-ssub">Comprehensive tools for property owners, tenants, and real estate professionals — all in one place.</p>
+    </div>
     <div class="row g-4">
         <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">home</span></div><h3>Property Listings</h3><p>Manage and list properties with our intuitive interface for quick uploads and modifications.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">how_to_reg</span></div><h3>Tenant Management</h3><p>Comprehensive tenant management with screening, background checks, and lease tracking.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">how_to_reg</span></div><h3>Tenant Management</h3><p>Comprehensive screening, background checks, and lease tracking in one dashboard.</p></div></div>
         <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">notifications_active</span></div><h3>Real-time Updates</h3><p>Stay informed with instant notifications through our integrated communication system.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">support_agent</span></div><h3>Customer Support</h3><p>Our dedicated support team ensures all your queries are resolved promptly.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">shield</span></div><h3>Secure Transactions</h3><p>All transactions and data are protected with advanced security measures.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">trending_up</span></div><h3>Market Insights</h3><p>Gain valuable real estate market insights with advanced analytics and reporting.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">support_agent</span></div><h3>24/7 Support</h3><p>Our dedicated support team ensures all your queries are resolved promptly and professionally.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">shield</span></div><h3>Secure Transactions</h3><p>All transactions and data protected with advanced encryption and security measures.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">trending_up</span></div><h3>Market Insights</h3><p>Gain valuable real estate market insights with advanced analytics and reporting tools.</p></div></div>
     </div>
 </div></section>
 </div><!-- /pagelet:services -->
 
 <!-- Pagelet: Featured Properties -->
 <div class="pagelet" data-pagelet="featured">
-<section id="featured" class="m3-sec m3-sec-s"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">star</span>Featured</div><h2 class="m3-stitle">Featured Properties</h2><p class="m3-ssub">Discover our handpicked selection of premium properties across Rwanda.</p></div>
+<section id="featured" class="m3-sec m3-sec-w"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">apartment</span>Featured</div>
+        <h2 class="m3-stitle">Featured Properties</h2>
+        <p class="m3-ssub">Discover our handpicked selection of premium verified properties across Rwanda.</p>
+    </div>
     <div class="row g-4">
+        <!-- Skeleton placeholders (shown while loading) -->
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:220px;border-radius:0"></div><div style="padding:18px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div class="skeleton skeleton-btn" style="margin-top:16px"></div></div></div>
+        </div>
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:220px;border-radius:0"></div><div style="padding:18px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div class="skeleton skeleton-btn" style="margin-top:16px"></div></div></div>
+        </div>
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:220px;border-radius:0"></div><div style="padding:18px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div class="skeleton skeleton-btn" style="margin-top:16px"></div></div></div>
+        </div>
+        <!-- Real property cards -->
         {% for property in featured_properties %}
-        <div class="col-lg-4 col-md-6"><div class="m3-pc md-reveal">
+        <div class="col-lg-4 col-md-6 real-card"><div class="m3-pc md-reveal">
             <div class="m3-pc-img">
                 {% if property.image %}<img src="{{ property.image.url }}" alt="{{ property.name }}" loading="lazy">{% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">{% endif %}
                 <span class="m3-pc-badge">{{ property.get_types_display }}</span>
@@ -198,31 +316,168 @@
                 </div>
                 <p class="m3-pc-desc">{{ property.description|truncatewords:18 }}</p>
             </div>
-            <div class="m3-pc-ft"><a href="{% url 'property_view' property.id %}" class="m3-btn-view">View Details <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span></a></div>
+            <div class="m3-pc-ft"><a href="{% url 'property_view' property.id %}" class="m3-btn-view">View Details <span class="material-symbols-outlined" style="font-size:17px">arrow_forward</span></a></div>
         </div></div>
         {% endfor %}
     </div>
-    <div class="text-center mt-5"><a href="{% url 'property_list' %}" class="md-btn-filled" style="height:48px;padding:0 28px">View All Properties <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span></a></div>
+    <div class="text-center mt-5"><a href="{% url 'property_list' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">search</span>View All Rentals</a></div>
 </div></section>
 </div><!-- /pagelet:featured -->
 
+<!-- Properties For Sale -->
+<div class="pagelet" data-pagelet="for-sale">
+<section id="for-sale" class="m3-sec m3-sec-g"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">real_estate_agent</span>Marketplace</div>
+        <h2 class="m3-stitle">Properties For Sale</h2>
+        <p class="m3-ssub">Browse houses, apartments, and land available for purchase across Rwanda.</p>
+    </div>
+    <div class="row g-4">
+        <!-- Skeleton placeholders -->
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:200px;border-radius:0"></div><div style="padding:16px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="skeleton skeleton-text w50" style="height:20px;margin:0"></div><div class="skeleton skeleton-btn" style="width:80px"></div></div></div></div>
+        </div>
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:200px;border-radius:0"></div><div style="padding:16px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="skeleton skeleton-text w50" style="height:20px;margin:0"></div><div class="skeleton skeleton-btn" style="width:80px"></div></div></div></div>
+        </div>
+        <div class="col-lg-4 col-md-6 skel-wrap">
+            <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:200px;border-radius:0"></div><div style="padding:16px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="skeleton skeleton-text w50" style="height:20px;margin:0"></div><div class="skeleton skeleton-btn" style="width:80px"></div></div></div></div>
+        </div>
+        <!-- Real cards -->
+        {% for sp in sale_properties_featured %}
+        <div class="col-md-6 col-lg-4 real-card md-reveal">
+            <div class="m3-sp">
+                <div class="m3-sp-img">
+                    {% if sp.image %}<img src="{{ sp.image.url }}" alt="{{ sp.title }}" loading="lazy">
+                    {% else %}<div class="m3-sp-img-placeholder"><span class="material-symbols-outlined">home</span></div>{% endif %}
+                    <span class="m3-sp-type">For {{ sp.get_listing_type_display }}</span>
+                    {% if sp.negotiable %}<span class="m3-sp-neg"><span class="material-symbols-outlined">swap_horiz</span>Negotiable</span>{% endif %}
+                    <div class="m3-sp-price">{{ sp.price|floatformat:0 }} <small>Frw</small></div>
+                </div>
+                <div class="m3-sp-body">
+                    <h5>{{ sp.title|truncatechars:35 }}</h5>
+                    <div class="m3-sp-loc"><span class="material-symbols-outlined">location_on</span><span>{{ sp.city }}{% if sp.district %}, {{ sp.district }}{% endif %}</span></div>
+                    <div class="m3-sp-feats">
+                        <div class="m3-sp-f"><span class="material-symbols-outlined">bed</span><div class="m3-sp-fv">{{ sp.bedrooms|default:"—" }}</div><div class="m3-sp-fl">Beds</div></div>
+                        <div class="m3-sp-f"><span class="material-symbols-outlined">bathtub</span><div class="m3-sp-fv">{{ sp.bathrooms|default:"—" }}</div><div class="m3-sp-fl">Baths</div></div>
+                        <div class="m3-sp-f"><span class="material-symbols-outlined">square_foot</span><div class="m3-sp-fv">{% if sp.size_sqm %}{{ sp.size_sqm|floatformat:0 }}m²{% else %}—{% endif %}</div><div class="m3-sp-fl">Area</div></div>
+                    </div>
+                </div>
+                <div class="m3-sp-ft"><a href="{% url 'sale_property_detail' sp.id %}">View Details <span class="material-symbols-outlined" style="font-size:17px">arrow_forward</span></a></div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 real-card">
+            <div style="text-align:center;padding:48px 20px;background:var(--hp-white);border-radius:16px;border:2px dashed var(--hp-border)">
+                <span class="material-symbols-outlined" style="font-size:48px;color:var(--hp-lt);margin-bottom:12px;display:block">real_estate_agent</span>
+                <p style="font:500 1rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px">No properties for sale yet</p>
+                <p style="font:.85rem/1.5 'Inter',sans-serif;color:var(--hp-muted);margin:0">Check back soon — new listings are added daily!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-5"><a href="{% url 'sale_listings' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">storefront</span>Browse All For Sale</a></div>
+</div></section>
+</div><!-- /pagelet:for-sale -->
+
+<!-- Our Agents -->
+<div class="pagelet" data-pagelet="agents">
+<section id="agents" class="m3-sec m3-sec-w"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">badge</span>Professionals</div>
+        <h2 class="m3-stitle">Our Trusted Agents</h2>
+        <p class="m3-ssub">Experienced agents ready to help you buy, sell, or negotiate with confidence.</p>
+    </div>
+    <div class="row g-4">
+        <!-- Skeleton placeholders -->
+        <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
+        <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
+        <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
+        <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
+        <!-- Real cards -->
+        {% for ag in featured_agents %}
+        <div class="col-md-6 col-lg-3 real-card md-reveal">
+            <div class="m3-ac">
+                <div class="m3-ac-header">
+                    {% if ag.image %}<img src="{{ ag.image.url }}" alt="{{ ag.name }}" class="m3-ac-avatar" loading="lazy">
+                    {% else %}<div class="m3-ac-avatar-placeholder"><span class="material-symbols-outlined">person</span></div>{% endif %}
+                </div>
+                <div class="m3-ac-body">
+                    <div class="m3-ac-name">{{ ag.name }}</div>
+                    <div class="m3-ac-spec">{{ ag.specialization|default:"Real Estate" }}</div>
+                    <div class="m3-ac-rating">
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star_half</span>
+                        <span>{{ ag.rating }}</span>
+                    </div>
+                    <div class="m3-ac-stats">
+                        <div class="m3-ac-stat-item"><span class="m3-ac-stat-val">{{ ag.total_deals }}</span><span class="m3-ac-stat-lbl">Deals</span></div>
+                        <div class="m3-ac-stat-item"><span class="m3-ac-stat-val">{{ ag.properties_count|default:"—" }}</span><span class="m3-ac-stat-lbl">Properties</span></div>
+                    </div>
+                    <a href="{% url 'agent_profile_public' ag.id %}" class="m3-ac-link">View Profile <span class="material-symbols-outlined" style="font-size:17px">arrow_forward</span></a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 real-card">
+            <div style="text-align:center;padding:48px 20px;background:var(--hp-white);border-radius:16px;border:2px dashed var(--hp-border)">
+                <span class="material-symbols-outlined" style="font-size:48px;color:var(--hp-lt);margin-bottom:12px;display:block">groups</span>
+                <p style="font:500 1rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px">Our agent network is growing</p>
+                <p style="font:.85rem/1.5 'Inter',sans-serif;color:var(--hp-muted);margin:0">Stay tuned — experienced agents are joining weekly!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-5"><a href="{% url 'agent_directory' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">groups</span>View All Agents</a></div>
+</div></section>
+</div><!-- /pagelet:agents -->
+
+<!-- About Preview -->
+<div class="pagelet" data-pagelet="about-preview">
+<section class="m3-about-preview"><div class="container">
+    <div class="row align-items-center">
+        <div class="col-lg-6 md-reveal">
+            <img src="{% static 'images/mission.jpg' %}" class="about-preview-img" alt="About PropertyHub">
+        </div>
+        <div class="col-lg-6 md-reveal">
+            <div class="about-preview-text">
+                <div class="m3-tag"><span class="material-symbols-outlined">info</span>About Us</div>
+                <h2>Rwanda's Leading Property Management Platform</h2>
+                <p>Founded in 2020, PropertyHub bridges the gap between property management and technology — connecting owners, tenants, and real estate professionals with the tools they need to succeed.</p>
+                <div class="about-feature"><div class="about-feature-icon"><span class="material-symbols-outlined">verified</span></div><div class="about-feature-text"><strong>Verified Listings</strong><span>Every property is verified for accuracy and quality</span></div></div>
+                <div class="about-feature"><div class="about-feature-icon"><span class="material-symbols-outlined">shield</span></div><div class="about-feature-text"><strong>Secure & Trusted</strong><span>Your data and transactions are always protected</span></div></div>
+                <div class="about-feature"><div class="about-feature-icon"><span class="material-symbols-outlined">support_agent</span></div><div class="about-feature-text"><strong>Dedicated Support</strong><span>Expert help available whenever you need it</span></div></div>
+                <div class="mt-4"><a href="{% url 'about' %}" class="m3-btn-outline-g"><span class="material-symbols-outlined" style="font-size:18px">info</span>Learn More About Us</a></div>
+            </div>
+        </div>
+    </div>
+</div></section>
+</div><!-- /pagelet:about-preview -->
+
 <!-- Pagelet: Testimonials -->
 <div class="pagelet" data-pagelet="testimonials">
-<section id="testimonials" class="m3-sec m3-sec-c"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">format_quote</span>Testimonials</div><h2 class="m3-stitle">What Our Clients Say</h2><p class="m3-ssub">Hear from property owners and tenants who transformed their experience with AfriMaster.</p></div>
+<section id="testimonials" class="m3-sec m3-sec-g"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">format_quote</span>Testimonials</div>
+        <h2 class="m3-stitle">What Our Clients Say</h2>
+        <p class="m3-ssub">Hear from property owners and tenants who transformed their experience with PropertyHub.</p>
+    </div>
     <div class="row g-4">
         <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span></div>
-            <p class="m3-tc-txt">"AfriMaster Properties has completely transformed how I manage my rental properties. Everything is streamlined and efficient!"</p>
+            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span></div>
+            <p class="m3-tc-txt">"PropertyHub has completely transformed how I manage my rental properties. Everything is streamlined and efficient!"</p>
             <div class="m3-tc-author"><img src="{% static 'images/man5.jpeg' %}" alt="Sarah K." class="m3-tc-avatar"><div><div class="m3-tc-name">Sarah K.</div><div class="m3-tc-role">Property Owner</div></div></div>
         </div></div>
         <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span></div>
-            <p class="m3-tc-txt">"The customer support team is exceptional! They're always responsive and helpful with any questions I have."</p>
+            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span></div>
+            <p class="m3-tc-txt">"The customer support team is exceptional! Always responsive and helpful with any questions I have."</p>
             <div class="m3-tc-author"><img src="{% static 'images/man0.jpeg' %}" alt="Mike T." class="m3-tc-avatar"><div><div class="m3-tc-name">Mike T.</div><div class="m3-tc-role">Tenant</div></div></div>
         </div></div>
         <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined filled" style="color:#ffc107;font-size:20px">star</span><span class="material-symbols-outlined" style="color:#ffc107;font-size:20px">star_half</span></div>
+            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star_half</span></div>
             <p class="m3-tc-txt">"The market insights feature has helped me make smarter investment decisions. This platform is a game-changer!"</p>
             <div class="m3-tc-author"><img src="{% static 'images/man3.jpeg' %}" alt="Lisa M." class="m3-tc-avatar"><div><div class="m3-tc-name">Lisa M.</div><div class="m3-tc-role">Real Estate Pro</div></div></div>
         </div></div>
@@ -232,34 +487,52 @@
 
 <!-- Pagelet: News -->
 <div class="pagelet" data-pagelet="news">
-<section class="m3-sec m3-sec-s"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">newspaper</span>Latest News</div><h2 class="m3-stitle">News & Updates</h2><p class="m3-ssub">Stay informed with the latest trends and updates in property management.</p></div>
-    <div class="row g-4">
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-img"><img src="{% static 'images/p1.jpg' %}" alt="Market Trends" loading="lazy"><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:14px">calendar_today</span>Oct 15, 2023</span></div><div class="m3-nc-body"><h5>Property Market Trends in 2023</h5><p>Discover the latest trends shaping the property market, including rising demand in urban areas.</p></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-img"><img src="{% static 'images/p2.webp' %}" alt="New Features" loading="lazy"><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:14px">calendar_today</span>Oct 10, 2023</span></div><div class="m3-nc-body"><h5>New Features Added to AfriMaster</h5><p>We've enhanced our platform with advanced analytics and improved tenant communication tools.</p></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-img"><img src="{% static 'images/p3.jpeg' %}" alt="Investment" loading="lazy"><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:14px">calendar_today</span>Oct 5, 2023</span></div><div class="m3-nc-body"><h5>Investment Opportunities in Real Estate</h5><p>Explore emerging markets and investment strategies to maximize returns in the current landscape.</p></div></div></div>
+<section class="m3-sec m3-sec-w"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">newspaper</span>Latest News</div>
+        <h2 class="m3-stitle">News & Updates</h2>
+        <p class="m3-ssub">Stay informed with the latest trends and updates in property management.</p>
     </div>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p1.jpg' %}" alt="Market Trends" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 15, 2023</span></div><div class="m3-nc-body"><h5>Property Market Trends in 2023</h5><p>Discover the latest trends shaping the property market, including rising demand in urban areas.</p></div></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p2.webp' %}" alt="New Features" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 10, 2023</span></div><div class="m3-nc-body"><h5>New Features Added to PropertyHub</h5><p>We've enhanced our platform with advanced analytics and improved tenant communication tools.</p></div></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p3.jpeg' %}" alt="Investment" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 5, 2023</span></div><div class="m3-nc-body"><h5>Investment Opportunities in Real Estate</h5><p>Explore emerging markets and investment strategies to maximize returns in the current landscape.</p></div></div></div>
+    </div>
+    <div class="text-center mt-5"><a href="{% url 'updates' %}" class="m3-btn-outline-g"><span class="material-symbols-outlined" style="font-size:18px">newspaper</span>View All Updates</a></div>
 </div></section>
 </div><!-- /pagelet:news -->
 
 <!-- Pagelet: CTA -->
 <div class="pagelet" data-pagelet="cta">
 <section class="m3-cta"><div class="container"><div class="m3-cta-inner md-reveal">
-    <h2>Ready to Get Started?</h2>
-    <p>Join thousands of satisfied property owners and tenants who have simplified their real estate journey with AfriMaster.</p>
+    <h2>Start Finding Your Dream Home Today</h2>
+    <p>Join thousands of satisfied property owners and tenants who have simplified their real estate journey with PropertyHub.</p>
     <div class="m3-cta-btns">
-        <a href="{% url 'user_login' %}" class="m3-btn-w"><span class="material-symbols-outlined" style="font-size:20px">login</span>Login to Your Account</a>
-        <a href="{% url 'register' %}" class="m3-btn-o"><span class="material-symbols-outlined" style="font-size:20px">person_add</span>Create New Account</a>
+        <a href="{% url 'register' %}" class="m3-btn-w"><span class="material-symbols-outlined" style="font-size:20px">person_add</span>Sign Up Free</a>
+        <a href="{% url 'property_list' %}" class="m3-btn-o"><span class="material-symbols-outlined" style="font-size:20px">search</span>Browse Properties</a>
     </div>
 </div></div></section>
 </div><!-- /pagelet:cta -->
 
 <script>
 document.addEventListener('DOMContentLoaded',function(){
+    /* Counter animation */
     var counters=document.querySelectorAll('.m3-stat-val[data-count]');
     var cObs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){counters.forEach(function(c){var target=parseInt(c.dataset.count),current=0,inc=target/60;var timer=setInterval(function(){current+=inc;if(current>=target){c.textContent=target.toLocaleString();clearInterval(timer)}else c.textContent=Math.floor(current).toLocaleString()},25)});cObs.unobserve(entry.target)}})},{threshold:.5});
     var s=document.querySelector('.m3-stats-inner');if(s)cObs.observe(s);
+    /* Smooth scroll for anchor links */
     document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=this.getAttribute('href');if(t==='#')return;var el=document.querySelector(t);if(el)window.scrollTo({top:el.offsetTop-80,behavior:'smooth'})})});
 });
+</script>
+<script>
+/* ===== Welcome Splash Logic ===== */
+function dismissSplash(){
+    var s=document.getElementById('welcomeSplash');
+    if(s){s.classList.add('ws-out');setTimeout(function(){s.style.display='none'},900)}
+}
+(function(){
+    /* Show on every page load/refresh */
+    setTimeout(dismissSplash,4800);
+})();
 </script>
 {% endblock %}

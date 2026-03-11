@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'PropApp',
     'rest_framework',
     'drf_spectacular',
     'debug_toolbar',
-
 ]
 
 MIDDLEWARE = [
@@ -79,6 +79,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Property_management.wsgi.application'
+ASGI_APPLICATION = 'Property_management.asgi.application'
+
+# Django Channels — InMemoryChannelLayer (no Redis required for dev)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -127,6 +135,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Media files (user uploads — post images/videos, etc.)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

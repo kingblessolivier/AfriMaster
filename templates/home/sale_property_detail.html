@@ -1,0 +1,399 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}{{ property.title }} - PropertyHub Ltd{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero */
+    .m3-sd-hero{margin-top:112px;padding:60px 0 50px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden}
+    .m3-sd-hero::before{content:'';position:absolute;width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
+    .m3-sd-hero-inner{position:relative;z-index:2}
+    .m3-sd-bc{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .m3-sd-bc a,.m3-sd-bc>span{font:var(--md-sys-typescale-body-small);text-decoration:none}
+    .m3-sd-bc a{color:rgba(255,255,255,.6);transition:color .2s;display:inline-flex;align-items:center;gap:4px}
+    .m3-sd-bc a:hover{color:#fff}
+    .m3-sd-bc .sep{color:rgba(255,255,255,.3)}
+    .m3-sd-bc .sep .material-symbols-outlined{font-size:16px}
+    .m3-sd-bc .cur{color:var(--md-sys-color-inverse-primary);font-weight:600}
+    .m3-sd-hero h1{font:500 2.2rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:14px}
+    .m3-sd-hero-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .m3-sd-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);letter-spacing:.3px}
+    .m3-sd-pill-type{background:rgba(40,167,69,.3);color:#7ddf9b}
+    .m3-sd-pill-neg{background:rgba(255,152,0,.3);color:#ffc570}
+    .m3-sd-pill-status{background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(8px)}
+    .m3-sd-loc{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font:var(--md-sys-typescale-body-small)}
+    .m3-sd-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-inverse-primary)}
+
+    /* Main */
+    .m3-sd-main{padding:40px 0 80px;background:var(--md-sys-color-surface-container)}
+
+    /* Gallery */
+    .m3-sd-gallery{border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;position:relative;margin-bottom:28px;box-shadow:var(--md-sys-elevation-2)}
+    .m3-sd-gallery-main{height:450px;overflow:hidden;position:relative}
+    .m3-sd-gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .3s}
+    .m3-sd-gallery-main .m3-sd-ph{width:100%;height:100%;background:linear-gradient(135deg,#E8F5E9,#C8E6C9,#A5D6A7);display:flex;align-items:center;justify-content:center}
+    .m3-sd-gallery-main .m3-sd-ph .material-symbols-outlined{font-size:72px;color:var(--md-sys-color-primary);opacity:.5}
+    .m3-sd-gallery-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+    .m3-sd-gallery-price{font:500 2rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .m3-sd-gallery-price small{font:var(--md-sys-typescale-body-medium);opacity:.85}
+    .m3-sd-gallery-badges{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;z-index:2}
+    .m3-sd-badge{padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);font-weight:600;box-shadow:var(--md-sys-elevation-1)}
+    .m3-sd-badge-sale{background:var(--md-sys-color-primary);color:#fff}
+    .m3-sd-badge-neg{background:rgba(255,152,0,.92);color:#fff;backdrop-filter:blur(6px)}
+    .m3-sd-thumbs{display:flex;gap:8px;padding:12px 16px;background:var(--md-sys-color-surface-container-lowest);overflow-x:auto}
+    .m3-sd-thumb{width:80px;height:60px;border-radius:var(--md-sys-shape-corner-small);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0;opacity:.7}
+    .m3-sd-thumb:hover,.m3-sd-thumb.active{border-color:var(--md-sys-color-primary);opacity:1}
+    .m3-sd-thumb img{width:100%;height:100%;object-fit:cover}
+
+    /* Info Card */
+    .m3-sd-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:28px;border:1px solid var(--md-sys-color-outline-variant);margin-bottom:24px;transition:all 300ms}
+    .m3-sd-card:hover{box-shadow:var(--md-sys-elevation-1)}
+    .m3-sd-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .m3-sd-card-title .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-primary)}
+
+    /* Feature Grid */
+    .m3-sd-feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px}
+    .m3-sd-feat-item{text-align:center;padding:20px 12px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium);transition:all 300ms}
+    .m3-sd-feat-item:hover{background:var(--md-sys-color-primary-container);transform:translateY(-4px);box-shadow:var(--md-sys-elevation-1)}
+    .m3-sd-feat-item .material-symbols-outlined{font-size:1.4rem;color:var(--md-sys-color-primary);margin-bottom:8px;display:block}
+    .m3-sd-feat-val{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:2px}
+    .m3-sd-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
+
+    /* Feature Badges */
+    .m3-sd-badges-wrap{display:flex;flex-wrap:wrap;gap:10px}
+    .m3-sd-feature-badge{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);transition:all .2s}
+    .m3-sd-feature-badge:hover{transform:translateY(-2px);box-shadow:var(--md-sys-elevation-1)}
+    .m3-sd-feature-badge .material-symbols-outlined{font-size:16px}
+    .m3-sd-fb-green{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container)}
+    .m3-sd-fb-blue{background:#E3F2FD;color:#1565C0}
+    .m3-sd-fb-lime{background:#F1F8E9;color:#33691E}
+    .m3-sd-fb-orange{background:#FFF3E0;color:#E65100}
+    .m3-sd-fb-grey{background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface)}
+
+    /* Desc */
+    .m3-sd-desc{color:var(--md-sys-color-on-surface-variant);line-height:1.8;font:var(--md-sys-typescale-body-large)}
+
+    /* Agent Sidebar Card */
+    .m3-sd-agent{background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-large);padding:24px;margin-bottom:24px}
+    .m3-sd-agent-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .m3-sd-agent-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.3);flex-shrink:0}
+    .m3-sd-agent-avatar img{width:100%;height:100%;object-fit:cover}
+    .m3-sd-agent-avatar-ph{width:100%;height:100%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+    .m3-sd-agent-avatar-ph .material-symbols-outlined{font-size:28px;color:rgba(255,255,255,.7)}
+    .m3-sd-agent-name{font:var(--md-sys-typescale-title-small);color:#fff}
+    .m3-sd-agent-spec{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.6)}
+    .m3-sd-agent-rating{font:var(--md-sys-typescale-label-small);color:#ffc570;display:flex;align-items:center;gap:4px;margin-top:2px}
+    .m3-sd-agent-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all .2s;text-decoration:none}
+    .m3-sd-agent-btn:hover{background:rgba(255,255,255,.25);color:#fff}
+
+    /* Price Card */
+    .m3-sd-price-card{background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-large);padding:28px;margin-bottom:24px}
+    .m3-sd-price-lbl{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.6);margin-bottom:4px}
+    .m3-sd-price-val{font:500 2rem/1 'Inter',sans-serif;margin-bottom:16px}
+    .m3-sd-price-stats{display:flex;gap:10px;margin-bottom:16px}
+    .m3-sd-price-stat{flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:var(--md-sys-shape-corner-medium);text-align:center}
+    .m3-sd-price-stat-v{font:var(--md-sys-typescale-title-small)}
+    .m3-sd-price-stat-l{font:var(--md-sys-typescale-label-small);opacity:.6}
+
+    /* Offer Card */
+    .m3-sd-offer{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;box-shadow:var(--md-sys-elevation-1);border:1px solid var(--md-sys-color-outline-variant);margin-bottom:24px}
+    .m3-sd-offer-hdr{background:var(--md-sys-color-primary);color:#fff;padding:18px 24px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
+    .m3-sd-offer-hdr .material-symbols-outlined{font-size:20px}
+    .m3-sd-offer-body{padding:24px}
+    .m3-sd-offer-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
+    .m3-sd-offer-body .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
+    .m3-sd-offer-body label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .m3-sd-offer-body label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
+    .m3-sd-btn-submit{width:100%;height:48px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 200ms}
+    .m3-sd-btn-submit:hover{box-shadow:var(--md-sys-elevation-1)}
+
+    /* Inquiry */
+    .m3-sd-inquiry{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;box-shadow:var(--md-sys-elevation-1);border:1px solid var(--md-sys-color-outline-variant);margin-bottom:24px}
+    .m3-sd-inquiry-hdr{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);padding:18px 24px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
+    .m3-sd-inquiry-hdr .material-symbols-outlined{font-size:20px}
+    .m3-sd-inquiry-body{padding:24px}
+    .m3-sd-inquiry-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
+    .m3-sd-inquiry-body .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
+    .m3-sd-inquiry-body label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);margin-bottom:6px}
+
+    /* Info Row */
+    .m3-sd-info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--md-sys-color-outline-variant);font:var(--md-sys-typescale-body-medium)}
+    .m3-sd-info-row:last-child{border-bottom:none}
+    .m3-sd-info-row .lbl{color:var(--md-sys-color-on-surface-variant)}
+    .m3-sd-info-row .val{color:var(--md-sys-color-on-surface);font-weight:600}
+    .m3-sd-status-badge{padding:4px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);font-weight:600}
+    .m3-sd-status-listed{background:rgba(40,167,69,.15);color:#2E7D32}
+    .m3-sd-status-negotiation{background:rgba(255,152,0,.15);color:#E65100}
+    .m3-sd-status-sold{background:rgba(33,150,243,.15);color:#1565C0}
+
+    /* Similar */
+    .m3-sd-similar{padding:60px 0;background:var(--md-sys-color-surface)}
+    .m3-sd-similar-title{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:28px;display:flex;align-items:center;gap:10px}
+    .m3-sd-similar-title .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:24px}
+    .m3-sd-mini{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-medium);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms}
+    .m3-sd-mini:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
+    .m3-sd-mini-img{height:160px;overflow:hidden}
+    .m3-sd-mini-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+    .m3-sd-mini:hover .m3-sd-mini-img img{transform:scale(1.06)}
+    .m3-sd-mini-img .ph{width:100%;height:100%;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);display:flex;align-items:center;justify-content:center}
+    .m3-sd-mini-img .ph .material-symbols-outlined{font-size:36px;color:var(--md-sys-color-primary);opacity:.5}
+    .m3-sd-mini-body{padding:16px}
+    .m3-sd-mini-body h6{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .m3-sd-mini-price{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-primary);margin-bottom:8px}
+    .m3-sd-mini-link{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-primary);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:gap .2s}
+    .m3-sd-mini-link:hover{gap:8px;color:#1e7e34}
+
+    /* Alert */
+    .m3-sd-alert{position:fixed;top:100px;right:20px;z-index:1050;max-width:400px}
+    .m3-sd-alert .alert{border-radius:var(--md-sys-shape-corner-medium);border:none;display:flex;align-items:center;gap:10px;font:var(--md-sys-typescale-body-medium)}
+
+    @media(max-width:992px){.m3-sd-gallery-main{height:350px}}
+    @media(max-width:768px){.m3-sd-hero h1{font-size:1.8rem}.m3-sd-gallery-main{height:280px}.m3-sd-feat-grid{grid-template-columns:repeat(2,1fr)}.m3-sd-gallery-price{font-size:1.6rem}}
+    @media(max-width:576px){.m3-sd-gallery-main{height:220px}.m3-sd-hero h1{font-size:1.5rem}}
+</style>
+
+<!-- Alerts -->
+<div class="m3-sd-alert">
+    {% if messages %}{% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+        <span class="material-symbols-outlined" style="font-size:20px">{% if msg.tags == 'success' %}check_circle{% else %}warning{% endif %}</span>{{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}{% endif %}
+</div>
+
+<!-- Hero -->
+<section class="m3-sd-hero">
+    <div class="container">
+        <div class="m3-sd-hero-inner">
+            <div class="m3-sd-bc">
+                <a href="{% url 'index' %}"><span class="material-symbols-outlined" style="font-size:16px">home</span> Home</a>
+                <span class="sep"><span class="material-symbols-outlined">chevron_right</span></span>
+                <a href="{% url 'sale_listings' %}">For Sale</a>
+                <span class="sep"><span class="material-symbols-outlined">chevron_right</span></span>
+                <span class="cur">{{ property.title|truncatechars:40 }}</span>
+            </div>
+            <h1>{{ property.title }}</h1>
+            <div class="m3-sd-hero-meta">
+                <span class="m3-sd-pill m3-sd-pill-type"><span class="material-symbols-outlined" style="font-size:14px">real_estate_agent</span> For {{ property.get_listing_type_display }}</span>
+                {% if property.negotiable %}<span class="m3-sd-pill m3-sd-pill-neg"><span class="material-symbols-outlined" style="font-size:14px">swap_horiz</span> Negotiable</span>{% endif %}
+                <span class="m3-sd-pill m3-sd-pill-status"><span class="material-symbols-outlined" style="font-size:14px">label</span> {{ property.get_property_type_display }}</span>
+                <span class="m3-sd-loc"><span class="material-symbols-outlined">location_on</span> {{ property.city }}{% if property.district %}, {{ property.district }}{% endif %}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main -->
+<section class="m3-sd-main">
+    <div class="container">
+        <div class="row">
+            <!-- Left -->
+            <div class="col-lg-8">
+                <!-- Gallery -->
+                <div class="m3-sd-gallery">
+                    <div class="m3-sd-gallery-main">
+                        {% if property.image %}
+                        <img src="{{ property.image.url }}" alt="{{ property.title }}" id="mainImg">
+                        {% else %}
+                        <div class="m3-sd-ph"><span class="material-symbols-outlined">home</span></div>
+                        {% endif %}
+                        <div class="m3-sd-gallery-badges">
+                            <span class="m3-sd-badge m3-sd-badge-sale">For {{ property.get_listing_type_display }}</span>
+                            {% if property.negotiable %}<span class="m3-sd-badge m3-sd-badge-neg"><span class="material-symbols-outlined" style="font-size:14px">swap_horiz</span> Negotiable</span>{% endif %}
+                        </div>
+                        <div class="m3-sd-gallery-overlay">
+                            <div class="m3-sd-gallery-price">{{ property.price|floatformat:0 }} <small>Frw</small></div>
+                        </div>
+                    </div>
+                    <div class="m3-sd-thumbs">
+                        {% if property.image %}<div class="m3-sd-thumb active" onclick="switchImg(this,'{{ property.image.url }}')"><img src="{{ property.image.url }}" alt=""></div>{% endif %}
+                        {% if property.image_2 %}<div class="m3-sd-thumb" onclick="switchImg(this,'{{ property.image_2.url }}')"><img src="{{ property.image_2.url }}" alt=""></div>{% endif %}
+                        {% if property.image_3 %}<div class="m3-sd-thumb" onclick="switchImg(this,'{{ property.image_3.url }}')"><img src="{{ property.image_3.url }}" alt=""></div>{% endif %}
+                        {% if property.image_4 %}<div class="m3-sd-thumb" onclick="switchImg(this,'{{ property.image_4.url }}')"><img src="{{ property.image_4.url }}" alt=""></div>{% endif %}
+                        {% if property.image_5 %}<div class="m3-sd-thumb" onclick="switchImg(this,'{{ property.image_5.url }}')"><img src="{{ property.image_5.url }}" alt=""></div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Property Details -->
+                <div class="m3-sd-card">
+                    <div class="m3-sd-card-title"><span class="material-symbols-outlined">grid_view</span> Property Details</div>
+                    <div class="m3-sd-feat-grid">
+                        <div class="m3-sd-feat-item">
+                            <span class="material-symbols-outlined">category</span>
+                            <div class="m3-sd-feat-val">{{ property.get_property_type_display }}</div>
+                            <div class="m3-sd-feat-lbl">Type</div>
+                        </div>
+                        {% if property.bedrooms %}<div class="m3-sd-feat-item">
+                            <span class="material-symbols-outlined">bed</span>
+                            <div class="m3-sd-feat-val">{{ property.bedrooms }}</div>
+                            <div class="m3-sd-feat-lbl">Bedrooms</div>
+                        </div>{% endif %}
+                        {% if property.bathrooms %}<div class="m3-sd-feat-item">
+                            <span class="material-symbols-outlined">bathtub</span>
+                            <div class="m3-sd-feat-val">{{ property.bathrooms }}</div>
+                            <div class="m3-sd-feat-lbl">Bathrooms</div>
+                        </div>{% endif %}
+                        {% if property.size_sqm %}<div class="m3-sd-feat-item">
+                            <span class="material-symbols-outlined">square_foot</span>
+                            <div class="m3-sd-feat-val">{{ property.size_sqm|floatformat:0 }} sqm</div>
+                            <div class="m3-sd-feat-lbl">Size</div>
+                        </div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="m3-sd-card">
+                    <div class="m3-sd-card-title"><span class="material-symbols-outlined">star</span> Features & Amenities</div>
+                    <div class="m3-sd-badges-wrap">
+                        {% if property.has_title_deed %}<span class="m3-sd-feature-badge m3-sd-fb-green"><span class="material-symbols-outlined">verified</span> Title Deed</span>{% endif %}
+                        {% if property.has_parking %}<span class="m3-sd-feature-badge m3-sd-fb-blue"><span class="material-symbols-outlined">local_parking</span> Parking</span>{% endif %}
+                        {% if property.has_garden %}<span class="m3-sd-feature-badge m3-sd-fb-lime"><span class="material-symbols-outlined">yard</span> Garden</span>{% endif %}
+                        {% if property.is_furnished %}<span class="m3-sd-feature-badge m3-sd-fb-orange"><span class="material-symbols-outlined">chair</span> Furnished</span>{% endif %}
+                        {% if property.year_built %}<span class="m3-sd-feature-badge m3-sd-fb-grey"><span class="material-symbols-outlined">calendar_today</span> Built {{ property.year_built }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="m3-sd-card">
+                    <div class="m3-sd-card-title"><span class="material-symbols-outlined">description</span> Description</div>
+                    <p class="m3-sd-desc">{{ property.description|linebreaksbr }}</p>
+                    {% if property.video_url %}
+                    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--md-sys-color-outline-variant)">
+                        <a href="{{ property.video_url }}" target="_blank" class="m3-sd-agent-btn" style="background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;max-width:220px"><span class="material-symbols-outlined">play_circle</span> Virtual Tour</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+                <!-- Price Card -->
+                <div class="m3-sd-price-card">
+                    <div class="m3-sd-price-lbl">Asking Price</div>
+                    <div class="m3-sd-price-val">{{ property.price|floatformat:0 }} <small style="font:var(--md-sys-typescale-body-medium);opacity:.7">Frw</small></div>
+                    <div class="m3-sd-price-stats">
+                        <div class="m3-sd-price-stat">
+                            <div class="m3-sd-price-stat-v">{{ property.views_count }}</div>
+                            <div class="m3-sd-price-stat-l">Views</div>
+                        </div>
+                        <div class="m3-sd-price-stat">
+                            <div class="m3-sd-price-stat-v">{{ offers_count }}</div>
+                            <div class="m3-sd-price-stat-l">Offers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent -->
+                {% if property.assigned_agent %}
+                <div class="m3-sd-agent">
+                    <div class="m3-sd-agent-row">
+                        <div class="m3-sd-agent-avatar">
+                            {% if property.assigned_agent.image %}<img src="{{ property.assigned_agent.image.url }}" alt="">
+                            {% else %}<div class="m3-sd-agent-avatar-ph"><span class="material-symbols-outlined">person</span></div>{% endif %}
+                        </div>
+                        <div>
+                            <div class="m3-sd-agent-name">{{ property.assigned_agent.name }}</div>
+                            <div class="m3-sd-agent-spec">{{ property.assigned_agent.specialization|default:"Real Estate" }}</div>
+                            <div class="m3-sd-agent-rating">★ {{ property.assigned_agent.rating }} rating</div>
+                        </div>
+                    </div>
+                    <a href="{% url 'agent_profile_public' property.assigned_agent.id %}" class="m3-sd-agent-btn"><span class="material-symbols-outlined" style="font-size:18px">person</span> View Agent Profile</a>
+                </div>
+                {% endif %}
+
+                <!-- Offer Form -->
+                {% if user.is_authenticated %}
+                <div class="m3-sd-offer">
+                    <div class="m3-sd-offer-hdr"><span class="material-symbols-outlined">local_offer</span> Make an Offer</div>
+                    <div class="m3-sd-offer-body">
+                        <p style="font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);margin-bottom:16px">{{ offers_count }} offer{{ offers_count|pluralize }} already submitted</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="submit_offer" value="1">
+                            <div class="mb-3">
+                                <label><span class="material-symbols-outlined">payments</span> Your Offer (Frw)</label>
+                                {{ offer_form.amount }}
+                            </div>
+                            <div class="mb-3">
+                                <label><span class="material-symbols-outlined">chat</span> Message (Optional)</label>
+                                {{ offer_form.message }}
+                            </div>
+                            <button type="submit" class="m3-sd-btn-submit"><span class="material-symbols-outlined" style="font-size:20px">send</span> Submit Offer</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Inquiry Form -->
+                <div class="m3-sd-inquiry">
+                    <div class="m3-sd-inquiry-hdr"><span class="material-symbols-outlined">help</span> Send Inquiry</div>
+                    <div class="m3-sd-inquiry-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="submit_inquiry" value="1">
+                            {% for field in inquiry_form %}
+                            <div class="mb-3">
+                                <label>{{ field.label }}</label>
+                                {{ field }}
+                            </div>
+                            {% endfor %}
+                            <button type="submit" class="m3-sd-btn-submit" style="background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)"><span class="material-symbols-outlined" style="font-size:20px">send</span> Send Inquiry</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Property Info -->
+                <div class="m3-sd-card">
+                    <div class="m3-sd-card-title"><span class="material-symbols-outlined">info</span> Property Info</div>
+                    <div class="m3-sd-info-row"><span class="lbl">Listed</span><span class="val">{{ property.date_listed|date:"M d, Y" }}</span></div>
+                    <div class="m3-sd-info-row"><span class="lbl">Views</span><span class="val">{{ property.views_count }}</span></div>
+                    <div class="m3-sd-info-row"><span class="lbl">Status</span><span class="m3-sd-status-badge {% if property.status == 'listed' %}m3-sd-status-listed{% elif property.status == 'under_negotiation' %}m3-sd-status-negotiation{% elif property.status == 'sold' %}m3-sd-status-sold{% endif %}">{{ property.get_status_display }}</span></div>
+                    <div class="m3-sd-info-row"><span class="lbl">Seller</span><span class="val">{{ property.seller.name }}</span></div>
+                    <div class="m3-sd-info-row"><span class="lbl">Location</span><span class="val">{{ property.address }}{% if property.sector %}, {{ property.sector }}{% endif %}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Similar Properties -->
+{% if similar %}
+<section class="m3-sd-similar">
+    <div class="container">
+        <div class="m3-sd-similar-title"><span class="material-symbols-outlined">star</span> Similar Properties</div>
+        <div class="row g-4">
+            {% for s in similar %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <a href="{% url 'sale_property_detail' s.id %}" class="text-decoration-none">
+                    <div class="m3-sd-mini">
+                        <div class="m3-sd-mini-img">
+                            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}" loading="lazy">
+                            {% else %}<div class="ph"><span class="material-symbols-outlined">home</span></div>{% endif %}
+                        </div>
+                        <div class="m3-sd-mini-body">
+                            <h6>{{ s.title|truncatechars:30 }}</h6>
+                            <div class="m3-sd-mini-price">{{ s.price|floatformat:0 }} Frw</div>
+                            <span class="m3-sd-mini-link">View Details <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+function switchImg(el, url) {
+    var m = document.getElementById('mainImg');
+    if (m) { m.src = url; }
+    document.querySelectorAll('.m3-sd-thumb').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+}
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.m3-sd-alert .alert').forEach(function(a){setTimeout(function(){try{new bootstrap.Alert(a).close()}catch(e){}},5000)});
+});
+</script>
+{% endblock %}

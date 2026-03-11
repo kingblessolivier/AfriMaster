@@ -5,8 +5,8 @@
 
 {% block content %}
 <!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <h4 style="display:flex;align-items:center;gap:10px;margin:0">
+<div class="m3-page-header">
+    <h4>
         <span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">groups</span>Tenant Management
     </h4>
 </div>
@@ -46,7 +46,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTenantModal{{ tenant.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                            <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteTenantModal{{ tenant.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                         </td>
                     </tr>
                     <div class="modal fade" id="deleteTenantModal{{ tenant.id }}" tabindex="-1" aria-hidden="true">

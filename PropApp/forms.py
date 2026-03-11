@@ -110,9 +110,117 @@ class MaintenanceRequestForm(forms.ModelForm):
         }
 
 
+# ═══════════════════════════════════════════════════════════
+#   REAL ESTATE MARKETPLACE FORMS
+# ═══════════════════════════════════════════════════════════
+
+class AgentProfileForm(forms.ModelForm):
+    class Meta:
+        model = Agent
+        fields = ['name', 'email', 'phone_number', 'license_number', 'bio', 'specialization', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'license_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'specialization': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Residential, Land, Commercial'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 
+class SellerProfileForm(forms.ModelForm):
+    class Meta:
+        model = Seller
+        fields = ['name', 'email', 'phone_number', 'address', 'id_number', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'id_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
+
+class SalePropertyForm(forms.ModelForm):
+    class Meta:
+        model = SaleProperty
+        fields = [
+            'title', 'description', 'property_type', 'listing_type', 'price', 'negotiable',
+            'address', 'city', 'district', 'sector',
+            'size_sqm', 'bedrooms', 'bathrooms', 'year_built',
+            'has_title_deed', 'has_parking', 'has_garden', 'is_furnished',
+            'image', 'image_2', 'image_3', 'image_4', 'image_5', 'video_url',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Modern 4-Bedroom House in Kigali'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'property_type': forms.Select(attrs={'class': 'form-select'}),
+            'listing_type': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price in Frw'}),
+            'negotiable': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'district': forms.TextInput(attrs={'class': 'form-control'}),
+            'sector': forms.TextInput(attrs={'class': 'form-control'}),
+            'size_sqm': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 500'}),
+            'bedrooms': forms.NumberInput(attrs={'class': 'form-control'}),
+            'bathrooms': forms.NumberInput(attrs={'class': 'form-control'}),
+            'year_built': forms.NumberInput(attrs={'class': 'form-control'}),
+            'has_title_deed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'has_parking': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'has_garden': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_furnished': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image_2': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image_3': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image_4': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image_5': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'video_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://youtube.com/...'}),
+        }
+
+
+class OfferForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ['amount', 'message']
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Your offer in Frw'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Optional message to seller/agent'}),
+        }
+
+
+class PropertyInquiryForm(forms.ModelForm):
+    class Meta:
+        model = PropertyInquiry
+        fields = ['name', 'email', 'phone', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+
+class SiteVisitForm(forms.ModelForm):
+    class Meta:
+        model = SiteVisit
+        fields = ['scheduled_date', 'notes']
+        widgets = {
+            'scheduled_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+
+class AgentReviewForm(forms.ModelForm):
+    class Meta:
+        model = AgentReview
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(attrs={'class': 'form-select'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 
 

@@ -5,8 +5,8 @@
 
 {% block content %}
 <!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <h4 style="display:flex;align-items:center;gap:10px;margin:0">
+<div class="m3-page-header">
+    <h4>
         <span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">group</span>Users Management
     </h4>
     <a href="{% url 'adding_user' %}" class="m3-btn-filled"><span class="material-symbols-outlined" style="font-size:18px">person_add</span> Add User</a>
@@ -78,6 +78,10 @@
                                 <span class="m3-badge m3-badge-primary">{{ user.role }}</span>
                             {% elif user.role == 'Owner' %}
                                 <span class="m3-badge m3-badge-success">{{ user.role }}</span>
+                            {% elif user.role == 'Agent' %}
+                                <span class="m3-badge" style="background:#E3F2FD;color:#1565C0">{{ user.role }}</span>
+                            {% elif user.role == 'Seller' %}
+                                <span class="m3-badge" style="background:#F3E5F5;color:#6A1B9A">{{ user.role }}</span>
                             {% else %}
                                 <span class="m3-badge m3-badge-info">{{ user.role }}</span>
                             {% endif %}
@@ -92,27 +96,43 @@
                         <td>
                             {% if not user.is_superuser %}
                             <div class="d-flex gap-1">
-                                <a href="{% url 'editing_user' user.id %}" class="btn btn-sm btn-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                                <a href="{% url 'editing_user' user.id %}" class="m3-icon-btn m3-icon-btn-primary" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
+                                <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                             </div>
                             {% endif %}
                         </td>
                         <td>
                         {% if not user.is_superuser %}
                             {% if user.role == 'Admin' %}
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#unmakeAdminModal{{ user.id }}" title="Unmake Admin"><span class="material-symbols-outlined" style="font-size:16px">remove_moderator</span></button>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
+                                <button class="m3-icon-btn" style="background:#E3F2FD;color:#1565C0" data-bs-toggle="modal" data-bs-target="#makeAgentModal{{ user.id }}" title="Make Agent"><span class="material-symbols-outlined" style="font-size:16px">badge</span></button>
+                                <button class="m3-icon-btn" style="background:#F3E5F5;color:#6A1B9A" data-bs-toggle="modal" data-bs-target="#makeSellerModal{{ user.id }}" title="Make Seller"><span class="material-symbols-outlined" style="font-size:16px">sell</span></button>
+                                <button class="m3-icon-btn m3-icon-btn-warning" data-bs-toggle="modal" data-bs-target="#unmakeAdminModal{{ user.id }}" title="Unmake Admin"><span class="material-symbols-outlined" style="font-size:16px">remove_moderator</span></button>
                             </div>
                             {% elif user.role == 'Owner' %}
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#unmakeOwnerModal{{ user.id }}" title="Unmake Owner"><span class="material-symbols-outlined" style="font-size:16px">person_remove</span></button>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
+                                <button class="m3-icon-btn m3-icon-btn-warning" data-bs-toggle="modal" data-bs-target="#unmakeOwnerModal{{ user.id }}" title="Unmake Owner"><span class="material-symbols-outlined" style="font-size:16px">person_remove</span></button>
+                            </div>
+                            {% elif user.role == 'Agent' %}
+                            <div class="d-flex gap-1 flex-wrap">
+                                <button class="m3-icon-btn m3-icon-btn-warning" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
+                                <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
+                                <button class="m3-icon-btn" style="background:#FCE4EC;color:#C62828" data-bs-toggle="modal" data-bs-target="#unmakeAgentModal{{ user.id }}" title="Unmake Agent"><span class="material-symbols-outlined" style="font-size:16px">person_remove</span></button>
+                            </div>
+                            {% elif user.role == 'Seller' %}
+                            <div class="d-flex gap-1 flex-wrap">
+                                <button class="m3-icon-btn m3-icon-btn-warning" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
+                                <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
+                                <button class="m3-icon-btn" style="background:#FCE4EC;color:#C62828" data-bs-toggle="modal" data-bs-target="#unmakeSellerModal{{ user.id }}" title="Unmake Seller"><span class="material-symbols-outlined" style="font-size:16px">person_remove</span></button>
                             </div>
                             {% else %}
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <button class="m3-icon-btn m3-icon-btn-warning" data-bs-toggle="modal" data-bs-target="#makeAdminModal{{ user.id }}" title="Make Admin"><span class="material-symbols-outlined" style="font-size:16px">admin_panel_settings</span></button>
+                                <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#makeOwnerModal{{ user.id }}" title="Make Owner"><span class="material-symbols-outlined" style="font-size:16px">person</span></button>
+                                <button class="m3-icon-btn" style="background:#E3F2FD;color:#1565C0" data-bs-toggle="modal" data-bs-target="#makeAgentModal{{ user.id }}" title="Make Agent"><span class="material-symbols-outlined" style="font-size:16px">badge</span></button>
+                                <button class="m3-icon-btn" style="background:#F3E5F5;color:#6A1B9A" data-bs-toggle="modal" data-bs-target="#makeSellerModal{{ user.id }}" title="Make Seller"><span class="material-symbols-outlined" style="font-size:16px">sell</span></button>
                             </div>
                             {% endif %}
                         {% endif %}
@@ -120,70 +140,13 @@
                         <td>
                             {% if not user.is_superuser %}
                             {% if user.is_active %}
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#disactivateUserModal{{ user.id }}"><span class="material-symbols-outlined" style="font-size:16px">block</span> Deactivate</button>
+                            <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#disactivateUserModal{{ user.id }}"><span class="material-symbols-outlined" style="font-size:16px">block</span> Deactivate</button>
                             {% else %}
-                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#activateUserModal{{ user.id }}"><span class="material-symbols-outlined" style="font-size:16px">check</span> Activate</button>
+                            <button class="m3-icon-btn m3-icon-btn-success" data-bs-toggle="modal" data-bs-target="#activateUserModal{{ user.id }}"><span class="material-symbols-outlined" style="font-size:16px">check</span> Activate</button>
                             {% endif %}
                             {% endif %}
                         </td>
                     </tr>
-
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:var(--md-sys-color-error)">delete</span> Delete User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to delete <strong>{{ user.username }}</strong>?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'delete_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes, Delete</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Deactivate Modal -->
-                    <div class="modal fade" id="disactivateUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:var(--md-sys-color-error)">block</span> Deactivate User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to deactivate <strong>{{ user.username }}</strong>?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'disapprove_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Activate Modal -->
-                    <div class="modal fade" id="activateUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#2e7d32">check_circle</span> Activate User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to activate <strong>{{ user.username }}</strong>?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'approve_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-success">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Make Owner Modal -->
-                    <div class="modal fade" id="makeOwnerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#2e7d32">person</span> Make Owner</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> an Owner?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'make_owner' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-success">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Unmake Owner Modal -->
-                    <div class="modal fade" id="unmakeOwnerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">person_remove</span> Unmake Owner</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to unmake <strong>{{ user.username }}</strong> as Owner?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'unmake_owner' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Unmake Admin Modal -->
-                    <div class="modal fade" id="unmakeAdminModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">remove_moderator</span> Unmake Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to unmake <strong>{{ user.username }}</strong> as Admin?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'unmake_admin' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
-                    <!-- Make Admin Modal -->
-                    <div class="modal fade" id="makeAdminModal{{ user.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog"><div class="modal-content">
-                            <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">admin_panel_settings</span> Make Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                            <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> an Admin?</div>
-                            <div class="modal-footer"><form method="POST" action="{% url 'make_admin' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
-                        </div></div>
-                    </div>
 
                     {% endfor %}
                 </tbody>
@@ -215,4 +178,100 @@ function filterUsers() {
     window.location.href = "{% url 'admin_users' %}?role=" + role + "&status=" + status + "&search=" + search;
 }
 </script>
+{% endblock %}
+
+{% block extra_js %}
+<!-- ===== All Modals — rendered at body level, outside .m3-content ===== -->
+{% for user in users %}
+{% if not user.is_superuser %}
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:var(--md-sys-color-error)">delete</span> Delete User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to delete <strong>{{ user.username }}</strong>?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'delete_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes, Delete</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Deactivate Modal -->
+<div class="modal fade" id="disactivateUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:var(--md-sys-color-error)">block</span> Deactivate User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to deactivate <strong>{{ user.username }}</strong>?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'disapprove_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Activate Modal -->
+<div class="modal fade" id="activateUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#2e7d32">check_circle</span> Activate User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to activate <strong>{{ user.username }}</strong>?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'approve_user' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-success">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Make Owner Modal -->
+<div class="modal fade" id="makeOwnerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#2e7d32">person</span> Make Owner</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> an Owner?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'make_owner' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-success">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Unmake Owner Modal -->
+<div class="modal fade" id="unmakeOwnerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">person_remove</span> Unmake Owner</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to unmake <strong>{{ user.username }}</strong> as Owner?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'unmake_owner' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Make Admin Modal -->
+<div class="modal fade" id="makeAdminModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">admin_panel_settings</span> Make Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> an Admin?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'make_admin' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Unmake Admin Modal -->
+<div class="modal fade" id="unmakeAdminModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#e65100">remove_moderator</span> Unmake Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to unmake <strong>{{ user.username }}</strong> as Admin?</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'unmake_admin' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-warning">Yes</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Make Agent Modal -->
+<div class="modal fade" id="makeAgentModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#1565C0">badge</span> Make Agent</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> an Agent? They will need to create their agent profile to access the agent dashboard.</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'make_agent' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-primary">Yes, Make Agent</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Make Seller Modal -->
+<div class="modal fade" id="makeSellerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#6A1B9A">sell</span> Make Seller</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to make <strong>{{ user.username }}</strong> a Seller? They will need to create their seller profile to access the seller dashboard.</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'make_seller' user.id %}">{% csrf_token %}<button type="submit" class="btn" style="background:#6A1B9A;color:#fff">Yes, Make Seller</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Unmake Agent Modal -->
+<div class="modal fade" id="unmakeAgentModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#C62828">person_remove</span> Remove Agent Role</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to remove <strong>{{ user.username }}</strong>'s Agent role? They will be reset to Tenant.</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'unmake_agent' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes, Remove Role</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+<!-- Unmake Seller Modal -->
+<div class="modal fade" id="unmakeSellerModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><span class="material-symbols-outlined" style="color:#C62828">person_remove</span> Remove Seller Role</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">Are you sure you want to remove <strong>{{ user.username }}</strong>'s Seller role? They will be reset to Tenant.</div>
+        <div class="modal-footer"><form method="POST" action="{% url 'unmake_seller' user.id %}">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes, Remove Role</button></form><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+    </div></div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}

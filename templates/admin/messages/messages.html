@@ -11,8 +11,8 @@
 {% endif %}
 
 <!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <h4 style="display:flex;align-items:center;gap:10px;margin:0"><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">mail</span>Customer Messages</h4>
+<div class="m3-page-header">
+    <h4><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">mail</span>Customer Messages</h4>
 </div>
 
 <!-- Stats -->
@@ -48,10 +48,10 @@
                     <td>{{ forloop.counter }}</td><td><strong>{{ message.name }}</strong></td><td>{{ message.email }}</td><td>{{ message.message|truncatechars:25 }}</td>
                     <td><span class="m3-badge m3-badge-error">Unread</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'read_message' message.id %}" class="btn btn-sm btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
-                        <a href="{% url 'mail' message.id %}" class="btn btn-sm btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
-                        <a href="{% url 'mark_as_read' message.id %}" class="btn btn-sm btn-success" title="Mark Read"><span class="material-symbols-outlined" style="font-size:16px">done</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'read_message' message.id %}" class="m3-icon-btn m3-icon-btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
+                        <a href="{% url 'mail' message.id %}" class="m3-icon-btn m3-icon-btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
+                        <a href="{% url 'mark_as_read' message.id %}" class="m3-icon-btn m3-icon-btn-success" title="Mark Read"><span class="material-symbols-outlined" style="font-size:16px">done</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="6" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No unread messages</td></tr>
@@ -67,10 +67,10 @@
                     <td>{{ forloop.counter }}</td><td><strong>{{ message.name }}</strong></td><td>{{ message.email }}</td><td>{{ message.message|truncatechars:25 }}</td>
                     <td><span class="m3-badge m3-badge-success">Read</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'read_message' message.id %}" class="btn btn-sm btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
-                        <a href="{% url 'mail' message.id %}" class="btn btn-sm btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
-                        <a href="{% url 'archive_message' message.id %}" class="btn btn-sm btn-secondary" title="Archive"><span class="material-symbols-outlined" style="font-size:16px">archive</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'read_message' message.id %}" class="m3-icon-btn m3-icon-btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
+                        <a href="{% url 'mail' message.id %}" class="m3-icon-btn m3-icon-btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
+                        <a href="{% url 'archive_message' message.id %}" class="m3-icon-btn m3-icon-btn-info" title="Archive"><span class="material-symbols-outlined" style="font-size:16px">archive</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="6" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No read messages</td></tr>
@@ -86,9 +86,9 @@
                     <td>{{ forloop.counter }}</td><td><strong>{{ message.name }}</strong></td><td>{{ message.email }}</td><td>{{ message.message|truncatechars:25 }}</td>
                     <td><span class="m3-badge m3-badge-info">Archived</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'read_message' message.id %}" class="btn btn-sm btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
-                        <a href="{% url 'mail' message.id %}" class="btn btn-sm btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'read_message' message.id %}" class="m3-icon-btn m3-icon-btn-info" title="View"><span class="material-symbols-outlined" style="font-size:16px">visibility</span></a>
+                        <a href="{% url 'mail' message.id %}" class="m3-icon-btn m3-icon-btn-primary" title="Reply"><span class="material-symbols-outlined" style="font-size:16px">reply</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteMessageModal{{ message.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="6" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No archived messages</td></tr>

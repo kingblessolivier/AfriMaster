@@ -19,7 +19,7 @@ urlpatterns = [
     path('admin_dashboad', views.admin_dashboard, name='admin_dashboard'),
     path('user_register', views.user_register, name='user_register'),
     path('contact', views.contact, name='contact'),
-    path("updaes", views.updates, name='updates'),
+    path("updates", views.updates, name='updates'),
     path('property_lists', views.property_lists, name='property_lists'),
     path('admin_dashboard/properties',views.admin_properties,name='admin_properties'),
     path('tenant_lists', views.tenant_list, name='tenant_list'),
@@ -82,6 +82,10 @@ urlpatterns = [
     path('admin_users/users/make_admin/<int:user_id>/', views.make_admin, name='make_admin'),
     path('admin_users/users/remove_owner/<int:user_id>/', views.unmake_owner, name='unmake_owner'),
     path('admin_users/users/remove_admin/<int:user_id>/', views.unmake_admin, name='unmake_admin'),
+    path('admin_users/users/make_agent/<int:user_id>/', views.make_agent, name='make_agent'),
+    path('admin_users/users/make_seller/<int:user_id>/', views.make_seller, name='make_seller'),
+    path('admin_users/users/remove_agent/<int:user_id>/', views.unmake_agent, name='unmake_agent'),
+    path('admin_users/users/remove_seller/<int:user_id>/', views.unmake_seller, name='unmake_seller'),
     path('owner_dashboard/<int:user_id>/', views.owner_dashboard, name='owner_dashboard'),
     path('owner_profile/<int:user_id>/', views.owner_profile, name='owner_profile'),
     path('owner_profile/edit_profile/<int:id>/', views.edit_owner_profile, name='edit_owner_profile'),
@@ -131,6 +135,59 @@ urlpatterns = [
     path('owner/maintenance/<int:user_id>/', views.owner_maintenance, name='owner_maintenance'),
     path('owner/maintenance/<int:user_id>/update/<int:request_id>/', views.owner_update_maintenance, name='owner_update_maintenance'),
 
+    # ═══════════════════════════════════════════════════════════
+    #   REAL ESTATE MARKETPLACE URLS
+    # ═══════════════════════════════════════════════════════════
+
+    # Public: Sale listings & agents
+    path('for-sale/', views.sale_listings, name='sale_listings'),
+    path('for-sale/<int:pk>/', views.sale_property_detail, name='sale_property_detail'),
+    path('agents/', views.agent_directory, name='agent_directory'),
+    path('agents/<int:pk>/', views.agent_profile_public, name='agent_profile_public'),
+
+    # Seller dashboard
+    path('create_seller_profile/<int:user_id>/', views.create_seller_profile, name='create_seller_profile'),
+    path('seller_dashboard/<int:user_id>/', views.seller_dashboard, name='seller_dashboard'),
+    path('seller/add-property/<int:user_id>/', views.seller_add_property, name='seller_add_property'),
+    path('seller/edit-property/<int:user_id>/<int:property_id>/', views.seller_edit_property, name='seller_edit_property'),
+    path('seller/delete-property/<int:user_id>/<int:property_id>/', views.seller_delete_property, name='seller_delete_property'),
+    path('seller/offers/<int:user_id>/', views.seller_offers, name='seller_offers'),
+    path('seller/offers/<int:user_id>/respond/<int:offer_id>/', views.seller_respond_offer, name='seller_respond_offer'),
+    path('seller/inquiries/<int:user_id>/', views.seller_inquiries, name='seller_inquiries'),
+
+    # Agent dashboard
+    path('create_agent_profile/<int:user_id>/', views.create_agent_profile, name='create_agent_profile'),
+    path('agent_dashboard/<int:user_id>/', views.agent_dashboard, name='agent_dashboard'),
+    path('agent/properties/<int:user_id>/', views.agent_assigned_properties, name='agent_assigned_properties'),
+    path('agent/schedule-visit/<int:user_id>/<int:property_id>/', views.agent_schedule_visit, name='agent_schedule_visit'),
+    path('agent/visits/<int:user_id>/', views.agent_site_visits, name='agent_site_visits'),
+    path('agent/visits/<int:user_id>/update/<int:visit_id>/', views.agent_update_visit, name='agent_update_visit'),
+    path('agent/offers/<int:user_id>/', views.agent_offers, name='agent_offers'),
+    path('agent/upload-photos/<int:user_id>/<int:property_id>/', views.agent_upload_photos, name='agent_upload_photos'),
+
+    # Admin marketplace management
+    path('admin_dashboard/sale-properties/', views.admin_sale_properties, name='admin_sale_properties'),
+    path('admin_dashboard/assign-agent/<int:property_id>/', views.admin_assign_agent, name='admin_assign_agent'),
+    path('admin_dashboard/agents/', views.admin_agents, name='admin_agents'),
+    path('admin_dashboard/verify-agent/<int:agent_id>/', views.admin_verify_agent, name='admin_verify_agent'),
+    path('admin_dashboard/sellers/', views.admin_sellers, name='admin_sellers'),
+    path('admin_dashboard/verify-seller/<int:seller_id>/', views.admin_verify_seller, name='admin_verify_seller'),
+    path('admin_dashboard/all-offers/', views.admin_all_offers, name='admin_all_offers'),
+
+    # ── Social Feed ──────────────────────────────────────────────
+    path('feed/', views.feed_view, name='feed'),
+    path('feed/create/', views.create_post_view, name='create_post'),
+    path('feed/post/<int:post_id>/', views.post_detail_view, name='post_detail'),
+    path('feed/post/<int:post_id>/like/', views.like_post_view, name='like_post'),
+    path('feed/post/<int:post_id>/repost/', views.repost_view, name='repost'),
+    path('feed/post/<int:post_id>/comment/', views.add_comment_view, name='add_comment'),
+    path('feed/post/<int:post_id>/delete/', views.delete_post_view, name='delete_post'),
+    path('feed/tag/<str:tag>/', views.hashtag_feed_view, name='hashtag_feed'),
+
+    # ── Notifications ────────────────────────────────────────────
+    path('notifications/', views.notifications_view, name='notifications'),
+    path('notifications/<int:notif_id>/read/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/read-all/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
 ]
 
 

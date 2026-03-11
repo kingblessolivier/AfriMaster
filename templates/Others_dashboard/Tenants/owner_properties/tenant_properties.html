@@ -59,8 +59,8 @@
                         <td>{{ property.owner.name }}</td>
                         <td>{{ property.number_of_units }}</td>
                         <td>
-                            <button class="btn btn-sm btn-primary" onclick="window.location.href='{% url 'tenant_view_property' property.id %}'"><i class="fa fa-eye"></i> View</button>
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deletePropertyModal{{ property.id }}"><i class="fa fa-trash"></i> Delete</button>
+                            <button class="m3-icon-btn m3-icon-btn-primary" onclick="window.location.href='{% url 'tenant_view_property' property.id %}'"><i class="fa fa-eye"></i> View</button>
+                            <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deletePropertyModal{{ property.id }}"><i class="fa fa-trash"></i> Delete</button>
                         </td>
                     </tr>
 

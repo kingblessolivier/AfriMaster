@@ -4,8 +4,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.db.models import Sum, Q
 from django.http import HttpResponse
 from .forms import TenantProfileForm, MessageForm, MaintenanceRequestForm
+from .forms import AgentProfileForm, SellerProfileForm, SalePropertyForm, OfferForm, PropertyInquiryForm, SiteVisitForm, AgentReviewForm
 from django.views.decorators.csrf import csrf_exempt
 from .models import Lease, Payment, MaintenanceRequest, Message, LikedProperties, Visit
+from .models import Agent, Seller, SaleProperty, Offer, AgentAssignment, SiteVisit, PropertyInquiry, AgentReview
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
@@ -200,6 +202,9 @@ def index(request):
     total_users = User.objects.count()
     total_owners = Owner.objects.count()
     total_tenants = Tenant.objects.count()
+    # Marketplace data
+    sale_properties_featured = SaleProperty.objects.filter(status='listed').order_by('-is_featured', '-date_listed')[:6]
+    featured_agents = Agent.objects.filter(is_verified=True).order_by('-rating', '-total_deals')[:4]
     context = {
         'owner_user': owner_user,
         'tenant': tenant,
@@ -210,6 +215,8 @@ def index(request):
         'total_users': total_users,
         'total_owners': total_owners,
         'total_tenants': total_tenants,
+        'sale_properties_featured': sale_properties_featured,
+        'featured_agents': featured_agents,
     }
     return render(request, 'home/home.html', context)
 
@@ -305,6 +312,16 @@ def user_login(request):
                 return redirect('index')
             elif user.role == 'Owner':
                 return redirect('index')
+            elif user.role == 'Agent':
+                # Redirect to create profile if they don't have one
+                if not hasattr(user, 'agent_profile'):
+                    return redirect('create_agent_profile', user.id)
+                return redirect('agent_dashboard', user.id)
+            elif user.role == 'Seller':
+                # Redirect to create profile if they don't have one
+                if not hasattr(user, 'seller_profile'):
+                    return redirect('create_seller_profile', user.id)
+                return redirect('seller_dashboard', user.id)
             elif user.role == 'Tenant':
                 return redirect('index')
         else:
@@ -338,6 +355,8 @@ def user_register(request):
         username = request.POST['username']
         password = request.POST['password']
         email = request.POST['email']
+        # All users register as Tenant by default. Admin assigns roles later.
+        role = 'Tenant'
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists')
             return redirect('register')
@@ -345,7 +364,7 @@ def user_register(request):
             messages.error(request, 'Email already exists')
             return redirect('register')
         else:
-            user = User(username=username, email=email)
+            user = User(username=username, email=email, role=role)
             user.set_password(password)
             user.save()
             messages.success(request, 'Account created successfully')
@@ -1506,6 +1525,54 @@ def unmake_admin(request, user_id):
     user.role = 'Tenant'  # Adjust based on how you store roles
     user.save()
     messages.success(request, 'User made Tenant successfully.')
+    return redirect('admin_users')
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_admin)
+def make_agent(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.role = 'Agent'
+        user.save()
+        messages.success(request, 'User made Agent successfully.')
+        return redirect('admin_users')
+    return render(request, 'admin/users/users.html', {'user': user})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_admin)
+def make_seller(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.role = 'Seller'
+        user.save()
+        messages.success(request, 'User made Seller successfully.')
+        return redirect('admin_users')
+    return render(request, 'admin/users/users.html', {'user': user})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_admin)
+def unmake_agent(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.role = 'Tenant'
+    user.save()
+    messages.success(request, 'User role reset to Tenant successfully.')
+    return redirect('admin_users')
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_admin)
+def unmake_seller(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.role = 'Tenant'
+    user.save()
+    messages.success(request, 'User role reset to Tenant successfully.')
     return redirect('admin_users')
 
 
@@ -2880,3 +2947,771 @@ def owner_update_maintenance(request, user_id, request_id):
                 maint.completion_date = now()
             maint.save()
     return redirect('owner_maintenance', user.id)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#   REAL ESTATE MARKETPLACE VIEWS — Sale Listings, Agents, Sellers, Offers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ─── Public: Browse sale listings ────────────────────────────────────────────
+
+def sale_listings(request):
+    """Browse all properties for sale with filters."""
+    listings = SaleProperty.objects.filter(status='listed')
+
+    # Filters
+    ptype = request.GET.get('type', '')
+    city = request.GET.get('city', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    search = request.GET.get('q', '')
+
+    if ptype:
+        listings = listings.filter(property_type=ptype)
+    if city:
+        listings = listings.filter(city__icontains=city)
+    if min_price:
+        listings = listings.filter(price__gte=min_price)
+    if max_price:
+        listings = listings.filter(price__lte=max_price)
+    if search:
+        listings = listings.filter(Q(title__icontains=search) | Q(description__icontains=search) | Q(address__icontains=search))
+
+    paginator = Paginator(listings, 12)
+    page = request.GET.get('page')
+    listings = paginator.get_page(page)
+
+    context = {
+        'listings': listings,
+        'sale_property_types': SaleProperty._meta.get_field('property_type').choices,
+        'current_type': ptype,
+        'current_city': city,
+        'current_min': min_price,
+        'current_max': max_price,
+        'current_search': search,
+    }
+    return render(request, 'home/sale_listings.html', context)
+
+
+def sale_property_detail(request, pk):
+    """View details of a sale property and submit inquiry."""
+    prop = get_object_or_404(SaleProperty, pk=pk)
+    prop.views_count += 1
+    prop.save(update_fields=['views_count'])
+
+    similar = SaleProperty.objects.filter(
+        property_type=prop.property_type, status='listed', city=prop.city
+    ).exclude(pk=pk)[:4]
+
+    inquiry_form = PropertyInquiryForm()
+    offer_form = OfferForm()
+
+    if request.method == 'POST':
+        if 'submit_inquiry' in request.POST:
+            inquiry_form = PropertyInquiryForm(request.POST)
+            if inquiry_form.is_valid():
+                inq = inquiry_form.save(commit=False)
+                inq.sale_property = prop
+                inq.save()
+                messages.success(request, 'Inquiry sent successfully!')
+                return redirect('sale_property_detail', pk=pk)
+        elif 'submit_offer' in request.POST and request.user.is_authenticated:
+            offer_form = OfferForm(request.POST)
+            if offer_form.is_valid():
+                offer = offer_form.save(commit=False)
+                offer.sale_property = prop
+                offer.buyer = request.user
+                if prop.assigned_agent:
+                    offer.agent = prop.assigned_agent
+                offer.save()
+                messages.success(request, 'Offer submitted successfully!')
+                return redirect('sale_property_detail', pk=pk)
+
+    context = {
+        'property': prop,
+        'similar': similar,
+        'inquiry_form': inquiry_form,
+        'offer_form': offer_form,
+        'offers_count': prop.offers.count(),
+    }
+    return render(request, 'home/sale_property_detail.html', context)
+
+
+def agent_directory(request):
+    """Browse all verified agents."""
+    agents = Agent.objects.filter(is_verified=True).order_by('-rating')
+    paginator = Paginator(agents, 12)
+    page = request.GET.get('page')
+    agents = paginator.get_page(page)
+    return render(request, 'home/agent_directory.html', {'agents': agents})
+
+
+def agent_profile_public(request, pk):
+    """Public agent profile page."""
+    agent = get_object_or_404(Agent, pk=pk)
+    listings = agent.assigned_properties.filter(status='listed')[:6]
+    reviews = agent.reviews.all()[:10]
+    review_form = AgentReviewForm()
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        review_form = AgentReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.agent = agent
+            review.reviewer = request.user
+            review.save()
+            # Update agent rating
+            from django.db.models import Avg
+            avg = agent.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+            agent.rating = round(avg, 2)
+            agent.save(update_fields=['rating'])
+            messages.success(request, 'Review submitted!')
+            return redirect('agent_profile_public', pk=pk)
+
+    context = {
+        'agent': agent,
+        'listings': listings,
+        'reviews': reviews,
+        'review_form': review_form,
+    }
+    return render(request, 'home/agent_profile.html', context)
+
+
+# ─── Seller Dashboard ────────────────────────────────────────────────────────
+
+@login_required
+def create_seller_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    if hasattr(user, 'seller_profile'):
+        return redirect('seller_dashboard', user.id)
+    if request.method == 'POST':
+        form = SellerProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user = user
+            seller.save()
+            messages.success(request, 'Seller profile created!')
+            return redirect('seller_dashboard', user.id)
+    else:
+        form = SellerProfileForm(initial={'name': user.username, 'email': user.email})
+    return render(request, 'Others_dashboard/sellers/create_seller_profile.html', {'form': form})
+
+
+@login_required
+def seller_dashboard(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    properties = seller.sale_properties.all()
+    total_listed = properties.filter(status='listed').count()
+    total_sold = properties.filter(status='sold').count()
+    total_under_neg = properties.filter(status='under_negotiation').count()
+    total_offers = Offer.objects.filter(sale_property__seller=seller).count()
+    pending_offers = Offer.objects.filter(sale_property__seller=seller, status='pending').count()
+    total_inquiries = PropertyInquiry.objects.filter(sale_property__seller=seller).count()
+
+    context = {
+        'seller': seller,
+        'properties': properties[:10],
+        'total_listed': total_listed,
+        'total_sold': total_sold,
+        'total_under_neg': total_under_neg,
+        'total_offers': total_offers,
+        'pending_offers': pending_offers,
+        'total_inquiries': total_inquiries,
+    }
+    return render(request, 'Others_dashboard/sellers/seller_dashboard.html', context)
+
+
+@login_required
+def seller_add_property(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    if request.method == 'POST':
+        form = SalePropertyForm(request.POST, request.FILES)
+        if form.is_valid():
+            prop = form.save(commit=False)
+            prop.seller = seller
+            prop.save()
+            messages.success(request, 'Property listed successfully!')
+            return redirect('seller_dashboard', user.id)
+    else:
+        form = SalePropertyForm()
+    return render(request, 'Others_dashboard/sellers/seller_add_property.html', {'form': form, 'seller': seller})
+
+
+@login_required
+def seller_edit_property(request, user_id, property_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    prop = get_object_or_404(SaleProperty, pk=property_id, seller=seller)
+    if request.method == 'POST':
+        form = SalePropertyForm(request.POST, request.FILES, instance=prop)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Property updated!')
+            return redirect('seller_dashboard', user.id)
+    else:
+        form = SalePropertyForm(instance=prop)
+    return render(request, 'Others_dashboard/sellers/seller_edit_property.html', {'form': form, 'property': prop, 'seller': seller})
+
+
+@login_required
+def seller_delete_property(request, user_id, property_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    prop = get_object_or_404(SaleProperty, pk=property_id, seller=seller)
+    prop.delete()
+    messages.success(request, 'Listing removed.')
+    return redirect('seller_dashboard', user.id)
+
+
+@login_required
+def seller_offers(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    offers = Offer.objects.filter(sale_property__seller=seller).select_related('sale_property', 'buyer', 'agent').order_by('-created_at')
+    return render(request, 'Others_dashboard/sellers/seller_offers.html', {'offers': offers, 'seller': seller})
+
+
+@login_required
+def seller_respond_offer(request, user_id, offer_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    offer = get_object_or_404(Offer, pk=offer_id, sale_property__seller=seller)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'accept':
+            offer.status = 'accepted'
+            offer.sale_property.status = 'under_negotiation'
+            offer.sale_property.save()
+        elif action == 'reject':
+            offer.status = 'rejected'
+        elif action == 'counter':
+            offer.status = 'countered'
+            offer.counter_amount = request.POST.get('counter_amount')
+        offer.save()
+        messages.success(request, f'Offer {action}ed.')
+    return redirect('seller_offers', user.id)
+
+
+@login_required
+def seller_inquiries(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    seller = get_object_or_404(Seller, user=user)
+    inquiries = PropertyInquiry.objects.filter(sale_property__seller=seller).select_related('sale_property').order_by('-created_at')
+    return render(request, 'Others_dashboard/sellers/seller_inquiries.html', {'inquiries': inquiries, 'seller': seller})
+
+
+# ─── Agent Dashboard ─────────────────────────────────────────────────────────
+
+@login_required
+def create_agent_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    if hasattr(user, 'agent_profile'):
+        return redirect('agent_dashboard', user.id)
+    if request.method == 'POST':
+        form = AgentProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            agent = form.save(commit=False)
+            agent.user = user
+            agent.save()
+            messages.success(request, 'Agent profile created!')
+            return redirect('agent_dashboard', user.id)
+    else:
+        form = AgentProfileForm(initial={'name': user.username, 'email': user.email})
+    return render(request, 'Others_dashboard/agents/create_agent_profile.html', {'form': form})
+
+
+@login_required
+def agent_dashboard(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    assigned = agent.assigned_properties.all()
+    total_assigned = assigned.count()
+    active_listings = assigned.filter(status='listed').count()
+    under_negotiation = assigned.filter(status='under_negotiation').count()
+    sold = assigned.filter(status='sold').count()
+    upcoming_visits = agent.site_visits.filter(status='scheduled').order_by('scheduled_date')[:5]
+    recent_offers = Offer.objects.filter(agent=agent).order_by('-created_at')[:5]
+    total_reviews = agent.reviews.count()
+
+    context = {
+        'agent': agent,
+        'total_assigned': total_assigned,
+        'active_listings': active_listings,
+        'under_negotiation': under_negotiation,
+        'sold': sold,
+        'upcoming_visits': upcoming_visits,
+        'recent_offers': recent_offers,
+        'total_reviews': total_reviews,
+        'assigned_properties': assigned[:10],
+    }
+    return render(request, 'Others_dashboard/agents/agent_dashboard.html', context)
+
+
+@login_required
+def agent_assigned_properties(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    properties = agent.assigned_properties.all().order_by('-date_listed')
+    return render(request, 'Others_dashboard/agents/agent_properties.html', {'properties': properties, 'agent': agent})
+
+
+@login_required
+def agent_schedule_visit(request, user_id, property_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    prop = get_object_or_404(SaleProperty, pk=property_id)
+    if request.method == 'POST':
+        form = SiteVisitForm(request.POST)
+        if form.is_valid():
+            visit = form.save(commit=False)
+            visit.agent = agent
+            visit.sale_property = prop
+            visit.save()
+            messages.success(request, 'Visit scheduled!')
+            return redirect('agent_site_visits', user.id)
+    else:
+        form = SiteVisitForm()
+    return render(request, 'Others_dashboard/agents/schedule_visit.html', {'form': form, 'property': prop, 'agent': agent})
+
+
+@login_required
+def agent_site_visits(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    visits = agent.site_visits.all().order_by('-scheduled_date')
+    return render(request, 'Others_dashboard/agents/agent_visits.html', {'visits': visits, 'agent': agent})
+
+
+@login_required
+def agent_update_visit(request, user_id, visit_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    visit = get_object_or_404(SiteVisit, pk=visit_id, agent=agent)
+    if request.method == 'POST':
+        visit.status = request.POST.get('status', visit.status)
+        visit.report = request.POST.get('report', visit.report)
+        visit.notes = request.POST.get('notes', visit.notes)
+        visit.save()
+        messages.success(request, 'Visit updated!')
+    return redirect('agent_site_visits', user.id)
+
+
+@login_required
+def agent_offers(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    offers = Offer.objects.filter(agent=agent).select_related('sale_property', 'buyer').order_by('-created_at')
+    return render(request, 'Others_dashboard/agents/agent_offers.html', {'offers': offers, 'agent': agent})
+
+
+@login_required
+def agent_upload_photos(request, user_id, property_id):
+    """Agent uploads photos after site visit."""
+    user = get_object_or_404(User, id=user_id)
+    if request.user.id != user.id:
+        return redirect('index')
+    agent = get_object_or_404(Agent, user=user)
+    prop = get_object_or_404(SaleProperty, pk=property_id, assigned_agent=agent)
+    if request.method == 'POST':
+        if request.FILES.get('image'):
+            prop.image = request.FILES['image']
+        if request.FILES.get('image_2'):
+            prop.image_2 = request.FILES['image_2']
+        if request.FILES.get('image_3'):
+            prop.image_3 = request.FILES['image_3']
+        if request.FILES.get('image_4'):
+            prop.image_4 = request.FILES['image_4']
+        if request.FILES.get('image_5'):
+            prop.image_5 = request.FILES['image_5']
+        prop.save()
+        messages.success(request, 'Photos uploaded!')
+        return redirect('agent_assigned_properties', user.id)
+    return render(request, 'Others_dashboard/agents/upload_photos.html', {'property': prop, 'agent': agent})
+
+
+# ─── Admin: Manage marketplace ───────────────────────────────────────────────
+
+@login_required
+@user_passes_test(is_admin)
+def admin_sale_properties(request):
+    properties = SaleProperty.objects.all().select_related('seller', 'assigned_agent')
+    agents = Agent.objects.all()
+    context = {
+        'properties': properties,
+        'agents': agents,
+        'listed_count': properties.filter(status='listed').count(),
+        'negotiation_count': properties.filter(status='under_negotiation').count(),
+        'sold_count': properties.filter(status='sold').count(),
+    }
+    return render(request, 'admin/marketplace/sale_properties.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_assign_agent(request, property_id):
+    prop = get_object_or_404(SaleProperty, pk=property_id)
+    if request.method == 'POST':
+        agent_id = request.POST.get('agent_id')
+        if agent_id:
+            agent = get_object_or_404(Agent, pk=agent_id)
+            prop.assigned_agent = agent
+            prop.save()
+            AgentAssignment.objects.create(agent=agent, sale_property=prop)
+            messages.success(request, f'Agent {agent.name} assigned to {prop.title}')
+    return redirect('admin_sale_properties')
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_agents(request):
+    agents = Agent.objects.all()
+    return render(request, 'admin/marketplace/agents.html', {
+        'agents': agents,
+        'verified_count': agents.filter(is_verified=True).count(),
+        'unverified_count': agents.filter(is_verified=False).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_verify_agent(request, agent_id):
+    agent = get_object_or_404(Agent, pk=agent_id)
+    agent.is_verified = not agent.is_verified
+    agent.save()
+    messages.success(request, f'Agent {"verified" if agent.is_verified else "unverified"}.')
+    return redirect('admin_agents')
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_sellers(request):
+    sellers = Seller.objects.all()
+    return render(request, 'admin/marketplace/sellers.html', {
+        'sellers': sellers,
+        'verified_count': sellers.filter(is_verified=True).count(),
+        'unverified_count': sellers.filter(is_verified=False).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_verify_seller(request, seller_id):
+    seller = get_object_or_404(Seller, pk=seller_id)
+    seller.is_verified = not seller.is_verified
+    seller.save()
+    messages.success(request, f'Seller {"verified" if seller.is_verified else "unverified"}.')
+    return redirect('admin_sellers')
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_all_offers(request):
+    offers = Offer.objects.all().select_related('sale_property', 'buyer', 'agent').order_by('-created_at')
+    return render(request, 'admin/marketplace/offers.html', {
+        'offers': offers,
+        'pending_count': offers.filter(status='pending').count(),
+        'accepted_count': offers.filter(status='accepted').count(),
+        'rejected_count': offers.filter(status='rejected').count(),
+    })
+
+
+# ═══════════════════════════════════════════════════════════════
+# SOCIAL FEED VIEWS
+# ═══════════════════════════════════════════════════════════════
+
+import re as _re
+from django.http import JsonResponse
+from .models import Post, PostMedia, Hashtag, PostHashtag, PostComment, PostLike, Notification
+
+
+def _extract_hashtags(html_content):
+    """Extract hashtag names from post HTML content."""
+    text = _re.sub(r'<[^>]+>', ' ', html_content)
+    return list({tag.lower() for tag in _re.findall(r'#(\w+)', text)})
+
+
+def _push(recipient, actor, ntype, message, link=''):
+    """Send notification if recipient != actor."""
+    if recipient == actor:
+        return
+    from .consumers import push_notification
+    push_notification(recipient, actor, ntype, message, link)
+
+
+# ─── Feed ──────────────────────────────────────────────────
+
+def feed_view(request):
+    posts_qs = Post.objects.filter(is_public=True).select_related(
+        'author', 'original_post__author'
+    ).prefetch_related('media', 'post_hashtags__hashtag', 'likes', 'comments')
+    paginator = Paginator(posts_qs, 20)
+    page = paginator.get_page(request.GET.get('page', 1))
+
+    # Trending hashtags (top 10 by usage)
+    from django.db.models import Count
+    trending = (
+        Hashtag.objects.annotate(count=Count('post_hashtags'))
+        .order_by('-count')[:10]
+    )
+
+    user_liked_ids = set()
+    if request.user.is_authenticated:
+        user_liked_ids = set(
+            PostLike.objects.filter(user=request.user).values_list('post_id', flat=True)
+        )
+
+    return render(request, 'social/feed.html', {
+        'page_obj': page,
+        'trending': trending,
+        'user_liked_ids': user_liked_ids,
+    })
+
+
+@login_required
+def create_post_view(request):
+    if request.method != 'POST':
+        return redirect('feed')
+
+    content = request.POST.get('content', '').strip()
+    location = request.POST.get('location', '').strip()
+    repost_id = request.POST.get('repost_id', '').strip()
+
+    if not content and not repost_id:
+        messages.error(request, 'Post cannot be empty.')
+        return redirect('feed')
+
+    original = None
+    repost_comment = ''
+    if repost_id:
+        original = get_object_or_404(Post, id=repost_id, is_public=True)
+        repost_comment = content
+        content = content or original.content  # use original content if no comment
+
+    post = Post.objects.create(
+        author=request.user,
+        content=content,
+        location=location,
+        original_post=original,
+        repost_comment=repost_comment,
+    )
+
+    # Save media files (max 5)
+    files = request.FILES.getlist('media')[:5]
+    for i, f in enumerate(files):
+        mtype = 'video' if f.content_type.startswith('video') else 'image'
+        PostMedia.objects.create(post=post, file=f, media_type=mtype, order=i)
+
+    # Extract and link hashtags
+    for tag_name in _extract_hashtags(content):
+        hashtag, _ = Hashtag.objects.get_or_create(name=tag_name)
+        PostHashtag.objects.get_or_create(post=post, hashtag=hashtag)
+
+    # Notify original author on repost
+    if original and original.author != request.user:
+        actor_name = request.user.get_full_name() or request.user.username
+        _push(
+            original.author, request.user, 'repost',
+            f'{actor_name} reposted your post',
+            f'/feed/post/{original.id}/'
+        )
+
+    messages.success(request, 'Post published!')
+    return redirect('feed')
+
+
+def post_detail_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id, is_public=True)
+    top_comments = post.comments.filter(parent=None).prefetch_related('replies')
+
+    user_liked = False
+    if request.user.is_authenticated:
+        user_liked = PostLike.objects.filter(post=post, user=request.user).exists()
+
+    return render(request, 'social/post_detail.html', {
+        'post': post,
+        'comments': top_comments,
+        'user_liked': user_liked,
+    })
+
+
+@login_required
+def like_post_view(request, post_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+    post = get_object_or_404(Post, id=post_id)
+    like, created = PostLike.objects.get_or_create(post=post, user=request.user)
+    if not created:
+        like.delete()
+        liked = False
+    else:
+        liked = True
+        actor_name = request.user.get_full_name() or request.user.username
+        _push(
+            post.author, request.user, 'like',
+            f'{actor_name} liked your post',
+            f'/feed/post/{post.id}/'
+        )
+    return JsonResponse({'liked': liked, 'count': post.likes.count()})
+
+
+@login_required
+def repost_view(request, post_id):
+    if request.method != 'POST':
+        return redirect('feed')
+    original = get_object_or_404(Post, id=post_id, is_public=True)
+    comment = request.POST.get('repost_comment', '').strip()
+    Post.objects.create(
+        author=request.user,
+        content=original.content,
+        location=original.location,
+        original_post=original,
+        repost_comment=comment,
+    )
+    actor_name = request.user.get_full_name() or request.user.username
+    _push(
+        original.author, request.user, 'repost',
+        f'{actor_name} reposted your post',
+        f'/feed/post/{original.id}/'
+    )
+    messages.success(request, 'Reposted successfully!')
+    return redirect('feed')
+
+
+def add_comment_view(request, post_id):
+    if request.method != 'POST':
+        return redirect('post_detail', post_id=post_id)
+    post = get_object_or_404(Post, id=post_id, is_public=True)
+    content = request.POST.get('content', '').strip()
+    parent_id = request.POST.get('parent_id', '').strip()
+
+    if not content:
+        messages.error(request, 'Comment cannot be empty.')
+        return redirect('post_detail', post_id=post_id)
+
+    parent = None
+    if parent_id:
+        parent = get_object_or_404(PostComment, id=parent_id, post=post)
+
+    if request.user.is_authenticated:
+        comment = PostComment.objects.create(
+            post=post, user=request.user, content=content, parent=parent
+        )
+        actor_name = request.user.get_full_name() or request.user.username
+        _push(
+            post.author, request.user, 'comment',
+            f'{actor_name} commented on your post',
+            f'/feed/post/{post.id}/'
+        )
+    else:
+        guest_name = request.POST.get('guest_name', '').strip()
+        guest_email = request.POST.get('guest_email', '').strip()
+        if not guest_name:
+            messages.error(request, 'Please enter your name to comment.')
+            return redirect('post_detail', post_id=post_id)
+        PostComment.objects.create(
+            post=post,
+            content=content,
+            guest_name=guest_name,
+            guest_email=guest_email,
+            parent=parent,
+        )
+
+    messages.success(request, 'Comment added!')
+    return redirect('post_detail', post_id=post_id)
+
+
+@login_required
+def delete_post_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post deleted.')
+    return redirect('feed')
+
+
+def hashtag_feed_view(request, tag):
+    tag = tag.lower()
+    try:
+        hashtag = Hashtag.objects.get(name=tag)
+        posts_qs = Post.objects.filter(
+            post_hashtags__hashtag=hashtag, is_public=True
+        ).select_related('author').prefetch_related('media', 'likes', 'comments')
+    except Hashtag.DoesNotExist:
+        posts_qs = Post.objects.none()
+        hashtag = None
+
+    paginator = Paginator(posts_qs, 20)
+    page = paginator.get_page(request.GET.get('page', 1))
+
+    user_liked_ids = set()
+    if request.user.is_authenticated:
+        user_liked_ids = set(
+            PostLike.objects.filter(user=request.user).values_list('post_id', flat=True)
+        )
+
+    return render(request, 'social/feed.html', {
+        'page_obj': page,
+        'active_tag': tag,
+        'hashtag': hashtag,
+        'user_liked_ids': user_liked_ids,
+    })
+
+
+# ─── Notifications ─────────────────────────────────────────
+
+@login_required
+def notifications_view(request):
+    notifs = Notification.objects.filter(recipient=request.user).select_related('actor')
+    unread_count = notifs.filter(is_read=False).count()
+    return render(request, 'notifications/notifications.html', {
+        'notifications': notifs,
+        'unread_count': unread_count,
+    })
+
+
+@login_required
+def mark_notification_read(request, notif_id):
+    notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+    notif.is_read = True
+    notif.save(update_fields=['is_read'])
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True})
+    return redirect(notif.link or 'notifications')
+
+
+@login_required
+def mark_all_notifications_read(request):
+    Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+    return redirect('notifications')

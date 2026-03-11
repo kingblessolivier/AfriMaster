@@ -11,8 +11,8 @@
 {% endif %}
 
 <!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <h4 style="display:flex;align-items:center;gap:10px;margin:0"><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">description</span>Lease Management</h4>
+<div class="m3-page-header">
+    <h4><span class="material-symbols-outlined" style="color:var(--md-sys-color-primary)">description</span>Lease Management</h4>
     <a href="{% url 'add_lease' %}" class="m3-btn-filled m3-btn-sm"><span class="material-symbols-outlined" style="font-size:18px">add</span> Add Lease</a>
 </div>
 
@@ -49,9 +49,9 @@
                     <td>{{ lease.id }}</td><td><strong>{{ lease.tenant.name }}</strong></td><td>{{ lease.property.name }}</td><td>{{ lease.start_date }}</td><td>{{ lease.end_date }}</td><td>{{ lease.rent_amount|floatformat:0 }}</td>
                     <td><span class="m3-badge m3-badge-error">Unsigned</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'edit_lease' lease.id %}" class="btn btn-sm btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
-                        <a href="/sign-lease/{{ lease.id }}" class="btn btn-sm btn-success" title="Sign"><span class="material-symbols-outlined" style="font-size:16px">done</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'edit_lease' lease.id %}" class="m3-icon-btn m3-icon-btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
+                        <a href="/sign-lease/{{ lease.id }}" class="m3-icon-btn m3-icon-btn-success" title="Sign"><span class="material-symbols-outlined" style="font-size:16px">done</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="8" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No unsigned leases</td></tr>
@@ -67,9 +67,9 @@
                     <td>{{ lease.id }}</td><td><strong>{{ lease.tenant.name }}</strong></td><td>{{ lease.property.name }}</td><td>{{ lease.start_date }}</td><td>{{ lease.end_date }}</td><td>{{ lease.rent_amount|floatformat:0 }}</td>
                     <td><span class="m3-badge m3-badge-success">Signed</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'edit_lease' lease.id %}" class="btn btn-sm btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
-                        <a href="/archive-lease/{{ lease.id }}" class="btn btn-sm btn-secondary" title="Archive"><span class="material-symbols-outlined" style="font-size:16px">archive</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'edit_lease' lease.id %}" class="m3-icon-btn m3-icon-btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
+                        <a href="/archive-lease/{{ lease.id }}" class="m3-icon-btn m3-icon-btn-info" title="Archive"><span class="material-symbols-outlined" style="font-size:16px">archive</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="8" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No signed leases</td></tr>
@@ -85,8 +85,8 @@
                     <td>{{ lease.id }}</td><td><strong>{{ lease.tenant.name }}</strong></td><td>{{ lease.property.name }}</td><td>{{ lease.start_date }}</td><td>{{ lease.end_date }}</td><td>{{ lease.rent_amount|floatformat:0 }}</td>
                     <td><span class="m3-badge m3-badge-info">Archived</span></td>
                     <td><div class="d-flex gap-1 flex-wrap">
-                        <a href="{% url 'edit_lease' lease.id %}" class="btn btn-sm btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
-                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
+                        <a href="{% url 'edit_lease' lease.id %}" class="m3-icon-btn m3-icon-btn-warning" title="Edit"><span class="material-symbols-outlined" style="font-size:16px">edit</span></a>
+                        <button class="m3-icon-btn m3-icon-btn-error" data-bs-toggle="modal" data-bs-target="#deleteLeaseModal{{ lease.id }}" title="Delete"><span class="material-symbols-outlined" style="font-size:16px">delete</span></button>
                     </div></td>
                 </tr>
                 {% empty %}<tr><td colspan="8" class="text-center" style="padding:32px;color:var(--md-sys-color-on-surface-variant)">No archived leases</td></tr>

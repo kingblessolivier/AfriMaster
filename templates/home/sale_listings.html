@@ -1,0 +1,238 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Properties for Sale - PropertyHub Ltd{% endblock %}
+
+{% block content %}
+<style>
+    .m3-sale-hero{margin-top:112px;padding:70px 20px 60px;position:relative;overflow:hidden}
+    .m3-sale-hero::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.03)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L0,320Z"/></svg>') bottom/cover no-repeat}
+    .m3-sale-hero::after{content:'';position:absolute;width:300px;height:300px;top:-50px;right:-50px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
+    .m3-sale-hero-inner{position:relative;z-index:2;text-align:center;max-width:700px;margin:0 auto}
+    .m3-sale-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(40,167,69,.2);color:var(--md-sys-color-inverse-primary);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(40,167,69,.3)}
+    .m3-sale-hero-badge .material-symbols-outlined{font-size:16px}
+    .m3-sale-hero h1{font:500 2.6rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:12px}
+    .m3-sale-hero h1 em{background:linear-gradient(135deg,var(--md-sys-color-inverse-primary),var(--md-sys-color-tertiary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
+    .m3-sale-hero p{color:rgba(255,255,255,.7);font:var(--md-sys-typescale-body-large);margin-bottom:32px;line-height:1.6}
+    .m3-sale-searchbox{display:flex;max-width:580px;margin:0 auto;background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:var(--md-sys-shape-corner-full);padding:6px;border:1px solid rgba(255,255,255,.15);transition:all 300ms}
+    .m3-sale-searchbox:focus-within{background:rgba(255,255,255,.18);border-color:rgba(40,167,69,.5);box-shadow:0 0 0 4px rgba(40,167,69,.15)}
+    .m3-sale-searchbox input{flex:1;background:transparent;border:none;padding:14px 24px;color:#fff;font:var(--md-sys-typescale-body-large);outline:none}
+    .m3-sale-searchbox input::placeholder{color:rgba(255,255,255,.5)}
+    .m3-sale-searchbox button{background:var(--md-sys-color-primary);border:none;border-radius:var(--md-sys-shape-corner-full);padding:12px 28px;color:#fff;font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms;display:flex;align-items:center;gap:8px}
+    .m3-sale-searchbox button:hover{box-shadow:var(--md-sys-elevation-1)}
+    .m3-sale-hero-stats{display:flex;justify-content:center;gap:40px;margin-top:36px;flex-wrap:wrap}
+    .m3-sale-hero-stat{text-align:center}
+    .m3-sale-hero-stat-val{font:500 1.5rem/1 'Inter',sans-serif;color:#fff}
+    .m3-sale-hero-stat-lbl{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+
+    .m3-sale-main{background:var(--md-sys-color-surface-container);padding:0 0 60px}
+    .m3-sale-content{padding-top:30px}
+
+    /* Filter */
+    .m3-sale-filter{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:24px;box-shadow:var(--md-sys-elevation-1);position:sticky;top:90px;border:1px solid var(--md-sys-color-outline-variant)}
+    .m3-sale-filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--md-sys-color-surface-container)}
+    .m3-sale-filter-header h5{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin:0;display:flex;align-items:center;gap:8px}
+    .m3-sale-filter-header h5 .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:20px}
+    .m3-sale-clear{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-primary);text-decoration:none}
+    .m3-sale-clear:hover{color:#1e7e34}
+    .m3-sale-sec{margin-bottom:24px}
+    .m3-sale-sec:last-child{margin-bottom:0}
+    .m3-sale-sec-title{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-on-surface);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+    .m3-sale-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .m3-sale-chip{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;border-radius:var(--md-sys-shape-corner-small);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms;border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface-variant);text-decoration:none}
+    .m3-sale-chip:hover{border-color:var(--md-sys-color-primary);color:var(--md-sys-color-primary);background:rgba(40,167,69,.04)}
+    .m3-sale-chip.active{background:var(--md-sys-color-primary);color:#fff;border-color:var(--md-sys-color-primary)}
+    .m3-sale-chip .material-symbols-outlined{font-size:16px}
+
+    .m3-sale-results-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .m3-sale-results-count{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant)}
+    .m3-sale-results-count strong{color:var(--md-sys-color-on-surface);font-weight:700}
+
+    /* Card */
+    .m3-sale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+    .m3-sale-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+    .m3-sale-card:hover{transform:translateY(-6px);box-shadow:var(--md-sys-elevation-3);border-color:transparent}
+    .m3-sale-card-img{position:relative;height:220px;overflow:hidden}
+    .m3-sale-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+    .m3-sale-card:hover .m3-sale-card-img img{transform:scale(1.08)}
+    .m3-sale-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.4));pointer-events:none}
+    .m3-sale-card-img .m3-img-ph{width:100%;height:100%;background:linear-gradient(135deg,#E8F5E9,#C8E6C9,#A5D6A7);display:flex;align-items:center;justify-content:center}
+    .m3-sale-card-img .m3-img-ph .material-symbols-outlined{font-size:52px;color:var(--md-sys-color-primary);opacity:.5}
+    .m3-sale-badges{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:2}
+    .m3-sale-badge-type{background:var(--md-sys-color-primary);color:#fff;padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;box-shadow:var(--md-sys-elevation-1)}
+    .m3-sale-badge-kind{background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;box-shadow:var(--md-sys-elevation-1)}
+    .m3-sale-badge-neg{position:absolute;bottom:14px;right:14px;z-index:2;background:rgba(255,152,0,.92);color:#fff;padding:5px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px)}
+    .m3-sale-badge-neg .material-symbols-outlined{font-size:13px}
+    .m3-sale-price-tag{position:absolute;bottom:14px;left:14px;z-index:2;font:500 1.35rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .m3-sale-price-tag small{font:var(--md-sys-typescale-label-small);opacity:.85}
+    .m3-sale-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+    .m3-sale-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .m3-sale-card-loc{display:flex;align-items:center;gap:6px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);margin-bottom:16px}
+    .m3-sale-card-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-primary)}
+    .m3-sale-feats{display:flex;gap:0;padding:14px 0;margin-bottom:16px;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant)}
+    .m3-sale-feat{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+    .m3-sale-feat:not(:last-child)::after{content:'';position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--md-sys-color-outline-variant)}
+    .m3-sale-feat-icon{width:34px;height:34px;border-radius:var(--md-sys-shape-corner-small);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+    .m3-sale-feat-icon .material-symbols-outlined{font-size:18px;color:var(--md-sys-color-on-primary-container)}
+    .m3-sale-feat-val{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface)}
+    .m3-sale-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
+    .m3-sale-card-meta{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);margin-top:auto;display:flex;align-items:center;gap:4px;margin-bottom:12px}
+    .m3-sale-card-meta .material-symbols-outlined{font-size:15px}
+    .m3-sale-card-ft{padding:0 20px 20px}
+    .m3-sale-btn-view{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 300ms;text-decoration:none}
+    .m3-sale-btn-view:hover{background:var(--md-sys-color-primary);color:#fff;box-shadow:var(--md-sys-elevation-1)}
+    .m3-sale-btn-view .material-symbols-outlined{font-size:18px;transition:transform .3s}
+    .m3-sale-btn-view:hover .material-symbols-outlined{transform:translateX(4px)}
+
+    .m3-sale-empty{text-align:center;padding:80px 30px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:2px dashed var(--md-sys-color-outline-variant);grid-column:1/-1}
+    .m3-sale-empty-icon{width:80px;height:80px;margin:0 auto 20px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center}
+    .m3-sale-empty-icon .material-symbols-outlined{font-size:2rem;color:var(--md-sys-color-on-surface-variant)}
+    .m3-sale-empty h3{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:8px}
+    .m3-sale-empty p{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-medium);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto}
+
+    .m3-sale-pagination{display:flex;justify-content:center;margin-top:40px;gap:6px;list-style:none;padding:0}
+    .m3-sale-pagination .page-link{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--md-sys-shape-corner-small);font:var(--md-sys-typescale-label-large);border:1.5px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-lowest);transition:all 200ms;text-decoration:none}
+    .m3-sale-pagination .page-link:hover{background:var(--md-sys-color-primary-container);border-color:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary-container)}
+    .m3-sale-pagination .page-item.active .page-link{background:var(--md-sys-color-primary);border-color:var(--md-sys-color-primary);color:#fff}
+
+    .m3-sale-mobile-btn{display:none;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;margin-bottom:20px;width:100%}
+    .m3-sale-mobile-btn .material-symbols-outlined{font-size:20px}
+    @media(max-width:992px){.m3-sale-filter-col{display:none}.m3-sale-mobile-btn{display:flex}.m3-sale-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
+    @media(max-width:768px){.m3-sale-hero{padding:50px 16px 40px}.m3-sale-hero h1{font-size:1.9rem}.m3-sale-grid{grid-template-columns:1fr;gap:20px}}
+    @media(max-width:576px){.m3-sale-hero h1{font-size:1.6rem}.m3-sale-searchbox{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-sale-searchbox button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}}
+</style>
+
+<!-- Hero -->
+<section class="m3-sale-hero hero-lattice">
+    <div class="floating-sq floating-sq--md floating-sq--c1 floating-sq--a2 floating-sq--d1" style="top:10%;left:5%"></div>
+    <div class="floating-sq floating-sq--sm floating-sq--c2 floating-sq--a1 floating-sq--d3" style="top:65%;left:12%"></div>
+    <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a3 floating-sq--d2" style="top:20%;right:6%"></div>
+    <div class="floating-sq floating-sq--xs floating-sq--c4 floating-sq--a5 floating-sq--d4" style="top:40%;right:35%"></div>
+    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a6 floating-sq--d5" style="bottom:-25px;left:-25px;transform:rotate(30deg)"></div>
+    <div class="container">
+        <div class="m3-sale-hero-inner">
+            <div class="m3-sale-hero-badge"><span class="material-symbols-outlined">real_estate_agent</span>Marketplace</div>
+            <h1>Properties <em>For Sale</em></h1>
+            <p>Browse houses, land, apartments, and more available for purchase across Rwanda. Find your dream property today.</p>
+            <form class="m3-sale-searchbox" method="GET" action="{% url 'sale_listings' %}">
+                <input type="text" name="q" placeholder="Search by title, city, or type..." value="{{ current_search }}">
+                <button type="submit"><span class="material-symbols-outlined" style="font-size:20px">search</span><span class="d-none d-sm-inline">Search</span></button>
+            </form>
+            <div class="m3-sale-hero-stats">
+                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ listings.paginator.count|default:"0" }}</div><div class="m3-sale-hero-stat-lbl">Found</div></div>
+                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ total_for_sale|default:"—" }}</div><div class="m3-sale-hero-stat-lbl">For Sale</div></div>
+                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ total_for_rent|default:"—" }}</div><div class="m3-sale-hero-stat-lbl">For Rent</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main -->
+<section class="m3-sale-main">
+    <div class="container m3-sale-content">
+        {% if messages %}{% for msg in messages %}<div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert" style="border-radius:12px">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+
+        <div class="row">
+            <!-- Filters -->
+            <div class="col-lg-3 m3-sale-filter-col">
+                <div class="m3-sale-filter">
+                    <div class="m3-sale-filter-header">
+                        <h5><span class="material-symbols-outlined">tune</span> Filters</h5>
+                        <a href="{% url 'sale_listings' %}" class="m3-sale-clear">Clear All</a>
+                    </div>
+                    <div class="m3-sale-sec">
+                        <div class="m3-sale-sec-title">Property Type</div>
+                        <div class="m3-sale-chips">
+                            <a href="{% url 'sale_listings' %}?{% if current_search %}q={{ current_search }}&{% endif %}{% if current_city %}city={{ current_city }}&{% endif %}{% if current_min %}min_price={{ current_min }}&{% endif %}{% if current_max %}max_price={{ current_max }}{% endif %}" class="m3-sale-chip {% if not current_type %}active{% endif %}"><span class="material-symbols-outlined">select_all</span>All</a>
+                            {% for val, label in sale_property_types %}
+                            <a href="{% url 'sale_listings' %}?type={{ val }}{% if current_search %}&q={{ current_search }}{% endif %}{% if current_city %}&city={{ current_city }}{% endif %}{% if current_min %}&min_price={{ current_min }}{% endif %}{% if current_max %}&max_price={{ current_max }}{% endif %}" class="m3-sale-chip {% if current_type == val %}active{% endif %}">{{ label }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="m3-sale-sec">
+                        <div class="m3-sale-sec-title">Location</div>
+                        <form method="get" action="{% url 'sale_listings' %}">
+                            {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
+                            {% if current_search %}<input type="hidden" name="q" value="{{ current_search }}">{% endif %}
+                            {% if current_min %}<input type="hidden" name="min_price" value="{{ current_min }}">{% endif %}
+                            {% if current_max %}<input type="hidden" name="max_price" value="{{ current_max }}">{% endif %}
+                            <div class="d-flex gap-2">
+                                <input type="text" name="city" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="e.g. Kigali" value="{{ current_city }}">
+                                <button type="submit" style="background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px">search</span></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="m3-sale-sec">
+                        <div class="m3-sale-sec-title">Price Range</div>
+                        <form method="get" action="{% url 'sale_listings' %}">
+                            {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
+                            {% if current_search %}<input type="hidden" name="q" value="{{ current_search }}">{% endif %}
+                            {% if current_city %}<input type="hidden" name="city" value="{{ current_city }}">{% endif %}
+                            <div class="d-flex flex-column gap-2">
+                                <input type="number" name="min_price" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="Min Frw" value="{{ current_min }}">
+                                <input type="number" name="max_price" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="Max Frw" value="{{ current_max }}">
+                                <button type="submit" class="m3-sale-chip active" style="justify-content:center;border:none;cursor:pointer"><span class="material-symbols-outlined">filter_list</span>Apply Price</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-lg-9">
+                <button class="m3-sale-mobile-btn" onclick="document.querySelector('.m3-sale-filter-col').style.display=document.querySelector('.m3-sale-filter-col').style.display==='block'?'none':'block'"><span class="material-symbols-outlined">tune</span>Show Filters</button>
+
+                {% if listings %}
+                <div class="m3-sale-results-hdr">
+                    <div class="m3-sale-results-count">Showing <strong>{{ listings.paginator.count }}</strong> properties for sale</div>
+                </div>
+                <div class="m3-sale-grid">
+                    {% for p in listings %}
+                    <div class="m3-sale-card md-reveal">
+                        <div class="m3-sale-card-img">
+                            {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.title }}" loading="lazy">
+                            {% else %}<div class="m3-img-ph"><span class="material-symbols-outlined">home</span></div>{% endif %}
+                            <div class="m3-sale-badges">
+                                <span class="m3-sale-badge-type">For {{ p.get_listing_type_display }}</span>
+                                <span class="m3-sale-badge-kind">{{ p.get_property_type_display }}</span>
+                            </div>
+                            {% if p.negotiable %}<span class="m3-sale-badge-neg"><span class="material-symbols-outlined">swap_horiz</span>Negotiable</span>{% endif %}
+                            <div class="m3-sale-price-tag">{{ p.price|floatformat:0 }} <small>Frw</small></div>
+                        </div>
+                        <div class="m3-sale-card-body">
+                            <div class="m3-sale-card-title">{{ p.title|truncatechars:40 }}</div>
+                            <div class="m3-sale-card-loc"><span class="material-symbols-outlined">location_on</span><span>{{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}</span></div>
+                            <div class="m3-sale-feats">
+                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">bed</span></div><div class="m3-sale-feat-val">{{ p.bedrooms|default:"—" }}</div><div class="m3-sale-feat-lbl">Beds</div></div>
+                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">bathtub</span></div><div class="m3-sale-feat-val">{{ p.bathrooms|default:"—" }}</div><div class="m3-sale-feat-lbl">Baths</div></div>
+                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">square_foot</span></div><div class="m3-sale-feat-val">{% if p.size_sqm %}{{ p.size_sqm|floatformat:0 }}{% else %}—{% endif %}</div><div class="m3-sale-feat-lbl">sqm</div></div>
+                            </div>
+                            <div class="m3-sale-card-meta"><span class="material-symbols-outlined">visibility</span> {{ p.views_count }} views</div>
+                        </div>
+                        <div class="m3-sale-card-ft"><a href="{% url 'sale_property_detail' p.id %}" class="m3-sale-btn-view">View Details <span class="material-symbols-outlined">arrow_forward</span></a></div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if listings.has_other_pages %}
+                <ul class="m3-sale-pagination">
+                    {% if listings.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ listings.previous_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_left</span></a></li>{% endif %}
+                    {% for num in listings.paginator.page_range %}
+                    <li class="page-item {% if listings.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}">{{ num }}</a></li>
+                    {% endfor %}
+                    {% if listings.has_next %}<li class="page-item"><a class="page-link" href="?page={{ listings.next_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_right</span></a></li>{% endif %}
+                </ul>
+                {% endif %}
+
+                {% else %}
+                <div class="m3-sale-empty">
+                    <div class="m3-sale-empty-icon"><span class="material-symbols-outlined">search_off</span></div>
+                    <h3>No Properties Found</h3>
+                    <p>Try adjusting your search criteria or browse all listings</p>
+                    <a href="{% url 'sale_listings' %}" class="m3-sale-btn-view" style="max-width:220px;margin:0 auto"><span class="material-symbols-outlined">refresh</span>Clear Filters</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -2,7 +2,9 @@ from django.contrib import admin
 from .models import (
     Property, Unit, Tenant, Lease, User,
     CustomerMessage, Owner, Updates, Email,
-    CustRequest, MaintenanceRequest, Payment, Message, Visit,LikedProperties
+    CustRequest, MaintenanceRequest, Payment, Message, Visit, LikedProperties,
+    Agent, Seller, SaleProperty, Offer, AgentAssignment, SiteVisit, PropertyInquiry, AgentReview,
+    Post, PostMedia, Hashtag, PostHashtag, PostComment, PostLike, Notification,
 )
 
 @admin.register(User)
@@ -101,3 +103,122 @@ class VisitAdmin(admin.ModelAdmin):
 class LikedPropertiesAdmin(admin.ModelAdmin):
     list_display = ('user', 'property')
     search_fields = ('user__username', 'property__name')
+
+
+# ═══════════════════════════════════════════════════════════
+#   REAL ESTATE MARKETPLACE ADMIN
+# ═══════════════════════════════════════════════════════════
+
+@admin.register(Agent)
+class AgentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone_number', 'specialization', 'is_verified', 'rating', 'total_deals')
+    list_filter = ('is_verified', 'specialization')
+    search_fields = ('name', 'email', 'license_number')
+
+
+@admin.register(Seller)
+class SellerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone_number', 'is_verified', 'date_joined')
+    list_filter = ('is_verified',)
+    search_fields = ('name', 'email', 'id_number')
+
+
+@admin.register(SaleProperty)
+class SalePropertyAdmin(admin.ModelAdmin):
+    list_display = ('title', 'property_type', 'price', 'city', 'status', 'seller', 'assigned_agent', 'is_featured', 'date_listed')
+    list_filter = ('property_type', 'status', 'city', 'is_featured', 'listing_type')
+    search_fields = ('title', 'address', 'city', 'district')
+    list_editable = ('is_featured', 'status')
+
+
+@admin.register(Offer)
+class OfferAdmin(admin.ModelAdmin):
+    list_display = ('sale_property', 'buyer', 'amount', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('sale_property__title', 'buyer__username')
+
+
+@admin.register(AgentAssignment)
+class AgentAssignmentAdmin(admin.ModelAdmin):
+    list_display = ('agent', 'sale_property', 'assigned_date', 'is_active')
+    list_filter = ('is_active',)
+
+
+@admin.register(SiteVisit)
+class SiteVisitAdmin(admin.ModelAdmin):
+    list_display = ('sale_property', 'agent', 'visitor', 'scheduled_date', 'status')
+    list_filter = ('status', 'scheduled_date')
+    search_fields = ('sale_property__title', 'agent__name')
+
+
+@admin.register(PropertyInquiry)
+class PropertyInquiryAdmin(admin.ModelAdmin):
+    list_display = ('sale_property', 'name', 'email', 'is_read', 'created_at')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('sale_property__title', 'name', 'email')
+
+
+@admin.register(AgentReview)
+class AgentReviewAdmin(admin.ModelAdmin):
+    list_display = ('agent', 'reviewer', 'rating', 'created_at')
+    list_filter = ('rating',)
+    search_fields = ('agent__name', 'reviewer__username')
+
+
+# ═══════════════════════════════════════════════════════════
+#   SOCIAL FEED ADMIN
+# ═══════════════════════════════════════════════════════════
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('author', 'content_preview', 'location', 'is_public', 'created_at')
+    list_filter = ('is_public', 'created_at')
+    search_fields = ('author__username', 'content')
+
+    def content_preview(self, obj):
+        import re
+        text = re.sub(r'<[^>]+>', '', obj.content)
+        return text[:80]
+    content_preview.short_description = 'Content'
+
+
+@admin.register(PostMedia)
+class PostMediaAdmin(admin.ModelAdmin):
+    list_display = ('post', 'media_type', 'order')
+    list_filter = ('media_type',)
+
+
+@admin.register(Hashtag)
+class HashtagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+
+@admin.register(PostHashtag)
+class PostHashtagAdmin(admin.ModelAdmin):
+    list_display = ('post', 'hashtag')
+
+
+@admin.register(PostComment)
+class PostCommentAdmin(admin.ModelAdmin):
+    list_display = ('post', 'user', 'guest_name', 'content_preview', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'guest_name', 'content')
+
+    def content_preview(self, obj):
+        return obj.content[:80]
+    content_preview.short_description = 'Comment'
+
+
+@admin.register(PostLike)
+class PostLikeAdmin(admin.ModelAdmin):
+    list_display = ('post', 'user', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username',)
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('recipient', 'actor', 'notification_type', 'message', 'is_read', 'created_at')
+    list_filter = ('notification_type', 'is_read', 'created_at')
+    search_fields = ('recipient__username', 'actor__username', 'message')

@@ -1,12 +1,12 @@
 {% extends 'home/base.html' %}
 {% load static %}
 
-{% block title %}Updates - AfriMaster Properties{% endblock %}
+{% block title %}Updates - PropertyHub Ltd{% endblock %}
 
 {% block content %}
 <style>
     /* ===== Hero ===== */
-    .m3-updates-hero{margin-top:76px;padding:90px 0 80px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden;text-align:center;color:#fff}
+    .m3-updates-hero{margin-top:112px;padding:90px 0 80px;position:relative;overflow:hidden;text-align:center;color:#fff}
     .m3-updates-hero::before{content:'';position:absolute;width:500px;height:500px;top:-150px;right:-150px;background:radial-gradient(circle,rgba(40,167,69,.12) 0%,transparent 70%);border-radius:50%}
     .m3-updates-hero::after{content:'';position:absolute;width:350px;height:350px;bottom:-100px;left:-100px;background:radial-gradient(circle,rgba(32,201,151,.1) 0%,transparent 70%);border-radius:50%}
     .m3-updates-hero-inner{position:relative;z-index:2}
@@ -131,12 +131,18 @@
 
 <!-- Pagelet: Hero -->
 <div class="pagelet" data-pagelet="hero">
-<section class="m3-updates-hero">
+<section class="m3-updates-hero hero-lattice">
+    <!-- Floating squares -->
+    <div class="floating-sq floating-sq--lg floating-sq--c1 floating-sq--a1 floating-sq--d2" style="top:8%;left:6%"></div>
+    <div class="floating-sq floating-sq--sm floating-sq--c2 floating-sq--a3 floating-sq--d1" style="top:55%;left:18%"></div>
+    <div class="floating-sq floating-sq--md floating-sq--c3 floating-sq--a2 floating-sq--d3" style="top:25%;right:12%"></div>
+    <div class="floating-sq floating-sq--xs floating-sq--c5 floating-sq--a4 floating-sq--d4" style="top:70%;right:8%"></div>
+    <div class="floating-sq floating-sq--xl floating-sq--c4 floating-sq--a6 floating-sq--d5" style="bottom:-20px;right:-20px;transform:rotate(18deg)"></div>
     <div class="container">
         <div class="m3-updates-hero-inner">
             <div class="m3-updates-hero-badge"><span class="material-symbols-outlined">notifications_active</span>Stay Informed</div>
             <h1>News & <span>Updates</span></h1>
-            <p>Get the latest announcements, feature releases, and important updates from AfriMaster Properties</p>
+            <p>Get the latest announcements, feature releases, and important updates from PropertyHub Ltd</p>
             <div class="m3-hero-stats-row">
                 <div class="m3-hero-stat-item">
                     <div class="val">{% if updates %}{{ updates|length }}{% else %}0{% endif %}</div>

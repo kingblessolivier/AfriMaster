@@ -1,15 +1,15 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}About Us - AfriMaster Properties{% endblock %}
+{% block title %}About Us - PropertyHub Ltd{% endblock %}
 {% block content %}
 <style>
-    .m3-about-hero{margin-top:76px;padding:80px 0 70px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden;text-align:center;color:#fff}
+    .m3-about-hero{margin-top:112px;padding:80px 0 70px;position:relative;overflow:hidden;text-align:center;color:#fff}
     .m3-about-hero::before{content:'';position:absolute;width:400px;height:400px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
     .m3-about-hero::after{content:'';position:absolute;width:300px;height:300px;bottom:-80px;left:-80px;background:radial-gradient(circle,rgba(32,201,151,.12) 0%,transparent 70%);border-radius:50%}
     .m3-about-hero-inner{position:relative;z-index:2}
     .m3-about-hero h1{font:500 2.8rem/1.2 'Inter',sans-serif;margin-bottom:16px}
     .m3-about-hero p{color:rgba(255,255,255,.65);font:var(--md-sys-typescale-body-large);max-width:550px;margin:0 auto;line-height:1.7}
-    .m3-sec{padding:90px 0}.m3-sec-s{background:var(--md-sys-color-surface)}.m3-sec-c{background:var(--md-sys-color-surface-container)}
+    .m3-sec{padding:80px 0}.m3-sec-s{background:var(--md-sys-color-surface)}.m3-sec-c{background:var(--md-sys-color-surface-container)}
     .m3-sh{text-align:center;margin-bottom:50px}
     .m3-tag{display:inline-flex;align-items:center;gap:8px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
     .m3-tag .material-symbols-outlined{font-size:16px}
@@ -36,8 +36,7 @@
     .m3-tl-content:hover{box-shadow:var(--md-sys-elevation-1)}
     .m3-tl-content h4{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:8px}
     .m3-tl-content p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin:0;line-height:1.6}
-    .m3-about-stats{background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);padding:60px 0;position:relative;overflow:hidden}
-    .m3-about-stats::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="1.5" fill="rgba(255,255,255,.04)"/></svg>');background-size:40px 40px}
+    .m3-about-stats{padding:60px 0;position:relative;overflow:hidden;background-color:#0d2415;background-image:linear-gradient(135deg,rgba(26,42,26,.98),rgba(13,74,37,.95)),linear-gradient(rgba(40,167,69,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.08) 1px,transparent 1px);background-size:100% 100%,50px 50px,50px 50px;background-attachment:scroll,fixed,fixed}
     .m3-as{text-align:center;position:relative;z-index:2;padding:20px}
     .m3-as-val{font:500 2.4rem/1 'Inter',sans-serif;color:#fff;margin-bottom:4px}
     .m3-as-lbl{color:rgba(255,255,255,.6);font:var(--md-sys-typescale-label-medium)}
@@ -65,12 +64,16 @@
         .m3-tl::before{left:20px}
         .m3-tl-item,.m3-tl-item:nth-child(even){width:100%;padding-left:50px;padding-right:0;margin-left:0}
         .m3-tl-item .m3-tl-dot,.m3-tl-item:nth-child(even) .m3-tl-dot{left:13px;right:auto}
-        .m3-sec{padding:60px 0}.m3-as-val{font-size:1.8rem}
+        .m3-sec{padding:50px 0}.m3-as-val{font-size:1.8rem}
     }
 </style>
 
-<section class="m3-about-hero"><div class="container"><div class="m3-about-hero-inner">
-    <h1>About AfriMaster</h1>
+<section class="m3-about-hero hero-lattice"><div class="container"><div class="m3-about-hero-inner">
+    <!-- Floating squares -->
+    <div class="floating-sq floating-sq--md floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:12%;left:5%"></div>
+    <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a3 floating-sq--d2" style="top:15%;right:10%"></div>
+    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a5 floating-sq--d5" style="bottom:-30px;left:-30px;transform:rotate(20deg)"></div>
+    <h1>About PropertyHub</h1>
     <p>Revolutionizing property management with innovative solutions for owners, tenants, and real estate professionals across Rwanda.</p>
 </div></div></section>
 
@@ -78,14 +81,14 @@
     <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">auto_stories</span>Our Story</div><h2 class="m3-stitle">Who We Are</h2><p class="m3-ssub">A user-friendly platform that streamlines property management with efficiency, transparency, and innovation.</p></div>
     <div class="row g-4">
         <div class="col-lg-6 md-reveal"><div class="m3-story"><div class="m3-story-img"><img src="{% static 'images/mission.jpg' %}" alt="Our Mission" loading="lazy"></div><div class="m3-story-body"><h3><span class="material-symbols-outlined">target</span>Our Mission</h3><p>To simplify property management and create a seamless experience for everyone involved. We foster trust and transparency in real estate transactions, equipping users with essential tools for success.</p></div></div></div>
-        <div class="col-lg-6 md-reveal"><div class="m3-story"><div class="m3-story-img"><img src="{% static 'images/history.jpg' %}" alt="Our History" loading="lazy"></div><div class="m3-story-body"><h3><span class="material-symbols-outlined">history</span>Our History</h3><p>Founded in 2020, AfriMaster bridges the gap between property management and technology. Our founders recognized the challenges faced by property owners and tenants, creating innovative solutions.</p></div></div></div>
+        <div class="col-lg-6 md-reveal"><div class="m3-story"><div class="m3-story-img"><img src="{% static 'images/history.jpg' %}" alt="Our History" loading="lazy"></div><div class="m3-story-body"><h3><span class="material-symbols-outlined">history</span>Our History</h3><p>Founded in 2020, PropertyHub bridges the gap between property management and technology. Our founders recognized the challenges faced by property owners and tenants, creating innovative solutions.</p></div></div></div>
     </div>
 </div></section>
 
 <section class="m3-sec m3-sec-s"><div class="container">
     <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">route</span>Our Journey</div><h2 class="m3-stitle">Key Milestones</h2></div>
     <div class="m3-tl">
-        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2020</div><div class="m3-tl-content"><h4>Company Founded</h4><p>AfriMaster Properties was born from a vision to transform property management in Rwanda.</p></div></div>
+        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2020</div><div class="m3-tl-content"><h4>Company Founded</h4><p>PropertyHub Ltd was born from a vision to transform property management in Rwanda.</p></div></div>
         <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2021</div><div class="m3-tl-content"><h4>Platform Launch</h4><p>Launched our digital platform with core features for property listing and tenant management.</p></div></div>
         <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2022</div><div class="m3-tl-content"><h4>Rapid Growth</h4><p>Reached 1,000+ properties and became the fastest growing property management platform.</p></div></div>
         <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2023</div><div class="m3-tl-content"><h4>Advanced Analytics</h4><p>Introduced market insights, secure payments, and real-time communication tools.</p></div></div>

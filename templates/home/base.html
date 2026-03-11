@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AfriMaster Properties | {% block title %}{% endblock %}</title>
+    <title>PropertyHub Ltd | {% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -13,7 +13,24 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/m3-theme.css' %}">
     <style>
-    .navbar-m3{background:var(--md-sys-color-surface);box-shadow:var(--md-sys-elevation-2);padding:8px 16px;transition:all 300ms var(--md-sys-motion-easing-standard);position:fixed;top:0;left:0;right:0;z-index:1000}
+    /* ===== Top Info Bar ===== */
+    .top-infobar{position:fixed;top:0;left:0;right:0;height:36px;background:#0d2415;color:rgba(255,255,255,.8);z-index:1001;display:flex;align-items:center;border-bottom:1px solid rgba(40,167,69,.25);font-family:'Inter',sans-serif;font-size:12px;font-weight:400}
+    .top-infobar .container{height:100%}
+    .tib-inner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:16px}
+    .tib-left{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.65);white-space:nowrap}
+    .tib-left .material-symbols-outlined{font-size:14px;color:#66BB6A}
+    .tib-right{display:flex;align-items:center;gap:0}
+    .tib-seg{display:flex;align-items:center;gap:5px;padding:0 12px;color:rgba(255,255,255,.8);border-left:1px solid rgba(255,255,255,.12);white-space:nowrap}
+    .tib-seg:first-child{border-left:none}
+    .tib-seg .material-symbols-outlined{font-size:14px;color:#66BB6A}
+    .tib-weather-icon{font-size:16px;line-height:1}
+    #tib-time{font-variant-numeric:tabular-nums;letter-spacing:.3px;font-weight:500;color:#fff}
+    #tib-date{color:rgba(255,255,255,.75)}
+    #tib-temp{font-weight:500;color:#fff}
+    #tib-cond{color:rgba(255,255,255,.65);max-width:120px;overflow:hidden;text-overflow:ellipsis}
+    @media(max-width:768px){.tib-left{display:none}.tib-seg.tib-cond-seg{display:none}.tib-seg{padding:0 8px}}
+    @media(max-width:480px){.top-infobar{height:32px}.navbar-m3{top:32px!important}}
+    .navbar-m3{background:var(--md-sys-color-surface);box-shadow:var(--md-sys-elevation-2);padding:8px 16px;transition:all 300ms var(--md-sys-motion-easing-standard);position:fixed;top:36px;left:0;right:0;z-index:1000}
     .navbar-m3.scrolled{background:var(--md-sys-color-surface-container);box-shadow:var(--md-sys-elevation-3)}
     .navbar-m3 .navbar-brand{font:500 1.5rem/1.5 'Inter',sans-serif;color:var(--md-sys-color-on-surface)!important;display:flex;align-items:center;gap:10px;text-decoration:none}
     .navbar-m3 .navbar-brand img{border-radius:var(--md-sys-shape-corner-medium);transition:transform 300ms var(--md-sys-motion-easing-emphasized)}
@@ -27,20 +44,28 @@
     .navbar-m3 .navbar-toggler:focus{box-shadow:none}
     .navbar-m3 .navbar-toggler:hover{background:var(--md-sys-color-surface-container-high)}
     .navbar-m3 .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23191c19' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")}
-    .navbar-m3 .dropdown-menu{border:none;border-radius:var(--md-sys-shape-corner-medium);box-shadow:var(--md-sys-elevation-2);background:var(--md-sys-color-surface-container);padding:4px 0;min-width:200px}
+    .navbar-m3 .dropdown-menu{border:none;border-radius:var(--md-sys-shape-corner-medium);box-shadow:var(--md-sys-elevation-2);background:var(--md-sys-color-surface-container);padding:4px 0;min-width:200px;margin-top:4px}
     .navbar-m3 .dropdown-item{font:var(--md-sys-typescale-body-large);padding:12px 16px;color:var(--md-sys-color-on-surface);display:flex;align-items:center;gap:12px;transition:background 150ms}
     .navbar-m3 .dropdown-item:hover{background:var(--md-sys-color-surface-container-high)}
     .navbar-m3 .dropdown-item .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-on-surface-variant)}
-    .btn-m3-login{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:transparent;color:var(--md-sys-color-primary);border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 200ms}
-    .btn-m3-login:hover{background:rgba(40,167,69,.08);color:var(--md-sys-color-primary)}
-    .btn-m3-signup{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;margin-left:8px;transition:all 200ms}
-    .btn-m3-signup:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-primary)}
+    .navbar-m3 .dropdown-item.active-child{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container)}
+    .navbar-m3 .dropdown-item.active-child .material-symbols-outlined{color:var(--md-sys-color-on-primary-container)}
+    .navbar-m3 .nav-link.dropdown-toggle::after{display:none}
+    .navbar-m3 .nav-link.dropdown-toggle .dd-arrow{font-size:18px;transition:transform 200ms ease;margin-left:-4px}
+    .navbar-m3 .nav-item.dropdown.show .dd-arrow{transform:rotate(180deg)}
+    .navbar-m3 .nav-item.dropdown .dropdown-menu{animation:m3DropIn 200ms cubic-bezier(.05,.7,.1,1)}
+    @keyframes m3DropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    @media(min-width:993px){.navbar-m3 .nav-item.dropdown:hover>.dropdown-menu{display:block}}
+    .btn-m3-login{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:transparent;color:#2E7D32;border:1.5px solid #2E7D32;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 200ms}
+    .btn-m3-login:hover{background:rgba(46,125,50,.08);color:#2E7D32}
+    .btn-m3-signup{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:#2E7D32;color:#fff;border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;margin-left:8px;transition:all 200ms;box-shadow:0 2px 8px rgba(46,125,50,.3)}
+    .btn-m3-signup:hover{background:#1B5E20;box-shadow:0 4px 12px rgba(46,125,50,.4);color:#fff}
     .user-chip{display:flex;align-items:center;gap:10px;padding:4px 16px 4px 4px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface);text-decoration:none;transition:background 150ms}
     .user-chip:hover{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface)}
     .user-chip-avatar{width:36px;height:36px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center}
     .user-chip-name{font:var(--md-sys-typescale-label-large)}
-    .main-content{min-height:calc(100vh - 200px)}
-    .footer-m3{background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);color:#fff;padding:48px 0 24px;margin-top:0}
+    .main-content{min-height:calc(100vh - 200px);animation:m3FadeIn 500ms 200ms cubic-bezier(.05,.7,.1,1) both}
+    .footer-m3{background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);color:#fff;padding:48px 0 24px;margin-top:0;position:relative;overflow:hidden}
     .footer-m3 .footer-section h5{font:var(--md-sys-typescale-title-medium);color:#fff;margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
     .footer-m3 .footer-section h5::after{content:none}
     .footer-m3 .footer-section h5 .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-inverse-primary)}
@@ -57,8 +82,8 @@
     .footer-bottom-m3 p{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.5);margin:0}
     @media(max-width:992px){.navbar-m3 .navbar-collapse{padding:16px 0}.navbar-m3 .nav-link{margin:2px 0}.btn-m3-login,.btn-m3-signup{margin:8px 4px 0 0}.user-chip{margin-top:12px}}
     @media(max-width:768px){.navbar-m3 .navbar-brand{font-size:1.25rem}.footer-m3 .footer-section{margin-bottom:24px;text-align:center}.social-icons-m3{justify-content:center}}
-    .fade-in{animation:m3FadeIn 500ms cubic-bezier(.05,.7,.1,1)}
-    @keyframes m3FadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{animation:m3FadeIn 600ms cubic-bezier(.05,.7,.1,1) both}
+    @keyframes m3FadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
     /* ===== BigPipe Page Loader ===== */
     .bigpipe-loader{position:fixed;inset:0;z-index:9999;background:var(--md-sys-color-surface);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease}
@@ -105,16 +130,58 @@
     .md-reveal:nth-child(6){transition-delay:300ms}
 
     /* NProgress-style top bar */
-    .bigpipe-topbar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));z-index:10000;transition:width .4s ease;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(40,167,69,.4)}
+    .bigpipe-topbar{position:fixed;top:36px;left:0;height:3px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));z-index:10000;transition:width .4s ease;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(40,167,69,.4)}
+
+    /* ===== Floating Green Squares ===== */
+    html{scroll-behavior:smooth}
+    .floating-sq{position:absolute;border-radius:4px;opacity:.06;pointer-events:none;z-index:1;will-change:transform}
+    .floating-sq--xs{width:20px;height:20px}.floating-sq--sm{width:40px;height:40px}.floating-sq--md{width:70px;height:70px}
+    .floating-sq--lg{width:110px;height:110px}.floating-sq--xl{width:160px;height:160px}.floating-sq--2xl{width:220px;height:220px}
+    .floating-sq--c1{background:rgba(40,167,69,.12)}.floating-sq--c2{background:rgba(32,201,151,.10)}
+    .floating-sq--c3{background:rgba(109,223,116,.08)}.floating-sq--c4{background:rgba(184,245,176,.06)}
+    .floating-sq--c5{background:rgba(255,255,255,.04)}
+    @keyframes sqFloat{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(15px,-20px) rotate(5deg)}50%{transform:translate(-10px,-35px) rotate(-3deg)}75%{transform:translate(20px,-15px) rotate(7deg)}}
+    @keyframes sqDrift{0%,100%{transform:translate(0,0) rotate(0deg) scale(1)}33%{transform:translate(-25px,-20px) rotate(15deg) scale(1.05)}66%{transform:translate(15px,-40px) rotate(-10deg) scale(.95)}}
+    @keyframes sqPulse{0%,100%{transform:scale(1) rotate(0deg);opacity:.06}50%{transform:scale(1.1) rotate(45deg);opacity:.09}}
+    .floating-sq--a1{animation:sqFloat 8s ease-in-out infinite}.floating-sq--a2{animation:sqDrift 12s ease-in-out infinite}
+    .floating-sq--a3{animation:sqPulse 10s ease-in-out infinite}.floating-sq--a4{animation:sqFloat 15s ease-in-out infinite reverse}
+    .floating-sq--a5{animation:sqDrift 18s ease-in-out infinite}.floating-sq--a6{animation:sqPulse 14s ease-in-out infinite reverse}
+    .floating-sq--d1{animation-delay:0s}.floating-sq--d2{animation-delay:-2s}.floating-sq--d3{animation-delay:-4s}
+    .floating-sq--d4{animation-delay:-6s}.floating-sq--d5{animation-delay:-8s}
+    @media(max-width:768px){.floating-sq--xl,.floating-sq--2xl{display:none}.floating-sq{opacity:.04}}
+    @media(max-width:576px){.floating-sq--lg{display:none}}
+    @media(prefers-reduced-motion:reduce){.floating-sq{animation:none!important}}
+
+    /* Page exit transition */
+    .page-exit{animation:m3FadeOut 250ms cubic-bezier(.3,0,.8,.15) forwards}
+
+    /* Notification icon type colours */
+    .notif-type-icon{font-size:18px;flex-shrink:0}
+    .notif-type-like{color:#E65100}
+    .notif-type-comment{color:#1565C0}
+    .notif-type-repost{color:#6A1B9A}
+    .notif-type-message{color:#2E7D32}
+    .notif-type-system{color:#616161}
+
+    /* Toast notification */
+    .ws-toast{position:fixed;bottom:24px;right:24px;z-index:99999;min-width:280px;max-width:360px;background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.15);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;animation:toastIn .3s ease;border-left:4px solid #2E7D32}
+    .ws-toast-close{margin-left:auto;cursor:pointer;opacity:.6;font-size:18px;line-height:1}
+    @keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    @keyframes m3FadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
+
+    /* ===== Page Background ===== */
+    body{background-color:#F5F7FA}
+    .hero-lattice{background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;background-attachment:fixed}
+    @media(max-width:768px){.hero-lattice{background-attachment:scroll}}
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body data-uid="{% if user.is_authenticated %}{{ user.id }}{% endif %}">
     <!-- BigPipe Page Loader -->
     <div class="bigpipe-loader" id="bigpipeLoader">
         <div class="bigpipe-logo">
-            <img src="{% static 'images/afrimaster.png' %}" alt="AfriMaster">
-            <span>AfriMaster</span>
+            <img src="{% static 'images/PropertyHub.png' %}" alt="PropertyHub">
+            <span>PropertyHub</span>
         </div>
         <div class="bigpipe-spinner"></div>
         <div class="bigpipe-bar"><div class="bigpipe-bar-fill" id="bigpipeBarFill"></div></div>
@@ -122,19 +189,74 @@
     </div>
     <div class="bigpipe-topbar" id="bigpipeTopbar" style="width:0%"></div>
 
+    <!-- Top Info Bar -->
+    <div class="top-infobar" id="topInfobar">
+        <div class="container">
+            <div class="tib-inner">
+                <div class="tib-left">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>Kigali, Rwanda &mdash; PropertyHub Ltd</span>
+                </div>
+                <div class="tib-right">
+                    <div class="tib-seg tib-cond-seg">
+                        <span class="tib-weather-icon" id="tib-icon">🌤</span>
+                        <span id="tib-temp">--°C</span>
+                        <span id="tib-cond">Loading...</span>
+                    </div>
+                    <div class="tib-seg">
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <span id="tib-date">--</span>
+                    </div>
+                    <div class="tib-seg">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <span id="tib-time">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-m3">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
-                <img src="{% static 'images/afrimaster.png' %}" alt="AfriMaster" width="40" height="40">AfriMaster
+                <img src="{% static 'images/PropertyHub.png' %}" alt="PropertyHub" width="40" height="40">PropertyHub
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
+                    <!-- Home -->
                     <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}"><span class="material-symbols-outlined">home</span>Home</a></li>
+
+                    <!-- Properties Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'property_list' or request.resolver_match.url_name == 'sale_listings' or request.resolver_match.url_name == 'sale_property_detail' or request.resolver_match.url_name == 'agent_directory' or request.resolver_match.url_name == 'agent_profile_public' %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined">domain</span>Properties<span class="material-symbols-outlined dd-arrow">expand_more</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'property_list' %}active-child{% endif %}" href="{% url 'property_list' %}"><span class="material-symbols-outlined">apartment</span>For Rent</a></li>
+                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'sale_listings' or request.resolver_match.url_name == 'sale_property_detail' %}active-child{% endif %}" href="{% url 'sale_listings' %}"><span class="material-symbols-outlined">real_estate_agent</span>For Sale</a></li>
+                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'agent_directory' or request.resolver_match.url_name == 'agent_profile_public' %}active-child{% endif %}" href="{% url 'agent_directory' %}"><span class="material-symbols-outlined">badge</span>Agents</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Community Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'feed' or request.resolver_match.url_name == 'post_detail' or request.resolver_match.url_name == 'hashtag_feed' or request.resolver_match.url_name == 'updates' %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined">groups</span>Community<span class="material-symbols-outlined dd-arrow">expand_more</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'feed' or request.resolver_match.url_name == 'post_detail' or request.resolver_match.url_name == 'hashtag_feed' %}active-child{% endif %}" href="{% url 'feed' %}"><span class="material-symbols-outlined">dynamic_feed</span>Feed</a></li>
+                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'updates' %}active-child{% endif %}" href="{% url 'updates' %}"><span class="material-symbols-outlined">campaign</span>Updates</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- About -->
                     <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}"><span class="material-symbols-outlined">info</span>About</a></li>
+
+                    <!-- Contact -->
                     <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}"><span class="material-symbols-outlined">call</span>Contact</a></li>
-                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'updates' %}active{% endif %}" href="{% url 'updates' %}"><span class="material-symbols-outlined">notifications</span>Updates</a></li>
-                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'property_list' %}active{% endif %}" href="{% url 'property_list' %}"><span class="material-symbols-outlined">apartment</span>Properties</a></li>
+
+                    <!-- Dashboard / Register (role-based) -->
                     {% if user.is_authenticated and user.role == "Admin" %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}"><span class="material-symbols-outlined">dashboard</span>Admin</a></li>
                     {% elif user.is_authenticated and user.role == 'Owner' %}
@@ -149,17 +271,61 @@
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'new_tenant' user.id %}"><span class="material-symbols-outlined">person_add</span>Register</a></li>
                         {% endif %}
+                    {% elif user.is_authenticated and user.role == "Agent" %}
+                        {% if agent_user %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'agent_dashboard' user.id %}"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'create_agent_profile' user.id %}"><span class="material-symbols-outlined">person_add</span>Setup Profile</a></li>
+                        {% endif %}
+                    {% elif user.is_authenticated and user.role == "Seller" %}
+                        {% if seller_user %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'seller_dashboard' user.id %}"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'create_seller_profile' user.id %}"><span class="material-symbols-outlined">person_add</span>Setup Profile</a></li>
+                        {% endif %}
                     {% endif %}
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center gap-2">
                     {% if user.is_authenticated %}
+                    <!-- Notification Bell -->
+                    <div class="dropdown" style="position:relative">
+                        <button class="btn p-0 border-0" style="width:40px;height:40px;border-radius:50%;background:var(--md-sys-color-surface-container);display:flex;align-items:center;justify-content:center;position:relative" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined" style="font-size:20px;color:var(--md-sys-color-on-surface-variant)">notifications</span>
+                            {% if unread_notifications_count %}
+                            <span id="pubNotifBadge" style="position:absolute;top:4px;right:4px;width:16px;height:16px;background:#ba1a1a;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ unread_notifications_count }}</span>
+                            {% else %}
+                            <span id="pubNotifBadge" style="position:absolute;top:4px;right:4px;width:16px;height:16px;background:#ba1a1a;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center">0</span>
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width:300px;max-height:360px;overflow-y:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px 0">
+                            {% for n in recent_notifications %}
+                            <li>
+                                <a class="dropdown-item d-flex align-items-start gap-2 {% if not n.is_read %}fw-semibold{% endif %}" href="{% url 'mark_notification_read' n.id %}" style="white-space:normal;padding:10px 14px">
+                                    <span class="material-symbols-outlined notif-type-icon notif-type-{{ n.notification_type }}">
+                                        {% if n.notification_type == 'like' %}favorite{% elif n.notification_type == 'comment' %}chat_bubble{% elif n.notification_type == 'repost' %}repeat{% elif n.notification_type == 'message' %}mail{% else %}info{% endif %}
+                                    </span>
+                                    <div>
+                                        <div style="font-size:.85rem">{{ n.message }}</div>
+                                        <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+                                    </div>
+                                </a>
+                            </li>
+                            {% empty %}
+                            <li><span class="dropdown-item text-muted text-center py-3" style="font-size:.85rem">No notifications yet</span></li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider m-0"></li>
+                            <li><a class="dropdown-item text-center py-2" href="{% url 'notifications' %}" style="color:#2E7D32;font-weight:600;font-size:.875rem">View all</a></li>
+                        </ul>
+                    </div>
+                    <!-- User Chip -->
                     <div class="dropdown">
                         <a class="user-chip dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown">
                             <div class="user-chip-avatar"><span class="material-symbols-outlined" style="font-size:20px">person</span></div>
                             <span class="user-chip-name">{{ user.username }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
-                            <li><a class="dropdown-item" href="#"><span class="material-symbols-outlined">account_circle</span>View Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'feed' %}"><span class="material-symbols-outlined">dynamic_feed</span>Feed</a></li>
+                            <li><a class="dropdown-item" href="{% url 'notifications' %}"><span class="material-symbols-outlined">notifications_active</span>Notifications</a></li>
                             <li><hr class="dropdown-divider" style="margin:4px 0;border-color:var(--md-sys-color-outline-variant)"></li>
                             <li><a class="dropdown-item" href="{% url 'user_logout' %}"><span class="material-symbols-outlined">logout</span>Logout</a></li>
                         </ul>
@@ -174,22 +340,29 @@
     </nav>
     <main class="main-content fade-in">{% block content %}{% endblock %}</main>
     <footer class="footer-m3">
-        <div class="container">
+        <!-- Floating squares -->
+        <div class="floating-sq floating-sq--sm floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:10%;left:5%"></div>
+        <div class="floating-sq floating-sq--md floating-sq--c2 floating-sq--a3 floating-sq--d3" style="top:40%;right:8%"></div>
+        <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a2 floating-sq--d2" style="bottom:15%;left:15%"></div>
+        <div class="floating-sq floating-sq--xs floating-sq--c4 floating-sq--a5 floating-sq--d4" style="top:20%;right:30%"></div>
+        <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a4 floating-sq--d5" style="bottom:-30px;right:-30px;transform:rotate(22deg)"></div>
+        <div class="container" style="position:relative;z-index:2">
             <div class="row">
                 <div class="col-lg-4 col-md-6 footer-section">
                     <h5><span class="material-symbols-outlined">mail</span>Contact Us</h5>
                     <p>For inquiries, please reach out to us:</p>
-                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">email</span> <a href="mailto:support@afrimasterproperties.com" style="color:var(--md-sys-color-primary);text-decoration:none">support@afrimasterproperties.com</a></p>
+                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">email</span> <a href="mailto:support@PropertyHubproperties.com" style="color:var(--md-sys-color-primary);text-decoration:none">support@PropertyHubproperties.com</a></p>
                     <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">phone</span> <a href="tel:+250788123456" style="color:rgba(255,255,255,.7);text-decoration:none">+250 788 123 456</a></p>
                     <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">location_on</span> Kigali, Rwanda</p>
                 </div>
                 <div class="col-lg-4 col-md-6 footer-section">
                     <h5><span class="material-symbols-outlined">link</span>Quick Links</h5>
                     <ul class="footer-links">
-                        <li><a href="{% url 'index' %}#services">What We Do</a></li>
-                        <li><a href="{% url 'index' %}#featured">Featured Properties</a></li>
-                        <li><a href="{% url 'index' %}#testimonials">Testimonials</a></li>
+                        <li><a href="{% url 'property_list' %}">Browse Properties</a></li>
+                        <li><a href="{% url 'index' %}#services">Our Services</a></li>
+                        <li><a href="{% url 'index' %}#featured">Featured Listings</a></li>
                         <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'updates' %}">News & Updates</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                         <li><a href="#">Terms of Service</a></li>
                     </ul>
@@ -206,7 +379,7 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom-m3"><p>&copy; 2026 AfriMaster Properties. All rights reserved.</p></div>
+            <div class="footer-bottom-m3"><p>&copy; 2026 PropertyHub Ltd. All rights reserved.</p></div>
         </div>
     </footer>
 <!--Start of Tawk.to Script-->
@@ -256,7 +429,7 @@ var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
                 var pct=20+Math.floor((loadedCount/totalPagelets)*60);
                 updateProgress(pct);
                 updateStatus();
-                setTimeout(loadNextPagelet,80);
+                setTimeout(loadNextPagelet,350);
             } else {
                 finishLoading();
             }
@@ -323,10 +496,106 @@ var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             a.addEventListener('click',function(){
                 var topbar=document.getElementById('bigpipeTopbar');
                 if(topbar){topbar.style.opacity='1';topbar.style.width='30%';topbar.style.transition='width .6s ease'}
+                var main=document.querySelector('.main-content');
+                if(main) main.classList.add('page-exit');
             });
         }
     });
     </script>
+    <!-- Top Info Bar: Clock + Weather -->
+    <script>
+    (function(){
+        /* ---- Live Clock ---- */
+        var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        function updateClock(){
+            var now=new Date();
+            var d=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+            var h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+            var ampm=h>=12?'PM':'AM';
+            h=h%12||12;
+            var t=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' '+ampm;
+            var ed=document.getElementById('tib-date');
+            var et=document.getElementById('tib-time');
+            if(ed)ed.textContent=d;
+            if(et)et.textContent=t;
+        }
+        updateClock();
+        setInterval(updateClock,1000);
+
+        /* ---- Weather (wttr.in / Open-Meteo fallback) ---- */
+        var weatherIcons={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'🌨',75:'🌨',80:'🌦',81:'🌧',82:'🌧',95:'⛈',96:'⛈',99:'⛈'};
+        var weatherDescs={0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Foggy',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Moderate rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Rain showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+        function setWeather(icon,temp,cond){
+            var ei=document.getElementById('tib-icon');
+            var et=document.getElementById('tib-temp');
+            var ec=document.getElementById('tib-cond');
+            if(ei)ei.textContent=icon;
+            if(et)et.textContent=temp+'°C';
+            if(ec)ec.textContent=cond;
+        }
+        /* Open-Meteo: free, no key, CORS-safe, lat/lon for Kigali */
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-1.9441&longitude=30.0619&current=temperature_2m,weathercode&timezone=Africa%2FNairobi')
+            .then(function(r){return r.json()})
+            .then(function(d){
+                var temp=Math.round(d.current.temperature_2m);
+                var code=d.current.weathercode;
+                var icon=weatherIcons[code]||'🌡';
+                var cond=weatherDescs[code]||'';
+                setWeather(icon,temp,cond);
+            })
+            .catch(function(){setWeather('🌡','--','Kigali')});
+    })();
+    </script>
+    <!-- WebSocket: Real-time notifications for logged-in users -->
+    <script>
+    (function(){
+        var uid = document.body.dataset.uid;
+        if(!uid) return;
+        var wsProto = location.protocol === 'https:' ? 'wss' : 'ws';
+        var ws;
+        function connect(){
+            ws = new WebSocket(wsProto + '://' + location.host + '/ws/notifications/' + uid + '/');
+            ws.onmessage = function(e){
+                var d = JSON.parse(e.data);
+                if(d.type === 'notification'){
+                    updateNotifBadge(d.unread_count);
+                    showToast(d.notification_type, d.message, d.link);
+                } else if(d.type === 'init'){
+                    updateNotifBadge(d.unread_count);
+                }
+            };
+            ws.onclose = function(){ setTimeout(connect, 3000); };
+        }
+        connect();
+
+        function updateNotifBadge(count){
+            var badge = document.getElementById('pubNotifBadge');
+            if(!badge) return;
+            if(count > 0){
+                badge.textContent = count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        var iconMap = {like:'favorite',comment:'chat_bubble',repost:'repeat',message:'mail',system:'info'};
+        var colorMap = {like:'#E65100',comment:'#1565C0',repost:'#6A1B9A',message:'#2E7D32',system:'#616161'};
+
+        function showToast(type, message, link){
+            var t = document.createElement('div');
+            t.className = 'ws-toast';
+            t.innerHTML = '<span class="material-symbols-outlined" style="color:' + (colorMap[type]||'#2E7D32') + ';font-size:22px">' + (iconMap[type]||'notifications') + '</span>'
+                + '<div style="flex:1"><div style="font-size:.9rem;font-weight:600">' + message + '</div>'
+                + (link ? '<a href="' + link + '" style="font-size:.8rem;color:#2E7D32">View</a>' : '') + '</div>'
+                + '<span class="ws-toast-close material-symbols-outlined" onclick="this.parentElement.remove()">close</span>';
+            document.body.appendChild(t);
+            setTimeout(function(){ if(t.parentElement) t.remove(); }, 5000);
+        }
+    })();
+    </script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

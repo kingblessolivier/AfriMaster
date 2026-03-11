@@ -1,25 +1,25 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}Contact Us - AfriMaster Properties{% endblock %}
+{% block title %}Contact Us - PropertyHub Ltd{% endblock %}
 {% block content %}
 <style>
-    .m3-contact-hero{background:linear-gradient(135deg,#1a2a1a 0%,#0d4a25 100%);color:#fff;padding:100px 0 80px;margin-top:76px;text-align:center;position:relative;overflow:hidden}
+    .m3-contact-hero{color:#fff;padding:100px 0 80px;margin-top:112px;text-align:center;position:relative;overflow:hidden}
     .m3-contact-hero::before{content:'';position:absolute;width:400px;height:400px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
     .m3-contact-hero-inner{position:relative;z-index:1}
     .m3-contact-hero h1{font:500 2.8rem/1.2 'Inter',sans-serif;margin-bottom:1rem}
     .m3-contact-hero p{font:var(--md-sys-typescale-body-large);opacity:.8;max-width:600px;margin:0 auto}
-    .m3-contact-sec{padding:80px 0;background:var(--md-sys-color-surface-container)}
+    .m3-contact-sec{padding:80px 0 60px;background:var(--md-sys-color-surface-container)}
     .m3-contact-title{position:relative;margin-bottom:50px;font:var(--md-sys-typescale-headline-medium);color:var(--md-sys-color-on-surface);text-align:center}
     .m3-contact-title::after{content:'';position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);width:60px;height:3px;background:var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-full)}
-    .m3-cc{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:36px 28px;text-align:center;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%;margin-bottom:30px}
+    .m3-cc{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:36px 28px;text-align:center;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%}
     .m3-cc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-cc-icon{width:72px;height:72px;background:var(--md-sys-color-primary-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--md-sys-color-on-primary-container);transition:all 300ms}
+    .m3-cc-icon{width:56px;height:56px;background:var(--md-sys-color-primary-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--md-sys-color-on-primary-container);transition:all 300ms}
     .m3-cc:hover .m3-cc-icon{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);transform:scale(1.1)}
     .m3-cc h3{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:10px}
     .m3-cc p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin-bottom:16px;line-height:1.6}
     .m3-cc a{color:var(--md-sys-color-primary);text-decoration:none;font:var(--md-sys-typescale-label-large);display:inline-flex;align-items:center;gap:4px;transition:all 200ms}
     .m3-cc a:hover{gap:8px}
-    .m3-form-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-1);overflow:hidden;margin-bottom:30px}
+    .m3-form-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-1);overflow:hidden}
     .m3-form-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);padding:20px 28px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
     .m3-form-body{padding:28px}
     .m3-form-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
@@ -42,11 +42,15 @@
     .m3-hours li:last-child{border-bottom:none}.m3-hours .day{font-weight:600;color:var(--md-sys-color-on-surface)}.m3-hours .time{color:var(--md-sys-color-on-surface-variant)}
     .m3-map-sec{padding:80px 0;background:var(--md-sys-color-surface)}
     .m3-map-box{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-1);overflow:hidden;height:400px}
-    .m3-map-placeholder{width:100%;height:100%;background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);display:flex;align-items:center;justify-content:center;color:#fff;font:var(--md-sys-typescale-body-large)}
+    .m3-map-placeholder{width:100%;height:100%;background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;display:flex;align-items:center;justify-content:center;color:#fff;font:var(--md-sys-typescale-body-large)}
     @media(max-width:768px){.m3-contact-hero h1{font-size:2.2rem}.m3-contact-sec{padding:60px 0}}
 </style>
 
-<section class="m3-contact-hero"><div class="container"><div class="m3-contact-hero-inner">
+<section class="m3-contact-hero hero-lattice"><div class="container"><div class="m3-contact-hero-inner">
+    <!-- Floating squares -->
+    <div class="floating-sq floating-sq--sm floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:15%;left:8%"></div>
+    <div class="floating-sq floating-sq--md floating-sq--c2 floating-sq--a3 floating-sq--d3" style="top:50%;right:5%"></div>
+    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a4 floating-sq--d5" style="top:-20px;right:-20px;transform:rotate(15deg)"></div>
     <h1>Contact Us</h1>
     <p>We're here to help! Get in touch with our team for any questions or inquiries about our properties and services.</p>
 </div></div></section>
@@ -54,7 +58,7 @@
 <section class="m3-contact-sec"><div class="container">
     <h2 class="m3-contact-title">Get in Touch</h2>
     <div class="row mb-5">
-        <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">email</span></div><h3>Email Us</h3><p>Send us an email and we'll respond quickly</p><a href="mailto:support@afrimasterproperties.com">support@afrimasterproperties.com <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
+        <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">email</span></div><h3>Email Us</h3><p>Send us an email and we'll respond quickly</p><a href="mailto:support@PropertyHubproperties.com">support@PropertyHubproperties.com <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
         <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">call</span></div><h3>Call Us</h3><p>Speak directly with our support team</p><a href="tel:+250788123456">+250 788 123 456 <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
         <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">location_on</span></div><h3>Visit Us</h3><p>Come visit our office during business hours</p><a href="#map">View Location <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
     </div>
@@ -75,7 +79,7 @@
         </div></div>
         <div class="col-lg-4"><div class="m3-info-card">
             <div class="m3-info-sec"><h4><span class="material-symbols-outlined">info</span>Contact Information</h4>
-                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">email</span></div><div class="m3-info-content"><strong>Email</strong><a href="mailto:support@afrimasterproperties.com">support@afrimasterproperties.com</a></div></div>
+                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">email</span></div><div class="m3-info-content"><strong>Email</strong><a href="mailto:support@PropertyHubproperties.com">support@PropertyHubproperties.com</a></div></div>
                 <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">call</span></div><div class="m3-info-content"><strong>Phone</strong><a href="tel:+250788123456">+250 788 123 456</a></div></div>
                 <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">location_on</span></div><div class="m3-info-content"><strong>Address</strong><span>KG 123 St, Kigali Heights<br>Kigali, Rwanda</span></div></div>
             </div>
