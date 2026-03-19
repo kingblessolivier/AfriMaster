@@ -69,7 +69,8 @@
     /* ===== Quick Path Cards ===== */
     .qp-card{border-radius:20px;overflow:hidden;position:relative;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;transition:all 320ms cubic-bezier(.4,0,.2,1);border:1px solid transparent}
     .qp-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.15)}
-    .qp-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s ease}
+    .qp-card-bg{position:absolute;inset:0;overflow:hidden;transition:transform .5s ease}
+    .qp-card-bg svg{width:100%;height:100%;display:block}
     .qp-card:hover .qp-card-bg{transform:scale(1.06)}
     .qp-card-overlay{position:absolute;inset:0;transition:opacity .3s}
     .qp-buy .qp-card-overlay{background:linear-gradient(160deg,rgba(27,94,32,.55) 0%,rgba(27,94,32,.85) 100%)}
@@ -221,6 +222,7 @@
     /* ===== About Preview ===== */
     .m3-about-preview{padding:80px 0;background:var(--hp-white)}
     .about-preview-img{width:100%;border-radius:16px;object-fit:cover;height:400px;box-shadow:var(--hp-shadow-lg)}
+    .about-illustration{background:#f0faf2;border-radius:20px;padding:24px;box-shadow:var(--hp-shadow-lg);display:flex;align-items:center;justify-content:center;min-height:360px}
     .about-preview-text{padding-left:48px}
     .about-preview-text h2{font:700 2rem/1.2 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:16px;letter-spacing:-.3px}
     .about-preview-text p{font:400 1rem/1.75 'Inter',sans-serif;color:var(--hp-muted);margin-bottom:28px}
@@ -231,8 +233,8 @@
     .about-feature-text span{font:.82rem/1.5 'Inter',sans-serif;color:var(--hp-muted)}
 
     /* ===== CTA ===== */
-    .m3-cta{padding:80px 0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hp-dk) 0%,var(--hp) 100%)}
-    .m3-cta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
+    .m3-cta{padding:80px 0;position:relative;overflow:hidden;background-color:#091a0f;background-image:linear-gradient(rgba(40,167,69,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.07) 1px,transparent 1px);background-size:40px 40px;border-top:1px solid rgba(40,167,69,.2)}
+    .m3-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#28a745 30%,#6fcf97 50%,#28a745 70%,transparent)}
     .m3-cta-inner{position:relative;z-index:2;text-align:center}
     .m3-cta h2{font:700 2.2rem/1.3 'Inter',sans-serif;color:#fff;margin-bottom:12px;letter-spacing:-.3px}
     .m3-cta p{color:rgba(255,255,255,.75);font:400 1rem/1.7 'Inter',sans-serif;max-width:520px;margin:0 auto 36px}
@@ -269,10 +271,134 @@
         .m3-stats-inner{grid-template-columns:1fr 1fr}
         .m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}
     }
+
+    /* ===== Scroll Progress Bar ===== */
+    #hp-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;background:linear-gradient(90deg,#2e7d32,#66bb6a,#43a047);background-size:200%;animation:hp-bar-glow 2.5s linear infinite;pointer-events:none}
+    @keyframes hp-bar-glow{0%{background-position:200% 50%}100%{background-position:-200% 50%}}
+
+    /* ===== Section Wave Connectors ===== */
+    .sec-wave{line-height:0;overflow:hidden;position:relative;z-index:2;padding:0;margin:0}
+    .sec-wave svg{display:block;width:100%}
+
+    /* ===== Reveal Animations ===== */
+    .hp-reveal{opacity:0;transform:translateY(48px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1)}
+    .hp-reveal-l{opacity:0;transform:translateX(-56px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1)}
+    .hp-reveal-r{opacity:0;transform:translateX(56px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1)}
+    .hp-reveal-s{opacity:0;transform:scale(.88);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+    .hp-reveal.hp-in,.hp-reveal-l.hp-in,.hp-reveal-r.hp-in,.hp-reveal-s.hp-in{opacity:1;transform:none}
+    .hp-d1{transition-delay:.1s}.hp-d2{transition-delay:.2s}.hp-d3{transition-delay:.32s}.hp-d4{transition-delay:.44s}.hp-d5{transition-delay:.56s}.hp-d6{transition-delay:.68s}
+
+    /* ===== Floating Particles ===== */
+    .hp-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+    .hp-p{position:absolute;border-radius:50%;animation:hp-pfloat var(--d,7s) var(--dl,0s) ease-in-out infinite alternate}
+    @keyframes hp-pfloat{from{transform:translateY(0) scale(1);opacity:.15}to{transform:translateY(-36px) scale(1.25);opacity:.5}}
+
+    /* ===== Step Number Pulse ===== */
+    .hiw-num{animation:hp-num-pulse 3.5s ease-in-out infinite}
+    @keyframes hp-num-pulse{0%,100%{box-shadow:0 8px 24px rgba(46,125,50,.3)}55%{box-shadow:0 8px 32px rgba(46,125,50,.55),0 0 0 10px rgba(46,125,50,.08)}}
+    .hiw-step:hover .hiw-num{animation:none;transform:scale(1.08);transition:transform .2s}
+
+    /* ===== Animated Connector Dots (How It Works) ===== */
+    .hiw-step:not(:last-child)::after{content:'';position:absolute;top:36px;right:-20px;width:40px;height:4px;background:repeating-linear-gradient(90deg,var(--hp-lt) 0,var(--hp-lt) 6px,transparent 6px,transparent 12px);background-size:200% 100%;animation:hp-dash-flow 1.4s linear infinite;display:block;border-radius:2px}
+    @keyframes hp-dash-flow{from{background-position:0% 0}to{background-position:200% 0}}
+    .hiw-connector-dots{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:32px}
+    .hiw-connector-dots span{width:7px;height:7px;border-radius:50%;background:var(--hp-lt);display:block;animation:hp-dot-pulse 1.8s ease-in-out infinite}
+    .hiw-connector-dots span:nth-child(2){animation-delay:.3s}
+    .hiw-connector-dots span:nth-child(3){animation-delay:.6s}
+    @keyframes hp-dot-pulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+
+    /* ===== Glow Orbs (CTA) ===== */
+    .hp-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);z-index:0;animation:hp-orb-breathe var(--ob-d,8s) ease-in-out infinite alternate}
+    @keyframes hp-orb-breathe{from{transform:scale(1);opacity:.35}to{transform:scale(1.25);opacity:.65}}
+
+    /* ===== Section tag animation on reveal ===== */
+    @keyframes hp-tag-pop{from{opacity:0;transform:translateY(-10px) scale(.92)}to{opacity:1;transform:none}}
+    .hp-in .m3-tag{animation:hp-tag-pop .5s .05s cubic-bezier(.4,0,.2,1) both}
+
+    /* ===== Stat icon subtle idle animation ===== */
+    .m3-stat-icon{animation:hp-icon-idle 3.2s ease-in-out infinite}
+    @keyframes hp-icon-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    .m3-stat:hover .m3-stat-icon{animation:none}
+
+    /* ===== About illustration animated ring ===== */
+    .about-illustration{position:relative}
+    .about-illustration::before{content:'';position:absolute;inset:-3px;border-radius:23px;background:conic-gradient(from 0deg,transparent 0%,rgba(67,160,71,.6) 30%,rgba(165,214,167,.9) 50%,rgba(67,160,71,.6) 70%,transparent 100%);z-index:-1;animation:hp-ring-spin 6s linear infinite}
+    @keyframes hp-ring-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+    /* ===== Hero Entrance Animations ===== */
+    @keyframes hp-hero-up{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+    @keyframes hp-hero-right{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+    @keyframes hp-hero-scale{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+    .m3-hero-badge{animation:hp-hero-up .7s .15s cubic-bezier(.4,0,.2,1) both}
+    .m3-hero-title{animation:hp-hero-up .8s .3s cubic-bezier(.4,0,.2,1) both}
+    .m3-hero-sub{animation:hp-hero-up .7s .5s cubic-bezier(.4,0,.2,1) both}
+    .m3-hero-search{animation:hp-hero-up .7s .65s cubic-bezier(.4,0,.2,1) both}
+    .m3-hero-btns{animation:hp-hero-up .7s .8s cubic-bezier(.4,0,.2,1) both}
+    .m3-hv{animation:hp-hero-right .9s .4s cubic-bezier(.4,0,.2,1) both}
+    .m3-house-stats{animation:hp-hero-scale .7s 1s cubic-bezier(.4,0,.2,1) both}
+
+    /* ===== Stats strip entrance ===== */
+    .m3-stats-inner{animation:hp-hero-up .8s .2s cubic-bezier(.4,0,.2,1) both}
+
+    /* ===== Universal section reveal base ===== */
+    .hp-auto-reveal{opacity:0;transform:translateY(36px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+    .hp-auto-reveal.hp-in{opacity:1;transform:none}
+    .hp-auto-reveal[data-hp-delay="1"]{transition-delay:.1s}
+    .hp-auto-reveal[data-hp-delay="2"]{transition-delay:.18s}
+    .hp-auto-reveal[data-hp-delay="3"]{transition-delay:.28s}
+    .hp-auto-reveal[data-hp-delay="4"]{transition-delay:.38s}
+    .hp-auto-reveal[data-hp-delay="5"]{transition-delay:.48s}
+    .hp-auto-reveal[data-hp-delay="6"]{transition-delay:.58s}
+    .hp-auto-reveal[data-hp-delay="7"]{transition-delay:.68s}
+    .hp-auto-reveal[data-hp-delay="8"]{transition-delay:.78s}
+
+    /* ===== About feature items stagger ===== */
+    .about-feature{opacity:0;transform:translateX(-30px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+    .about-feature.hp-in{opacity:1;transform:none}
+    .about-feature:nth-child(1){transition-delay:.15s}
+    .about-feature:nth-child(2){transition-delay:.3s}
+    .about-feature:nth-child(3){transition-delay:.45s}
+
+    /* ===== CTA buttons stagger ===== */
+    .m3-cta-btns a{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1),box-shadow 250ms,background 250ms}
+    .hp-in .m3-cta-btns a:nth-child(1){opacity:1;transform:none;transition-delay:.3s}
+    .hp-in .m3-cta-btns a:nth-child(2){opacity:1;transform:none;transition-delay:.45s}
+
+    /* ===== Animated gradient text shimmer ===== */
+    .m3-gradient{background-size:200% auto;animation:hp-text-shimmer 4s linear infinite}
+    @keyframes hp-text-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+
+    /* ===== Testimonial card tilt on hover ===== */
+    .m3-tc{transition:all .28s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1)}
+    .m3-tc:hover{transform:translateY(-6px) rotate(-0.5deg);box-shadow:var(--hp-shadow-lg)}
+
+    /* ===== Property card shimmer on hover ===== */
+    .m3-pc,.m3-sp{position:relative;overflow:hidden}
+    .m3-pc::after,.m3-sp::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.12) 50%,transparent 60%);transform:translateX(-100%);transition:transform .6s ease;pointer-events:none;z-index:10}
+    .m3-pc:hover::after,.m3-sp:hover::after{transform:translateX(100%)}
+
+    /* ===== Service card icon bounce on hover ===== */
+    .m3-svc:hover .m3-svc-icon{animation:hp-icon-bounce .4s cubic-bezier(.4,0,.2,1)}
+    @keyframes hp-icon-bounce{0%{transform:scale(1)}40%{transform:scale(1.22)}70%{transform:scale(.95)}100%{transform:scale(1)}}
+
+    /* ===== Wave connector subtle parallax tint ===== */
+    .sec-wave{position:relative;z-index:3}
 </style>
+
+<div id="hp-progress"></div>
 
 <!-- ===== Hero ===== -->
 <section class="m3-hero hero-lattice">
+    <div class="hp-particles">
+        <div class="hp-p" style="width:10px;height:10px;background:rgba(165,214,167,.6);top:15%;left:12%;--d:6s;--dl:0s"></div>
+        <div class="hp-p" style="width:6px;height:6px;background:rgba(255,255,255,.5);top:35%;left:25%;--d:8s;--dl:1.2s"></div>
+        <div class="hp-p" style="width:14px;height:14px;background:rgba(165,214,167,.35);top:60%;left:8%;--d:7s;--dl:0.5s"></div>
+        <div class="hp-p" style="width:8px;height:8px;background:rgba(255,255,255,.4);top:22%;right:18%;--d:9s;--dl:2s"></div>
+        <div class="hp-p" style="width:12px;height:12px;background:rgba(165,214,167,.5);top:70%;right:22%;--d:6.5s;--dl:0.8s"></div>
+        <div class="hp-p" style="width:5px;height:5px;background:rgba(255,255,255,.6);top:50%;right:10%;--d:7.5s;--dl:1.5s"></div>
+        <div class="hp-p" style="width:9px;height:9px;background:rgba(165,214,167,.45);top:80%;left:40%;--d:8.5s;--dl:3s"></div>
+        <div class="hp-p" style="width:7px;height:7px;background:rgba(255,255,255,.35);top:10%;left:55%;--d:5.5s;--dl:0.3s"></div>
+    </div>
     <div class="floating-sq floating-sq--lg floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:10%;left:6%;transform:rotate(12deg)"></div>
     <div class="floating-sq floating-sq--xl floating-sq--c3 floating-sq--a3 floating-sq--d3" style="top:18%;right:6%"></div>
     <div class="floating-sq floating-sq--2xl floating-sq--c5 floating-sq--a6 floating-sq--d1" style="bottom:-40px;right:-40px;transform:rotate(25deg)"></div>
@@ -332,7 +458,85 @@
         <div class="row g-4">
             <div class="col-lg-4 col-md-12">
                 <a href="{% url 'sale_listings' %}" class="qp-card qp-buy">
-                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p1.jpg' %}&quot;)"></div>
+                    <div class="qp-card-bg">
+                        <!-- Buy a Property Illustration -->
+                        <svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="buy-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#1b5e20"/>
+                                    <stop offset="100%" style="stop-color:#2e7d32"/>
+                                </linearGradient>
+                                <linearGradient id="buy-g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#43a047"/>
+                                    <stop offset="100%" style="stop-color:#2e7d32"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="420" height="260" fill="url(#buy-bg)"/>
+                            <!-- dot grid -->
+                            <pattern id="buy-dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.06)"/>
+                            </pattern>
+                            <rect width="420" height="260" fill="url(#buy-dots)"/>
+
+                            <!-- ground -->
+                            <rect x="0" y="210" width="420" height="50" fill="rgba(0,0,0,0.2)"/>
+                            <!-- grass strip -->
+                            <rect x="0" y="207" width="420" height="6" fill="#388e3c" opacity=".7"/>
+
+                            <!-- main house body -->
+                            <rect x="110" y="130" width="160" height="100" rx="4" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                            <!-- roof -->
+                            <polygon points="96,130 324,130 190,62" fill="rgba(255,255,255,0.22)"/>
+                            <!-- roof ridge -->
+                            <line x1="190" y1="62" x2="296" y2="130" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+                            <!-- door -->
+                            <rect x="173" y="178" width="34" height="52" rx="4" fill="rgba(255,255,255,0.25)"/>
+                            <circle cx="202" cy="204" r="3" fill="rgba(255,255,255,0.7)"/>
+
+                            <!-- windows -->
+                            <rect x="125" y="148" width="36" height="30" rx="3" fill="rgba(255,255,255,0.25)"/>
+                            <line x1="143" y1="148" x2="143" y2="178" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <line x1="125" y1="163" x2="161" y2="163" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <rect x="219" y="148" width="36" height="30" rx="3" fill="rgba(255,255,255,0.25)"/>
+                            <line x1="237" y1="148" x2="237" y2="178" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <line x1="219" y1="163" x2="255" y2="163" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+
+                            <!-- chimney -->
+                            <rect x="244" y="72" width="18" height="40" rx="2" fill="rgba(255,255,255,0.18)"/>
+                            <ellipse cx="253" cy="70" rx="12" ry="5" fill="rgba(255,255,255,0.12)"/>
+
+                            <!-- SOLD sign -->
+                            <rect x="300" y="155" width="62" height="36" rx="6" fill="#fff" opacity=".95"/>
+                            <text x="331" y="172" fill="#1b5e20" font-family="Inter,sans-serif" font-size="11" font-weight="800" text-anchor="middle">SOLD</text>
+                            <text x="331" y="183" fill="#388e3c" font-family="Inter,sans-serif" font-size="7" font-weight="600" text-anchor="middle">PropertyHub</text>
+                            <line x1="331" y1="191" x2="331" y2="212" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+
+                            <!-- key -->
+                            <circle cx="54" cy="148" r="16" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="3"/>
+                            <circle cx="54" cy="148" r="7" fill="rgba(255,255,255,0.2)"/>
+                            <line x1="67" y1="158" x2="86" y2="177" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="80" y1="172" x2="87" y2="165" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="83" y1="175" x2="90" y2="168" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round"/>
+
+                            <!-- location pin -->
+                            <ellipse cx="190" cy="54" rx="12" ry="16" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="190" cy="50" r="6" fill="url(#buy-g2)"/>
+                            <ellipse cx="190" cy="71" rx="6" ry="3" fill="rgba(0,0,0,0.2)"/>
+
+                            <!-- trees -->
+                            <circle cx="62" cy="198" r="18" fill="rgba(56,142,60,0.55)"/>
+                            <circle cx="62" cy="192" r="14" fill="rgba(56,142,60,0.7)"/>
+                            <rect x="59" y="206" width="6" height="10" fill="rgba(255,255,255,0.2)"/>
+                            <circle cx="355" cy="196" r="16" fill="rgba(56,142,60,0.55)"/>
+                            <circle cx="355" cy="190" r="12" fill="rgba(56,142,60,0.7)"/>
+                            <rect x="352" y="202" width="6" height="12" fill="rgba(255,255,255,0.2)"/>
+
+                            <!-- stars -->
+                            <text x="380" y="50" fill="rgba(255,255,255,0.3)" font-size="20">✦</text>
+                            <text x="20" y="80" fill="rgba(255,255,255,0.2)" font-size="14">✦</text>
+                        </svg>
+                    </div>
                     <div class="qp-card-overlay"></div>
                     <div class="qp-content">
                         <div class="qp-icon"><span class="material-symbols-outlined">home</span></div>
@@ -344,7 +548,97 @@
             </div>
             <div class="col-lg-4 col-md-6">
                 <a href="{% url 'property_list' %}" class="qp-card qp-rent">
-                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p2.webp' %}&quot;)"></div>
+                    <div class="qp-card-bg">
+                        <!-- Rent a Property Illustration -->
+                        <svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="rent-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#0d47a1"/>
+                                    <stop offset="100%" style="stop-color:#1565c0"/>
+                                </linearGradient>
+                                <linearGradient id="rent-g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#42a5f5"/>
+                                    <stop offset="100%" style="stop-color:#1976d2"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="420" height="260" fill="url(#rent-bg)"/>
+                            <pattern id="rent-dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.06)"/>
+                            </pattern>
+                            <rect width="420" height="260" fill="url(#rent-dots)"/>
+
+                            <!-- ground -->
+                            <rect x="0" y="210" width="420" height="50" fill="rgba(0,0,0,0.2)"/>
+                            <rect x="0" y="208" width="420" height="5" fill="#1976d2" opacity=".6"/>
+
+                            <!-- apartment block -->
+                            <rect x="115" y="80" width="190" height="140" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <!-- roof parapet -->
+                            <rect x="109" y="74" width="202" height="12" rx="3" fill="rgba(255,255,255,0.18)"/>
+                            <!-- roof details -->
+                            <rect x="130" y="64" width="30" height="14" rx="2" fill="rgba(255,255,255,0.12)"/>
+                            <rect x="200" y="58" width="20" height="20" rx="2" fill="rgba(255,255,255,0.12)"/>
+                            <rect x="270" y="64" width="30" height="14" rx="2" fill="rgba(255,255,255,0.12)"/>
+
+                            <!-- windows grid — row 1 -->
+                            <rect x="130" y="94" width="28" height="22" rx="3" fill="rgba(255,255,255,0.28)"/>
+                            <rect x="168" y="94" width="28" height="22" rx="3" fill="rgba(255,255,255,0.18)"/>
+                            <rect x="206" y="94" width="28" height="22" rx="3" fill="rgba(255,255,255,0.28)"/>
+                            <rect x="244" y="94" width="28" height="22" rx="3" fill="rgba(255,200,0,0.4)"/>
+                            <rect x="282" y="94" width="28" height="22" rx="3" fill="rgba(255,255,255,0.18)"/>
+                            <!-- row 2 -->
+                            <rect x="130" y="126" width="28" height="22" rx="3" fill="rgba(255,255,255,0.18)"/>
+                            <rect x="168" y="126" width="28" height="22" rx="3" fill="rgba(255,200,0,0.4)"/>
+                            <rect x="206" y="126" width="28" height="22" rx="3" fill="rgba(255,255,255,0.28)"/>
+                            <rect x="244" y="126" width="28" height="22" rx="3" fill="rgba(255,255,255,0.18)"/>
+                            <rect x="282" y="126" width="28" height="22" rx="3" fill="rgba(255,255,255,0.28)"/>
+                            <!-- door -->
+                            <rect x="191" y="172" width="38" height="48" rx="4" fill="rgba(255,255,255,0.22)"/>
+                            <circle cx="225" cy="196" r="3" fill="rgba(255,255,255,0.7)"/>
+                            <!-- door arch -->
+                            <path d="M191,172 Q210,156 229,172" fill="rgba(255,255,255,0.12)"/>
+
+                            <!-- Available badge -->
+                            <rect x="296" y="130" width="82" height="30" rx="8" fill="rgba(255,255,255,0.95)"/>
+                            <circle cx="310" cy="145" r="5" fill="#43a047"/>
+                            <text x="317" y="141" fill="#0d47a1" font-family="Inter,sans-serif" font-size="8" font-weight="700">Available</text>
+                            <text x="317" y="152" fill="#1565c0" font-family="Inter,sans-serif" font-size="8">3 units</text>
+
+                            <!-- contract / document -->
+                            <rect x="34" y="110" width="60" height="78" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                            <line x1="44" y1="128" x2="84" y2="128" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                            <line x1="44" y1="138" x2="84" y2="138" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+                            <line x1="44" y1="148" x2="78" y2="148" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+                            <line x1="44" y1="158" x2="72" y2="158" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+                            <!-- check mark -->
+                            <circle cx="64" cy="174" r="10" fill="rgba(67,160,71,0.8)"/>
+                            <polyline points="58,174 62,178 70,168" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                            <!-- calendar -->
+                            <rect x="322" y="50" width="56" height="54" rx="6" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <rect x="322" y="50" width="56" height="16" rx="6" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="322" y="60" width="56" height="6" fill="rgba(255,255,255,0.2)"/>
+                            <text x="350" y="62" fill="#fff" font-family="Inter,sans-serif" font-size="8" font-weight="700" text-anchor="middle">RENT</text>
+                            <!-- calendar grid -->
+                            <rect x="328" y="72" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="340" y="72" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="352" y="72" width="8" height="8" rx="1" fill="rgba(67,160,71,0.7)"/>
+                            <rect x="364" y="72" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="328" y="84" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="340" y="84" width="8" height="8" rx="1" fill="rgba(67,160,71,0.7)"/>
+                            <rect x="352" y="84" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+                            <rect x="364" y="84" width="8" height="8" rx="1" fill="rgba(255,255,255,0.2)"/>
+
+                            <!-- people walking -->
+                            <circle cx="64" cy="205" r="9" fill="rgba(255,255,255,0.2)"/>
+                            <text x="64" y="210" fill="#fff" font-family="Inter" font-size="11" text-anchor="middle">👤</text>
+                            <circle cx="86" cy="205" r="9" fill="rgba(255,255,255,0.2)"/>
+                            <text x="86" y="210" fill="#fff" font-family="Inter" font-size="11" text-anchor="middle">👤</text>
+
+                            <text x="380" y="44" fill="rgba(255,255,255,0.25)" font-size="18">✦</text>
+                            <text x="18" y="55" fill="rgba(255,255,255,0.2)" font-size="14">✦</text>
+                        </svg>
+                    </div>
                     <div class="qp-card-overlay"></div>
                     <div class="qp-content">
                         <div class="qp-icon"><span class="material-symbols-outlined">apartment</span></div>
@@ -356,7 +650,91 @@
             </div>
             <div class="col-lg-4 col-md-6">
                 <a href="{% url 'register' %}" class="qp-card qp-sell">
-                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p3.jpeg' %}&quot;)"></div>
+                    <div class="qp-card-bg">
+                        <!-- Sell or List Illustration -->
+                        <svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="sell-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#e65100"/>
+                                    <stop offset="100%" style="stop-color:#bf360c"/>
+                                </linearGradient>
+                                <linearGradient id="sell-g2" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#e65100"/>
+                                    <stop offset="100%" style="stop-color:#ff8f00"/>
+                                </linearGradient>
+                                <linearGradient id="sell-chart" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" style="stop-color:rgba(255,143,0,0.3)"/>
+                                    <stop offset="100%" style="stop-color:rgba(255,143,0,0.0)"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="420" height="260" fill="url(#sell-bg)"/>
+                            <pattern id="sell-dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.06)"/>
+                            </pattern>
+                            <rect width="420" height="260" fill="url(#sell-dots)"/>
+
+                            <!-- ground -->
+                            <rect x="0" y="210" width="420" height="50" fill="rgba(0,0,0,0.2)"/>
+                            <rect x="0" y="208" width="420" height="5" fill="#e65100" opacity=".5"/>
+
+                            <!-- house outline -->
+                            <rect x="60" y="128" width="120" height="92" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+                            <polygon points="44,128 196,128 120,68" fill="rgba(255,255,255,0.18)"/>
+                            <!-- windows -->
+                            <rect x="76" y="144" width="30" height="26" rx="3" fill="rgba(255,255,255,0.22)"/>
+                            <line x1="91" y1="144" x2="91" y2="170" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <line x1="76" y1="157" x2="106" y2="157" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <rect x="134" y="144" width="30" height="26" rx="3" fill="rgba(255,255,255,0.22)"/>
+                            <line x1="149" y1="144" x2="149" y2="170" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <line x1="134" y1="157" x2="164" y2="157" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <!-- door -->
+                            <rect x="102" y="180" width="36" height="40" rx="3" fill="rgba(255,255,255,0.2)"/>
+                            <circle cx="133" cy="200" r="3" fill="rgba(255,255,255,0.7)"/>
+
+                            <!-- price tag -->
+                            <path d="M218,60 L280,60 L300,80 L280,100 L218,100 Z" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="226" cy="80" r="5" fill="#e65100"/>
+                            <text x="258" y="76" fill="#e65100" font-family="Inter,sans-serif" font-size="10" font-weight="800" text-anchor="middle">RWF</text>
+                            <text x="258" y="90" fill="#bf360c" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">250,000</text>
+                            <!-- tag string -->
+                            <line x1="218" y1="80" x2="200" y2="80" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+                            <!-- growth chart -->
+                            <rect x="258" y="110" width="130" height="90" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                            <!-- chart axes -->
+                            <line x1="272" y1="190" x2="376" y2="190" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <line x1="272" y1="120" x2="272" y2="190" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <!-- bars -->
+                            <rect x="280" y="165" width="14" height="25" rx="2" fill="rgba(255,143,0,0.4)"/>
+                            <rect x="300" y="152" width="14" height="38" rx="2" fill="rgba(255,143,0,0.5)"/>
+                            <rect x="320" y="138" width="14" height="52" rx="2" fill="rgba(255,143,0,0.65)"/>
+                            <rect x="340" y="126" width="14" height="64" rx="2" fill="rgba(255,143,0,0.8)"/>
+                            <rect x="360" y="118" width="14" height="72" rx="2" fill="url(#sell-g2)"/>
+                            <!-- trend line -->
+                            <polyline points="287,162 307,150 327,136 347,124 367,116" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="367" cy="116" r="4" fill="#fff"/>
+                            <!-- up arrow -->
+                            <text x="340" y="122" fill="#fff" font-family="Inter,sans-serif" font-size="10" font-weight="700">▲</text>
+
+                            <!-- chart label -->
+                            <text x="322" y="118" fill="rgba(255,255,255,0.6)" font-family="Inter,sans-serif" font-size="8" text-anchor="middle">Property Value</text>
+
+                            <!-- handshake / listing confirm -->
+                            <rect x="34" y="148" width="58" height="42" rx="8" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <text x="63" y="166" fill="rgba(255,255,255,0.9)" font-family="Inter" font-size="18" text-anchor="middle">🤝</text>
+                            <text x="63" y="183" fill="rgba(255,255,255,0.5)" font-family="Inter,sans-serif" font-size="7" font-weight="600" text-anchor="middle">DEAL DONE</text>
+
+                            <!-- plant / growth symbol -->
+                            <line x1="388" y1="210" x2="388" y2="170" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                            <path d="M388,185 Q375,175 370,160" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                            <ellipse cx="367" cy="158" rx="10" ry="7" fill="rgba(255,255,255,0.18)" transform="rotate(-30,367,158)"/>
+                            <path d="M388,195 Q400,185 404,170" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                            <ellipse cx="405" cy="168" rx="10" ry="7" fill="rgba(255,255,255,0.18)" transform="rotate(20,405,168)"/>
+
+                            <text x="14" y="50" fill="rgba(255,255,255,0.2)" font-size="18">✦</text>
+                            <text x="400" y="50" fill="rgba(255,255,255,0.2)" font-size="14">✦</text>
+                        </svg>
+                    </div>
                     <div class="qp-card-overlay"></div>
                     <div class="qp-content">
                         <div class="qp-icon"><span class="material-symbols-outlined">sell</span></div>
@@ -369,6 +747,9 @@
         </div>
     </div>
 </section>
+
+<!-- wave: white → gray -->
+<div class="sec-wave" style="background:#fff"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z" fill="#F5F7FA"/></svg></div>
 
 <!-- ===== How It Works ===== -->
 <section class="m3-sec m3-sec-g">
@@ -406,6 +787,9 @@
         </div>
     </div>
 </section>
+
+<!-- wave: gray → white -->
+<div class="sec-wave" style="background:#F5F7FA"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,30 C240,0 480,60 720,30 C960,0 1200,60 1440,30 L1440,60 L0,60 Z" fill="#fff"/></svg></div>
 
 <!-- ===== Browse by Property Type ===== -->
 <section class="m3-sec m3-sec-w" style="padding-bottom:60px">
@@ -462,6 +846,9 @@
     </div>
 </section>
 
+<!-- wave: white → gray -->
+<div class="sec-wave" style="background:#fff"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#F5F7FA"/></svg></div>
+
 <!-- ===== Featured Properties for Rent ===== -->
 <div class="pagelet" data-pagelet="featured">
 <section id="featured" class="m3-sec m3-sec-g"><div class="container">
@@ -504,6 +891,9 @@
     <div class="text-center mt-5"><a href="{% url 'property_list' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">search</span>View All Rentals</a></div>
 </div></section>
 </div>
+
+<!-- wave: gray → white -->
+<div class="sec-wave" style="background:#F5F7FA"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,0 C320,60 640,0 960,60 C1120,80 1300,30 1440,0 L1440,60 L0,60 Z" fill="#fff"/></svg></div>
 
 <!-- ===== Properties For Sale ===== -->
 <div class="pagelet" data-pagelet="for-sale">
@@ -559,6 +949,9 @@
 </div></section>
 </div>
 
+<!-- wave: white → gray -->
+<div class="sec-wave" style="background:#fff"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z" fill="#F5F7FA"/></svg></div>
+
 <!-- ===== Why Choose Us ===== -->
 <div class="pagelet" data-pagelet="services">
 <section id="services" class="m3-sec m3-sec-g"><div class="container">
@@ -578,17 +971,9 @@
 </div></section>
 </div>
 
-<!-- ===== Trust Strip ===== -->
-<div class="trust-strip">
-    <div class="container">
-        <div class="row g-3 justify-content-center text-center">
-            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">shield_lock</span><span>100% Secure Transactions</span></div></div>
-            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">verified</span><span>All Properties Verified</span></div></div>
-            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">star</span><span>4.8 / 5 Customer Rating</span></div></div>
-            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">support_agent</span><span>24/7 Live Support</span></div></div>
-        </div>
-    </div>
-</div>
+
+<!-- wave: gray → white -->
+<div class="sec-wave" style="background:#F5F7FA"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,30 C240,0 480,60 720,30 C960,0 1200,60 1440,30 L1440,60 L0,60 Z" fill="#fff"/></svg></div>
 
 <!-- ===== Our Agents ===== -->
 <div class="pagelet" data-pagelet="agents">
@@ -643,6 +1028,9 @@
 </div></section>
 </div>
 
+<!-- wave: white → gray -->
+<div class="sec-wave" style="background:#fff"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#F5F7FA"/></svg></div>
+
 <!-- ===== Testimonials ===== -->
 <div class="pagelet" data-pagelet="testimonials">
 <section id="testimonials" class="m3-sec m3-sec-g"><div class="container">
@@ -678,14 +1066,92 @@
 </div></section>
 </div>
 
+<!-- wave: gray → white -->
+<div class="sec-wave" style="background:#F5F7FA"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:50px"><path d="M0,0 C320,60 640,0 960,60 C1120,80 1300,30 1440,0 L1440,60 L0,60 Z" fill="#fff"/></svg></div>
+
 <!-- ===== About Preview ===== -->
 <div class="pagelet" data-pagelet="about-preview">
 <section class="m3-about-preview"><div class="container">
     <div class="row align-items-center">
-        <div class="col-lg-6 md-reveal">
-            <img src="{% static 'images/mission.jpg' %}" class="about-preview-img" alt="About PropertyHub">
+        <div class="col-lg-6 hp-reveal-l">
+            <div class="about-illustration">
+                <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;display:block;margin:auto;">
+                  <!-- Sky background -->
+                  <rect width="480" height="400" rx="20" fill="#f0faf2"/>
+                  <!-- Sun -->
+                  <circle cx="400" cy="60" r="36" fill="#ffe082" opacity=".85"/>
+                  <circle cx="400" cy="60" r="26" fill="#ffd740"/>
+                  <!-- Clouds -->
+                  <ellipse cx="80" cy="70" rx="40" ry="18" fill="#fff" opacity=".9"/>
+                  <ellipse cx="110" cy="60" rx="30" ry="16" fill="#fff" opacity=".9"/>
+                  <ellipse cx="55" cy="65" rx="25" ry="14" fill="#fff" opacity=".9"/>
+                  <ellipse cx="290" cy="55" rx="35" ry="15" fill="#fff" opacity=".8"/>
+                  <ellipse cx="316" cy="46" rx="26" ry="13" fill="#fff" opacity=".8"/>
+                  <!-- Ground -->
+                  <rect x="0" y="310" width="480" height="90" rx="0" fill="#c8e6c9"/>
+                  <rect x="0" y="330" width="480" height="70" fill="#a5d6a7"/>
+                  <!-- Path/road -->
+                  <rect x="200" y="295" width="80" height="105" rx="4" fill="#e0e0e0"/>
+                  <rect x="235" y="295" width="10" height="105" fill="#bdbdbd" opacity=".5"/>
+                  <!-- Main House -->
+                  <rect x="100" y="200" width="180" height="130" rx="6" fill="#fff" stroke="#43a047" stroke-width="2"/>
+                  <!-- Roof -->
+                  <polygon points="80,205 190,120 300,205" fill="#2e7d32"/>
+                  <polygon points="95,205 190,128 285,205" fill="#388e3c"/>
+                  <!-- Chimney -->
+                  <rect x="240" y="130" width="18" height="40" rx="3" fill="#5d4037"/>
+                  <rect x="237" y="126" width="24" height="8" rx="2" fill="#4e342e"/>
+                  <!-- Door -->
+                  <rect x="170" y="268" width="40" height="62" rx="5" fill="#1b5e20"/>
+                  <circle cx="205" cy="300" r="4" fill="#ffd740"/>
+                  <!-- Windows main house -->
+                  <rect x="118" y="230" width="44" height="36" rx="4" fill="#b3e5fc" stroke="#43a047" stroke-width="1.5"/>
+                  <line x1="140" y1="230" x2="140" y2="266" stroke="#43a047" stroke-width="1"/>
+                  <line x1="118" y1="248" x2="162" y2="248" stroke="#43a047" stroke-width="1"/>
+                  <rect x="218" y="230" width="44" height="36" rx="4" fill="#b3e5fc" stroke="#43a047" stroke-width="1.5"/>
+                  <line x1="240" y1="230" x2="240" y2="266" stroke="#43a047" stroke-width="1"/>
+                  <line x1="218" y1="248" x2="262" y2="248" stroke="#43a047" stroke-width="1"/>
+                  <!-- Small house right -->
+                  <rect x="320" y="240" width="110" height="90" rx="5" fill="#fff" stroke="#66bb6a" stroke-width="1.5"/>
+                  <polygon points="308,245 375,185 442,245" fill="#43a047"/>
+                  <rect x="350" y="278" width="28" height="52" rx="4" fill="#2e7d32"/>
+                  <circle cx="374" cy="305" r="3" fill="#ffd740"/>
+                  <rect x="325" y="258" width="30" height="24" rx="3" fill="#b3e5fc" stroke="#66bb6a" stroke-width="1"/>
+                  <line x1="340" y1="258" x2="340" y2="282" stroke="#66bb6a" stroke-width=".8"/>
+                  <!-- Small house left -->
+                  <rect x="20" y="255" width="75" height="75" rx="5" fill="#fff" stroke="#66bb6a" stroke-width="1.5"/>
+                  <polygon points="10,260 57,215 104,260" fill="#43a047"/>
+                  <rect x="42" y="288" width="22" height="42" rx="3" fill="#2e7d32"/>
+                  <rect x="22" y="268" width="24" height="18" rx="2" fill="#b3e5fc" stroke="#66bb6a" stroke-width=".8"/>
+                  <!-- Trees -->
+                  <rect x="296" y="280" width="8" height="50" fill="#795548"/>
+                  <ellipse cx="300" cy="265" rx="22" ry="26" fill="#388e3c"/>
+                  <ellipse cx="300" cy="255" rx="16" ry="18" fill="#43a047"/>
+                  <rect x="60" y="285" width="8" height="45" fill="#795548"/>
+                  <ellipse cx="64" cy="270" rx="20" ry="24" fill="#388e3c"/>
+                  <ellipse cx="64" cy="260" rx="14" ry="16" fill="#43a047"/>
+                  <!-- Location pin badge -->
+                  <circle cx="190" cy="148" r="18" fill="#fff" stroke="#43a047" stroke-width="2"/>
+                  <path d="M190 138 a8 8 0 0 1 0 16 a8 8 0 0 1 0-16 z" fill="#43a047"/>
+                  <circle cx="190" cy="146" r="3" fill="#fff"/>
+                  <path d="M190 154 l0 8" stroke="#43a047" stroke-width="2" stroke-linecap="round"/>
+                  <!-- Key icon floating -->
+                  <circle cx="60" cy="170" r="22" fill="#fff" stroke="#ffd740" stroke-width="2" filter="url(#shadow)"/>
+                  <circle cx="55" cy="167" r="7" fill="none" stroke="#ffa000" stroke-width="2.5"/>
+                  <line x1="60" y1="167" x2="75" y2="167" stroke="#ffa000" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="73" y1="167" x2="73" y2="172" stroke="#ffa000" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="69" y1="167" x2="69" y2="171" stroke="#ffa000" stroke-width="2" stroke-linecap="round"/>
+                  <!-- Checkmark badge -->
+                  <circle cx="420" cy="210" r="22" fill="#fff" stroke="#43a047" stroke-width="2"/>
+                  <polyline points="410,210 417,218 432,202" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Decorative dots -->
+                  <circle cx="150" cy="370" r="5" fill="#a5d6a7"/>
+                  <circle cx="240" cy="375" r="4" fill="#c8e6c9"/>
+                  <circle cx="340" cy="368" r="5" fill="#a5d6a7"/>
+                </svg>
+            </div>
         </div>
-        <div class="col-lg-6 md-reveal">
+        <div class="col-lg-6 hp-reveal-r">
             <div class="about-preview-text">
                 <div class="m3-tag"><span class="material-symbols-outlined">info</span>About Us</div>
                 <h2>Rwanda's Leading Property Management Platform</h2>
@@ -700,9 +1166,16 @@
 </div></section>
 </div>
 
+<!-- wave: white → dark -->
+<div class="sec-wave" style="background:#fff"><svg viewBox="0 0 1440 70" preserveAspectRatio="none" style="height:60px"><path d="M0,0 C360,70 1080,70 1440,0 L1440,70 L0,70 Z" fill="#091a0f"/></svg></div>
+
 <!-- ===== CTA ===== -->
 <div class="pagelet" data-pagelet="cta">
-<section class="m3-cta"><div class="container"><div class="m3-cta-inner md-reveal">
+<section class="m3-cta" style="border-top:none">
+    <div class="hp-orb" style="width:500px;height:500px;background:rgba(46,125,50,.18);top:-150px;left:-150px;--ob-d:9s"></div>
+    <div class="hp-orb" style="width:350px;height:350px;background:rgba(129,199,132,.12);bottom:-80px;right:-80px;--ob-d:7s"></div>
+    <div class="hp-orb" style="width:200px;height:200px;background:rgba(67,160,71,.15);top:50%;left:50%;transform:translate(-50%,-50%);--ob-d:11s"></div>
+<div class="container"><div class="m3-cta-inner hp-reveal">
     <div class="m3-tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);margin-bottom:20px"><span class="material-symbols-outlined">rocket_launch</span>Get Started Today</div>
     <h2>Ready to Find Your Perfect Property?</h2>
     <p>Join thousands of satisfied clients who found their dream home or made their best investment through PropertyHub.</p>
@@ -715,6 +1188,88 @@
 
 <script>
 document.addEventListener('DOMContentLoaded',function(){
+    /* ===== Scroll progress bar ===== */
+    var prog=document.getElementById('hp-progress');
+    function updateProgress(){
+        var scrolled=window.scrollY,total=document.documentElement.scrollHeight-window.innerHeight;
+        if(prog&&total>0)prog.style.width=(scrolled/total*100)+'%';
+    }
+    window.addEventListener('scroll',updateProgress,{passive:true});
+    updateProgress();
+
+    /* =====================================================
+       SITE-WIDE ANIMATION ENGINE
+       ===================================================== */
+
+    /* 1) Single shared observer for all reveal classes */
+    var allRevealSel = '.hp-reveal,.hp-reveal-l,.hp-reveal-r,.hp-reveal-s,.hp-auto-reveal,.about-feature';
+    var sharedObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if(entry.isIntersecting){
+                entry.target.classList.add('hp-in');
+                sharedObs.unobserve(entry.target);
+            }
+        });
+    },{threshold:0.1,rootMargin:'0px 0px -30px 0px'});
+
+    /* 2) Section headings – fade up */
+    document.querySelectorAll('.m3-sh').forEach(function(el){
+        el.classList.add('hp-reveal');
+        sharedObs.observe(el);
+    });
+
+    /* 3) About features */
+    document.querySelectorAll('.about-feature').forEach(function(el){
+        sharedObs.observe(el);
+    });
+
+    /* 4) Explicit hp-reveal* elements (about cols, CTA) */
+    document.querySelectorAll('.hp-reveal,.hp-reveal-l,.hp-reveal-r,.hp-reveal-s').forEach(function(el){
+        sharedObs.observe(el);
+    });
+
+    /* 5) Auto-reveal every major section block with stagger */
+    var autoGroups = [
+        /* selector for the GROUP container, children to stagger */
+        {parent:'.qp-card',              cls:'hp-auto-reveal'},
+        {parent:'.hiw-step',             cls:'hp-auto-reveal'},
+        {parent:'.pt-card',              cls:'hp-auto-reveal'},
+        {parent:'.m3-svc',               cls:'hp-auto-reveal'},
+        {parent:'.m3-pc',                cls:'hp-auto-reveal'},
+        {parent:'.m3-sp',                cls:'hp-auto-reveal'},
+        {parent:'.m3-ac',                cls:'hp-auto-reveal'},
+        {parent:'.m3-tc',                cls:'hp-auto-reveal'},
+        {parent:'.m3-house-stats-item',  cls:'hp-auto-reveal'},
+        {parent:'.m3-stat',              cls:'hp-auto-reveal'},
+        {parent:'.about-preview-text > *', cls:'hp-auto-reveal'}
+    ];
+
+    autoGroups.forEach(function(g){
+        document.querySelectorAll(g.parent).forEach(function(el,idx){
+            if(!el.classList.contains('hp-auto-reveal')){
+                el.classList.add(g.cls);
+                el.setAttribute('data-hp-delay', Math.min(idx+1,8));
+                sharedObs.observe(el);
+            }
+        });
+    });
+
+    /* 6) Section text content (subtitles, descriptions not in m3-sh) */
+    document.querySelectorAll('.m3-stitle,.m3-ssub').forEach(function(el,idx){
+        if(!el.closest('.hp-reveal')){
+            el.classList.add('hp-auto-reveal');
+            el.setAttribute('data-hp-delay', idx%2===0 ? '2':'3');
+            sharedObs.observe(el);
+        }
+    });
+
+    /* 7) View-all buttons at bottom of sections */
+    document.querySelectorAll('.text-center.mt-5 a').forEach(function(el){
+        el.classList.add('hp-auto-reveal');
+        el.setAttribute('data-hp-delay','5');
+        sharedObs.observe(el);
+    });
+
     /* Counter animation */
     var counters=document.querySelectorAll('.m3-stat-val[data-count]');
     var cObs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){counters.forEach(function(c){var target=parseInt(c.dataset.count),current=0,inc=target/60;var timer=setInterval(function(){current+=inc;if(current>=target){c.textContent=target.toLocaleString();clearInterval(timer)}else c.textContent=Math.floor(current).toLocaleString()},25)});cObs.unobserve(entry.target)}})},{threshold:.5});

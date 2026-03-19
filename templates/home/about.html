@@ -87,20 +87,9 @@
     display: flex; flex-direction: column;
 }
 .ab-story-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,.1); border-color: transparent; }
-.ab-story-img { height: 260px; overflow: hidden; position: relative; }
-.ab-story-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
-.ab-story-card:hover .ab-story-img img { transform: scale(1.06); }
-.ab-story-img-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(13,36,21,.7) 0%, transparent 60%);
-}
-.ab-story-icon {
-    position: absolute; bottom: 16px; left: 20px;
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--ab-green); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-}
-.ab-story-icon .material-symbols-outlined { font-size: 24px; }
+.ab-story-img { overflow: hidden; position: relative; background: linear-gradient(135deg, var(--ab-dark) 0%, var(--ab-dark2) 100%); }
+.ab-story-img svg { display: block; width: 100%; transition: transform .5s; }
+.ab-story-card:hover .ab-story-img svg { transform: scale(1.03); }
 .ab-story-body { padding: 26px; flex: 1; }
 .ab-story-body h3 { font: 600 1.15rem/1.3 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 12px; }
 .ab-story-body p { font-size: .9rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.8; margin: 0; }
@@ -440,9 +429,84 @@
             <div class="col-lg-6">
                 <div class="ab-story-card">
                     <div class="ab-story-img">
-                        <img src="{% static 'images/mission.jpg' %}" alt="Our Mission" loading="lazy">
-                        <div class="ab-story-img-overlay"></div>
-                        <div class="ab-story-icon"><span class="material-symbols-outlined">target</span></div>
+                        <!-- Mission Illustration -->
+                        <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="ms1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#0d2415"/>
+                                    <stop offset="100%" style="stop-color:#1a3d25"/>
+                                </linearGradient>
+                                <linearGradient id="ms2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#28a745"/>
+                                    <stop offset="100%" style="stop-color:#1a7a32"/>
+                                </linearGradient>
+                                <radialGradient id="ms3" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" style="stop-color:rgba(40,167,69,0.25)"/>
+                                    <stop offset="100%" style="stop-color:rgba(40,167,69,0)"/>
+                                </radialGradient>
+                            </defs>
+                            <rect width="520" height="260" fill="url(#ms1)"/>
+                            <!-- dot grid -->
+                            <pattern id="mdots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="rgba(40,167,69,0.15)"/>
+                            </pattern>
+                            <rect width="520" height="260" fill="url(#mdots)"/>
+
+                            <!-- glow center -->
+                            <circle cx="260" cy="130" r="120" fill="url(#ms3)"/>
+
+                            <!-- Target rings -->
+                            <circle cx="260" cy="130" r="100" fill="none" stroke="rgba(40,167,69,.18)" stroke-width="1.5"/>
+                            <circle cx="260" cy="130" r="76" fill="none" stroke="rgba(40,167,69,.25)" stroke-width="1.5"/>
+                            <circle cx="260" cy="130" r="52" fill="none" stroke="rgba(40,167,69,.35)" stroke-width="2"/>
+                            <circle cx="260" cy="130" r="28" fill="rgba(40,167,69,.18)" stroke="rgba(40,167,69,.5)" stroke-width="2"/>
+                            <circle cx="260" cy="130" r="12" fill="url(#ms2)"/>
+                            <!-- center star -->
+                            <circle cx="260" cy="130" r="5" fill="#fff" opacity=".9"/>
+
+                            <!-- crosshair lines -->
+                            <line x1="260" y1="20" x2="260" y2="96" stroke="rgba(40,167,69,.4)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                            <line x1="260" y1="164" x2="260" y2="240" stroke="rgba(40,167,69,.4)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                            <line x1="150" y1="130" x2="226" y2="130" stroke="rgba(40,167,69,.4)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                            <line x1="294" y1="130" x2="370" y2="130" stroke="rgba(40,167,69,.4)" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+                            <!-- arrow hitting target -->
+                            <line x1="380" y1="50" x2="278" y2="128" stroke="#6fcf97" stroke-width="2.5" stroke-linecap="round"/>
+                            <polygon points="278,128 292,116 284,138" fill="#6fcf97"/>
+                            <!-- arrow tail feathers -->
+                            <line x1="380" y1="50" x2="392" y2="38" stroke="#6fcf97" stroke-width="1.5"/>
+                            <line x1="375" y1="50" x2="384" y2="34" stroke="#6fcf97" stroke-width="1"/>
+
+                            <!-- floating value chips -->
+                            <rect x="30" y="48" width="110" height="34" rx="10" fill="rgba(40,167,69,.18)" stroke="rgba(40,167,69,.3)" stroke-width="1"/>
+                            <text x="44" y="64" fill="#6fcf97" font-family="Inter,sans-serif" font-size="9" font-weight="700">✓ Transparency</text>
+                            <text x="44" y="75" fill="rgba(255,255,255,.45)" font-family="Inter,sans-serif" font-size="8">Core principle</text>
+
+                            <rect x="30" y="96" width="100" height="34" rx="10" fill="rgba(40,167,69,.18)" stroke="rgba(40,167,69,.3)" stroke-width="1"/>
+                            <text x="44" y="112" fill="#6fcf97" font-family="Inter,sans-serif" font-size="9" font-weight="700">✓ Innovation</text>
+                            <text x="44" y="123" fill="rgba(255,255,255,.45)" font-family="Inter,sans-serif" font-size="8">Every day</text>
+
+                            <rect x="30" y="144" width="110" height="34" rx="10" fill="rgba(40,167,69,.18)" stroke="rgba(40,167,69,.3)" stroke-width="1"/>
+                            <text x="44" y="160" fill="#6fcf97" font-family="Inter,sans-serif" font-size="9" font-weight="700">✓ Client Focus</text>
+                            <text x="44" y="171" fill="rgba(255,255,255,.45)" font-family="Inter,sans-serif" font-size="8">Always first</text>
+
+                            <!-- right side: people reaching -->
+                            <circle cx="430" cy="180" r="14" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+                            <text x="430" y="185" fill="#fff" font-family="Inter,sans-serif" font-size="13" text-anchor="middle">🏠</text>
+                            <circle cx="460" cy="160" r="14" fill="rgba(40,167,69,.2)" stroke="rgba(40,167,69,.35)" stroke-width="1"/>
+                            <text x="460" y="165" fill="#fff" font-family="Inter,sans-serif" font-size="13" text-anchor="middle">🎯</text>
+                            <circle cx="420" cy="148" r="14" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+                            <text x="420" y="153" fill="#fff" font-family="Inter,sans-serif" font-size="13" text-anchor="middle">💡</text>
+
+                            <!-- mission label -->
+                            <rect x="195" y="210" width="130" height="32" rx="10" fill="url(#ms2)" opacity=".85"/>
+                            <text x="260" y="230" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Our Mission</text>
+
+                            <!-- sparkles -->
+                            <text x="110" y="32" fill="#6fcf97" font-family="Inter" font-size="18" opacity=".5">✦</text>
+                            <text x="468" y="100" fill="#6fcf97" font-family="Inter" font-size="12" opacity=".4">✦</text>
+                            <text x="490" y="220" fill="#6fcf97" font-family="Inter" font-size="16" opacity=".35">✦</text>
+                        </svg>
                     </div>
                     <div class="ab-story-body">
                         <h3>Our Mission</h3>
@@ -453,9 +517,111 @@
             <div class="col-lg-6">
                 <div class="ab-story-card">
                     <div class="ab-story-img">
-                        <img src="{% static 'images/history.jpg' %}" alt="Our History" loading="lazy">
-                        <div class="ab-story-img-overlay"></div>
-                        <div class="ab-story-icon"><span class="material-symbols-outlined">history</span></div>
+                        <!-- Our Story Illustration -->
+                        <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="hs1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#0d2415"/>
+                                    <stop offset="100%" style="stop-color:#1a3d25"/>
+                                </linearGradient>
+                                <linearGradient id="hs2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#28a745"/>
+                                    <stop offset="100%" style="stop-color:#1a7a32"/>
+                                </linearGradient>
+                                <linearGradient id="hs3" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#28a745;stop-opacity:0.9"/>
+                                    <stop offset="100%" style="stop-color:#6fcf97;stop-opacity:0.6"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="520" height="260" fill="url(#hs1)"/>
+                            <pattern id="hdots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="rgba(40,167,69,0.12)"/>
+                            </pattern>
+                            <rect width="520" height="260" fill="url(#hdots)"/>
+
+                            <!-- ground line -->
+                            <line x1="40" y1="220" x2="480" y2="220" stroke="rgba(40,167,69,.3)" stroke-width="1.5"/>
+
+                            <!-- timeline spine -->
+                            <line x1="260" y1="30" x2="260" y2="220" stroke="rgba(40,167,69,.2)" stroke-width="2" stroke-dasharray="6,4"/>
+
+                            <!-- Building 2020 (small) -->
+                            <rect x="60" y="170" width="60" height="50" rx="4" fill="rgba(40,167,69,.35)" stroke="rgba(40,167,69,.4)" stroke-width="1"/>
+                            <rect x="70" y="180" width="12" height="12" rx="2" fill="rgba(255,255,255,.2)"/>
+                            <rect x="88" y="180" width="12" height="12" rx="2" fill="rgba(255,255,255,.2)"/>
+                            <rect x="70" y="198" width="12" height="12" rx="2" fill="rgba(255,255,255,.2)"/>
+                            <rect x="88" y="198" width="22" height="22" rx="2" fill="rgba(255,255,255,.1)"/>
+                            <polygon points="48,170 132,170 90,140" fill="rgba(40,167,69,.3)"/>
+                            <rect x="44" y="208" width="80" height="14" rx="0" fill="rgba(0,0,0,0)"/>
+                            <text x="90" y="238" fill="#6fcf97" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">2020</text>
+                            <text x="90" y="250" fill="rgba(255,255,255,.4)" font-family="Inter,sans-serif" font-size="8" text-anchor="middle">Founded</text>
+
+                            <!-- Building 2021 (medium) -->
+                            <rect x="170" y="145" width="70" height="75" rx="4" fill="rgba(40,167,69,.45)" stroke="rgba(40,167,69,.5)" stroke-width="1"/>
+                            <rect x="180" y="155" width="13" height="13" rx="2" fill="rgba(255,255,255,.25)"/>
+                            <rect x="200" y="155" width="13" height="13" rx="2" fill="rgba(255,255,255,.5)"/>
+                            <rect x="220" y="155" width="10" height="13" rx="2" fill="rgba(255,255,255,.25)"/>
+                            <rect x="180" y="174" width="13" height="13" rx="2" fill="rgba(255,255,255,.25)"/>
+                            <rect x="200" y="174" width="13" height="13" rx="2" fill="rgba(255,255,255,.25)"/>
+                            <rect x="220" y="174" width="10" height="13" rx="2" fill="rgba(255,255,255,.5)"/>
+                            <rect x="195" y="196" width="20" height="24" rx="2" fill="rgba(255,255,255,.15)"/>
+                            <polygon points="158,145 252,145 205,108" fill="rgba(40,167,69,.35)"/>
+                            <text x="205" y="238" fill="#6fcf97" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">2021</text>
+                            <text x="205" y="250" fill="rgba(255,255,255,.4)" font-family="Inter,sans-serif" font-size="8" text-anchor="middle">Launched</text>
+
+                            <!-- Building 2022 (large) -->
+                            <rect x="278" y="110" width="80" height="110" rx="4" fill="rgba(40,167,69,.6)" stroke="rgba(40,167,69,.65)" stroke-width="1"/>
+                            <rect x="288" y="122" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="308" y="122" width="14" height="14" rx="2" fill="rgba(255,255,255,.6)"/>
+                            <rect x="328" y="122" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="288" y="143" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="308" y="143" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="328" y="143" width="14" height="14" rx="2" fill="rgba(255,255,255,.6)"/>
+                            <rect x="288" y="164" width="14" height="14" rx="2" fill="rgba(255,255,255,.6)"/>
+                            <rect x="308" y="164" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="328" y="164" width="14" height="14" rx="2" fill="rgba(255,255,255,.3)"/>
+                            <rect x="305" y="186" width="26" height="34" rx="2" fill="rgba(255,255,255,.18)"/>
+                            <polygon points="265,110 373,110 318,68" fill="rgba(40,167,69,.5)"/>
+                            <text x="318" y="238" fill="#6fcf97" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">2022</text>
+                            <text x="318" y="250" fill="rgba(255,255,255,.4)" font-family="Inter,sans-serif" font-size="8" text-anchor="middle">1K+ Props</text>
+
+                            <!-- Building 2023 (tallest) -->
+                            <rect x="392" y="72" width="78" height="148" rx="4" fill="url(#hs2)"/>
+                            <rect x="402" y="84" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="422" y="84" width="13" height="13" rx="2" fill="rgba(255,255,255,.7)"/>
+                            <rect x="442" y="84" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="402" y="103" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="422" y="103" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="442" y="103" width="13" height="13" rx="2" fill="rgba(255,255,255,.7)"/>
+                            <rect x="402" y="122" width="13" height="13" rx="2" fill="rgba(255,255,255,.7)"/>
+                            <rect x="422" y="122" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="442" y="122" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="402" y="141" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="422" y="141" width="13" height="13" rx="2" fill="rgba(255,255,255,.7)"/>
+                            <rect x="442" y="141" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="402" y="160" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="422" y="160" width="13" height="13" rx="2" fill="rgba(255,255,255,.35)"/>
+                            <rect x="442" y="160" width="13" height="13" rx="2" fill="rgba(255,255,255,.7)"/>
+                            <rect x="418" y="183" width="26" height="37" rx="2" fill="rgba(255,255,255,.18)"/>
+                            <!-- antenna -->
+                            <line x1="431" y1="72" x2="431" y2="48" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+                            <circle cx="431" cy="45" r="4" fill="#6fcf97"/>
+                            <polygon points="380,72 480,72 430,36" fill="#1a7a32" opacity=".9"/>
+                            <text x="431" y="238" fill="#6fcf97" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">2023+</text>
+                            <text x="431" y="250" fill="rgba(255,255,255,.4)" font-family="Inter,sans-serif" font-size="8" text-anchor="middle">Growing</text>
+
+                            <!-- growth arrow -->
+                            <path d="M90,205 Q170,160 205,175 Q240,185 318,165 Q370,148 430,118" fill="none" stroke="#6fcf97" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,3" opacity=".6"/>
+                            <polygon points="430,118 418,124 424,110" fill="#6fcf97" opacity=".6"/>
+
+                            <!-- sparkles -->
+                            <text x="14" y="60" fill="#6fcf97" font-family="Inter" font-size="18" opacity=".45">✦</text>
+                            <text x="496" y="50" fill="#6fcf97" font-family="Inter" font-size="12" opacity=".35">✦</text>
+
+                            <!-- label -->
+                            <rect x="190" y="14" width="140" height="26" rx="10" fill="url(#hs2)" opacity=".75"/>
+                            <text x="260" y="31" fill="#fff" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Our Growth Journey</text>
+                        </svg>
                     </div>
                     <div class="ab-story-body">
                         <h3>Our Story</h3>
