@@ -137,3 +137,14 @@
 [2026-03-19 09:43:46] INFO     propertyhub.system | [AUTH] User 'admin' logged in (role: Admin) | user=admin | ip=197.157.187.83 | path=POST /logins
 [2026-03-19 09:45:02] INFO     propertyhub.system | [AUTH] User 'admin' logged out | user=admin | ip=127.0.0.1 | path=GET /logout
 [2026-03-19 09:45:22] INFO     propertyhub.system | [AUTH] User 'Esther' logged in (role: Owner) | user=Esther | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:14:57] INFO     propertyhub.system | [AUTH] User 'Esther' logged out | user=Esther | ip=127.0.0.1 | path=GET /logout
+[2026-03-19 13:17:41] INFO     propertyhub.system | [AUTH] User 'admin' logged in (role: Admin) | user=admin | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:19:01] INFO     propertyhub.system | [AUTH] User 'admin' logged out | user=admin | ip=127.0.0.1 | path=GET /logout
+[2026-03-19 13:19:17] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:19:20] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:19:20] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:22:05] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:25:13] INFO     propertyhub.system | [AUTH] User 'nsol' logged out | user=nsol | ip=127.0.0.1 | path=GET /logout
+[2026-03-19 13:28:07] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:28:09] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 13:28:11] INFO     propertyhub.system | [AUTH] User 'nsol' logged in (role: Seller) | user=nsol | ip=127.0.0.1 | path=POST /logins

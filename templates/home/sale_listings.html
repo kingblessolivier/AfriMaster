@@ -1,266 +1,716 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block title %}Properties for Sale - PropertyHub Ltd{% endblock %}
-
 {% block content %}
 <style>
-    .m3-sale-hero{margin-top:112px;padding:70px 20px 60px;position:relative;overflow:hidden}
-    .m3-sale-hero::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.03)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L0,320Z"/></svg>') bottom/cover no-repeat}
-    .m3-sale-hero::after{content:'';position:absolute;width:300px;height:300px;top:-50px;right:-50px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .m3-sale-hero-inner{position:relative;z-index:2;text-align:center;max-width:700px;margin:0 auto}
-    .m3-sale-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(40,167,69,.2);color:var(--md-sys-color-inverse-primary);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(40,167,69,.3)}
-    .m3-sale-hero-badge .material-symbols-outlined{font-size:16px}
-    .m3-sale-hero h1{font:500 2.6rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:12px}
-    .m3-sale-hero h1 em{background:linear-gradient(135deg,var(--md-sys-color-inverse-primary),var(--md-sys-color-tertiary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
-    .m3-sale-hero p{color:rgba(255,255,255,.7);font:var(--md-sys-typescale-body-large);margin-bottom:32px;line-height:1.6}
-    .m3-sale-searchbox{display:flex;max-width:580px;margin:0 auto;background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:var(--md-sys-shape-corner-full);padding:6px;border:1px solid rgba(255,255,255,.15);transition:all 300ms}
-    .m3-sale-searchbox:focus-within{background:rgba(255,255,255,.18);border-color:rgba(40,167,69,.5);box-shadow:0 0 0 4px rgba(40,167,69,.15)}
-    .m3-sale-searchbox input{flex:1;background:transparent;border:none;padding:14px 24px;color:#fff;font:var(--md-sys-typescale-body-large);outline:none}
-    .m3-sale-searchbox input::placeholder{color:rgba(255,255,255,.5)}
-    .m3-sale-searchbox button{background:var(--md-sys-color-primary);border:none;border-radius:var(--md-sys-shape-corner-full);padding:12px 28px;color:#fff;font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms;display:flex;align-items:center;gap:8px}
-    .m3-sale-searchbox button:hover{box-shadow:var(--md-sys-elevation-1)}
-    .m3-sale-hero-stats{display:flex;justify-content:center;gap:40px;margin-top:36px;flex-wrap:wrap}
-    .m3-sale-hero-stat{text-align:center}
-    .m3-sale-hero-stat-val{font:500 1.5rem/1 'Inter',sans-serif;color:#fff}
-    .m3-sale-hero-stat-lbl{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+/* ===== Tokens ===== */
+:root{
+  --hp:#2E7D32;--hp-dk:#1B5E20;--hp-lt:#A5D6A7;
+  --hp-txt:#1F2937;--hp-muted:#6B7280;--hp-bg:#F5F7FA;
+  --hp-white:#fff;--hp-border:#E5E7EB;
+  --hp-shadow:0 1px 3px rgba(0,0,0,.08);
+  --hp-shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --hp-shadow-lg:0 10px 30px rgba(0,0,0,.1);
+}
 
-    .m3-sale-main{background:var(--md-sys-color-surface-container);padding:0 0 60px}
-    .m3-sale-content{padding-top:30px}
+/* ===== Scroll Progress ===== */
+#pl-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;
+  background:linear-gradient(90deg,#2e7d32,#66bb6a,#43a047);background-size:200%;
+  animation:pl-bar 2.5s linear infinite;pointer-events:none}
+@keyframes pl-bar{0%{background-position:200% 50%}100%{background-position:-200% 50%}}
 
-    /* Filter */
-    .m3-sale-filter{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:24px;box-shadow:var(--md-sys-elevation-1);position:sticky;top:90px;border:1px solid var(--md-sys-color-outline-variant)}
-    .m3-sale-filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--md-sys-color-surface-container)}
-    .m3-sale-filter-header h5{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin:0;display:flex;align-items:center;gap:8px}
-    .m3-sale-filter-header h5 .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:20px}
-    .m3-sale-clear{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-primary);text-decoration:none}
-    .m3-sale-clear:hover{color:#1e7e34}
-    .m3-sale-sec{margin-bottom:24px}
-    .m3-sale-sec:last-child{margin-bottom:0}
-    .m3-sale-sec-title{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-on-surface);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-    .m3-sale-chips{display:flex;flex-wrap:wrap;gap:8px}
-    .m3-sale-chip{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;border-radius:var(--md-sys-shape-corner-small);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms;border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface-variant);text-decoration:none}
-    .m3-sale-chip:hover{border-color:var(--md-sys-color-primary);color:var(--md-sys-color-primary);background:rgba(40,167,69,.04)}
-    .m3-sale-chip.active{background:var(--md-sys-color-primary);color:#fff;border-color:var(--md-sys-color-primary)}
-    .m3-sale-chip .material-symbols-outlined{font-size:16px}
+/* ===== Hero ===== */
+.pl-hero{margin-top:72px;padding:72px 0 90px;position:relative;overflow:hidden}
+.pl-hero-bar{position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,#28a745 30%,#6fcf97 50%,#28a745 70%,transparent)}
 
-    .m3-sale-results-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-    .m3-sale-results-count{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant)}
-    .m3-sale-results-count strong{color:var(--md-sys-color-on-surface);font-weight:700}
+/* particles */
+.pl-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.pl-p{position:absolute;border-radius:50%;
+  animation:pl-pfloat var(--d,7s) var(--dl,0s) ease-in-out infinite alternate}
+@keyframes pl-pfloat{from{transform:translateY(0);opacity:.15}to{transform:translateY(-32px);opacity:.5}}
 
-    /* ── Property Card (compact redesign) ── */
-    .m3-sale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:16px}
+.pl-orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;
+  animation:pl-orb-b var(--od,9s) ease-in-out infinite alternate}
+@keyframes pl-orb-b{from{opacity:.28;transform:scale(1)}to{opacity:.6;transform:scale(1.3)}}
 
-    .m3-sale-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:transform .22s,box-shadow .22s,border-color .22s;display:flex;flex-direction:column}
-    .m3-sale-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.10);border-color:transparent}
+.pl-hero-inner{position:relative;z-index:2;text-align:center;max-width:720px;margin:0 auto}
 
-    /* image */
-    .m3-sale-card-img{position:relative;height:168px;overflow:hidden;background:#e8f5e9;flex-shrink:0}
-    .m3-sale-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-    .m3-sale-card:hover .m3-sale-card-img img{transform:scale(1.05)}
-    .m3-sale-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.52) 100%);pointer-events:none}
-    .m3-sale-card-img .m3-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-    .m3-sale-card-img .m3-img-ph .material-symbols-outlined{font-size:44px;color:var(--md-sys-color-primary);opacity:.35}
+/* badge */
+.pl-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(165,214,167,.15);
+  color:#a5d6a7;padding:8px 20px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;
+  letter-spacing:.6px;text-transform:uppercase;border:1px solid rgba(165,214,167,.25);
+  margin-bottom:22px;animation:pl-badge-in .7s .15s both}
+@keyframes pl-badge-in{from{opacity:0;transform:translateY(-12px) scale(.92)}to{opacity:1;transform:none}}
+.pl-badge .material-symbols-outlined{font-size:15px}
 
-    /* image overlays */
-    .m3-sale-img-top{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;z-index:2;gap:6px}
-    .m3-chip-type{background:var(--md-sys-color-primary);color:#fff;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
-    .m3-chip-kind{background:rgba(255,255,255,.9);color:#1a1c18;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:600;white-space:nowrap}
-    .m3-sale-img-price{position:absolute;bottom:9px;left:10px;z-index:2;color:#fff;font-size:1.05rem;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.45);line-height:1}
-    .m3-sale-img-price small{font-size:.65rem;font-weight:500;opacity:.9}
-    .m3-neg-pill{position:absolute;bottom:9px;right:9px;z-index:2;background:rgba(255,152,0,.92);color:#fff;padding:3px 8px;border-radius:20px;font-size:.62rem;font-weight:700;display:flex;align-items:center;gap:2px}
-    .m3-neg-pill .material-symbols-outlined{font-size:11px}
+.pl-hero-title{font:700 3rem/1.1 'Inter',sans-serif;color:#fff;margin-bottom:16px;
+  letter-spacing:-.4px;animation:pl-up .8s .3s cubic-bezier(.4,0,.2,1) both}
+.pl-hero-title em{background:linear-gradient(135deg,#a5d6a7,#80cbc4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;
+  background-size:200% auto;animation:pl-shimmer 4s linear infinite}
+@keyframes pl-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
 
-    /* body */
-    .m3-sale-card-body{padding:13px 13px 8px;flex:1;display:flex;flex-direction:column;gap:5px}
-    .m3-sale-card-title{font-size:.875rem;font-weight:700;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
-    .m3-sale-card-loc{display:flex;align-items:center;gap:3px;font-size:.72rem;color:var(--md-sys-color-on-surface-variant);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-    .m3-sale-card-loc .material-symbols-outlined{font-size:13px;color:var(--md-sys-color-primary);flex-shrink:0}
+.pl-hero-sub{color:rgba(255,255,255,.68);font:400 1rem/1.7 'Inter',sans-serif;
+  max-width:520px;margin:0 0 30px;animation:pl-up .7s .45s cubic-bezier(.4,0,.2,1) both}
 
-    /* feature strip */
-    .m3-sale-feats-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--md-sys-color-outline-variant);font-size:.72rem;color:var(--md-sys-color-on-surface-variant);flex-wrap:wrap}
-    .m3-feat-item{display:flex;align-items:center;gap:3px}
-    .m3-feat-item .material-symbols-outlined{font-size:14px;color:var(--md-sys-color-primary)}
-    .m3-feat-item b{color:var(--md-sys-color-on-surface);font-weight:700}
+/* hero two-column */
+.pl-hero .container>.row{position:relative;z-index:2}
+.pl-hero-text{text-align:left}
+.pl-hero-text .pl-badge{animation:pl-badge-in .7s .15s both}
+.pl-hero-text .pl-hero-stats{justify-content:flex-start;max-width:none;margin:0}
 
-    /* footer */
-    .m3-sale-card-ft{padding:8px 13px 13px}
-    .m3-sale-btn-view{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border:none;border-radius:24px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .18s,color .18s;text-decoration:none}
-    .m3-sale-btn-view:hover{background:var(--md-sys-color-primary);color:#fff}
-    .m3-sale-btn-view .material-symbols-outlined{font-size:15px;transition:transform .2s}
-    .m3-sale-btn-view:hover .material-symbols-outlined{transform:translateX(3px)}
+/* illustration column */
+.pl-illust-wrap{position:relative;display:flex;align-items:center;justify-content:center;
+  animation:pl-illust-in .9s .35s cubic-bezier(.4,0,.2,1) both}
+@keyframes pl-illust-in{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:none}}
+.pl-illust-wrap svg{width:100%;max-width:480px;display:block;
+  filter:drop-shadow(0 24px 48px rgba(0,0,0,.35))}
 
-    .m3-sale-empty{text-align:center;padding:80px 30px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:2px dashed var(--md-sys-color-outline-variant);grid-column:1/-1}
-    .m3-sale-empty-icon{width:80px;height:80px;margin:0 auto 20px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center}
-    .m3-sale-empty-icon .material-symbols-outlined{font-size:2rem;color:var(--md-sys-color-on-surface-variant)}
-    .m3-sale-empty h3{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:8px}
-    .m3-sale-empty p{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-medium);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto}
+/* floating info cards on illustration */
+.pl-illust-card{position:absolute;background:rgba(255,255,255,.1);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:10px 16px;
+  color:#fff;font-family:'Inter',sans-serif;white-space:nowrap;z-index:5}
+.pl-illust-card.fc1{top:12%;right:-2%;animation:pl-fc-float 4s ease-in-out infinite alternate}
+.pl-illust-card.fc2{bottom:22%;left:-2%;animation:pl-fc-float 4.5s .8s ease-in-out infinite alternate}
+@keyframes pl-fc-float{from{transform:translateY(0)}to{transform:translateY(-9px)}}
+.pl-illust-card-icon{font-size:13px;color:#a5d6a7;margin-right:6px}
+.pl-illust-card-val{font:700 .88rem/1 'Inter',sans-serif;color:#fff}
+.pl-illust-card-lbl{font:.7rem/1 'Inter',sans-serif;color:rgba(255,255,255,.55);margin-top:2px}
 
-    .m3-sale-pagination{display:flex;justify-content:center;margin-top:40px;gap:6px;list-style:none;padding:0}
-    .m3-sale-pagination .page-link{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--md-sys-shape-corner-small);font:var(--md-sys-typescale-label-large);border:1.5px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-lowest);transition:all 200ms;text-decoration:none}
-    .m3-sale-pagination .page-link:hover{background:var(--md-sys-color-primary-container);border-color:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary-container)}
-    .m3-sale-pagination .page-item.active .page-link{background:var(--md-sys-color-primary);border-color:var(--md-sys-color-primary);color:#fff}
+/* search box */
+.pl-search{display:flex;max-width:520px;margin:0 0 32px;
+  background:rgba(255,255,255,.11);backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,255,255,.18);border-radius:100px;padding:6px;
+  transition:all .3s;animation:pl-up .7s .6s cubic-bezier(.4,0,.2,1) both}
+.pl-search:focus-within{background:rgba(255,255,255,.17);border-color:rgba(165,214,167,.5);
+  box-shadow:0 0 0 4px rgba(40,167,69,.18)}
+.pl-search input{flex:1;background:transparent;border:none;padding:13px 22px;
+  color:#fff;font:.95rem/1 'Inter',sans-serif;outline:none}
+.pl-search input::placeholder{color:rgba(255,255,255,.45)}
+.pl-search button{background:var(--hp);border:none;border-radius:100px;
+  padding:12px 26px;color:#fff;font:600 .88rem/1 'Inter',sans-serif;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.pl-search button:hover{background:var(--hp-dk);transform:scale(1.03)}
+.pl-search button .material-symbols-outlined{font-size:18px}
 
-    .m3-sale-mobile-btn{display:none;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;margin-bottom:20px;width:100%}
-    .m3-sale-mobile-btn .material-symbols-outlined{font-size:20px}
-    @media(max-width:992px){.m3-sale-filter-col{display:none}.m3-sale-mobile-btn{display:flex}.m3-sale-grid{grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}}
-    @media(max-width:768px){.m3-sale-hero{padding:50px 16px 40px}.m3-sale-hero h1{font-size:1.9rem}.m3-sale-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
-    @media(max-width:576px){.m3-sale-hero h1{font-size:1.6rem}.m3-sale-searchbox{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-sale-searchbox button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}.m3-sale-grid{grid-template-columns:1fr}}
+/* hero stats */
+.pl-hero-stats{display:flex;justify-content:flex-start;gap:0;
+  background:rgba(255,255,255,.07);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.13);border-radius:16px;
+  padding:20px 32px;max-width:400px;margin:0;
+  animation:pl-up .7s .75s cubic-bezier(.4,0,.2,1) both}
+.pl-hs{flex:1;text-align:center;position:relative}
+.pl-hs:not(:last-child)::after{content:'';position:absolute;right:0;top:10%;bottom:10%;
+  width:1px;background:rgba(255,255,255,.15)}
+.pl-hs-v{font:700 1.5rem/1 'Inter',sans-serif;color:#fff;display:block;margin-bottom:5px}
+.pl-hs-l{font:500 .68rem/1 'Inter',sans-serif;color:rgba(255,255,255,.45);
+  text-transform:uppercase;letter-spacing:.6px}
+
+/* wave bottom of hero */
+.pl-wave{line-height:0;position:relative;z-index:2;margin-top:-2px}
+.pl-wave svg{display:block;width:100%}
+
+/* ===== Map bar ===== */
+.pl-map-bar{background:#0a1a0d;border-top:1px solid rgba(40,167,69,.2);
+  border-bottom:1px solid rgba(40,167,69,.2);padding:11px 0}
+.pl-map-bar-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.pl-map-hint{color:rgba(255,255,255,.55);font:.82rem/1 'Inter',sans-serif;
+  display:flex;align-items:center;gap:6px}
+.pl-map-hint .material-symbols-outlined{font-size:16px;color:#66bb6a}
+.pl-map-toggle{background:rgba(40,167,69,.12);border:1px solid rgba(40,167,69,.3);
+  color:#81c784;padding:8px 20px;border-radius:100px;font:.82rem/1 'Inter',sans-serif;
+  font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.pl-map-toggle:hover{background:rgba(40,167,69,.22);border-color:rgba(40,167,69,.5);color:#a5d6a7}
+.pl-map-toggle .material-symbols-outlined{font-size:16px}
+
+/* map section */
+#saleMapSection{display:none}
+.pl-map-inner{position:relative;height:440px;border-top:1px solid rgba(40,167,69,.2);
+  border-bottom:1px solid rgba(40,167,69,.2)}
+#saleListingsMap{width:100%;height:100%}
+.pl-map-counter{position:absolute;top:14px;left:14px;z-index:1000;
+  background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:10px;
+  padding:9px 15px;color:#fff;font:.8rem/1 'Inter',sans-serif;
+  display:flex;align-items:center;gap:7px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.pl-map-counter .material-symbols-outlined{font-size:15px;color:#66bb6a}
+
+/* ===== Main ===== */
+.pl-main{background:var(--hp-bg);padding:36px 0 72px}
+
+/* ===== Filter sidebar ===== */
+.pl-filter{background:#fff;border-radius:18px;border:1px solid var(--hp-border);
+  box-shadow:var(--hp-shadow-md);position:sticky;top:90px;overflow:hidden}
+.pl-filter-head{display:flex;align-items:center;justify-content:space-between;
+  padding:20px 22px 16px;border-bottom:1px solid var(--hp-border)}
+.pl-filter-head h5{font:700 .95rem/1 'Inter',sans-serif;color:var(--hp-txt);margin:0;
+  display:flex;align-items:center;gap:8px}
+.pl-filter-head h5 .material-symbols-outlined{font-size:18px;color:var(--hp)}
+.pl-filter-clear{font:.78rem/1 'Inter',sans-serif;color:var(--hp);text-decoration:none;
+  font-weight:600;padding:5px 10px;border-radius:8px;transition:all .18s}
+.pl-filter-clear:hover{background:#f0faf2;color:var(--hp-dk)}
+
+.pl-filter-sec{padding:18px 22px;border-bottom:1px solid var(--hp-border)}
+.pl-filter-sec:last-child{border-bottom:none}
+.pl-filter-sec-title{font:700 .68rem/1 'Inter',sans-serif;color:var(--hp-muted);
+  text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;
+  display:flex;align-items:center;gap:5px}
+.pl-filter-sec-title .material-symbols-outlined{font-size:14px}
+
+/* chips */
+.pl-chips{display:flex;flex-wrap:wrap;gap:7px}
+.pl-chip{display:inline-flex;align-items:center;gap:4px;padding:7px 13px;
+  border-radius:100px;font:600 .75rem/1 'Inter',sans-serif;cursor:pointer;
+  transition:all .2s;border:1.5px solid var(--hp-border);
+  background:#fff;color:var(--hp-muted);text-decoration:none}
+.pl-chip:hover{border-color:var(--hp-lt);color:var(--hp);background:#f0faf2}
+.pl-chip.active{background:var(--hp);color:#fff;border-color:var(--hp);
+  box-shadow:0 2px 8px rgba(46,125,50,.3)}
+.pl-chip .material-symbols-outlined{font-size:13px}
+
+/* filter inputs */
+.pl-filter-input{width:100%;padding:10px 14px;border:1.5px solid var(--hp-border);
+  border-radius:10px;font:.88rem/1 'Inter',sans-serif;color:var(--hp-txt);
+  background:#fff;outline:none;transition:all .2s}
+.pl-filter-input:focus{border-color:var(--hp);box-shadow:0 0 0 3px rgba(46,125,50,.09)}
+.pl-filter-input::placeholder{color:var(--hp-muted)}
+.pl-filter-btn{width:100%;padding:10px;background:var(--hp);color:#fff;border:none;
+  border-radius:10px;font:600 .83rem/1 'Inter',sans-serif;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.pl-filter-btn:hover{background:var(--hp-dk);transform:translateY(-1px)}
+.pl-filter-btn .material-symbols-outlined{font-size:16px}
+
+/* ===== Results header ===== */
+.pl-results-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.pl-results-count{font:.88rem/1 'Inter',sans-serif;color:var(--hp-muted)}
+.pl-results-count strong{color:var(--hp-txt);font-weight:700}
+.pl-view-toggle{display:flex;gap:4px;background:#fff;border-radius:10px;
+  padding:4px;border:1px solid var(--hp-border)}
+.pl-vt{width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:7px;border:none;background:transparent;color:var(--hp-muted);
+  cursor:pointer;transition:all .18s}
+.pl-vt.active,.pl-vt:hover{background:var(--hp);color:#fff}
+.pl-vt .material-symbols-outlined{font-size:18px}
+
+/* mobile filter btn */
+.pl-mobile-filter{display:none;width:100%;padding:12px;background:#fff;
+  border:1.5px solid var(--hp-border);border-radius:12px;
+  font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt);cursor:pointer;
+  align-items:center;justify-content:center;gap:8px;margin-bottom:18px;
+  transition:all .2s}
+.pl-mobile-filter:hover{border-color:var(--hp);color:var(--hp);background:#f0faf2}
+.pl-mobile-filter .material-symbols-outlined{font-size:18px;color:var(--hp)}
+
+/* ===== Property Cards ===== */
+.pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:20px}
+.pl-grid.list-view{grid-template-columns:1fr}
+
+/* card */
+.pl-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--hp-border);
+  transition:transform .28s cubic-bezier(.4,0,.2,1),box-shadow .28s,border-color .28s;
+  display:flex;flex-direction:column;
+  opacity:0;transform:translateY(36px);
+  animation:pl-card-in .65s var(--ci-d,.1s) cubic-bezier(.4,0,.2,1) both}
+@keyframes pl-card-in{to{opacity:1;transform:none}}
+.pl-card:hover{transform:translateY(-5px);box-shadow:var(--hp-shadow-lg);border-color:transparent}
+
+/* card image */
+.pl-card-img{position:relative;height:210px;overflow:hidden;flex-shrink:0;background:#e8f5e9}
+.pl-card-img img{width:100%;height:100%;object-fit:cover;
+  transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.pl-card:hover .pl-card-img img{transform:scale(1.07)}
+.pl-card-img::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.55) 100%);pointer-events:none}
+/* shine on hover */
+.pl-card-img::before{content:'';position:absolute;inset:0;z-index:5;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.13) 50%,transparent 60%);
+  transform:translateX(-100%);transition:transform .55s ease;pointer-events:none}
+.pl-card:hover .pl-card-img::before{transform:translateX(100%)}
+
+.pl-card-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.pl-card-ph .material-symbols-outlined{font-size:52px;color:var(--hp);opacity:.3}
+
+/* overlay badges */
+.pl-card-top{position:absolute;top:12px;left:12px;right:12px;
+  display:flex;justify-content:space-between;align-items:flex-start;z-index:3;gap:6px}
+.pl-tag-type{background:var(--hp);color:#fff;padding:4px 12px;border-radius:100px;
+  font:700 .65rem/1 'Inter',sans-serif;letter-spacing:.3px;text-transform:uppercase;
+  box-shadow:0 2px 8px rgba(46,125,50,.4)}
+.pl-tag-kind{background:rgba(255,255,255,.92);color:var(--hp-txt);padding:4px 11px;
+  border-radius:100px;font:600 .65rem/1 'Inter',sans-serif}
+.pl-card-price{position:absolute;bottom:13px;left:13px;z-index:3;
+  color:#fff;font:800 1.15rem/1 'Inter',sans-serif;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.pl-card-price small{font:500 .68rem/1 'Inter',sans-serif;opacity:.85}
+.pl-neg{position:absolute;bottom:13px;right:12px;z-index:3;
+  background:rgba(255,152,0,.9);color:#fff;padding:4px 9px;border-radius:100px;
+  font:700 .62rem/1 'Inter',sans-serif;display:flex;align-items:center;gap:3px}
+.pl-neg .material-symbols-outlined{font-size:11px}
+
+/* card body */
+.pl-card-body{padding:15px 15px 8px;flex:1;display:flex;flex-direction:column;gap:6px}
+.pl-card-title{font:700 .95rem/1.3 'Inter',sans-serif;color:var(--hp-txt);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-card-loc{display:flex;align-items:center;gap:4px;
+  font:.78rem/1 'Inter',sans-serif;color:var(--hp-muted)}
+.pl-card-loc .material-symbols-outlined{font-size:13px;color:var(--hp);flex-shrink:0}
+
+/* feature row */
+.pl-feats{display:flex;gap:14px;padding:10px 0 0;
+  border-top:1px solid var(--hp-border);flex-wrap:wrap}
+.pl-feat{display:flex;align-items:center;gap:4px;
+  font:.75rem/1 'Inter',sans-serif;color:var(--hp-muted)}
+.pl-feat .material-symbols-outlined{font-size:14px;color:var(--hp)}
+.pl-feat b{color:var(--hp-txt);font-weight:700}
+
+/* card footer */
+.pl-card-ft{padding:10px 15px 15px}
+.pl-card-btn{display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:10px;background:#e8f5e9;color:var(--hp);
+  border:none;border-radius:100px;font:600 .85rem/1 'Inter',sans-serif;
+  cursor:pointer;text-decoration:none;transition:all .22s;position:relative;overflow:hidden}
+.pl-card-btn::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.3) 50%,transparent 60%);
+  transform:translateX(-100%);transition:transform .45s ease}
+.pl-card-btn:hover{background:var(--hp);color:#fff}
+.pl-card-btn:hover::after{transform:translateX(100%)}
+.pl-card-btn .material-symbols-outlined{font-size:16px;transition:transform .2s}
+.pl-card-btn:hover .material-symbols-outlined{transform:translateX(3px)}
+
+/* ===== List view card ===== */
+.pl-grid.list-view .pl-card{flex-direction:row;height:160px}
+.pl-grid.list-view .pl-card-img{width:220px;height:100%;flex-shrink:0;border-radius:0}
+.pl-grid.list-view .pl-card-body{justify-content:center}
+.pl-grid.list-view .pl-card-ft{display:flex;align-items:center;padding:15px;margin-left:auto}
+.pl-grid.list-view .pl-card-btn{width:auto;white-space:nowrap;padding:10px 20px}
+
+/* ===== Empty state ===== */
+.pl-empty{grid-column:1/-1;text-align:center;padding:72px 30px;
+  background:#fff;border-radius:20px;border:2px dashed var(--hp-border)}
+.pl-empty-icon{width:80px;height:80px;border-radius:50%;background:#e8f5e9;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.pl-empty-icon .material-symbols-outlined{font-size:36px;color:var(--hp-lt)}
+.pl-empty h3{font:700 1.3rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:10px}
+.pl-empty p{font:.9rem/1.6 'Inter',sans-serif;color:var(--hp-muted);
+  max-width:380px;margin:0 auto 24px}
+.pl-empty-btn{display:inline-flex;align-items:center;gap:7px;
+  padding:11px 26px;background:var(--hp);color:#fff;border-radius:100px;
+  font:600 .88rem/1 'Inter',sans-serif;text-decoration:none;transition:all .2s}
+.pl-empty-btn:hover{background:var(--hp-dk);color:#fff;transform:translateY(-2px)}
+
+/* ===== Pagination ===== */
+.pl-pagination{display:flex;justify-content:center;gap:6px;margin-top:44px;
+  list-style:none;padding:0;flex-wrap:wrap}
+.pl-pagination .page-link{width:42px;height:42px;display:flex;align-items:center;
+  justify-content:center;border-radius:12px;font:600 .88rem/1 'Inter',sans-serif;
+  border:1.5px solid var(--hp-border);color:var(--hp-txt);background:#fff;
+  transition:all .2s;text-decoration:none}
+.pl-pagination .page-link:hover{background:var(--hp);border-color:var(--hp);color:#fff}
+.pl-pagination .page-item.active .page-link{background:var(--hp);border-color:var(--hp);
+  color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.3)}
+
+/* ===== Reveal ===== */
+@keyframes pl-up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.pl-reveal{opacity:0;transform:translateY(30px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+.pl-reveal.pl-in{opacity:1;transform:none}
+
+/* ===== Responsive ===== */
+@media(max-width:992px){
+  .pl-filter-col{display:none}
+  .pl-filter-col.open{display:block;position:fixed;inset:0;z-index:1050;overflow:auto;
+    padding:24px 16px;background:rgba(0,0,0,.5)}
+  .pl-filter-col.open .pl-filter{position:relative;z-index:2;max-width:400px;margin:80px auto 0}
+  .pl-mobile-filter{display:flex}
+  .pl-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+}
+@media(max-width:992px){
+  .pl-hero-text{text-align:center}
+  .pl-hero-text .pl-hero-stats{justify-content:center;margin:0 auto}
+  .pl-search{margin:0 auto 32px}
+  .pl-hero-sub{margin:0 auto 30px}
+}
+@media(max-width:768px){
+  .pl-hero{padding:56px 0 72px}
+  .pl-hero-title{font-size:2.2rem}
+  .pl-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .pl-grid.list-view .pl-card{flex-direction:column;height:auto}
+  .pl-grid.list-view .pl-card-img{width:100%;height:180px}
+  .pl-grid.list-view .pl-card-ft{padding:0 14px 14px;margin-left:0}
+  .pl-grid.list-view .pl-card-btn{width:100%}
+}
+@media(max-width:576px){
+  .pl-hero-title{font-size:1.8rem}
+  .pl-search{flex-direction:column;border-radius:16px;padding:8px}
+  .pl-search button{border-radius:10px;justify-content:center}
+  .pl-hero-stats{flex-direction:column;gap:14px;max-width:220px;padding:18px 24px}
+  .pl-hs:not(:last-child)::after{display:none}
+  .pl-grid{grid-template-columns:1fr}
+}
 </style>
 
-<!-- Hero -->
-<section class="m3-sale-hero hero-lattice">
-    <div class="floating-sq floating-sq--md floating-sq--c1 floating-sq--a2 floating-sq--d1" style="top:10%;left:5%"></div>
-    <div class="floating-sq floating-sq--sm floating-sq--c2 floating-sq--a1 floating-sq--d3" style="top:65%;left:12%"></div>
-    <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a3 floating-sq--d2" style="top:20%;right:6%"></div>
-    <div class="floating-sq floating-sq--xs floating-sq--c4 floating-sq--a5 floating-sq--d4" style="top:40%;right:35%"></div>
-    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a6 floating-sq--d5" style="bottom:-25px;left:-25px;transform:rotate(30deg)"></div>
+<div id="pl-progress"></div>
+
+<!-- ===== Hero ===== -->
+<section class="pl-hero hero-lattice">
+    <div class="pl-hero-bar"></div>
+
+    <!-- Orbs -->
+    <div class="pl-orb" style="width:500px;height:500px;background:rgba(46,125,50,.18);top:-160px;right:-160px;--od:10s"></div>
+    <div class="pl-orb" style="width:340px;height:340px;background:rgba(129,199,132,.12);bottom:-80px;left:-80px;--od:7.5s"></div>
+    <div class="pl-orb" style="width:200px;height:200px;background:rgba(67,160,71,.12);top:50%;left:20%;--od:12s"></div>
+
+    <!-- Particles -->
+    <div class="pl-particles">
+        <div class="pl-p" style="width:10px;height:10px;background:rgba(165,214,167,.55);top:14%;left:10%;--d:6s;--dl:0s"></div>
+        <div class="pl-p" style="width:6px;height:6px;background:rgba(255,255,255,.4);top:32%;left:22%;--d:8s;--dl:1.2s"></div>
+        <div class="pl-p" style="width:12px;height:12px;background:rgba(165,214,167,.3);top:66%;left:7%;--d:7s;--dl:.5s"></div>
+        <div class="pl-p" style="width:8px;height:8px;background:rgba(255,255,255,.35);top:22%;right:14%;--d:9s;--dl:2s"></div>
+        <div class="pl-p" style="width:5px;height:5px;background:rgba(165,214,167,.6);top:76%;right:20%;--d:6.5s;--dl:.8s"></div>
+        <div class="pl-p" style="width:9px;height:9px;background:rgba(255,255,255,.3);top:50%;right:8%;--d:7.5s;--dl:1.5s"></div>
+        <div class="pl-p" style="width:7px;height:7px;background:rgba(165,214,167,.45);top:82%;left:42%;--d:8.5s;--dl:3s"></div>
+    </div>
+
     <div class="container">
-        <div class="m3-sale-hero-inner">
-            <div class="m3-sale-hero-badge"><span class="material-symbols-outlined">real_estate_agent</span>Marketplace</div>
-            <h1>Properties <em>For Sale</em></h1>
-            <p>Browse houses, land, apartments, and more available for purchase across Rwanda. Find your dream property today.</p>
-            <form class="m3-sale-searchbox" method="GET" action="{% url 'sale_listings' %}">
-                <input type="text" name="q" placeholder="Search by title, city, or type..." value="{{ current_search }}">
-                <button type="submit"><span class="material-symbols-outlined" style="font-size:20px">search</span><span class="d-none d-sm-inline">Search</span></button>
-            </form>
-            <div class="m3-sale-hero-stats">
-                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ listings.paginator.count|default:"0" }}</div><div class="m3-sale-hero-stat-lbl">Found</div></div>
-                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ total_for_sale|default:"—" }}</div><div class="m3-sale-hero-stat-lbl">For Sale</div></div>
-                <div class="m3-sale-hero-stat"><div class="m3-sale-hero-stat-val">{{ total_for_rent|default:"—" }}</div><div class="m3-sale-hero-stat-lbl">For Rent</div></div>
+        <div class="row align-items-center g-4 g-xl-5">
+            <!-- Text column -->
+            <div class="col-lg-6">
+                <div class="pl-hero-text">
+                    <div class="pl-badge"><span class="material-symbols-outlined">real_estate_agent</span>Marketplace</div>
+                    <h1 class="pl-hero-title">Properties <em>For Sale</em><br>Across Rwanda</h1>
+                    <p class="pl-hero-sub">Browse verified houses, apartments, land, and commercial spaces. Find the perfect property that fits your life and budget.</p>
+                    <form class="pl-search" method="GET" action="{% url 'sale_listings' %}">
+                        <input type="text" name="q" placeholder="Search by title, city, or type..." value="{{ current_search }}">
+                        <button type="submit"><span class="material-symbols-outlined">search</span><span class="d-none d-sm-inline">Search</span></button>
+                    </form>
+                    <div class="pl-hero-stats">
+                        <div class="pl-hs"><span class="pl-hs-v">{{ listings.paginator.count|default:"0" }}</span><span class="pl-hs-l">Results</span></div>
+                        <div class="pl-hs"><span class="pl-hs-v">{{ total_for_sale|default:"—" }}</span><span class="pl-hs-l">For Sale</span></div>
+                        <div class="pl-hs"><span class="pl-hs-v">{{ total_for_rent|default:"—" }}</span><span class="pl-hs-l">For Rent</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Illustration column -->
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="pl-illust-wrap">
+                    <!-- Floating info cards -->
+                    <div class="pl-illust-card fc1">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="material-symbols-outlined pl-illust-card-icon" style="font-size:20px">sell</span>
+                            <div><div class="pl-illust-card-val">Best Price</div><div class="pl-illust-card-lbl">Guaranteed</div></div>
+                        </div>
+                    </div>
+                    <div class="pl-illust-card fc2">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="material-symbols-outlined pl-illust-card-icon" style="font-size:20px">verified</span>
+                            <div><div class="pl-illust-card-val">Verified</div><div class="pl-illust-card-lbl">All Listings</div></div>
+                        </div>
+                    </div>
+                    <!-- For Sale SVG Illustration -->
+                    <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Stars -->
+                      <circle cx="38" cy="28" r="1.5" fill="rgba(255,255,255,.7)"/><circle cx="88" cy="14" r="1" fill="rgba(255,255,255,.5)"/>
+                      <circle cx="148" cy="22" r="2" fill="rgba(255,255,255,.6)"/><circle cx="330" cy="16" r="1.5" fill="rgba(255,255,255,.5)"/>
+                      <circle cx="400" cy="28" r="1" fill="rgba(255,255,255,.7)"/><circle cx="440" cy="10" r="1.5" fill="rgba(255,255,255,.5)"/>
+                      <circle cx="210" cy="8" r="1" fill="rgba(255,255,255,.4)"/><circle cx="260" cy="18" r="1" fill="rgba(255,255,255,.4)"/>
+                      <!-- Moon -->
+                      <circle cx="438" cy="48" r="26" fill="rgba(255,220,80,.1)"/>
+                      <circle cx="438" cy="48" r="17" fill="rgba(255,220,80,.15)"/>
+                      <!-- Ground -->
+                      <rect x="0" y="308" width="480" height="72" fill="rgba(27,94,32,.35)"/>
+                      <rect x="0" y="322" width="480" height="58" fill="rgba(20,70,24,.4)"/>
+                      <!-- Driveway -->
+                      <polygon points="200,308 280,308 305,380 175,380" fill="rgba(255,255,255,.05)"/>
+                      <rect x="237" y="315" width="6" height="65" fill="rgba(255,255,255,.07)" rx="3"/>
+                      <!-- Main house body -->
+                      <rect x="108" y="172" width="264" height="148" rx="6" fill="rgba(255,255,255,.07)" stroke="rgba(165,214,167,.22)" stroke-width="1.5"/>
+                      <!-- Roof -->
+                      <polygon points="82,175 240,68 398,175" fill="rgba(165,214,167,.16)"/>
+                      <polygon points="96,175 240,76 384,175" fill="rgba(165,214,167,.09)"/>
+                      <!-- Chimney -->
+                      <rect x="294" y="86" width="22" height="54" rx="3" fill="rgba(255,255,255,.1)"/>
+                      <rect x="290" y="83" width="30" height="9" rx="2" fill="rgba(255,255,255,.13)"/>
+                      <circle cx="305" cy="74" r="7" fill="rgba(255,255,255,.04)"/>
+                      <circle cx="312" cy="65" r="5" fill="rgba(255,255,255,.03)"/>
+                      <!-- Door -->
+                      <rect x="202" y="252" width="76" height="68" rx="6" fill="rgba(165,214,167,.18)" stroke="rgba(165,214,167,.28)" stroke-width="1.5"/>
+                      <path d="M202,266 Q240,246 278,266" fill="rgba(165,214,167,.08)" stroke="rgba(165,214,167,.22)" stroke-width="1"/>
+                      <circle cx="265" cy="288" r="4.5" fill="rgba(255,220,80,.85)"/>
+                      <rect x="212" y="255" width="56" height="24" rx="12" fill="rgba(255,220,80,.1)" stroke="rgba(165,214,167,.18)" stroke-width="1"/>
+                      <!-- Windows ground floor -->
+                      <rect x="122" y="198" width="64" height="50" rx="5" fill="rgba(255,220,80,.16)" stroke="rgba(165,214,167,.22)" stroke-width="1"/>
+                      <line x1="154" y1="198" x2="154" y2="248" stroke="rgba(165,214,167,.18)" stroke-width="1"/>
+                      <line x1="122" y1="223" x2="186" y2="223" stroke="rgba(165,214,167,.18)" stroke-width="1"/>
+                      <rect x="294" y="198" width="64" height="50" rx="5" fill="rgba(255,220,80,.16)" stroke="rgba(165,214,167,.22)" stroke-width="1"/>
+                      <line x1="326" y1="198" x2="326" y2="248" stroke="rgba(165,214,167,.18)" stroke-width="1"/>
+                      <line x1="294" y1="223" x2="358" y2="223" stroke="rgba(165,214,167,.18)" stroke-width="1"/>
+                      <!-- Windows upper floor -->
+                      <rect x="136" y="108" width="46" height="38" rx="4" fill="rgba(255,220,80,.14)" stroke="rgba(165,214,167,.2)" stroke-width="1"/>
+                      <line x1="159" y1="108" x2="159" y2="146" stroke="rgba(165,214,167,.15)" stroke-width="1"/>
+                      <rect x="298" y="108" width="46" height="38" rx="4" fill="rgba(255,220,80,.14)" stroke="rgba(165,214,167,.2)" stroke-width="1"/>
+                      <line x1="321" y1="108" x2="321" y2="146" stroke="rgba(165,214,167,.15)" stroke-width="1"/>
+                      <!-- FOR SALE sign post -->
+                      <rect x="54" y="242" width="3.5" height="70" rx="1.5" fill="rgba(255,255,255,.35)"/>
+                      <rect x="30" y="238" width="68" height="38" rx="7" fill="rgba(46,125,50,.88)" stroke="rgba(165,214,167,.55)" stroke-width="1.5"/>
+                      <text x="64" y="252" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" font-weight="900" fill="#fff" letter-spacing="1">FOR SALE</text>
+                      <text x="64" y="266" text-anchor="middle" font-family="Arial,sans-serif" font-size="7" fill="rgba(165,214,167,.9)" letter-spacing="0.5">PropertyHub</text>
+                      <circle cx="55.75" cy="238" r="3.5" fill="rgba(165,214,167,.7)"/>
+                      <!-- Trees -->
+                      <rect x="28" y="266" width="8" height="50" rx="2" fill="rgba(255,255,255,.12)"/>
+                      <ellipse cx="32" cy="250" rx="22" ry="26" fill="rgba(46,125,50,.42)"/>
+                      <ellipse cx="32" cy="239" rx="15" ry="18" fill="rgba(67,160,71,.38)"/>
+                      <rect x="408" y="262" width="8" height="52" rx="2" fill="rgba(255,255,255,.12)"/>
+                      <ellipse cx="412" cy="245" rx="23" ry="27" fill="rgba(46,125,50,.38)"/>
+                      <ellipse cx="412" cy="233" rx="16" ry="19" fill="rgba(67,160,71,.34)"/>
+                      <!-- Shrubs -->
+                      <ellipse cx="98" cy="312" rx="16" ry="9" fill="rgba(46,125,50,.42)"/>
+                      <ellipse cx="382" cy="312" rx="14" ry="8" fill="rgba(46,125,50,.38)"/>
+                      <!-- Location pin -->
+                      <circle cx="240" cy="52" r="20" fill="rgba(46,125,50,.5)" stroke="rgba(165,214,167,.65)" stroke-width="2"/>
+                      <path d="M240 42 a8 8 0 0 1 0 16 a8 8 0 0 1 0-16z" fill="rgba(165,214,167,.9)"/>
+                      <circle cx="240" cy="50" r="3" fill="rgba(9,26,15,.85)"/>
+                      <line x1="240" y1="58" x2="240" y2="66" stroke="rgba(165,214,167,.9)" stroke-width="2.5" stroke-linecap="round"/>
+                      <!-- Key badge top right -->
+                      <circle cx="390" cy="115" r="22" fill="rgba(255,255,255,.08)" stroke="rgba(255,220,80,.35)" stroke-width="1.5"/>
+                      <circle cx="384" cy="112" r="7" fill="none" stroke="rgba(255,220,80,.7)" stroke-width="2.5"/>
+                      <line x1="389" y1="112" x2="403" y2="112" stroke="rgba(255,220,80,.7)" stroke-width="2.5" stroke-linecap="round"/>
+                      <line x1="401" y1="112" x2="401" y2="118" stroke="rgba(255,220,80,.7)" stroke-width="2" stroke-linecap="round"/>
+                      <line x1="397" y1="112" x2="397" y2="116" stroke="rgba(255,220,80,.7)" stroke-width="2" stroke-linecap="round"/>
+                      <!-- Sparkle dots -->
+                      <circle cx="72" cy="140" r="3" fill="rgba(165,214,167,.5)"/><circle cx="68" cy="132" r="1.5" fill="rgba(165,214,167,.35)"/>
+                      <circle cx="78" cy="128" r="2" fill="rgba(165,214,167,.4)"/>
+                      <circle cx="408" cy="180" r="2.5" fill="rgba(255,220,80,.5)"/>
+                      <circle cx="418" cy="170" r="1.5" fill="rgba(255,220,80,.35)"/>
+                      <circle cx="402" cy="172" r="2" fill="rgba(255,220,80,.4)"/>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Map Section -->
-<div class="sale-map-section" id="saleMapSection" style="display:none">
-    <div style="position:relative;height:460px;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2)">
-        <div id="saleListingsMap" style="width:100%;height:100%"></div>
-        <div style="position:absolute;top:14px;left:14px;z-index:1000;background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:12px;padding:10px 16px;color:#fff;font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)">
-            <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">location_on</span>
-            <span id="saleMapCount">0</span> properties on map
-        </div>
-    </div>
+<!-- Wave connector hero → content -->
+<div class="pl-wave" style="background:var(--hp-bg)">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:52px;display:block">
+        <path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60 Z" fill="#091a0f"/>
+    </svg>
+</div>
+<div class="pl-wave" style="background:#091a0f">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:52px;display:block">
+        <path d="M0,30 C240,0 480,60 720,30 C960,0 1200,60 1440,30 L1440,60 L0,60 Z" fill="var(--hp-bg)"/>
+    </svg>
 </div>
 
-<!-- Map Toggle Bar -->
-<div style="background:#0d2415;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2);padding:10px 0">
+<!-- ===== Map bar ===== -->
+<div class="pl-map-bar">
     <div class="container">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-            <span style="color:rgba(255,255,255,.6);font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:6px">
-                <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">map</span>
-                See all sale properties on a map
+        <div class="pl-map-bar-inner">
+            <span class="pl-map-hint">
+                <span class="material-symbols-outlined">map</span>
+                View all properties on an interactive map
             </span>
-            <button id="toggleSaleMap" onclick="toggleSaleMap()" style="background:rgba(40,167,69,.15);border:1px solid rgba(40,167,69,.35);color:#81c784;padding:8px 20px;border-radius:50px;font:.82rem 'Inter',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s">
-                <span class="material-symbols-outlined" style="font-size:16px">map</span>
+            <button class="pl-map-toggle" id="toggleSaleMap" onclick="toggleSaleMap()">
+                <span class="material-symbols-outlined">map</span>
                 <span id="saleMapBtnTxt">Show Map</span>
             </button>
         </div>
     </div>
 </div>
 
-<!-- Main -->
-<section class="m3-sale-main">
-    <div class="container m3-sale-content">
-        {% if messages %}{% for msg in messages %}<div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert" style="border-radius:12px">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+<!-- Map section -->
+<div class="sale-map-section" id="saleMapSection">
+    <div class="pl-map-inner">
+        <div id="saleListingsMap"></div>
+        <div class="pl-map-counter">
+            <span class="material-symbols-outlined">location_on</span>
+            <span id="saleMapCount">0</span> properties on map
+        </div>
+    </div>
+</div>
 
-        <div class="row">
-            <!-- Filters -->
-            <div class="col-lg-3 m3-sale-filter-col">
-                <div class="m3-sale-filter">
-                    <div class="m3-sale-filter-header">
-                        <h5><span class="material-symbols-outlined">tune</span> Filters</h5>
-                        <a href="{% url 'sale_listings' %}" class="m3-sale-clear">Clear All</a>
+<!-- ===== Main Content ===== -->
+<section class="pl-main">
+    <div class="container">
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }} alert-dismissible fade show"
+                 style="border-radius:12px;margin-bottom:20px" role="alert">
+                {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- ===== Filter Sidebar ===== -->
+            <div class="col-lg-3 pl-filter-col" id="filterCol">
+                <div class="pl-filter pl-reveal">
+                    <div class="pl-filter-head">
+                        <h5><span class="material-symbols-outlined">tune</span>Filters</h5>
+                        <a href="{% url 'sale_listings' %}" class="pl-filter-clear">Clear All</a>
                     </div>
-                    <div class="m3-sale-sec">
-                        <div class="m3-sale-sec-title">Property Type</div>
-                        <div class="m3-sale-chips">
-                            <a href="{% url 'sale_listings' %}?{% if current_search %}q={{ current_search }}&{% endif %}{% if current_city %}city={{ current_city }}&{% endif %}{% if current_min %}min_price={{ current_min }}&{% endif %}{% if current_max %}max_price={{ current_max }}{% endif %}" class="m3-sale-chip {% if not current_type %}active{% endif %}"><span class="material-symbols-outlined">select_all</span>All</a>
+
+                    <!-- Property Type -->
+                    <div class="pl-filter-sec">
+                        <div class="pl-filter-sec-title">
+                            <span class="material-symbols-outlined">home</span>Property Type
+                        </div>
+                        <div class="pl-chips">
+                            <a href="{% url 'sale_listings' %}?{% if current_search %}q={{ current_search }}&{% endif %}{% if current_city %}city={{ current_city }}&{% endif %}{% if current_min %}min_price={{ current_min }}&{% endif %}{% if current_max %}max_price={{ current_max }}{% endif %}"
+                               class="pl-chip {% if not current_type %}active{% endif %}">
+                                <span class="material-symbols-outlined">select_all</span>All
+                            </a>
                             {% for val, label in sale_property_types %}
-                            <a href="{% url 'sale_listings' %}?type={{ val }}{% if current_search %}&q={{ current_search }}{% endif %}{% if current_city %}&city={{ current_city }}{% endif %}{% if current_min %}&min_price={{ current_min }}{% endif %}{% if current_max %}&max_price={{ current_max }}{% endif %}" class="m3-sale-chip {% if current_type == val %}active{% endif %}">{{ label }}</a>
+                            <a href="{% url 'sale_listings' %}?type={{ val }}{% if current_search %}&q={{ current_search }}{% endif %}{% if current_city %}&city={{ current_city }}{% endif %}{% if current_min %}&min_price={{ current_min }}{% endif %}{% if current_max %}&max_price={{ current_max }}{% endif %}"
+                               class="pl-chip {% if current_type == val %}active{% endif %}">{{ label }}</a>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="m3-sale-sec">
-                        <div class="m3-sale-sec-title">Location</div>
+
+                    <!-- Location -->
+                    <div class="pl-filter-sec">
+                        <div class="pl-filter-sec-title">
+                            <span class="material-symbols-outlined">location_on</span>Location
+                        </div>
                         <form method="get" action="{% url 'sale_listings' %}">
                             {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
                             {% if current_search %}<input type="hidden" name="q" value="{{ current_search }}">{% endif %}
                             {% if current_min %}<input type="hidden" name="min_price" value="{{ current_min }}">{% endif %}
                             {% if current_max %}<input type="hidden" name="max_price" value="{{ current_max }}">{% endif %}
                             <div class="d-flex gap-2">
-                                <input type="text" name="city" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="e.g. Kigali" value="{{ current_city }}">
-                                <button type="submit" style="background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px">search</span></button>
+                                <input type="text" name="city" class="pl-filter-input" placeholder="e.g. Kigali" value="{{ current_city }}" style="flex:1">
+                                <button type="submit" class="pl-filter-btn" style="width:42px;padding:10px 0;flex-shrink:0">
+                                    <span class="material-symbols-outlined">search</span>
+                                </button>
                             </div>
                         </form>
                     </div>
-                    <div class="m3-sale-sec">
-                        <div class="m3-sale-sec-title">Price Range</div>
+
+                    <!-- Price Range -->
+                    <div class="pl-filter-sec">
+                        <div class="pl-filter-sec-title">
+                            <span class="material-symbols-outlined">payments</span>Price Range
+                        </div>
                         <form method="get" action="{% url 'sale_listings' %}">
                             {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
                             {% if current_search %}<input type="hidden" name="q" value="{{ current_search }}">{% endif %}
                             {% if current_city %}<input type="hidden" name="city" value="{{ current_city }}">{% endif %}
                             <div class="d-flex flex-column gap-2">
-                                <input type="number" name="min_price" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="Min Frw" value="{{ current_min }}">
-                                <input type="number" name="max_price" class="form-control" style="border-radius:8px;font-size:.9rem;border:1.5px solid var(--md-sys-color-outline-variant)" placeholder="Max Frw" value="{{ current_max }}">
-                                <button type="submit" class="m3-sale-chip active" style="justify-content:center;border:none;cursor:pointer"><span class="material-symbols-outlined">filter_list</span>Apply Price</button>
+                                <input type="number" name="min_price" class="pl-filter-input" placeholder="Min (Frw)" value="{{ current_min }}">
+                                <input type="number" name="max_price" class="pl-filter-input" placeholder="Max (Frw)" value="{{ current_max }}">
+                                <button type="submit" class="pl-filter-btn">
+                                    <span class="material-symbols-outlined">filter_list</span>Apply Filter
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Results -->
+            <!-- ===== Results ===== -->
             <div class="col-lg-9">
-                <button class="m3-sale-mobile-btn" onclick="document.querySelector('.m3-sale-filter-col').style.display=document.querySelector('.m3-sale-filter-col').style.display==='block'?'none':'block'"><span class="material-symbols-outlined">tune</span>Show Filters</button>
+                <!-- Mobile filter toggle -->
+                <button class="pl-mobile-filter" onclick="toggleFilter()">
+                    <span class="material-symbols-outlined">tune</span>Filters
+                    {% if current_type or current_city or current_min or current_max %}
+                    <span style="background:var(--hp);color:#fff;border-radius:100px;padding:2px 8px;font:.68rem/1 'Inter',sans-serif;font-weight:700;margin-left:4px">Active</span>
+                    {% endif %}
+                </button>
 
                 {% if listings %}
-                <div class="m3-sale-results-hdr">
-                    <div class="m3-sale-results-count">Showing <strong>{{ listings.paginator.count }}</strong> properties for sale</div>
+                <!-- Results header -->
+                <div class="pl-results-hdr pl-reveal">
+                    <div class="pl-results-count">
+                        Showing <strong>{{ listings.paginator.count }}</strong> propert{% if listings.paginator.count == 1 %}y{% else %}ies{% endif %} for sale
+                        {% if current_search %} for "<strong>{{ current_search }}</strong>"{% endif %}
+                        {% if current_city %} in <strong>{{ current_city }}</strong>{% endif %}
+                    </div>
+                    <div class="pl-view-toggle">
+                        <button class="pl-vt active" id="vt-grid" onclick="setView('grid')" title="Grid view">
+                            <span class="material-symbols-outlined">grid_view</span>
+                        </button>
+                        <button class="pl-vt" id="vt-list" onclick="setView('list')" title="List view">
+                            <span class="material-symbols-outlined">view_list</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="m3-sale-grid">
+
+                <!-- Cards grid -->
+                <div class="pl-grid" id="plGrid">
                     {% for p in listings %}
-                    <div class="m3-sale-card md-reveal">
-                        <div class="m3-sale-card-img">
-                            {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.title }}" loading="lazy">
-                            {% else %}<div class="m3-img-ph"><span class="material-symbols-outlined">home</span></div>{% endif %}
-                            <div class="m3-sale-img-top">
-                                <span class="m3-chip-type">{{ p.get_listing_type_display }}</span>
-                                <span class="m3-chip-kind">{{ p.get_property_type_display }}</span>
+                    <div class="pl-card" style="--ci-d:{{ forloop.counter0 }}00ms">
+                        <div class="pl-card-img">
+                            {% if p.image %}
+                                <img src="{{ p.image.url }}" alt="{{ p.title }}" loading="lazy">
+                            {% else %}
+                                <div class="pl-card-ph"><span class="material-symbols-outlined">home</span></div>
+                            {% endif %}
+                            <div class="pl-card-top">
+                                <span class="pl-tag-type">{{ p.get_listing_type_display }}</span>
+                                <span class="pl-tag-kind">{{ p.get_property_type_display }}</span>
                             </div>
-                            <div class="m3-sale-img-price">{{ p.price|floatformat:0 }} <small>Frw</small></div>
-                            {% if p.negotiable %}<span class="m3-neg-pill"><span class="material-symbols-outlined">swap_horiz</span>Neg.</span>{% endif %}
+                            <div class="pl-card-price">{{ p.price|floatformat:0 }} <small>Frw</small></div>
+                            {% if p.negotiable %}
+                            <span class="pl-neg"><span class="material-symbols-outlined">swap_horiz</span>Neg.</span>
+                            {% endif %}
                         </div>
-                        <div class="m3-sale-card-body">
-                            <div class="m3-sale-card-title">{{ p.title }}</div>
-                            <div class="m3-sale-card-loc"><span class="material-symbols-outlined">location_on</span>{{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}</div>
-                            <div class="m3-sale-feats-row">
-                                <span class="m3-feat-item"><span class="material-symbols-outlined">bed</span><b>{{ p.bedrooms|default:"—" }}</b>&nbsp;Beds</span>
-                                <span class="m3-feat-item"><span class="material-symbols-outlined">bathtub</span><b>{{ p.bathrooms|default:"—" }}</b>&nbsp;Bath</span>
-                                {% if p.size_sqm %}<span class="m3-feat-item"><span class="material-symbols-outlined">square_foot</span><b>{{ p.size_sqm|floatformat:0 }}</b>&nbsp;m²</span>{% endif %}
+                        <div class="pl-card-body">
+                            <div class="pl-card-title">{{ p.title }}</div>
+                            <div class="pl-card-loc">
+                                <span class="material-symbols-outlined">location_on</span>
+                                {{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}
+                            </div>
+                            <div class="pl-feats">
+                                <span class="pl-feat"><span class="material-symbols-outlined">bed</span><b>{{ p.bedrooms|default:"—" }}</b>&nbsp;Beds</span>
+                                <span class="pl-feat"><span class="material-symbols-outlined">bathtub</span><b>{{ p.bathrooms|default:"—" }}</b>&nbsp;Bath</span>
+                                {% if p.size_sqm %}<span class="pl-feat"><span class="material-symbols-outlined">square_foot</span><b>{{ p.size_sqm|floatformat:0 }}</b>&nbsp;m²</span>{% endif %}
                             </div>
                         </div>
-                        <div class="m3-sale-card-ft"><a href="{% url 'sale_property_detail' p.id %}" class="m3-sale-btn-view">View Details <span class="material-symbols-outlined">arrow_forward</span></a></div>
+                        <div class="pl-card-ft">
+                            <a href="{% url 'sale_property_detail' p.id %}" class="pl-card-btn">
+                                View Details <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
 
+                <!-- Pagination -->
                 {% if listings.has_other_pages %}
-                <ul class="m3-sale-pagination">
-                    {% if listings.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ listings.previous_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_left</span></a></li>{% endif %}
+                <ul class="pl-pagination">
+                    {% if listings.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ listings.previous_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}">
+                            <span class="material-symbols-outlined" style="font-size:18px">chevron_left</span>
+                        </a>
+                    </li>
+                    {% endif %}
                     {% for num in listings.paginator.page_range %}
-                    <li class="page-item {% if listings.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}">{{ num }}</a></li>
+                    <li class="page-item {% if listings.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}">{{ num }}</a>
+                    </li>
                     {% endfor %}
-                    {% if listings.has_next %}<li class="page-item"><a class="page-link" href="?page={{ listings.next_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}"><span class="material-symbols-outlined" style="font-size:18px">chevron_right</span></a></li>{% endif %}
+                    {% if listings.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ listings.next_page_number }}&q={{ current_search }}&type={{ current_type }}&city={{ current_city }}&min_price={{ current_min }}&max_price={{ current_max }}">
+                            <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
                 {% endif %}
 
                 {% else %}
-                <div class="m3-sale-empty">
-                    <div class="m3-sale-empty-icon"><span class="material-symbols-outlined">search_off</span></div>
-                    <h3>No Properties Found</h3>
-                    <p>Try adjusting your search criteria or browse all listings</p>
-                    <a href="{% url 'sale_listings' %}" class="m3-sale-btn-view" style="max-width:220px;margin:0 auto"><span class="material-symbols-outlined">refresh</span>Clear Filters</a>
+                <!-- Empty state -->
+                <div class="pl-grid">
+                    <div class="pl-empty pl-reveal">
+                        <div class="pl-empty-icon">
+                            <span class="material-symbols-outlined">search_off</span>
+                        </div>
+                        <h3>No Properties Found</h3>
+                        <p>We couldn't find any properties matching your search. Try different keywords, adjust filters, or browse all listings.</p>
+                        <a href="{% url 'sale_listings' %}" class="pl-empty-btn">
+                            <span class="material-symbols-outlined">refresh</span>Clear Filters
+                        </a>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -268,57 +718,82 @@
     </div>
 </section>
 
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-var saleMap = null;
-var saleMapInit = false;
-var saleData = {{ map_listings|safe }};
+/* ===== Scroll progress ===== */
+var prog=document.getElementById('pl-progress');
+window.addEventListener('scroll',function(){
+    var t=document.documentElement.scrollHeight-window.innerHeight;
+    if(prog&&t>0)prog.style.width=(window.scrollY/t*100)+'%';
+},{passive:true});
 
-var saleMarkerIcon = L.divIcon({
+/* ===== Reveal observer ===== */
+var rEls=document.querySelectorAll('.pl-reveal');
+if(rEls.length){
+    var rObs=new IntersectionObserver(function(en){
+        en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pl-in');rObs.unobserve(e.target)}});
+    },{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+    rEls.forEach(function(el){rObs.observe(el)});
+}
+
+/* ===== View toggle ===== */
+function setView(v){
+    var g=document.getElementById('plGrid');
+    var bg=document.getElementById('vt-grid'),bl=document.getElementById('vt-list');
+    if(v==='list'){g.classList.add('list-view');bl.classList.add('active');bg.classList.remove('active')}
+    else{g.classList.remove('list-view');bg.classList.add('active');bl.classList.remove('active')}
+}
+
+/* ===== Mobile filter ===== */
+function toggleFilter(){
+    var col=document.getElementById('filterCol');
+    col.classList.toggle('open');
+    document.body.style.overflow=col.classList.contains('open')?'hidden':'';
+}
+document.addEventListener('click',function(e){
+    var col=document.getElementById('filterCol');
+    if(col&&col.classList.contains('open')&&!col.querySelector('.pl-filter').contains(e.target)&&!e.target.closest('.pl-mobile-filter')){
+        col.classList.remove('open');document.body.style.overflow='';
+    }
+});
+
+/* ===== Map ===== */
+var saleMap=null,saleMapInit=false;
+var saleData={{ map_listings|safe }};
+var saleMarkerIcon=L.divIcon({
     html:'<div style="background:#f59e0b;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.45)"></div>',
     iconSize:[14,14],iconAnchor:[7,7],className:''
 });
-
 function toggleSaleMap(){
-    var sec = document.getElementById('saleMapSection');
-    var btn = document.getElementById('saleMapBtnTxt');
-    var visible = sec.style.display !== 'none';
-    if(visible){
-        sec.style.display='none'; btn.textContent='Show Map';
-    } else {
-        sec.style.display='block'; btn.textContent='Hide Map';
-        if(!saleMapInit){ initSaleMap(); saleMapInit=true; }
-    }
+    var sec=document.getElementById('saleMapSection');
+    var btn=document.getElementById('saleMapBtnTxt');
+    var vis=sec.style.display!=='none';
+    if(vis){sec.style.display='none';btn.textContent='Show Map'}
+    else{sec.style.display='block';btn.textContent='Hide Map';if(!saleMapInit){initSaleMap();saleMapInit=true}}
 }
-
 function initSaleMap(){
-    saleMap = L.map('saleListingsMap',{scrollWheelZoom:false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19
-    }).addTo(saleMap);
+    saleMap=L.map('saleListingsMap',{scrollWheelZoom:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(saleMap);
     saleMap.setView([-1.9441,30.0619],13);
-
-    var total = saleData.length, delay = 0;
-    document.getElementById('saleMapCount').textContent = total;
-
+    var total=saleData.length,delay=0;
+    document.getElementById('saleMapCount').textContent=total;
     saleData.forEach(function(p){
         setTimeout(function(){
-            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(p.address+', Rwanda'),
-                  {headers:{'Accept-Language':'en'}})
+            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(p.address+', Rwanda'),{headers:{'Accept-Language':'en'}})
             .then(function(r){return r.json()})
-            .then(function(data){
-                if(data&&data.length>0){
-                    var lat=parseFloat(data[0].lat), lng=parseFloat(data[0].lon);
-                    L.marker([lat,lng],{icon:saleMarkerIcon}).addTo(saleMap)
-                     .bindPopup('<div style="min-width:160px"><strong style="color:#1a2e1a;font-size:.9rem">'+p.name+'</strong><br>'
-                        +'<span style="color:#6c757d;font-size:.78rem">'+p.type+'</span><br>'
+            .then(function(d){
+                if(d&&d.length>0){
+                    L.marker([parseFloat(d[0].lat),parseFloat(d[0].lon)],{icon:saleMarkerIcon}).addTo(saleMap)
+                    .bindPopup('<div style="min-width:160px"><strong style="color:#1a2e1a;font-size:.88rem">'+p.name+'</strong><br>'
+                        +'<span style="color:#6c757d;font-size:.76rem">'+p.type+'</span><br>'
                         +'<strong style="color:#f59e0b;font-size:.88rem">'+parseInt(p.price).toLocaleString()+' Frw</strong><br>'
-                        +'<a href="'+p.url+'" style="color:#28a745;font-size:.8rem;font-weight:600">View details →</a></div>');
+                        +'<a href="'+p.url+'" style="color:#28a745;font-size:.78rem;font-weight:700">View details →</a></div>');
                 }
             }).catch(function(){});
-        }, delay);
-        delay += 1100;
+        },delay);
+        delay+=1100;
     });
 }
 </script>

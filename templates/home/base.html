@@ -14,64 +14,111 @@
     <link rel="stylesheet" href="{% static 'css/m3-theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile-responsive.css' %}">
     <style>
-    /* ===== Top Info Bar ===== */
+    /* ===== Top Info Bar — Redesigned ===== */
     .top-infobar{
-        position:fixed;top:0;left:0;right:0;height:36px;
-        background:linear-gradient(100deg,#061409 0%,#0d2415 30%,#122e1a 60%,#091c10 100%);
-        color:rgba(255,255,255,.8);z-index:1001;display:flex;align-items:center;
-        border-bottom:1px solid rgba(40,167,69,.3);
+        position:fixed;top:0;left:0;right:0;height:38px;
+        background:linear-gradient(90deg,
+            #030d06 0%,
+            #071a0c 15%,
+            #0b2714 35%,
+            #0f3019 55%,
+            #0b2714 75%,
+            #071a0c 90%,
+            #030d06 100%
+        );
+        color:rgba(255,255,255,.85);z-index:1001;display:flex;align-items:center;
         font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
         overflow:hidden;
+        box-shadow:0 2px 20px rgba(0,0,0,.55), 0 1px 0 rgba(40,167,69,.25);
     }
-    /* diagonal stripe texture overlay */
+    /* animated shimmer sweep */
     .top-infobar::before{
         content:'';position:absolute;inset:0;
-        background-image:repeating-linear-gradient(
-            110deg,
-            transparent 0px,transparent 18px,
-            rgba(40,167,69,.04) 18px,rgba(40,167,69,.04) 19px
+        background:linear-gradient(90deg,
+            transparent 0%,
+            rgba(40,167,69,.04) 20%,
+            rgba(102,187,106,.08) 50%,
+            rgba(40,167,69,.04) 80%,
+            transparent 100%
         );
+        background-size:200% 100%;
+        animation:tibShimmer 6s linear infinite;
         pointer-events:none;z-index:0;
     }
-    /* glowing accent line at very bottom */
+    @keyframes tibShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    /* glowing bottom border */
     .top-infobar::after{
-        content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
-        background:linear-gradient(90deg,transparent,rgba(102,187,106,.5) 40%,rgba(102,187,106,.5) 60%,transparent);
+        content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+        background:linear-gradient(90deg,
+            transparent 0%,
+            rgba(40,167,69,.0) 5%,
+            rgba(102,187,106,.7) 25%,
+            rgba(134,215,136,.9) 50%,
+            rgba(102,187,106,.7) 75%,
+            rgba(40,167,69,.0) 95%,
+            transparent 100%
+        );
+        animation:tibGlow 4s ease-in-out infinite alternate;
         pointer-events:none;
     }
-    /* floating rectangles */
-    .tib-rect{position:absolute;pointer-events:none;z-index:0;border-radius:3px}
-    .tib-rect-1{width:48px;height:14px;top:50%;left:6%;transform:translateY(-50%) rotate(-8deg);background:rgba(40,167,69,.13);animation:sqFloat 11s ease-in-out infinite}
-    .tib-rect-2{width:28px;height:8px;top:50%;left:20%;transform:translateY(-50%) rotate(5deg);background:rgba(255,255,255,.07);animation:sqDrift 14s ease-in-out infinite;animation-delay:-4s}
-    .tib-rect-3{width:60px;height:10px;top:50%;left:37%;transform:translateY(-50%) rotate(-4deg);background:rgba(40,167,69,.09);animation:sqFloat 13s ease-in-out infinite reverse;animation-delay:-7s}
-    .tib-rect-4{width:20px;height:20px;top:50%;left:58%;transform:translateY(-50%) rotate(12deg);background:rgba(102,187,106,.1);animation:sqPulse 9s ease-in-out infinite;animation-delay:-2s}
-    .tib-rect-5{width:44px;height:10px;top:50%;left:73%;transform:translateY(-50%) rotate(-6deg);background:rgba(255,255,255,.06);animation:sqDrift 15s ease-in-out infinite;animation-delay:-9s}
-    .tib-rect-6{width:24px;height:16px;top:50%;left:88%;transform:translateY(-50%) rotate(8deg);background:rgba(40,167,69,.12);animation:sqFloat 10s ease-in-out infinite;animation-delay:-5s}
-    /* ensure content sits above decorations */
+    @keyframes tibGlow{from{opacity:.6}to{opacity:1}}
+    /* content above decorations */
     .top-infobar .container{position:relative;z-index:1;height:100%}
-    .top-infobar .container{height:100%}
-    .tib-inner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:16px}
-    .tib-left{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.65);white-space:nowrap;flex-shrink:0}
-    .tib-left .material-symbols-outlined{font-size:14px;color:#66BB6A}
-    /* scrolling ticker */
-    .tib-ticker{flex:1;overflow:hidden;min-width:0;margin:0 10px;height:22px;display:flex;align-items:center;background:rgba(40,167,69,.1);border:1px solid rgba(40,167,69,.22);border-radius:4px;box-shadow:inset 0 1px 3px rgba(0,0,0,.2),0 0 10px rgba(40,167,69,.06);mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%)}
-    .tib-ticker-track{display:flex;gap:0;white-space:nowrap;animation:tibScroll 28s linear infinite}
+    .tib-inner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:12px}
+
+    /* LEFT: live dot + location */
+    .tib-left{display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0;
+        background:rgba(40,167,69,.1);border:1px solid rgba(40,167,69,.2);
+        border-radius:20px;padding:3px 12px 3px 8px}
+    .tib-live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;
+        box-shadow:0 0 6px rgba(74,222,128,.8);animation:tibLivePulse 1.8s ease infinite}
+    @keyframes tibLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
+    .tib-left .material-symbols-outlined{font-size:13px;color:#86efac}
+    .tib-left span:last-child{font-size:11px;font-weight:500;color:rgba(255,255,255,.8);letter-spacing:.3px}
+
+    /* TICKER: scrolling announcements */
+    .tib-ticker{flex:1;overflow:hidden;min-width:0;margin:0 8px;height:24px;
+        display:flex;align-items:center;position:relative;
+        mask-image:linear-gradient(90deg,transparent 0%,#000 5%,#000 95%,transparent 100%);
+        -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 5%,#000 95%,transparent 100%)}
+    .tib-ticker-track{display:flex;align-items:center;gap:0;white-space:nowrap;
+        animation:tibScroll 32s linear infinite}
     .tib-ticker-track:hover{animation-play-state:paused}
-    .tib-ticker-item{display:inline-flex;align-items:center;gap:6px;color:#fff;padding:0 36px;font-size:12px;font-weight:500;letter-spacing:.2px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-    .tib-ticker-item .material-symbols-outlined{font-size:13px;color:#81c784;flex-shrink:0}
-    .tib-ticker-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:#66BB6A;opacity:.9;margin:0 12px;vertical-align:middle}
     @keyframes tibScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .tib-right{display:flex;align-items:center;gap:0}
-    .tib-seg{display:flex;align-items:center;gap:5px;padding:0 12px;color:rgba(255,255,255,.8);border-left:1px solid rgba(255,255,255,.12);white-space:nowrap}
+    .tib-ticker-item{display:inline-flex;align-items:center;gap:7px;
+        color:rgba(255,255,255,.9);padding:0 32px;font-size:12px;font-weight:500;letter-spacing:.25px}
+    .tib-ticker-item .material-symbols-outlined{font-size:13px;color:#86efac;flex-shrink:0}
+    /* diamond separator between items */
+    .tib-ticker-dot{display:inline-flex;align-items:center;justify-content:center;
+        width:16px;height:16px;flex-shrink:0;
+        color:rgba(102,187,106,.55);font-size:7px;vertical-align:middle}
+    .tib-ticker-dot::before{content:'◆'}
+
+    /* RIGHT: segments */
+    .tib-right{display:flex;align-items:center;gap:0;flex-shrink:0}
+    .tib-seg{display:flex;align-items:center;gap:5px;padding:0 11px;
+        color:rgba(255,255,255,.72);white-space:nowrap;
+        border-left:1px solid rgba(255,255,255,.08)}
     .tib-seg:first-child{border-left:none}
-    .tib-seg .material-symbols-outlined{font-size:14px;color:#66BB6A}
-    .tib-weather-icon{font-size:16px;line-height:1}
-    #tib-time{font-variant-numeric:tabular-nums;letter-spacing:.3px;font-weight:500;color:#fff}
-    #tib-date{color:rgba(255,255,255,.75)}
-    #tib-temp{font-weight:500;color:#fff}
-    #tib-cond{color:rgba(255,255,255,.65);max-width:120px;overflow:hidden;text-overflow:ellipsis}
-    @media(max-width:768px){.tib-left{display:none}.tib-seg.tib-cond-seg{display:none}.tib-seg{padding:0 8px}}
-    @media(max-width:480px){.top-infobar{height:32px}.navbar-m3.has-infobar{top:36px!important}}
+    .tib-seg .material-symbols-outlined{font-size:13px;color:#86efac}
+    /* time segment has special weight */
+    #tib-time{font-variant-numeric:tabular-nums;letter-spacing:.4px;font-weight:600;
+        color:#fff;font-size:12px}
+    #tib-date{color:rgba(255,255,255,.6);font-size:11px}
+    #tib-temp{font-weight:600;color:#fff;font-size:12px}
+    #tib-cond{color:rgba(255,255,255,.55);font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+    .tib-weather-icon{font-size:15px;line-height:1}
+    @media(max-width:768px){
+        .tib-left{display:none}
+        .tib-seg.tib-cond-seg{display:none}
+        .tib-seg{padding:0 8px}
+        .tib-ticker{margin:0 4px}
+    }
+    @media(max-width:480px){
+        .top-infobar{height:32px}
+        .navbar-m3.has-infobar{top:36px!important}
+        .tib-right .tib-seg:not(:last-child){display:none}
+    }
     /* ── Navbar: pill-shaped floating capsule ── */
     .navbar-m3{
         background-color:#0d2415;
@@ -444,12 +491,10 @@
 
     <!-- Top Info Bar (homepage only) -->
     {% if show_infobar %}<div class="top-infobar" id="topInfobar">
-        <span class="tib-orb tib-orb-1" aria-hidden="true"></span>
-        <span class="tib-orb tib-orb-2" aria-hidden="true"></span>
-        <span class="tib-orb tib-orb-3" aria-hidden="true"></span>
         <div class="container">
             <div class="tib-inner">
                 <div class="tib-left">
+                    <span class="tib-live-dot" aria-hidden="true"></span>
                     <span class="material-symbols-outlined">location_on</span>
                     <span>Kigali, Rwanda</span>
                 </div>

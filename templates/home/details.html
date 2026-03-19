@@ -7,18 +7,27 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 /* ═══ RESET & BASE ═══ */
-.det-page{min-height:100vh;padding-top:80px}
+.det-page{min-height:100vh;padding-top:0}
 
 /* ═══ GALLERY SLIDER ═══ */
 .det-gallery{position:relative;background:#000;margin-bottom:0}
-/* Main slide area */
 .det-slides{position:relative;height:520px;overflow:hidden}
 .det-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease}
 .det-slide.active{opacity:1;z-index:1}
 .det-slide img{width:100%;height:100%;object-fit:cover;display:block}
-.det-slide-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.78) 100%)}
+/* Improved overlay: subtle blur vignette for better text readability */
+.det-slide-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.82) 100%);backdrop-filter:blur(0px);pointer-events:none}
+.det-slide.active .det-slide-overlay{backdrop-filter:blur(0px)}
+
 /* Hero text over slides */
-.det-hero-content{position:absolute;bottom:0;left:0;right:0;padding:40px 0 36px;z-index:5}
+.det-hero-content{position:absolute;bottom:0;left:0;right:0;padding:20px 0 28px;z-index:5;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 100%)}
+.det-hero-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.det-hero-left{flex:1;min-width:0}
+.det-hero-price-badge{background:rgba(40,167,69,.2);border:1px solid rgba(40,167,69,.5);backdrop-filter:blur(12px);border-radius:16px;padding:12px 20px;text-align:right;flex-shrink:0}
+.det-hero-price-lbl{font:.65rem 'Inter',sans-serif;color:rgba(255,255,255,.5);letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px}
+.det-hero-price-val{font:700 1.9rem/1 'Inter',sans-serif;color:#fff;white-space:nowrap}
+.det-hero-price-val small{font:.8rem 'Inter',sans-serif;font-weight:400;color:rgba(255,255,255,.55);margin-left:5px}
+@media(max-width:576px){.det-hero-price-badge{display:none}}
 .det-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .det-breadcrumb a{color:rgba(255,255,255,.6);font-size:.8rem;text-decoration:none;transition:color .15s}
 .det-breadcrumb a:hover{color:#fff}
@@ -32,18 +41,27 @@
 .det-chip-rented{background:rgba(239,68,68,.25);color:#fca5a5;border:1px solid rgba(239,68,68,.35)}
 .det-chip-loc{background:transparent;color:rgba(255,255,255,.75);border:none;padding-left:0}
 .det-chip-loc .material-symbols-outlined{color:#81c784}
+
+/* View images button */
+.det-view-imgs-btn{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);z-index:7;display:inline-flex;align-items:center;gap:7px;padding:10px 22px;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);border-radius:50px;color:#fff;font:.8rem 'Inter',sans-serif;font-weight:600;cursor:pointer;transition:all .22s;letter-spacing:.3px;white-space:nowrap}
+.det-view-imgs-btn:hover{background:rgba(40,167,69,.35);border-color:rgba(40,167,69,.6);transform:translateX(-50%) translateY(-2px)}
+.det-view-imgs-btn .material-symbols-outlined{font-size:16px}
+
 /* Nav arrows */
 .det-slide-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:6;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);color:#fff;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;backdrop-filter:blur(6px)}
 .det-slide-btn:hover{background:rgba(0,0,0,.7);border-color:rgba(255,255,255,.5)}
 .det-slide-btn.prev{left:16px}
 .det-slide-btn.next{right:16px}
 .det-slide-btn .material-symbols-outlined{font-size:22px}
+
 /* Counter badge */
 .det-photo-badge{position:absolute;top:18px;right:18px;z-index:6;background:rgba(0,0,0,.55);color:#fff;padding:6px 14px;border-radius:50px;font-size:.8rem;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:6px}
+
 /* Dot indicators */
 .det-dots{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:6px}
 .det-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;border:none}
 .det-dot.active{background:#fff;width:24px;border-radius:4px}
+
 /* Thumbnail strip */
 .det-thumbs{display:flex;gap:6px;padding:8px 12px;background:#111;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#333 #111}
 .det-thumbs::-webkit-scrollbar{height:4px}
@@ -52,17 +70,33 @@
 .det-thumb.active{border-color:#28a745;opacity:1}
 .det-thumb:hover{opacity:.85}
 .det-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-/* Lightbox */
-.det-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+
+/* ═══ ENHANCED LIGHTBOX ═══ */
+.det-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.96);opacity:0;pointer-events:none;transition:opacity .25s;display:flex;flex-direction:column}
 .det-lightbox.open{opacity:1;pointer-events:all}
-.det-lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-.det-lb-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.det-lb-close:hover{background:rgba(255,255,255,.3)}
-.det-lb-prev,.det-lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:50px;height:50px;border-radius:50%;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.det-lb-prev:hover,.det-lb-next:hover{background:rgba(255,255,255,.25)}
-.det-lb-prev{left:20px}
-.det-lb-next{right:20px}
-.det-lb-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font:.85rem 'Inter',sans-serif}
+/* Toolbar */
+.det-lb-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);flex-shrink:0;z-index:2;border-bottom:1px solid rgba(255,255,255,.08)}
+.det-lb-bar-left,.det-lb-bar-right{display:flex;align-items:center;gap:5px}
+.det-lb-bar-center{flex:1;text-align:center;color:rgba(255,255,255,.5);font:.8rem 'Inter',sans-serif}
+.det-lb-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.det-lb-btn:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.32)}
+.det-lb-btn .material-symbols-outlined{font-size:18px}
+.det-lb-zoom-lbl{color:rgba(255,255,255,.55);font:.72rem 'Inter',sans-serif;min-width:36px;text-align:center;letter-spacing:.3px}
+/* Pan area */
+.det-lb-pan{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:grab}
+.det-lb-pan.grabbing{cursor:grabbing}
+.det-lb-pan img{max-width:92vw;max-height:calc(100vh - 100px);object-fit:contain;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform-origin:center center;user-select:none;-webkit-user-drag:none;pointer-events:none;will-change:transform;transition:transform .1s ease}
+/* Side nav */
+.det-lb-prev,.det-lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.18);color:#fff;width:46px;height:46px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:3;backdrop-filter:blur(6px)}
+.det-lb-prev:hover,.det-lb-next:hover{background:rgba(255,255,255,.18)}
+.det-lb-prev{left:14px}.det-lb-next{right:14px}
+.det-lb-prev .material-symbols-outlined,.det-lb-next .material-symbols-outlined{font-size:24px}
+/* Footer */
+.det-lb-foot{padding:6px 16px;text-align:center;color:rgba(255,255,255,.3);font:.7rem 'Inter',sans-serif;flex-shrink:0}
+/* Keyboard hint */
+.det-lb-hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);color:rgba(255,255,255,.3);font:.67rem 'Inter',sans-serif;padding:4px 14px;border-radius:20px;white-space:nowrap;pointer-events:none;animation:det-hint-fade 4s 2s forwards}
+@keyframes det-hint-fade{to{opacity:0}}
+
 @media(max-width:992px){.det-slides{height:400px}.det-gallery h1{font-size:2rem}}
 @media(max-width:768px){.det-slides{height:300px}.det-gallery h1{font-size:1.6rem}.det-thumb{width:60px;height:42px}}
 @media(max-width:576px){.det-slides{height:240px}.det-gallery h1{font-size:1.3rem}.det-slide-btn{width:36px;height:36px}}
@@ -83,13 +117,19 @@
 .det-btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
 .det-btn-ghost:hover{background:rgba(255,255,255,.18);color:#fff}
 
+/* Pulsing status dot in ribbon */
+@keyframes detPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.35)}}
+.det-status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:5px;flex-shrink:0}
+.det-status-dot-avail{background:#28a745;animation:detPulse 2s infinite}
+.det-status-dot-rented{background:#dc3545;animation:detPulse 2s infinite}
+
 /* ═══ BODY LAYOUT ═══ */
 .det-body{padding:40px 0 80px;background:#F5F7FA}
-.det-col-main{}
-.det-col-side{}
 
-/* ═══ CARDS ═══ */
-.det-card{background:#fff;border:1px solid #e8edf2;border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+/* ═══ CARDS — scroll-reveal animation ═══ */
+.det-card{background:#fff;border:1px solid #e8edf2;border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);opacity:0;transform:translateY(20px);transition:opacity .45s ease,transform .45s ease,box-shadow .2s}
+.det-card.det-visible{opacity:1;transform:translateY(0)}
+.det-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1)}
 .det-card-title{font:600 1rem/1 'Inter',sans-serif;color:#1a2e1a;margin-bottom:20px;display:flex;align-items:center;gap:9px}
 .det-card-title .material-symbols-outlined{font-size:20px;color:#28a745}
 
@@ -122,10 +162,10 @@
 .det-map-addr{display:flex;align-items:center;gap:8px;padding:12px 0 0;color:#6c757d;font-size:.85rem}
 .det-map-addr .material-symbols-outlined{font-size:18px;color:#28a745;flex-shrink:0}
 
-/* ═══ INQUIRY ═══ */
-.det-inquiry-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#f0f7f1;border-radius:14px 14px 0 0;margin:-28px -28px 22px;border-bottom:1px solid #d4edda}
-.det-inquiry-header .material-symbols-outlined{color:#28a745;font-size:20px}
-.det-inquiry-header span:last-child{font:600 .95rem/1 'Inter',sans-serif;color:#1a2e1a}
+/* ═══ INQUIRY — premium dark header ═══ */
+.det-inquiry-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:linear-gradient(135deg,#0a2e14 0%,#1a4a28 100%);border-radius:14px 14px 0 0;margin:-28px -28px 22px}
+.det-inquiry-header .material-symbols-outlined{color:#81c784;font-size:20px}
+.det-inquiry-header span:last-child{font:600 .95rem/1 'Inter',sans-serif;color:#fff}
 .det-form-label{font:.8rem/1 'Inter',sans-serif;font-weight:600;color:#495057;margin-bottom:7px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.4px}
 .det-form-label .material-symbols-outlined{font-size:15px;color:#28a745}
 .det-input{width:100%;background:#fff;border:1.5px solid #dee2e6;border-radius:10px;padding:12px 14px;color:#212529;font:.9rem 'Inter',sans-serif;transition:all .2s;outline:none}
@@ -191,25 +231,20 @@
 .det-modal .btn-close{filter:invert(1) opacity(.7)}
 .det-modal .modal-body{padding:24px;color:#fff}
 .det-modal .modal-footer{border-top:1px solid rgba(40,167,69,.18);padding:16px 24px;background:rgba(0,0,0,.15)}
-/* form labels */
 .det-modal .form-label{font:.78rem 'Inter',sans-serif;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .det-modal .form-label .material-symbols-outlined{font-size:15px;color:#66bb6a}
-/* inputs */
 .det-modal .form-control{background:rgba(255,255,255,.08);border:1.5px solid rgba(40,167,69,.3);border-radius:10px;padding:12px 14px;color:#fff;font:.9rem 'Inter',sans-serif;color-scheme:dark}
 .det-modal .form-control:focus{border-color:#28a745;background:rgba(255,255,255,.12);box-shadow:0 0 0 3px rgba(40,167,69,.15);color:#fff}
 .det-modal .form-control::placeholder{color:rgba(255,255,255,.3)}
-/* owner row inside modal — override light-theme styles */
 .det-modal .det-owner-row{background:rgba(40,167,69,.1);border-color:rgba(40,167,69,.25)}
 .det-modal .det-owner-av{background:rgba(40,167,69,.2);border-color:rgba(40,167,69,.35)}
 .det-modal .det-owner-av .material-symbols-outlined{color:#81c784}
 .det-modal .det-owner-name{color:#fff}
 .det-modal .det-owner-lbl{color:rgba(255,255,255,.5)}
-/* buttons */
 .det-modal-cancel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:50px;padding:10px 22px;font:.85rem 'Inter',sans-serif;cursor:pointer;transition:all .2s}
 .det-modal-cancel:hover{background:rgba(255,255,255,.15);color:#fff}
 .det-modal-confirm{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border:none;border-radius:50px;padding:10px 22px;font:.85rem 'Inter',sans-serif;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none}
 .det-modal-confirm:hover{box-shadow:0 4px 16px rgba(40,167,69,.4);color:#fff}
-/* contact rows inside modal */
 .det-modal-contact-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(40,167,69,.12);border:1px solid rgba(40,167,69,.25);border-radius:12px;color:#fff;text-decoration:none;margin-bottom:10px;font:.9rem 'Inter',sans-serif;transition:background .2s}
 .det-modal-contact-row:hover{background:rgba(40,167,69,.22);color:#fff}
 .det-modal-contact-row .material-symbols-outlined{color:#66bb6a;font-size:20px;flex-shrink:0}
@@ -217,7 +252,6 @@
 .det-modal-info-note .material-symbols-outlined{color:#66bb6a}
 
 /* Leaflet custom marker */
-.det-map-marker{background:#28a745;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .leaflet-popup-content-wrapper{background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:12px;color:#fff}
 .leaflet-popup-tip{background:#0d2415}
 .leaflet-popup-content{margin:12px 16px;font:.85rem 'Inter',sans-serif}
@@ -259,7 +293,7 @@
         <!-- Slide 0: main image -->
         <div class="det-slide active" data-index="0">
             {% if property.image %}
-                <img src="{{ property.image.url }}" alt="{{ property.name }}" onclick="openLightbox(0)">
+                <img src="{{ property.image.url }}" alt="{{ property.name }}" onclick="openLightbox(0)" style="cursor:zoom-in">
             {% else %}
                 <img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">
             {% endif %}
@@ -269,7 +303,7 @@
         <!-- Extra slides -->
         {% for img in extra_imgs %}
         <div class="det-slide" data-index="{{ forloop.counter }}">
-            <img src="{{ img.image.url }}" alt="{{ property.name }} photo {{ forloop.counter|add:1 }}" onclick="openLightbox({{ forloop.counter }})">
+            <img src="{{ img.image.url }}" alt="{{ property.name }} photo {{ forloop.counter|add:1 }}" onclick="openLightbox({{ forloop.counter }})" style="cursor:zoom-in">
             <div class="det-slide-overlay"></div>
         </div>
         {% endfor %}
@@ -284,13 +318,21 @@
                     <span class="sep material-symbols-outlined" style="font-size:14px">chevron_right</span>
                     <span class="cur">{{ property.name }}</span>
                 </div>
-                <h1>{{ property.name }}</h1>
-                <div class="det-hero-chips">
-                    <span class="det-chip det-chip-type"><span class="material-symbols-outlined" style="font-size:13px">apartment</span> {{ property.get_types_display }}</span>
-                    <span class="det-chip {% if property.status == 'Available' %}det-chip-avail{% else %}det-chip-rented{% endif %}">
-                        <span class="material-symbols-outlined" style="font-size:13px">{% if property.status == 'Available' %}check_circle{% else %}key{% endif %}</span> {{ property.status }}
-                    </span>
-                    <span class="det-chip det-chip-loc"><span class="material-symbols-outlined" style="font-size:15px">location_on</span> {{ property.address }}</span>
+                <div class="det-hero-row">
+                    <div class="det-hero-left">
+                        <h1>{{ property.name }}</h1>
+                        <div class="det-hero-chips">
+                            <span class="det-chip det-chip-type"><span class="material-symbols-outlined" style="font-size:13px">apartment</span> {{ property.get_types_display }}</span>
+                            <span class="det-chip {% if property.status == 'Available' %}det-chip-avail{% else %}det-chip-rented{% endif %}">
+                                <span class="material-symbols-outlined" style="font-size:13px">{% if property.status == 'Available' %}check_circle{% else %}key{% endif %}</span> {{ property.status }}
+                            </span>
+                            <span class="det-chip det-chip-loc"><span class="material-symbols-outlined" style="font-size:15px">location_on</span> {{ property.address }}</span>
+                        </div>
+                    </div>
+                    <div class="det-hero-price-badge">
+                        <div class="det-hero-price-lbl">Monthly Rent</div>
+                        <div class="det-hero-price-val">{{ property.price|floatformat:0 }}<small>Frw / mo</small></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -310,6 +352,12 @@
             <span class="material-symbols-outlined" style="font-size:15px">photo_camera</span>
             <span id="slideCounter">1</span> / {{ total_imgs }}
         </div>
+
+        <!-- View all images button -->
+        <button class="det-view-imgs-btn" onclick="openLightbox(0)" title="View all photos">
+            <span class="material-symbols-outlined">photo_library</span>
+            View Images
+        </button>
 
         <!-- Prev / Next (only if more than 1 photo) -->
         {% if total_imgs > 1 %}
@@ -355,6 +403,14 @@
                     <div class="det-rstat-l">Units</div>
                 </div>
                 <div class="det-rstat">
+                    <!-- Pulsing status dot -->
+                    <div class="det-rstat-v" style="display:flex;align-items:center;justify-content:center;gap:4px">
+                        <span class="det-status-dot {% if property.status == 'Available' %}det-status-dot-avail{% else %}det-status-dot-rented{% endif %}"></span>
+                        {{ property.status }}
+                    </div>
+                    <div class="det-rstat-l">Status</div>
+                </div>
+                <div class="det-rstat">
                     <div class="det-rstat-v">{{ property.date_added|date:"Y" }}</div>
                     <div class="det-rstat-l">Listed</div>
                 </div>
@@ -383,17 +439,17 @@
                     <div class="det-feats">
                         <div class="det-feat">
                             <span class="material-symbols-outlined">bed</span>
-                            <div class="det-feat-v">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                            <div class="det-feat-v" data-count-target="{% with u=property.units.first %}{{ u.bedrooms|default:0 }}{% endwith %}">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
                             <div class="det-feat-l">Bedrooms</div>
                         </div>
                         <div class="det-feat">
                             <span class="material-symbols-outlined">bathtub</span>
-                            <div class="det-feat-v">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                            <div class="det-feat-v" data-count-target="{% with u=property.units.first %}{{ u.bathrooms|default:0 }}{% endwith %}">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
                             <div class="det-feat-l">Bathrooms</div>
                         </div>
                         <div class="det-feat">
                             <span class="material-symbols-outlined">door_open</span>
-                            <div class="det-feat-v">{{ property.number_of_units }}</div>
+                            <div class="det-feat-v" data-count-target="{{ property.number_of_units|default:0 }}">{{ property.number_of_units }}</div>
                             <div class="det-feat-l">Units</div>
                         </div>
                         <div class="det-feat">
@@ -500,7 +556,7 @@
                                 <div class="det-pc-stat-l">Baths</div>
                             </div>
                             <div class="det-pc-stat">
-                                <div class="det-pc-stat-v" style="font-size:.8rem;{% if property.status == 'Available' %}color:#86efac{% else %}color:#fca5a5{% endif %}">{{ property.status }}</div>
+                                <div class="det-pc-stat-v det-pc-status-val">{{ property.status }}</div>
                                 <div class="det-pc-stat-l">Status</div>
                             </div>
                         </div>
@@ -675,11 +731,41 @@
     </div>
 </div>
 
+<!-- ── LIGHTBOX ── -->
+<div class="det-lightbox" id="detLightbox">
+    <!-- Toolbar -->
+    <div class="det-lb-bar">
+        <div class="det-lb-bar-left">
+            <button class="det-lb-btn" onclick="lbPrev()" title="Previous (←)"><span class="material-symbols-outlined">chevron_left</span></button>
+            <button class="det-lb-btn" onclick="lbNext()" title="Next (→)"><span class="material-symbols-outlined">chevron_right</span></button>
+        </div>
+        <div class="det-lb-bar-center" id="lbCounter"></div>
+        <div class="det-lb-bar-right">
+            <button class="det-lb-btn" onclick="lbZoomOut()" title="Zoom out (-)"><span class="material-symbols-outlined">zoom_out</span></button>
+            <span class="det-lb-zoom-lbl" id="lbZoomLbl">100%</span>
+            <button class="det-lb-btn" onclick="lbZoomIn()" title="Zoom in (+)"><span class="material-symbols-outlined">zoom_in</span></button>
+            <button class="det-lb-btn" onclick="lbReset()" title="Reset (0)"><span class="material-symbols-outlined">center_focus_strong</span></button>
+            <button class="det-lb-btn" onclick="lbRotate(-1)" title="Rotate left (Q)"><span class="material-symbols-outlined">rotate_left</span></button>
+            <button class="det-lb-btn" onclick="lbRotate(1)" title="Rotate right (E)"><span class="material-symbols-outlined">rotate_right</span></button>
+            <button class="det-lb-btn" id="lbFsBtn" onclick="lbToggleFs()" title="Fullscreen (F)"><span class="material-symbols-outlined">fullscreen</span></button>
+            <button class="det-lb-btn" onclick="closeLightbox()" title="Close (Esc)"><span class="material-symbols-outlined">close</span></button>
+        </div>
+    </div>
+    <!-- Pan area -->
+    <div class="det-lb-pan" id="lbPan">
+        <button class="det-lb-prev" onclick="lbPrev()"><span class="material-symbols-outlined">chevron_left</span></button>
+        <img id="lbImg" src="" alt="Property photo">
+        <button class="det-lb-next" onclick="lbNext()"><span class="material-symbols-outlined">chevron_right</span></button>
+        <div class="det-lb-hint">Scroll to zoom · Drag to pan · Q/E rotate · F fullscreen</div>
+    </div>
+    <div class="det-lb-foot">Use scroll wheel to zoom, drag to pan when zoomed</div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 
-    /* ── Move modals & lightbox to <body> so Bootstrap backdrop doesn't trap them ── */
+    /* ── Move modals & lightbox to <body> ── */
     document.querySelectorAll('.det-modal').forEach(function(m){
         document.body.appendChild(m);
     });
@@ -689,13 +775,63 @@ document.addEventListener('DOMContentLoaded', function(){
     /* ── Gallery ── */
     initGallery();
 
+    /* ── Card scroll-reveal (IntersectionObserver) ── */
+    if(window.IntersectionObserver){
+        var cardObs = new IntersectionObserver(function(entries){
+            entries.forEach(function(entry){
+                if(entry.isIntersecting){
+                    entry.target.classList.add('det-visible');
+                    cardObs.unobserve(entry.target);
+                }
+            });
+        },{threshold:0.1});
+        document.querySelectorAll('.det-card').forEach(function(c){ cardObs.observe(c); });
+
+        /* ── Feature counter animation (IntersectionObserver) ── */
+        var featObs = new IntersectionObserver(function(entries){
+            entries.forEach(function(entry){
+                if(!entry.isIntersecting) return;
+                entry.target.querySelectorAll('.det-feat-v[data-count-target]').forEach(function(el){
+                    var target = parseInt(el.getAttribute('data-count-target'), 10);
+                    if(isNaN(target) || target === 0) return;
+                    var start = 0;
+                    var duration = 800;
+                    var step = Math.ceil(duration / target);
+                    var timer = setInterval(function(){
+                        start++;
+                        el.textContent = start;
+                        if(start >= target){ el.textContent = target; clearInterval(timer); }
+                    }, step);
+                });
+                featObs.unobserve(entry.target);
+            });
+        },{threshold:0.5});
+        var featGrid = document.querySelector('.det-feats');
+        if(featGrid) featObs.observe(featGrid);
+    } else {
+        /* Fallback: immediately show all cards */
+        document.querySelectorAll('.det-card').forEach(function(c){ c.classList.add('det-visible'); });
+    }
+
+    /* ── Status dot colour in sidebar price card ── */
+    var statusVal = document.querySelector('.det-pc-status-val');
+    if(statusVal){
+        var txt = statusVal.textContent.trim();
+        if(txt === 'Available'){
+            statusVal.style.color = '#86efac';
+        } else {
+            statusVal.style.color = '#fca5a5';
+        }
+        statusVal.style.fontSize = '.8rem';
+    }
+
     /* ── Visit date defaults ── */
     var v = document.getElementById('visit_date');
     if(v){
         var d = new Date(); d.setDate(d.getDate()+1);
-        var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-        v.min = y+'-'+m+'-'+day+'T08:00';
-        v.value = y+'-'+m+'-'+day+'T10:00';
+        var y=d.getFullYear(), mo=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+        v.min = y+'-'+mo+'-'+day+'T08:00';
+        v.value = y+'-'+mo+'-'+day+'T10:00';
     }
 
     /* ── Auto-dismiss alerts ── */
@@ -706,13 +842,11 @@ document.addEventListener('DOMContentLoaded', function(){
     /* ── Leaflet Map ── */
     var address = "{{ property.address|escapejs }}";
     var map = L.map('propertyMap', {zoomControl:true, scrollWheelZoom:false});
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19
     }).addTo(map);
 
-    /* Custom green marker */
     var markerIcon = L.divIcon({
         html: '<div style="background:#28a745;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)"></div>',
         iconSize: [16, 16],
@@ -720,9 +854,7 @@ document.addEventListener('DOMContentLoaded', function(){
         className: ''
     });
 
-    /* Geocode with Nominatim */
     var geocodeUrl = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address + ', Rwanda');
-
     fetch(geocodeUrl, {headers:{'Accept-Language':'en'}})
         .then(function(r){return r.json()})
         .then(function(data){
@@ -733,7 +865,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 var marker = L.marker([lat, lng], {icon: markerIcon}).addTo(map);
                 marker.bindPopup('<strong>{{ property.name|escapejs }}</strong><br><span style="color:rgba(255,255,255,.6);font-size:.8rem">{{ property.address|escapejs }}</span>').openPopup();
             } else {
-                /* Fallback: centre on Kigali */
                 map.setView([-1.9441, 30.0619], 13);
                 L.marker([-1.9441, 30.0619], {icon: markerIcon}).addTo(map)
                     .bindPopup('<strong>{{ property.name|escapejs }}</strong><br><span style="color:rgba(255,255,255,.6);font-size:.8rem">{{ property.address|escapejs }}</span>').openPopup();
@@ -754,7 +885,6 @@ function initGallery(){
     thumbs = document.querySelectorAll('.det-thumb');
     total  = slides.length;
 
-    /* Build lightbox image list */
     slides.forEach(function(s){
         var img = s.querySelector('img');
         if(img) lbImages.push({src: img.src, alt: img.alt});
@@ -793,63 +923,101 @@ function startAutoPlay(){
     autoTimer = setInterval(function(){ nextSlide(); }, 4000);
 }
 
-/* Pause on hover, resume on leave */
 var gallery = document.getElementById('detGallery');
 if(gallery){
     gallery.addEventListener('mouseenter', function(){ clearInterval(autoTimer); });
     gallery.addEventListener('mouseleave', function(){ if(total > 1) startAutoPlay(); });
 }
 
-/* Keyboard navigation */
 document.addEventListener('keydown', function(e){
     if(document.querySelector('.det-lightbox.open')){
         if(e.key==='ArrowRight') lbNext();
-        if(e.key==='ArrowLeft')  lbPrev();
-        if(e.key==='Escape')     closeLightbox();
+        else if(e.key==='ArrowLeft') lbPrev();
+        else if(e.key==='Escape') closeLightbox();
+        else if(e.key==='+'||e.key==='=') lbZoomIn();
+        else if(e.key==='-') lbZoomOut();
+        else if(e.key==='0') lbReset();
+        else if(e.key==='e'||e.key==='E') lbRotate(1);
+        else if(e.key==='q'||e.key==='Q') lbRotate(-1);
+        else if(e.key==='f'||e.key==='F') lbToggleFs();
     } else {
         if(e.key==='ArrowRight'){ nextSlide(); startAutoPlay(); }
         if(e.key==='ArrowLeft'){  prevSlide(); startAutoPlay(); }
     }
 });
 
-/* ── Lightbox ── */
-var lbImages = [];
-var lbIndex  = 0;
-var lb       = document.getElementById('detLightbox');
-var lbImg   = document.getElementById('lbImg');
-var lbCtr   = document.getElementById('lbCounter');
+/* ── Enhanced Lightbox ── */
+var lbImages=[], lbIndex=0;
+var lb=document.getElementById('detLightbox');
+var lbImg=document.getElementById('lbImg');
+var lbCtr=document.getElementById('lbCounter');
+var lbPanEl=document.getElementById('lbPan');
+var lbZoomLbl=document.getElementById('lbZoomLbl');
+/* State */
+var lbZoom=1,lbMinZ=0.25,lbMaxZ=8,lbAngle=0,lbPx=0,lbPy=0;
+var lbDrag=false,lbDx=0,lbDy=0,lbPx0=0,lbPy0=0;
 
-function openLightbox(idx){
-    lbIndex = idx;
-    lbImg.src = lbImages[idx].src;
-    if(lbCtr) lbCtr.textContent = (idx+1) + ' / ' + lbImages.length;
-    lb.classList.add('open');
-    document.body.style.overflow='hidden';
+function lbApply(){
+    if(!lbImg) return;
+    lbImg.style.transform='translate('+lbPx+'px,'+lbPy+'px) rotate('+lbAngle+'deg) scale('+lbZoom+')';
+    if(lbZoomLbl) lbZoomLbl.textContent=Math.round(lbZoom*100)+'%';
 }
-function closeLightbox(){
-    lb.classList.remove('open');
-    document.body.style.overflow='';
+function lbReset(){ lbZoom=1;lbAngle=0;lbPx=0;lbPy=0;lbApply(); }
+function lbZoomIn(){ lbZoom=Math.min(lbMaxZ,lbZoom*1.25);lbApply(); }
+function lbZoomOut(){ lbZoom=Math.max(lbMinZ,lbZoom/1.25);if(lbZoom<=1){lbPx=0;lbPy=0;}lbApply(); }
+function lbRotate(d){ lbAngle=(lbAngle+d*90+360)%360;lbPx=0;lbPy=0;lbApply(); }
+function lbToggleFs(){
+    var ic=document.querySelector('#lbFsBtn .material-symbols-outlined');
+    if(!document.fullscreenElement){ lb.requestFullscreen&&lb.requestFullscreen();if(ic)ic.textContent='fullscreen_exit'; }
+    else{ document.exitFullscreen&&document.exitFullscreen();if(ic)ic.textContent='fullscreen'; }
 }
-function lbNext(){
-    lbIndex = (lbIndex + 1) % lbImages.length;
-    lbImg.src = lbImages[lbIndex].src;
-    if(lbCtr) lbCtr.textContent = (lbIndex+1) + ' / ' + lbImages.length;
+function lbSetImg(idx){
+    if(lbImg) lbImg.src=lbImages[idx]?lbImages[idx].src:'';
+    if(lbCtr) lbCtr.textContent=(idx+1)+' / '+lbImages.length;
+    lbReset();
 }
-function lbPrev(){
-    lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
-    lbImg.src = lbImages[lbIndex].src;
-    if(lbCtr) lbCtr.textContent = (lbIndex+1) + ' / ' + lbImages.length;
+function openLightbox(idx){ lbIndex=idx;lbSetImg(idx);lb.classList.add('open');document.body.style.overflow='hidden'; }
+function closeLightbox(){ lb.classList.remove('open');document.body.style.overflow='';if(document.fullscreenElement)document.exitFullscreen(); }
+function lbNext(){ if(!lbImages.length)return;lbIndex=(lbIndex+1)%lbImages.length;lbSetImg(lbIndex); }
+function lbPrev(){ if(!lbImages.length)return;lbIndex=(lbIndex-1+lbImages.length)%lbImages.length;lbSetImg(lbIndex); }
+
+/* Scroll to zoom */
+if(lb) lb.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var f=e.deltaY>0?1/1.12:1.12;
+    lbZoom=Math.min(lbMaxZ,Math.max(lbMinZ,lbZoom*f));
+    if(lbZoom<=1){lbPx=0;lbPy=0;}
+    lbApply();
+},{passive:false});
+
+/* Mouse drag to pan */
+if(lbPanEl){
+    lbPanEl.addEventListener('mousedown',function(e){
+        if(lbZoom<=1)return;lbDrag=true;lbDx=e.clientX;lbDy=e.clientY;lbPx0=lbPx;lbPy0=lbPy;lbPanEl.classList.add('grabbing');
+    });
+    window.addEventListener('mousemove',function(e){
+        if(!lbDrag)return;lbPx=lbPx0+(e.clientX-lbDx);lbPy=lbPy0+(e.clientY-lbDy);lbApply();
+    });
+    window.addEventListener('mouseup',function(){ if(lbDrag){lbDrag=false;lbPanEl.classList.remove('grabbing');} });
 }
-if(lb) lb.addEventListener('click', function(e){ if(e.target===lb) closeLightbox(); });
+
+/* Touch: pinch-to-zoom + swipe */
+var lbT=[],lbPinch0=0,lbZoom0=1,lbSwipeX=0;
+if(lb){
+    lb.addEventListener('touchstart',function(e){
+        lbT=Array.from(e.touches);
+        if(lbT.length===2){var d=Math.hypot(lbT[0].clientX-lbT[1].clientX,lbT[0].clientY-lbT[1].clientY);lbPinch0=d;lbZoom0=lbZoom;}
+        else if(lbT.length===1){lbSwipeX=lbT[0].clientX;}
+    },{passive:true});
+    lb.addEventListener('touchmove',function(e){
+        var t=Array.from(e.touches);
+        if(t.length===2){e.preventDefault();var d=Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);lbZoom=Math.min(lbMaxZ,Math.max(lbMinZ,lbZoom0*(d/lbPinch0)));lbApply();}
+    },{passive:false});
+    lb.addEventListener('touchend',function(e){
+        if(lbT.length===1&&lbZoom<=1.1){var dx=e.changedTouches[0].clientX-lbSwipeX;if(Math.abs(dx)>50){dx>0?lbPrev():lbNext();}}
+    },{passive:true});
+    lb.addEventListener('click',function(e){if(e.target===lb||e.target===lbPanEl)closeLightbox();});
+}
 </script>
-
-<!-- ── LIGHTBOX ── -->
-<div class="det-lightbox" id="detLightbox">
-    <button class="det-lb-close" onclick="closeLightbox()"><span class="material-symbols-outlined">close</span></button>
-    <button class="det-lb-prev" onclick="lbPrev()"><span class="material-symbols-outlined">chevron_left</span></button>
-    <img id="lbImg" src="" alt="Property photo">
-    <button class="det-lb-next" onclick="lbNext()"><span class="material-symbols-outlined">chevron_right</span></button>
-    <div class="det-lb-counter" id="lbCounter"></div>
-</div>
 
 {% endblock %}

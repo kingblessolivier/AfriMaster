@@ -272,6 +272,17 @@
         .m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}
     }
 
+    /* ===== Music Icon Button (hero) ===== */
+    .hp-music-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px 9px 12px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:100px;color:rgba(255,255,255,.75);font:500 .78rem/1 'Inter',sans-serif;cursor:pointer;transition:all .25s;white-space:nowrap;flex-shrink:0}
+    .hp-music-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.38);color:#fff}
+    .hp-music-btn.playing{background:rgba(40,167,69,.18);border-color:rgba(40,167,69,.45);color:#a5d6a7}
+    .hp-music-btn .material-symbols-outlined{font-size:18px;transition:all .25s}
+    /* tiny animated bars when playing */
+    .hp-music-bars{display:flex;align-items:flex-end;gap:2px;height:14px;overflow:hidden}
+    .hp-music-bars span{width:2.5px;border-radius:2px;background:currentColor;animation:hpBar linear infinite;transform-origin:bottom;opacity:0;transition:opacity .3s}
+    .hp-music-btn.playing .hp-music-bars span{opacity:1}
+    @keyframes hpBar{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
+
     /* ===== Scroll Progress Bar ===== */
     #hp-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;background:linear-gradient(90deg,#2e7d32,#66bb6a,#43a047);background-size:200%;animation:hp-bar-glow 2.5s linear infinite;pointer-events:none}
     @keyframes hp-bar-glow{0%{background-position:200% 50%}100%{background-position:-200% 50%}}
@@ -326,19 +337,8 @@
     @keyframes hp-ring-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
     /* ===== Hero Entrance Animations ===== */
-    @keyframes hp-hero-up{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
-    @keyframes hp-hero-right{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
-    @keyframes hp-hero-scale{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
-    .m3-hero-badge{animation:hp-hero-up .7s .15s cubic-bezier(.4,0,.2,1) both}
-    .m3-hero-title{animation:hp-hero-up .8s .3s cubic-bezier(.4,0,.2,1) both}
-    .m3-hero-sub{animation:hp-hero-up .7s .5s cubic-bezier(.4,0,.2,1) both}
-    .m3-hero-search{animation:hp-hero-up .7s .65s cubic-bezier(.4,0,.2,1) both}
-    .m3-hero-btns{animation:hp-hero-up .7s .8s cubic-bezier(.4,0,.2,1) both}
-    .m3-hv{animation:hp-hero-right .9s .4s cubic-bezier(.4,0,.2,1) both}
-    .m3-house-stats{animation:hp-hero-scale .7s 1s cubic-bezier(.4,0,.2,1) both}
-
     /* ===== Stats strip entrance ===== */
-    .m3-stats-inner{animation:hp-hero-up .8s .2s cubic-bezier(.4,0,.2,1) both}
+    /* hero entrance animations removed — no more movement on reload */
 
     /* ===== Universal section reveal base ===== */
     .hp-auto-reveal{opacity:0;transform:translateY(36px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
@@ -383,6 +383,7 @@
 
     /* ===== Wave connector subtle parallax tint ===== */
     .sec-wave{position:relative;z-index:3}
+
 </style>
 
 <div id="hp-progress"></div>
@@ -402,7 +403,9 @@
     <div class="floating-sq floating-sq--lg floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:10%;left:6%;transform:rotate(12deg)"></div>
     <div class="floating-sq floating-sq--xl floating-sq--c3 floating-sq--a3 floating-sq--d3" style="top:18%;right:6%"></div>
     <div class="floating-sq floating-sq--2xl floating-sq--c5 floating-sq--a6 floating-sq--d1" style="bottom:-40px;right:-40px;transform:rotate(25deg)"></div>
-    <div class="container">
+
+
+    <div class="container" style="position:relative;z-index:2">
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <div class="m3-hero-inner">
@@ -416,6 +419,17 @@
                     <div class="m3-hero-btns">
                         <a href="{% url 'sale_listings' %}" class="m3-btn-filled"><span class="material-symbols-outlined" style="font-size:20px">real_estate_agent</span>Buy Property</a>
                         <a href="{% url 'property_list' %}" class="m3-btn-outline-w"><span class="material-symbols-outlined" style="font-size:20px">apartment</span>Rent Property</a>
+                        <!-- Music toggle — click to start/stop ambient sound -->
+                        <button type="button" class="hp-music-btn" id="hpMusicBtn" title="Toggle ambient music">
+                            <span class="material-symbols-outlined" id="hpMusicIcon">music_note</span>
+                            <div class="hp-music-bars" aria-hidden="true">
+                                <span style="animation-duration:.55s;animation-delay:0s"></span>
+                                <span style="animation-duration:.4s;animation-delay:.12s"></span>
+                                <span style="animation-duration:.65s;animation-delay:.06s"></span>
+                                <span style="animation-duration:.45s;animation-delay:.18s"></span>
+                            </div>
+                            <span id="hpMusicLabel">Music</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1301,5 +1315,102 @@ function dismissSplash(){
     if(s){s.classList.add('ws-out');setTimeout(function(){s.style.display='none'},900)}
 }
 (function(){setTimeout(dismissSplash,4800)})();
+</script>
+
+<script>
+/* ── SomaFM Groove Salad — free ambient radio stream ──
+   No API key. No registration. Just a direct stream URL.
+   https://somafm.com/groovesalad/
+─────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  /* SomaFM Groove Salad: slow ambient / downtempo — free forever */
+  var STREAMS = [
+    'https://ice6.somafm.com/groovesalad-128-mp3',
+    'https://ice5.somafm.com/groovesalad-128-mp3',
+    'https://ice4.somafm.com/groovesalad-128-mp3',
+    'https://ice2.somafm.com/groovesalad-128-mp3',
+  ];
+
+  var audio = null;
+  var fadeTimer = null;
+
+  function getAudio() {
+    if (audio) return audio;
+    audio = new Audio();
+    audio.preload = 'none';
+    audio.volume  = 0;
+    /* try fallback streams if one fails */
+    var idx = 0;
+    audio.addEventListener('error', function () {
+      idx++;
+      if (idx < STREAMS.length) {
+        audio.src = STREAMS[idx];
+        audio.load();
+        audio.play().catch(function(){});
+      }
+    });
+    audio.src = STREAMS[0];
+    return audio;
+  }
+
+  function fadeIn(a, target) {
+    clearInterval(fadeTimer);
+    a.volume = 0;
+    fadeTimer = setInterval(function () {
+      a.volume = Math.min(+(a.volume + 0.04).toFixed(2), target);
+      if (a.volume >= target) clearInterval(fadeTimer);
+    }, 80);
+  }
+
+  function fadeOut(a, cb) {
+    clearInterval(fadeTimer);
+    fadeTimer = setInterval(function () {
+      a.volume = Math.max(+(a.volume - 0.04).toFixed(2), 0);
+      if (a.volume <= 0) {
+        clearInterval(fadeTimer);
+        a.pause();
+        if (cb) cb();
+      }
+    }, 80);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn   = document.getElementById('hpMusicBtn');
+    var icon  = document.getElementById('hpMusicIcon');
+    var label = document.getElementById('hpMusicLabel');
+    if (!btn) return;
+
+    var on = false;
+
+    btn.addEventListener('click', function () {
+      if (!on) {
+        on = true;
+        btn.classList.add('playing');
+        if (icon)  icon.textContent = 'pause';
+        if (label) label.textContent = 'Groove Salad';
+
+        var a = getAudio();
+        a.load();
+        a.play().then(function () {
+          fadeIn(a, 0.55);
+        }).catch(function () {
+          /* browser blocked — show feedback */
+          on = false;
+          btn.classList.remove('playing');
+          if (icon)  icon.textContent = 'music_note';
+          if (label) label.textContent = 'Music';
+        });
+      } else {
+        on = false;
+        btn.classList.remove('playing');
+        if (icon)  icon.textContent = 'music_note';
+        if (label) label.textContent = 'Music';
+        fadeOut(getAudio());
+      }
+    });
+  });
+}());
 </script>
 {% endblock %}

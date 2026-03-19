@@ -9,15 +9,28 @@
     .m3-prop-hero{margin-top:112px;padding:70px 20px 60px;position:relative;overflow:hidden}
     .m3-prop-hero::before{content:'';position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.03)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L0,320Z"/></svg>') bottom/cover no-repeat}
     .m3-prop-hero::after{content:'';position:absolute;width:300px;height:300px;top:-50px;right:-50px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .m3-prop-hero-inner{position:relative;z-index:2;text-align:center;max-width:700px;margin:0 auto}
+    .m3-prop-hero-inner{position:relative;z-index:2}
     .m3-prop-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(40,167,69,.2);color:var(--md-sys-color-inverse-primary);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(40,167,69,.3)}
     .m3-prop-hero-badge .material-symbols-outlined{font-size:16px}
     .m3-prop-hero h1{font:500 2.6rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:12px}
     .m3-prop-hero h1 span{background:linear-gradient(135deg,var(--md-sys-color-inverse-primary),var(--md-sys-color-tertiary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .m3-prop-hero p{color:rgba(255,255,255,.7);font:var(--md-sys-typescale-body-large);margin-bottom:32px;line-height:1.6}
+    .pr-hero-text{text-align:left}
 
     /* Search */
+    .pr-hero-text .m3-search-wrap{max-width:100%;margin:0}
     .m3-search-wrap{max-width:580px;margin:0 auto}
+
+    /* Illustration */
+    @keyframes pr-illust-in{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes pr-fc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    @keyframes pr-key-spin{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+    .pr-illust-wrap{position:relative;animation:pr-illust-in .9s cubic-bezier(.22,.68,0,1.2) .3s both}
+    .pr-illust-card{position:absolute;background:rgba(255,255,255,.12);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:10px 16px;display:flex;align-items:center;gap:10px;animation:pr-fc-float 3.5s ease-in-out infinite}
+    .pr-illust-card .pr-fc-icon{width:36px;height:36px;border-radius:10px;background:rgba(40,167,69,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .pr-illust-card .pr-fc-icon svg{width:18px;height:18px}
+    .pr-illust-card .pr-fc-lbl{font:.7rem 'Inter',sans-serif;color:rgba(255,255,255,.6);line-height:1}
+    .pr-illust-card .pr-fc-val{font:.85rem 'Inter',sans-serif;font-weight:700;color:#fff;line-height:1.3}
     .m3-search-box{display:flex;background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:var(--md-sys-shape-corner-full);padding:6px;border:1px solid rgba(255,255,255,.15);transition:all 300ms var(--md-sys-motion-easing-standard)}
     .m3-search-box:focus-within{background:rgba(255,255,255,.18);border-color:rgba(40,167,69,.5);box-shadow:0 0 0 4px rgba(40,167,69,.15)}
     .m3-search-box input{flex:1;background:transparent;border:none;padding:14px 24px;color:#fff;font:var(--md-sys-typescale-body-large);outline:none}
@@ -26,7 +39,7 @@
     .m3-search-box button:hover{box-shadow:var(--md-sys-elevation-1)}
 
     /* Stats */
-    .m3-hero-stats{display:flex;justify-content:center;gap:40px;margin-top:36px;flex-wrap:wrap}
+    .m3-hero-stats{display:flex;justify-content:flex-start;gap:40px;margin-top:36px;flex-wrap:wrap;margin-left:0}
     .m3-hero-stat{text-align:center}
     .m3-hero-stat-val{font:500 1.5rem/1 'Inter',sans-serif;color:#fff}
     .m3-hero-stat-lbl{font:var(--md-sys-typescale-label-small);color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
@@ -134,6 +147,7 @@
     .m3-close-drawer .material-symbols-outlined{font-size:20px}
 
     @media(max-width:992px){.m3-filter-col{display:none}.m3-mobile-filter-btn{display:flex}.m3-prop-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
+    @media(max-width:992px){.pr-hero-text{text-align:center}.pr-hero-text .m3-search-wrap{max-width:580px;margin:0 auto}.m3-hero-stats{justify-content:center;margin-left:auto}}
     @media(max-width:768px){.m3-prop-hero{padding:50px 16px 40px}.m3-prop-hero h1{font-size:1.9rem}.m3-prop-hero p{font-size:.95rem}.m3-hero-stats{gap:24px}.m3-prop-grid{grid-template-columns:1fr;gap:20px}.m3-results-header{flex-direction:column;align-items:flex-start}}
     @media(max-width:576px){.m3-prop-hero h1{font-size:1.6rem}.m3-search-box{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-search-box button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}.m3-prop-card-img{height:200px}}
 </style>
@@ -148,23 +162,257 @@
     <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a6 floating-sq--d5" style="bottom:-25px;left:-25px;transform:rotate(30deg)"></div>
     <div class="container">
         <div class="m3-prop-hero-inner">
-            <div class="m3-prop-hero-badge"><span class="material-symbols-outlined">apartment</span>Browse Properties</div>
-            <h1>Find Your <span>Perfect Property</span></h1>
-            <p>Explore our curated collection of premium properties. Filter, search, and discover your next home or investment.</p>
-            <div class="m3-search-wrap">
-                <form class="m3-search-box" method="GET" action="{% url 'property_list' %}" id="searchForm">
-                    {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
-                    {% if current_price %}<input type="hidden" name="price" value="{{ current_price }}">{% endif %}
-                    {% if current_bedrooms %}<input type="hidden" name="bedrooms" value="{{ current_bedrooms }}">{% endif %}
-                    {% if current_sort %}<input type="hidden" name="sort" value="{{ current_sort }}">{% endif %}
-                    <input type="text" name="search" placeholder="Search by name, location, or keyword..." value="{{ search|default:'' }}">
-                    <button type="submit"><span class="material-symbols-outlined" style="font-size:20px">search</span><span class="d-none d-sm-inline">Search</span></button>
-                </form>
-            </div>
-            <div class="m3-hero-stats">
-                <div class="m3-hero-stat"><div class="m3-hero-stat-val">{{ num_results }}</div><div class="m3-hero-stat-lbl">Properties Found</div></div>
-                <div class="m3-hero-stat"><div class="m3-hero-stat-val" id="availableCount">-</div><div class="m3-hero-stat-lbl">Available</div></div>
-                <div class="m3-hero-stat"><div class="m3-hero-stat-val" id="typeCount">-</div><div class="m3-hero-stat-lbl">Types</div></div>
+            <div class="row align-items-center g-4 g-xl-5">
+                <!-- Text Column -->
+                <div class="col-lg-6">
+                    <div class="pr-hero-text">
+                        <div class="m3-prop-hero-badge"><span class="material-symbols-outlined">apartment</span>Browse Properties</div>
+                        <h1>Find Your <span>Perfect Rental</span></h1>
+                        <p>Explore our curated collection of premium rental properties. Filter, search, and discover your next home.</p>
+                        <div class="m3-search-wrap">
+                            <form class="m3-search-box" method="GET" action="{% url 'property_list' %}" id="searchForm">
+                                {% if current_type %}<input type="hidden" name="type" value="{{ current_type }}">{% endif %}
+                                {% if current_price %}<input type="hidden" name="price" value="{{ current_price }}">{% endif %}
+                                {% if current_bedrooms %}<input type="hidden" name="bedrooms" value="{{ current_bedrooms }}">{% endif %}
+                                {% if current_sort %}<input type="hidden" name="sort" value="{{ current_sort }}">{% endif %}
+                                <input type="text" name="search" placeholder="Search by name, location, or keyword..." value="{{ search|default:'' }}">
+                                <button type="submit"><span class="material-symbols-outlined" style="font-size:20px">search</span><span class="d-none d-sm-inline">Search</span></button>
+                            </form>
+                        </div>
+                        <div class="m3-hero-stats">
+                            <div class="m3-hero-stat"><div class="m3-hero-stat-val">{{ num_results }}</div><div class="m3-hero-stat-lbl">Properties Found</div></div>
+                            <div class="m3-hero-stat"><div class="m3-hero-stat-val" id="availableCount">-</div><div class="m3-hero-stat-lbl">Available</div></div>
+                            <div class="m3-hero-stat"><div class="m3-hero-stat-val" id="typeCount">-</div><div class="m3-hero-stat-lbl">Types</div></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Illustration Column -->
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="pr-illust-wrap">
+                        <!-- Floating card: Available Now -->
+                        <div class="pr-illust-card" style="top:10%;left:-12px;animation-delay:0s">
+                            <div class="pr-fc-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(40,167,69,.6)"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <div><div class="pr-fc-lbl">Status</div><div class="pr-fc-val">Available Now</div></div>
+                        </div>
+                        <!-- Floating card: Move-In Ready -->
+                        <div class="pr-illust-card" style="bottom:15%;right:-12px;animation-delay:1.6s">
+                            <div class="pr-fc-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="rgba(40,167,69,.5)" stroke="#4caf50" stroke-width="1.5"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            </div>
+                            <div><div class="pr-fc-lbl">Condition</div><div class="pr-fc-val">Move-In Ready</div></div>
+                        </div>
+                        <!-- FOR RENT SVG Illustration -->
+                        <svg viewBox="0 0 480 360" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px;display:block;margin:0 auto;filter:drop-shadow(0 20px 40px rgba(0,0,0,.4))">
+                            <!-- Night sky background -->
+                            <rect width="480" height="360" rx="20" fill="#0a1f0f"/>
+                            <!-- Stars -->
+                            <circle cx="40" cy="30" r="1.5" fill="#fff" opacity=".7"/>
+                            <circle cx="90" cy="18" r="1" fill="#fff" opacity=".5"/>
+                            <circle cx="130" cy="40" r="1.5" fill="#fff" opacity=".6"/>
+                            <circle cx="200" cy="22" r="1" fill="#fff" opacity=".8"/>
+                            <circle cx="260" cy="35" r="1.5" fill="#fff" opacity=".5"/>
+                            <circle cx="310" cy="15" r="1" fill="#fff" opacity=".7"/>
+                            <circle cx="370" cy="28" r="1.5" fill="#fff" opacity=".6"/>
+                            <circle cx="430" cy="18" r="1" fill="#fff" opacity=".8"/>
+                            <circle cx="455" cy="45" r="1.5" fill="#fff" opacity=".4"/>
+                            <circle cx="20" cy="55" r="1" fill="#fff" opacity=".6"/>
+                            <circle cx="170" cy="50" r="1" fill="#fff" opacity=".5"/>
+                            <circle cx="340" cy="50" r="1" fill="#fff" opacity=".7"/>
+                            <!-- Moon -->
+                            <circle cx="420" cy="55" r="28" fill="#1a3a20" opacity=".6"/>
+                            <circle cx="407" cy="48" r="26" fill="#f4e99a"/>
+                            <!-- Ground -->
+                            <rect x="0" y="290" width="480" height="70" rx="0" fill="#0d2415"/>
+                            <!-- Ground grass strip -->
+                            <rect x="0" y="288" width="480" height="8" fill="#1b4d28"/>
+                            <!-- Sidewalk -->
+                            <rect x="80" y="296" width="320" height="70" fill="#112a18"/>
+                            <!-- Road dashes -->
+                            <rect x="190" y="320" width="30" height="6" rx="3" fill="rgba(255,255,255,.12)"/>
+                            <rect x="240" y="320" width="30" height="6" rx="3" fill="rgba(255,255,255,.12)"/>
+                            <rect x="290" y="320" width="30" height="6" rx="3" fill="rgba(255,255,255,.12)"/>
+
+                            <!-- ======= APARTMENT BUILDING (main) ======= -->
+                            <!-- Building body -->
+                            <rect x="110" y="100" width="200" height="196" rx="4" fill="#122b18"/>
+                            <!-- Building facade -->
+                            <rect x="114" y="104" width="192" height="192" rx="3" fill="#163320"/>
+                            <!-- Roof parapet -->
+                            <rect x="105" y="92" width="210" height="14" rx="3" fill="#0f2416"/>
+                            <rect x="98" y="85" width="224" height="10" rx="2" fill="#0c1e12"/>
+
+                            <!-- Floor 1 windows (ground floor) -->
+                            <!-- Large lobby window -->
+                            <rect x="160" y="240" width="100" height="55" rx="3" fill="#1e4228"/>
+                            <rect x="163" y="243" width="94" height="49" rx="2" fill="#0a2415"/>
+                            <!-- Lobby light -->
+                            <rect x="168" y="250" width="84" height="36" rx="2" fill="rgba(255,220,80,.08)"/>
+                            <line x1="210" y1="243" x2="210" y2="292" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+
+                            <!-- Lobby door -->
+                            <rect x="195" y="265" width="30" height="30" rx="2" fill="#0f2416"/>
+                            <rect x="198" y="268" width="12" height="24" rx="1" fill="#163320"/>
+                            <rect x="212" y="268" width="12" height="24" rx="1" fill="#163320"/>
+                            <circle cx="210" cy="282" r="2" fill="rgba(255,220,80,.5)"/>
+
+                            <!-- Floor 1 side windows -->
+                            <rect x="122" y="248" width="28" height="35" rx="2" fill="#1a3d22"/>
+                            <rect x="125" y="251" width="22" height="29" rx="1" fill="rgba(255,220,80,.18)"/>
+                            <line x1="136" y1="251" x2="136" y2="280" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+                            <rect x="270" y="248" width="28" height="35" rx="2" fill="#1a3d22"/>
+                            <rect x="273" y="251" width="22" height="29" rx="1" fill="rgba(255,220,80,.25)"/>
+                            <line x1="284" y1="251" x2="284" y2="280" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+
+                            <!-- Floor divider 1→2 -->
+                            <rect x="110" y="232" width="200" height="5" fill="#0f2416"/>
+
+                            <!-- Floor 2 windows -->
+                            <rect x="122" y="178" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="125" y="181" width="22" height="36" rx="1" fill="rgba(255,220,80,.30)"/>
+                            <line x1="136" y1="181" x2="136" y2="217" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                            <line x1="125" y1="199" x2="147" y2="199" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+
+                            <rect x="166" y="178" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="169" y="181" width="22" height="36" rx="1" fill="rgba(255,220,80,.12)"/>
+                            <line x1="180" y1="181" x2="180" y2="217" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+
+                            <rect x="210" y="178" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="213" y="181" width="22" height="36" rx="1" fill="rgba(255,220,80,.35)"/>
+                            <line x1="224" y1="181" x2="224" y2="217" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                            <line x1="213" y1="199" x2="235" y2="199" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+
+                            <rect x="254" y="178" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="257" y="181" width="22" height="36" rx="1" fill="rgba(255,220,80,.20)"/>
+                            <line x1="268" y1="181" x2="268" y2="217" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+
+                            <rect x="270" y="178" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="273" y="181" width="22" height="36" rx="1" fill="rgba(255,220,80,.15)"/>
+
+                            <!-- Floor divider 2→3 -->
+                            <rect x="110" y="172" width="200" height="5" fill="#0f2416"/>
+
+                            <!-- Floor 3 windows -->
+                            <rect x="122" y="120" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="125" y="123" width="22" height="36" rx="1" fill="rgba(255,220,80,.08)"/>
+
+                            <rect x="166" y="120" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="169" y="123" width="22" height="36" rx="1" fill="rgba(255,220,80,.40)"/>
+                            <line x1="180" y1="123" x2="180" y2="159" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
+                            <line x1="169" y1="141" x2="191" y2="141" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
+
+                            <rect x="210" y="120" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="213" y="123" width="22" height="36" rx="1" fill="rgba(255,220,80,.22)"/>
+                            <line x1="224" y1="123" x2="224" y2="159" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+
+                            <rect x="254" y="120" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="257" y="123" width="22" height="36" rx="1" fill="rgba(255,220,80,.32)"/>
+                            <line x1="268" y1="123" x2="268" y2="159" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                            <line x1="257" y1="141" x2="279" y2="141" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+
+                            <rect x="270" y="120" width="28" height="42" rx="2" fill="#1a3d22"/>
+                            <rect x="273" y="123" width="22" height="36" rx="1" fill="rgba(255,220,80,.10)"/>
+
+                            <!-- Floor divider 3→roof -->
+                            <rect x="110" y="112" width="200" height="5" fill="#0f2416"/>
+
+                            <!-- Roof details: AC unit -->
+                            <rect x="150" y="72" width="36" height="16" rx="2" fill="#0c1e12"/>
+                            <rect x="153" y="74" width="30" height="10" rx="1" fill="#0f2416"/>
+                            <rect x="252" y="68" width="28" height="18" rx="2" fill="#0c1e12"/>
+
+                            <!-- ======= SIDE BUILDING (smaller) ======= -->
+                            <rect x="330" y="160" width="100" height="136" rx="3" fill="#0f2416"/>
+                            <rect x="333" y="163" width="94" height="133" rx="2" fill="#132b19"/>
+                            <!-- Roof -->
+                            <rect x="326" y="153" width="108" height="10" rx="2" fill="#0c1e12"/>
+                            <!-- Side building windows floor 1 -->
+                            <rect x="341" y="244" width="24" height="30" rx="2" fill="#1a3d22"/>
+                            <rect x="344" y="247" width="18" height="24" rx="1" fill="rgba(255,220,80,.20)"/>
+                            <rect x="395" y="244" width="24" height="30" rx="2" fill="#1a3d22"/>
+                            <rect x="398" y="247" width="18" height="24" rx="1" fill="rgba(255,220,80,.10)"/>
+                            <!-- Side door -->
+                            <rect x="365" y="256" width="30" height="40" rx="2" fill="#0f2416"/>
+                            <rect x="367" y="258" width="12" height="32" rx="1" fill="#132b19"/>
+                            <rect x="381" y="258" width="12" height="32" rx="1" fill="#132b19"/>
+                            <!-- Floor div -->
+                            <rect x="330" y="238" width="100" height="4" fill="#0c1e12"/>
+                            <!-- Side building windows floor 2 -->
+                            <rect x="341" y="195" width="24" height="35" rx="2" fill="#1a3d22"/>
+                            <rect x="344" y="198" width="18" height="29" rx="1" fill="rgba(255,220,80,.35)"/>
+                            <line x1="353" y1="198" x2="353" y2="227" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                            <rect x="395" y="195" width="24" height="35" rx="2" fill="#1a3d22"/>
+                            <rect x="398" y="198" width="18" height="29" rx="1" fill="rgba(255,220,80,.15)"/>
+                            <!-- Floor div -->
+                            <rect x="330" y="188" width="100" height="4" fill="#0c1e12"/>
+                            <!-- Side building windows floor 3 -->
+                            <rect x="341" y="168" width="24" height="14" rx="2" fill="#1a3d22"/>
+                            <rect x="344" y="170" width="18" height="10" rx="1" fill="rgba(255,220,80,.25)"/>
+                            <rect x="395" y="168" width="24" height="14" rx="2" fill="#1a3d22"/>
+                            <rect x="398" y="170" width="18" height="10" rx="1" fill="rgba(255,220,80,.40)"/>
+
+                            <!-- ======= FOR RENT SIGN POST ======= -->
+                            <!-- Post -->
+                            <rect x="56" y="220" width="6" height="76" rx="3" fill="#1b4d28"/>
+                            <!-- Sign board -->
+                            <rect x="24" y="195" width="70" height="36" rx="6" fill="#28a745"/>
+                            <rect x="26" y="197" width="66" height="32" rx="5" fill="#1e7e34"/>
+                            <!-- FOR RENT text on sign -->
+                            <text x="59" y="210" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" font-weight="800" fill="#fff" letter-spacing="1">FOR</text>
+                            <text x="59" y="222" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="900" fill="#fff" letter-spacing="1.5">RENT</text>
+                            <!-- Arrow on sign -->
+                            <polygon points="82,215 91,211 91,219" fill="rgba(255,255,255,.5)"/>
+
+                            <!-- ======= TREES ======= -->
+                            <!-- Left tree -->
+                            <ellipse cx="52" cy="272" rx="22" ry="18" fill="#163a1c"/>
+                            <ellipse cx="52" cy="265" rx="17" ry="14" fill="#1d4e24"/>
+                            <rect x="50" y="284" width="4" height="12" rx="2" fill="#0d2415"/>
+                            <!-- Right small tree -->
+                            <ellipse cx="448" cy="278" rx="18" ry="14" fill="#163a1c"/>
+                            <ellipse cx="448" cy="272" rx="13" ry="11" fill="#1d4e24"/>
+                            <rect x="446" y="286" width="4" height="10" rx="2" fill="#0d2415"/>
+                            <!-- Right tree 2 -->
+                            <ellipse cx="468" cy="282" rx="12" ry="10" fill="#122e17"/>
+                            <ellipse cx="468" cy="277" rx="9" ry="8" fill="#173620"/>
+
+                            <!-- ======= KEY BADGE ======= -->
+                            <circle cx="380" cy="95" r="26" fill="#163a1c" stroke="rgba(40,167,69,.4)" stroke-width="1.5"/>
+                            <circle cx="380" cy="95" r="22" fill="#0f2416"/>
+                            <!-- Key icon -->
+                            <circle cx="376" cy="92" r="7" stroke="#4caf50" stroke-width="2.2" fill="none"/>
+                            <rect x="381" y="91" width="10" height="2.5" rx="1" fill="#4caf50"/>
+                            <rect x="388" y="91" width="2.5" height="5" rx="1" fill="#4caf50"/>
+                            <rect x="383.5" y="91" width="2.5" height="4" rx="1" fill="#4caf50"/>
+
+                            <!-- ======= GLOW & LIGHT EFFECTS ======= -->
+                            <!-- Building ambient light -->
+                            <ellipse cx="210" cy="298" rx="120" ry="10" fill="rgba(40,167,69,.08)"/>
+                            <!-- Sign glow -->
+                            <ellipse cx="59" cy="213" rx="40" ry="22" fill="rgba(40,167,69,.06)"/>
+                            <!-- Moon glow -->
+                            <circle cx="407" cy="48" r="38" fill="rgba(244,233,154,.04)"/>
+
+                            <!-- ======= LOCATION PIN ======= -->
+                            <path d="M210 72 C210 72 220 60 220 52 C220 46 215 42 210 42 C205 42 200 46 200 52 C200 60 210 72 210 72Z" fill="#28a745"/>
+                            <circle cx="210" cy="52" r="5" fill="#fff"/>
+                            <!-- Pin glow -->
+                            <ellipse cx="210" cy="72" rx="6" ry="2" fill="rgba(40,167,69,.3)"/>
+
+                            <!-- ======= SPARKLES ======= -->
+                            <path d="M360 70 L362 65 L364 70 L369 72 L364 74 L362 79 L360 74 L355 72Z" fill="rgba(255,220,80,.7)"/>
+                            <path d="M80 150 L81.5 146 L83 150 L87 151.5 L83 153 L81.5 157 L80 153 L76 151.5Z" fill="rgba(255,220,80,.5)"/>
+                            <path d="M440 130 L441 127 L442 130 L445 131 L442 132 L441 135 L440 132 L437 131Z" fill="rgba(255,220,80,.4)"/>
+
+                            <!-- ======= STREET LAMP ======= -->
+                            <rect x="432" y="215" width="4" height="80" rx="2" fill="#1b4d28"/>
+                            <path d="M434 215 Q434 200 448 200" stroke="#1b4d28" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            <ellipse cx="448" cy="198" rx="8" ry="5" fill="#f4e99a" opacity=".7"/>
+                            <ellipse cx="448" cy="205" rx="18" ry="8" fill="rgba(244,233,154,.08)"/>
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
