@@ -1,0 +1,400 @@
+[2026-03-19 00:28:20] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:25] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:28] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:32] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:36] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:40] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:44] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:28:48] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:03] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:07] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:20] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:24] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:28] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:32] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:39] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:29:46] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:30:57] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:00] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:04] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:08] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:12] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:16] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:20] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:24] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:28] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:32] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:36] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:47] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:51] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:31:56] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:32:00] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:32:07] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:32:15] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:32:22] ERROR    propertyhub.system | DB write failed for system log: no such table: PropApp_systemlog
+[2026-03-19 00:55:22] ERROR    django.request | Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\views.py", line 221, in index
+    return render(request, 'home/home.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\test\utils.py", line 114, in instrumented_test_render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\test\utils.py", line 114, in instrumented_test_render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'owner_portal' not found. 'owner_portal' is not a valid view function or pattern name.
+[2026-03-19 00:55:45] ERROR    django.request | Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\views.py", line 221, in index
+    return render(request, 'home/home.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\test\utils.py", line 114, in instrumented_test_render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\test\utils.py", line 114, in instrumented_test_render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'owner_portal' not found. 'owner_portal' is not a valid view function or pattern name.
+[2026-03-19 01:14:33] ERROR    django.request | Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: PropApp_announcement
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\views.py", line 221, in index
+    return render(request, 'home/home.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\debug_toolbar\panels\templates\panel.py", line 50, in _request_context_bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\context_processors.py", line 46, in global_context
+    announcements = list(Announcement.objects.filter(is_active=True))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1574, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 235, in execute
+    return self._record(super().execute, sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 160, in _record
+    return method(sql, params)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: PropApp_announcement
+[2026-03-19 01:23:01] ERROR    django.request | Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\views.py", line 221, in index
+    return render(request, 'home/home.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\test\utils.py", line 114, in instrumented_test_render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 969, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 523, in parse
+    self.unclosed_block_tag(parse_until)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\template\base.py", line 586, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 371: 'if'. Looking for one of: elif, else, endif.
+[2026-03-19 01:59:14] ERROR    django.request | Internal Server Error: /edit_property/7
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: PropApp_propertyimage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\improved-property-management-system-with-ui-hackers-_team\PropApp\views.py", line 769, in edit_property
+    PropertyImage.objects.create(property=property_instance, image=img)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\base.py", line 891, in save
+    self.save_base(
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\base.py", line 997, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\base.py", line 1160, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\base.py", line 1201, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 235, in execute
+    return self._record(super().execute, sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 160, in _record
+    return method(sql, params)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\Documents\Year2\Year2_IT_Projects\Enhenced_systems\Property_management\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: PropApp_propertyimage

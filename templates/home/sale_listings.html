@@ -47,41 +47,47 @@
     .m3-sale-results-count{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant)}
     .m3-sale-results-count strong{color:var(--md-sys-color-on-surface);font-weight:700}
 
-    /* Card */
-    .m3-sale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
-    .m3-sale-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-    .m3-sale-card:hover{transform:translateY(-6px);box-shadow:var(--md-sys-elevation-3);border-color:transparent}
-    .m3-sale-card-img{position:relative;height:220px;overflow:hidden}
-    .m3-sale-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-    .m3-sale-card:hover .m3-sale-card-img img{transform:scale(1.08)}
-    .m3-sale-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.4));pointer-events:none}
-    .m3-sale-card-img .m3-img-ph{width:100%;height:100%;background:linear-gradient(135deg,#E8F5E9,#C8E6C9,#A5D6A7);display:flex;align-items:center;justify-content:center}
-    .m3-sale-card-img .m3-img-ph .material-symbols-outlined{font-size:52px;color:var(--md-sys-color-primary);opacity:.5}
-    .m3-sale-badges{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:2}
-    .m3-sale-badge-type{background:var(--md-sys-color-primary);color:#fff;padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;box-shadow:var(--md-sys-elevation-1)}
-    .m3-sale-badge-kind{background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;box-shadow:var(--md-sys-elevation-1)}
-    .m3-sale-badge-neg{position:absolute;bottom:14px;right:14px;z-index:2;background:rgba(255,152,0,.92);color:#fff;padding:5px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px)}
-    .m3-sale-badge-neg .material-symbols-outlined{font-size:13px}
-    .m3-sale-price-tag{position:absolute;bottom:14px;left:14px;z-index:2;font:500 1.35rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-    .m3-sale-price-tag small{font:var(--md-sys-typescale-label-small);opacity:.85}
-    .m3-sale-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
-    .m3-sale-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    .m3-sale-card-loc{display:flex;align-items:center;gap:6px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);margin-bottom:16px}
-    .m3-sale-card-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-primary)}
-    .m3-sale-feats{display:flex;gap:0;padding:14px 0;margin-bottom:16px;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant)}
-    .m3-sale-feat{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
-    .m3-sale-feat:not(:last-child)::after{content:'';position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--md-sys-color-outline-variant)}
-    .m3-sale-feat-icon{width:34px;height:34px;border-radius:var(--md-sys-shape-corner-small);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
-    .m3-sale-feat-icon .material-symbols-outlined{font-size:18px;color:var(--md-sys-color-on-primary-container)}
-    .m3-sale-feat-val{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface)}
-    .m3-sale-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
-    .m3-sale-card-meta{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);margin-top:auto;display:flex;align-items:center;gap:4px;margin-bottom:12px}
-    .m3-sale-card-meta .material-symbols-outlined{font-size:15px}
-    .m3-sale-card-ft{padding:0 20px 20px}
-    .m3-sale-btn-view{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 300ms;text-decoration:none}
-    .m3-sale-btn-view:hover{background:var(--md-sys-color-primary);color:#fff;box-shadow:var(--md-sys-elevation-1)}
-    .m3-sale-btn-view .material-symbols-outlined{font-size:18px;transition:transform .3s}
-    .m3-sale-btn-view:hover .material-symbols-outlined{transform:translateX(4px)}
+    /* ── Property Card (compact redesign) ── */
+    .m3-sale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:16px}
+
+    .m3-sale-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:transform .22s,box-shadow .22s,border-color .22s;display:flex;flex-direction:column}
+    .m3-sale-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.10);border-color:transparent}
+
+    /* image */
+    .m3-sale-card-img{position:relative;height:168px;overflow:hidden;background:#e8f5e9;flex-shrink:0}
+    .m3-sale-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .m3-sale-card:hover .m3-sale-card-img img{transform:scale(1.05)}
+    .m3-sale-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.52) 100%);pointer-events:none}
+    .m3-sale-card-img .m3-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .m3-sale-card-img .m3-img-ph .material-symbols-outlined{font-size:44px;color:var(--md-sys-color-primary);opacity:.35}
+
+    /* image overlays */
+    .m3-sale-img-top{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;z-index:2;gap:6px}
+    .m3-chip-type{background:var(--md-sys-color-primary);color:#fff;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+    .m3-chip-kind{background:rgba(255,255,255,.9);color:#1a1c18;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:600;white-space:nowrap}
+    .m3-sale-img-price{position:absolute;bottom:9px;left:10px;z-index:2;color:#fff;font-size:1.05rem;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.45);line-height:1}
+    .m3-sale-img-price small{font-size:.65rem;font-weight:500;opacity:.9}
+    .m3-neg-pill{position:absolute;bottom:9px;right:9px;z-index:2;background:rgba(255,152,0,.92);color:#fff;padding:3px 8px;border-radius:20px;font-size:.62rem;font-weight:700;display:flex;align-items:center;gap:2px}
+    .m3-neg-pill .material-symbols-outlined{font-size:11px}
+
+    /* body */
+    .m3-sale-card-body{padding:13px 13px 8px;flex:1;display:flex;flex-direction:column;gap:5px}
+    .m3-sale-card-title{font-size:.875rem;font-weight:700;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .m3-sale-card-loc{display:flex;align-items:center;gap:3px;font-size:.72rem;color:var(--md-sys-color-on-surface-variant);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .m3-sale-card-loc .material-symbols-outlined{font-size:13px;color:var(--md-sys-color-primary);flex-shrink:0}
+
+    /* feature strip */
+    .m3-sale-feats-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--md-sys-color-outline-variant);font-size:.72rem;color:var(--md-sys-color-on-surface-variant);flex-wrap:wrap}
+    .m3-feat-item{display:flex;align-items:center;gap:3px}
+    .m3-feat-item .material-symbols-outlined{font-size:14px;color:var(--md-sys-color-primary)}
+    .m3-feat-item b{color:var(--md-sys-color-on-surface);font-weight:700}
+
+    /* footer */
+    .m3-sale-card-ft{padding:8px 13px 13px}
+    .m3-sale-btn-view{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border:none;border-radius:24px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .18s,color .18s;text-decoration:none}
+    .m3-sale-btn-view:hover{background:var(--md-sys-color-primary);color:#fff}
+    .m3-sale-btn-view .material-symbols-outlined{font-size:15px;transition:transform .2s}
+    .m3-sale-btn-view:hover .material-symbols-outlined{transform:translateX(3px)}
 
     .m3-sale-empty{text-align:center;padding:80px 30px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:2px dashed var(--md-sys-color-outline-variant);grid-column:1/-1}
     .m3-sale-empty-icon{width:80px;height:80px;margin:0 auto 20px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center}
@@ -96,9 +102,9 @@
 
     .m3-sale-mobile-btn{display:none;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;margin-bottom:20px;width:100%}
     .m3-sale-mobile-btn .material-symbols-outlined{font-size:20px}
-    @media(max-width:992px){.m3-sale-filter-col{display:none}.m3-sale-mobile-btn{display:flex}.m3-sale-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
-    @media(max-width:768px){.m3-sale-hero{padding:50px 16px 40px}.m3-sale-hero h1{font-size:1.9rem}.m3-sale-grid{grid-template-columns:1fr;gap:20px}}
-    @media(max-width:576px){.m3-sale-hero h1{font-size:1.6rem}.m3-sale-searchbox{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-sale-searchbox button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}}
+    @media(max-width:992px){.m3-sale-filter-col{display:none}.m3-sale-mobile-btn{display:flex}.m3-sale-grid{grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}}
+    @media(max-width:768px){.m3-sale-hero{padding:50px 16px 40px}.m3-sale-hero h1{font-size:1.9rem}.m3-sale-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
+    @media(max-width:576px){.m3-sale-hero h1{font-size:1.6rem}.m3-sale-searchbox{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-sale-searchbox button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}.m3-sale-grid{grid-template-columns:1fr}}
 </style>
 
 <!-- Hero -->
@@ -125,6 +131,33 @@
         </div>
     </div>
 </section>
+
+<!-- Map Section -->
+<div class="sale-map-section" id="saleMapSection" style="display:none">
+    <div style="position:relative;height:460px;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2)">
+        <div id="saleListingsMap" style="width:100%;height:100%"></div>
+        <div style="position:absolute;top:14px;left:14px;z-index:1000;background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:12px;padding:10px 16px;color:#fff;font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">location_on</span>
+            <span id="saleMapCount">0</span> properties on map
+        </div>
+    </div>
+</div>
+
+<!-- Map Toggle Bar -->
+<div style="background:#0d2415;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2);padding:10px 0">
+    <div class="container">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <span style="color:rgba(255,255,255,.6);font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:6px">
+                <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">map</span>
+                See all sale properties on a map
+            </span>
+            <button id="toggleSaleMap" onclick="toggleSaleMap()" style="background:rgba(40,167,69,.15);border:1px solid rgba(40,167,69,.35);color:#81c784;padding:8px 20px;border-radius:50px;font:.82rem 'Inter',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s">
+                <span class="material-symbols-outlined" style="font-size:16px">map</span>
+                <span id="saleMapBtnTxt">Show Map</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Main -->
 <section class="m3-sale-main">
@@ -191,22 +224,21 @@
                         <div class="m3-sale-card-img">
                             {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.title }}" loading="lazy">
                             {% else %}<div class="m3-img-ph"><span class="material-symbols-outlined">home</span></div>{% endif %}
-                            <div class="m3-sale-badges">
-                                <span class="m3-sale-badge-type">For {{ p.get_listing_type_display }}</span>
-                                <span class="m3-sale-badge-kind">{{ p.get_property_type_display }}</span>
+                            <div class="m3-sale-img-top">
+                                <span class="m3-chip-type">{{ p.get_listing_type_display }}</span>
+                                <span class="m3-chip-kind">{{ p.get_property_type_display }}</span>
                             </div>
-                            {% if p.negotiable %}<span class="m3-sale-badge-neg"><span class="material-symbols-outlined">swap_horiz</span>Negotiable</span>{% endif %}
-                            <div class="m3-sale-price-tag">{{ p.price|floatformat:0 }} <small>Frw</small></div>
+                            <div class="m3-sale-img-price">{{ p.price|floatformat:0 }} <small>Frw</small></div>
+                            {% if p.negotiable %}<span class="m3-neg-pill"><span class="material-symbols-outlined">swap_horiz</span>Neg.</span>{% endif %}
                         </div>
                         <div class="m3-sale-card-body">
-                            <div class="m3-sale-card-title">{{ p.title|truncatechars:40 }}</div>
-                            <div class="m3-sale-card-loc"><span class="material-symbols-outlined">location_on</span><span>{{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}</span></div>
-                            <div class="m3-sale-feats">
-                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">bed</span></div><div class="m3-sale-feat-val">{{ p.bedrooms|default:"—" }}</div><div class="m3-sale-feat-lbl">Beds</div></div>
-                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">bathtub</span></div><div class="m3-sale-feat-val">{{ p.bathrooms|default:"—" }}</div><div class="m3-sale-feat-lbl">Baths</div></div>
-                                <div class="m3-sale-feat"><div class="m3-sale-feat-icon"><span class="material-symbols-outlined">square_foot</span></div><div class="m3-sale-feat-val">{% if p.size_sqm %}{{ p.size_sqm|floatformat:0 }}{% else %}—{% endif %}</div><div class="m3-sale-feat-lbl">sqm</div></div>
+                            <div class="m3-sale-card-title">{{ p.title }}</div>
+                            <div class="m3-sale-card-loc"><span class="material-symbols-outlined">location_on</span>{{ p.city }}{% if p.district %}, {{ p.district }}{% endif %}</div>
+                            <div class="m3-sale-feats-row">
+                                <span class="m3-feat-item"><span class="material-symbols-outlined">bed</span><b>{{ p.bedrooms|default:"—" }}</b>&nbsp;Beds</span>
+                                <span class="m3-feat-item"><span class="material-symbols-outlined">bathtub</span><b>{{ p.bathrooms|default:"—" }}</b>&nbsp;Bath</span>
+                                {% if p.size_sqm %}<span class="m3-feat-item"><span class="material-symbols-outlined">square_foot</span><b>{{ p.size_sqm|floatformat:0 }}</b>&nbsp;m²</span>{% endif %}
                             </div>
-                            <div class="m3-sale-card-meta"><span class="material-symbols-outlined">visibility</span> {{ p.views_count }} views</div>
                         </div>
                         <div class="m3-sale-card-ft"><a href="{% url 'sale_property_detail' p.id %}" class="m3-sale-btn-view">View Details <span class="material-symbols-outlined">arrow_forward</span></a></div>
                     </div>
@@ -235,4 +267,59 @@
         </div>
     </div>
 </section>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var saleMap = null;
+var saleMapInit = false;
+var saleData = {{ map_listings|safe }};
+
+var saleMarkerIcon = L.divIcon({
+    html:'<div style="background:#f59e0b;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.45)"></div>',
+    iconSize:[14,14],iconAnchor:[7,7],className:''
+});
+
+function toggleSaleMap(){
+    var sec = document.getElementById('saleMapSection');
+    var btn = document.getElementById('saleMapBtnTxt');
+    var visible = sec.style.display !== 'none';
+    if(visible){
+        sec.style.display='none'; btn.textContent='Show Map';
+    } else {
+        sec.style.display='block'; btn.textContent='Hide Map';
+        if(!saleMapInit){ initSaleMap(); saleMapInit=true; }
+    }
+}
+
+function initSaleMap(){
+    saleMap = L.map('saleListingsMap',{scrollWheelZoom:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19
+    }).addTo(saleMap);
+    saleMap.setView([-1.9441,30.0619],13);
+
+    var total = saleData.length, delay = 0;
+    document.getElementById('saleMapCount').textContent = total;
+
+    saleData.forEach(function(p){
+        setTimeout(function(){
+            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(p.address+', Rwanda'),
+                  {headers:{'Accept-Language':'en'}})
+            .then(function(r){return r.json()})
+            .then(function(data){
+                if(data&&data.length>0){
+                    var lat=parseFloat(data[0].lat), lng=parseFloat(data[0].lon);
+                    L.marker([lat,lng],{icon:saleMarkerIcon}).addTo(saleMap)
+                     .bindPopup('<div style="min-width:160px"><strong style="color:#1a2e1a;font-size:.9rem">'+p.name+'</strong><br>'
+                        +'<span style="color:#6c757d;font-size:.78rem">'+p.type+'</span><br>'
+                        +'<strong style="color:#f59e0b;font-size:.88rem">'+parseInt(p.price).toLocaleString()+' Frw</strong><br>'
+                        +'<a href="'+p.url+'" style="color:#28a745;font-size:.8rem;font-weight:600">View details →</a></div>');
+                }
+            }).catch(function(){});
+        }, delay);
+        delay += 1100;
+    });
+}
+</script>
 {% endblock %}

@@ -5,6 +5,7 @@ from .models import (
     CustRequest, MaintenanceRequest, Payment, Message, Visit, LikedProperties,
     Agent, Seller, SaleProperty, Offer, AgentAssignment, SiteVisit, PropertyInquiry, AgentReview,
     Post, PostMedia, Hashtag, PostHashtag, PostComment, PostLike, Notification,
+    Announcement, PropertyImage,
 )
 
 @admin.register(User)
@@ -222,3 +223,22 @@ class NotificationAdmin(admin.ModelAdmin):
     list_display = ('recipient', 'actor', 'notification_type', 'message', 'is_read', 'created_at')
     list_filter = ('notification_type', 'is_read', 'created_at')
     search_fields = ('recipient__username', 'actor__username', 'message')
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display  = ('text', 'icon', 'is_active', 'order', 'created_at')
+    list_editable = ('is_active', 'order')
+    list_filter   = ('is_active',)
+    search_fields = ('text',)
+    ordering      = ('order', 'created_at')
+
+class PropertyImageInline(admin.TabularInline):
+    model = PropertyImage
+    extra = 1
+    fields = ('image', 'caption', 'order')
+
+@admin.register(PropertyImage)
+class PropertyImageAdmin(admin.ModelAdmin):
+    list_display  = ('property', 'caption', 'order', 'uploaded_at')
+    list_filter   = ('property',)
+    search_fields = ('property__name', 'caption')

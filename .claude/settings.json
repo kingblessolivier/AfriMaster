@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py migrate PropApp 0034)",
+      "Bash(python manage.py migrate)"
+    ]
+  }
+}

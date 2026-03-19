@@ -188,6 +188,31 @@ urlpatterns = [
     path('notifications/', views.notifications_view, name='notifications'),
     path('notifications/<int:notif_id>/read/', views.mark_notification_read, name='mark_notification_read'),
     path('notifications/read-all/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+
+    # ── AI Chatbot ────────────────────────────────────────────────
+    path('chatbot/chat/', views.chatbot_chat, name='chatbot_chat'),
+    path('chatbot/history/', views.chatbot_history, name='chatbot_history'),
+    path('chatbot/history/<int:conv_id>/', views.chatbot_history_detail, name='chatbot_history_detail'),
+
+    # ── System Logs ───────────────────────────────────────────────
+    path('admin_dashboard/system-logs/', views.system_logs_view, name='system_logs'),
+    path('admin_dashboard/system-logs/clear/', views.system_logs_clear, name='system_logs_clear'),
+
+    # ── Reports ────────────────────────────────────────────────────
+    path('admin_dashboard/reports/', views.admin_reports, name='admin_reports'),
+    path('admin_dashboard/reports/export/<str:report_type>/', views.admin_reports_export, name='admin_reports_export'),
+
+    # ── Announcements ──────────────────────────────────────────────
+    path('admin_dashboard/announcements/', views.announcements_admin, name='announcements_admin'),
+    path('admin_dashboard/announcements/create/', views.announcement_create, name='announcement_create'),
+    path('admin_dashboard/announcements/<int:pk>/edit/', views.announcement_edit, name='announcement_edit'),
+    path('admin_dashboard/announcements/<int:pk>/delete/', views.announcement_delete, name='announcement_delete'),
+    path('admin_dashboard/announcements/<int:pk>/toggle/', views.announcement_toggle, name='announcement_toggle'),
+
+    # ── FB-style Chat API ──────────────────────────────────────────
+    path('api/chat/contacts/',              views.chat_contacts_api,  name='chat_contacts_api'),
+    path('api/chat/history/<int:contact_id>/', views.chat_history_api, name='chat_history_api'),
+    path('api/chat/send/',                  views.chat_send_api,      name='chat_send_api'),
 ]
 
 

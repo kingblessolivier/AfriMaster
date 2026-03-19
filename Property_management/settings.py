@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'PropApp.middleware.SystemLogMiddleware',  # System logging
 ]
 
 ROOT_URLCONF = 'Property_management.urls'
@@ -199,4 +200,91 @@ PAYPAL_MODE = 'sandbox'  # or 'live'
 PAYPAL_CLIENT_ID = 'FLD2Q3S3QCFLU'
 PAYPAL_CLIENT_SECRET = 'Olivier@12'
 SITE_URL = 'http://127.0.0.1:8000'
-# settings.py
+
+# ── AI Chatbot (Anthropic Claude API) ────────────────────────
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')
+CLAUDE_MODEL = os.environ.get('CLAUDE_MODEL', 'claude-haiku-4-5-20251001')
+POE_MAX_HISTORY = 20  # max conversation turns stored in session
+
+# ── System Logging ────────────────────────────────────────────────────────────
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname:<8} {name} | {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'DEBUG',
+        },
+        'system_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOGS_DIR / 'system.log'),
+            'maxBytes': 5 * 1024 * 1024,   # 5 MB per file
+            'backupCount': 10,
+            'formatter': 'verbose',
+            'level': 'INFO',
+            'encoding': 'utf-8',
+        },
+        'error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOGS_DIR / 'errors.log'),
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'level': 'ERROR',
+            'encoding': 'utf-8',
+        },
+        'security_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOGS_DIR / 'security.log'),
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'level': 'WARNING',
+            'encoding': 'utf-8',
+        },
+    },
+
+    'loggers': {
+        # Main system logger (used by log_service.py)
+        'propertyhub.system': {
+            'handlers': ['console', 'system_file', 'error_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Security-specific logger
+        'propertyhub.security': {
+            'handlers': ['console', 'security_file', 'error_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        # Django request errors
+        'django.request': {
+            'handlers': ['error_file', 'console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        # Django security
+        'django.security': {
+            'handlers': ['security_file', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}

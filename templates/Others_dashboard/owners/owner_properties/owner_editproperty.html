@@ -115,10 +115,31 @@
                         </div>
                         <div class="mb-3">
                             <label for="propertyImage" class="form-label">
-                                <i class="fas fa-image"></i> Property Image
+                                <i class="fas fa-image"></i> Cover Image
                             </label>
-                            <input type="file" class="form-control" id="propertyImage" name="image" data-bs-toggle="tooltip" title="Upload an image of the property">
-                            <div class="invalid-feedback">Please provide a property image.</div>
+                            <input type="file" class="form-control" id="propertyImage" name="image" accept="image/*" data-bs-toggle="tooltip" title="Replace the cover image (leave empty to keep current)">
+                            {% if property_instance.image %}
+                            <img src="{{ property_instance.image.url }}" alt="Current" style="max-width:120px;border-radius:8px;margin-top:8px">
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-images"></i> Additional Photos</label>
+                            {% if extra_images %}
+                            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+                                {% for img in extra_images %}
+                                <div style="position:relative;width:90px;height:90px;border-radius:8px;overflow:hidden;border:1px solid #ddd">
+                                    <img src="{{ img.image.url }}" style="width:100%;height:100%;object-fit:cover">
+                                    <label style="position:absolute;top:4px;right:4px;background:rgba(220,53,69,.85);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer" title="Delete">
+                                        <input type="checkbox" name="delete_images" value="{{ img.pk }}" style="display:none">
+                                        <i class="fas fa-times" style="font-size:11px;color:#fff;pointer-events:none"></i>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted">Click ✕ on a photo to mark it for deletion, then save.</small>
+                            {% endif %}
+                            <input type="file" class="form-control mt-2" name="extra_images" id="ownerExtraImagesEdit" accept="image/*" multiple>
+                            <div id="ownerExtraPreviewEdit" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -206,6 +227,23 @@
 </div>
 
 <script>
+    document.getElementById('ownerExtraImagesEdit').addEventListener('change', function(){
+        var preview = document.getElementById('ownerExtraPreviewEdit');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(function(file){
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var wrap = document.createElement('div');
+                wrap.style.cssText = 'width:80px;height:80px;border-radius:8px;overflow:hidden;border:1px solid #ddd';
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+                wrap.appendChild(img);
+                preview.appendChild(wrap);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

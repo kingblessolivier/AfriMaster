@@ -41,36 +41,40 @@
     .m3-ag-results{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin-bottom:24px}
     .m3-ag-results strong{color:var(--md-sys-color-on-surface);font-weight:700}
 
-    /* Agent Card Grid */
-    .m3-ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
-    .m3-ag-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-    .m3-ag-card:hover{transform:translateY(-6px);box-shadow:var(--md-sys-elevation-3);border-color:transparent}
-    .m3-ag-card-top{background:linear-gradient(135deg,#1e5631,#2E7D32,#4CAF50);padding:32px 24px 24px;text-align:center;position:relative;overflow:hidden}
-    .m3-ag-card-top::before{content:'';position:absolute;width:200px;height:200px;top:-100px;right:-60px;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);border-radius:50%}
-    .m3-ag-card-avatar{width:90px;height:90px;margin:0 auto 14px;border-radius:50%;overflow:hidden;border:4px solid rgba(255,255,255,.3);position:relative;z-index:1}
-    .m3-ag-card-avatar img{width:100%;height:100%;object-fit:cover}
-    .m3-ag-card-avatar-ph{width:100%;height:100%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
-    .m3-ag-card-avatar-ph .material-symbols-outlined{font-size:40px;color:rgba(255,255,255,.7)}
-    .m3-ag-card-name{font:var(--md-sys-typescale-title-medium);color:#fff;margin-bottom:4px;position:relative;z-index:1}
-    .m3-ag-card-spec{font:var(--md-sys-typescale-label-medium);color:rgba(255,255,255,.7);position:relative;z-index:1}
-    .m3-ag-card-verified{display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(255,255,255,.15);color:#fff;padding:4px 12px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);position:relative;z-index:1}
-    .m3-ag-card-verified .material-symbols-outlined{font-size:14px}
-    .m3-ag-card-body{padding:24px;flex:1;display:flex;flex-direction:column}
-    .m3-ag-card-bio{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);line-height:1.6;margin-bottom:16px;min-height:44px}
-    .m3-ag-card-stats{display:flex;gap:0;padding:14px 0;margin-bottom:16px;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant)}
-    .m3-ag-card-stat{flex:1;text-align:center;position:relative}
-    .m3-ag-card-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--md-sys-color-outline-variant)}
-    .m3-ag-card-stat-val{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface)}
-    .m3-ag-card-stat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
-    .m3-ag-card-stat-val.rating{color:#FF9800;display:flex;align-items:center;justify-content:center;gap:4px}
-    .m3-ag-card-actions{display:flex;gap:10px;margin-top:auto}
-    .m3-ag-btn-profile{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 200ms;text-decoration:none}
-    .m3-ag-btn-profile:hover{background:var(--md-sys-color-primary);color:#fff;box-shadow:var(--md-sys-elevation-1)}
-    .m3-ag-btn-profile:hover .material-symbols-outlined{transform:translateX(4px)}
-    .m3-ag-btn-profile .material-symbols-outlined{font-size:18px;transition:transform .3s}
-    .m3-ag-btn-call{display:flex;align-items:center;justify-content:center;width:46px;height:46px;background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:50%;cursor:pointer;transition:all 200ms;text-decoration:none;flex-shrink:0}
-    .m3-ag-btn-call:hover{box-shadow:var(--md-sys-elevation-2);background:#1e7e34;color:#fff}
-    .m3-ag-btn-call .material-symbols-outlined{font-size:20px}
+    /* ── Agent Card (compact redesign) ── */
+    .m3-ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+
+    .m3-ag-card{background:#fff;border-radius:16px;border:1px solid var(--md-sys-color-outline-variant);overflow:hidden;transition:transform .22s,box-shadow .22s,border-color .22s;display:flex;flex-direction:column}
+    .m3-ag-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.09);border-color:transparent}
+
+    /* header row: avatar + info */
+    .m3-ag-card-head{display:flex;align-items:center;gap:12px;padding:14px 14px 11px}
+    .m3-ag-avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;border:2px solid var(--md-sys-color-outline-variant)}
+    .m3-ag-avatar img{width:100%;height:100%;object-fit:cover}
+    .m3-ag-avatar .material-symbols-outlined{font-size:26px;color:var(--md-sys-color-on-primary-container)}
+    .m3-ag-info{flex:1;min-width:0}
+    .m3-ag-name{font-size:.875rem;font-weight:700;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .m3-ag-spec{font-size:.72rem;color:var(--md-sys-color-on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+    .m3-ag-verified{display:inline-flex;align-items:center;gap:2px;font-size:.65rem;font-weight:700;color:var(--md-sys-color-primary);margin-top:3px}
+    .m3-ag-verified .material-symbols-outlined{font-size:12px}
+
+    /* stats row */
+    .m3-ag-card-stats{display:flex;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant)}
+    .m3-ag-stat{flex:1;text-align:center;padding:9px 4px;position:relative}
+    .m3-ag-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:6px;bottom:6px;width:1px;background:var(--md-sys-color-outline-variant)}
+    .m3-ag-stat-val{font-size:.875rem;font-weight:700;color:var(--md-sys-color-on-surface);line-height:1}
+    .m3-ag-stat-val.star{color:#FF9800}
+    .m3-ag-stat-lbl{font-size:.62rem;color:var(--md-sys-color-on-surface-variant);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+    /* action footer */
+    .m3-ag-card-foot{display:flex;gap:8px;padding:10px 12px 12px}
+    .m3-ag-btn-profile{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border:none;border-radius:24px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .18s,color .18s;text-decoration:none}
+    .m3-ag-btn-profile:hover{background:var(--md-sys-color-primary);color:#fff}
+    .m3-ag-btn-profile .material-symbols-outlined{font-size:15px;transition:transform .2s}
+    .m3-ag-btn-profile:hover .material-symbols-outlined{transform:translateX(3px)}
+    .m3-ag-btn-call{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--md-sys-color-primary);color:#fff;border:none;border-radius:50%;cursor:pointer;transition:opacity .18s;text-decoration:none}
+    .m3-ag-btn-call:hover{opacity:.82;color:#fff}
+    .m3-ag-btn-call .material-symbols-outlined{font-size:17px}
 
     /* Empty */
     .m3-ag-empty{text-align:center;padding:80px 30px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:2px dashed var(--md-sys-color-outline-variant)}
@@ -85,8 +89,8 @@
     .m3-ag-pagination .page-link:hover{background:var(--md-sys-color-primary-container);border-color:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary-container)}
     .m3-ag-pagination .page-item.active .page-link{background:var(--md-sys-color-primary);border-color:var(--md-sys-color-primary);color:#fff}
 
-    @media(max-width:992px){.m3-ag-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
-    @media(max-width:768px){.m3-ag-hero{padding:50px 16px 40px}.m3-ag-hero h1{font-size:1.9rem}.m3-ag-filter{flex-direction:column;align-items:stretch}}
+    @media(max-width:992px){.m3-ag-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}}
+    @media(max-width:768px){.m3-ag-hero{padding:50px 16px 40px}.m3-ag-hero h1{font-size:1.9rem}.m3-ag-filter{flex-direction:column;align-items:stretch}.m3-ag-grid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:576px){.m3-ag-hero h1{font-size:1.6rem}.m3-ag-searchbox{flex-direction:column;border-radius:var(--md-sys-shape-corner-medium)}.m3-ag-searchbox button{border-radius:var(--md-sys-shape-corner-small);justify-content:center}.m3-ag-grid{grid-template-columns:1fr}}
 </style>
 
@@ -136,26 +140,25 @@
         <div class="m3-ag-grid">
             {% for agent in agents %}
             <div class="m3-ag-card md-reveal">
-                <div class="m3-ag-card-top">
-                    <div class="m3-ag-card-avatar">
+                <div class="m3-ag-card-head">
+                    <div class="m3-ag-avatar">
                         {% if agent.image %}<img src="{{ agent.image.url }}" alt="{{ agent.name }}">
-                        {% else %}<div class="m3-ag-card-avatar-ph"><span class="material-symbols-outlined">person</span></div>{% endif %}
+                        {% else %}<span class="material-symbols-outlined">person</span>{% endif %}
                     </div>
-                    <div class="m3-ag-card-name">{{ agent.name }}</div>
-                    <div class="m3-ag-card-spec">{{ agent.specialization|default:"General" }}</div>
-                    {% if agent.is_verified %}<div class="m3-ag-card-verified"><span class="material-symbols-outlined">verified</span> Verified</div>{% endif %}
+                    <div class="m3-ag-info">
+                        <div class="m3-ag-name">{{ agent.name }}</div>
+                        <div class="m3-ag-spec">{{ agent.specialization|default:"General" }}</div>
+                        {% if agent.is_verified %}<div class="m3-ag-verified"><span class="material-symbols-outlined">verified</span> Verified</div>{% endif %}
+                    </div>
                 </div>
-                <div class="m3-ag-card-body">
-                    <div class="m3-ag-card-bio">{{ agent.bio|truncatechars:100|default:"Experienced real estate professional." }}</div>
-                    <div class="m3-ag-card-stats">
-                        <div class="m3-ag-card-stat"><div class="m3-ag-card-stat-val rating">★ {{ agent.rating }}</div><div class="m3-ag-card-stat-lbl">Rating</div></div>
-                        <div class="m3-ag-card-stat"><div class="m3-ag-card-stat-val">{{ agent.total_deals }}</div><div class="m3-ag-card-stat-lbl">Deals</div></div>
-                        <div class="m3-ag-card-stat"><div class="m3-ag-card-stat-val">{{ agent.experience_years|default:"—" }}</div><div class="m3-ag-card-stat-lbl">Years</div></div>
-                    </div>
-                    <div class="m3-ag-card-actions">
-                        <a href="{% url 'agent_profile_public' agent.id %}" class="m3-ag-btn-profile">View Profile <span class="material-symbols-outlined">arrow_forward</span></a>
-                        <a href="tel:{{ agent.phone }}" class="m3-ag-btn-call"><span class="material-symbols-outlined">call</span></a>
-                    </div>
+                <div class="m3-ag-card-stats">
+                    <div class="m3-ag-stat"><div class="m3-ag-stat-val star">★ {{ agent.rating }}</div><div class="m3-ag-stat-lbl">Rating</div></div>
+                    <div class="m3-ag-stat"><div class="m3-ag-stat-val">{{ agent.total_deals }}</div><div class="m3-ag-stat-lbl">Deals</div></div>
+                    <div class="m3-ag-stat"><div class="m3-ag-stat-val">{{ agent.experience_years|default:"—" }}</div><div class="m3-ag-stat-lbl">Yrs</div></div>
+                </div>
+                <div class="m3-ag-card-foot">
+                    <a href="{% url 'agent_profile_public' agent.id %}" class="m3-ag-btn-profile">Profile <span class="material-symbols-outlined">arrow_forward</span></a>
+                    <a href="tel:{{ agent.phone }}" class="m3-ag-btn-call"><span class="material-symbols-outlined">call</span></a>
                 </div>
             </div>
             {% endfor %}

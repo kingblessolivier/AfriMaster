@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py check)",
+      "Bash(\"c:/Users/USER/Documents/Year2/Year2_IT_Projects/Enhenced_systems/Property_management/improved-property-management-system-with-ui-hackers-_team/PropApp/admin.py\")",
+      "Bash(\"c:/Users/USER/Documents/Year2/Year2_IT_Projects/Enhenced_systems/Property_management/improved-property-management-system-with-ui-hackers-_team/PropApp/admin.py\":*)"
+    ]
+  }
+}

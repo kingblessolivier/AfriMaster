@@ -14,11 +14,52 @@
     <link rel="stylesheet" href="{% static 'css/m3-theme.css' %}">
     <style>
     /* ===== Top Info Bar ===== */
-    .top-infobar{position:fixed;top:0;left:0;right:0;height:36px;background:#0d2415;color:rgba(255,255,255,.8);z-index:1001;display:flex;align-items:center;border-bottom:1px solid rgba(40,167,69,.25);font-family:'Inter',sans-serif;font-size:12px;font-weight:400}
+    .top-infobar{
+        position:fixed;top:0;left:0;right:0;height:36px;
+        background:linear-gradient(100deg,#061409 0%,#0d2415 30%,#122e1a 60%,#091c10 100%);
+        color:rgba(255,255,255,.8);z-index:1001;display:flex;align-items:center;
+        border-bottom:1px solid rgba(40,167,69,.3);
+        font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
+        overflow:hidden;
+    }
+    /* diagonal stripe texture overlay */
+    .top-infobar::before{
+        content:'';position:absolute;inset:0;
+        background-image:repeating-linear-gradient(
+            110deg,
+            transparent 0px,transparent 18px,
+            rgba(40,167,69,.04) 18px,rgba(40,167,69,.04) 19px
+        );
+        pointer-events:none;z-index:0;
+    }
+    /* glowing accent line at very bottom */
+    .top-infobar::after{
+        content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
+        background:linear-gradient(90deg,transparent,rgba(102,187,106,.5) 40%,rgba(102,187,106,.5) 60%,transparent);
+        pointer-events:none;
+    }
+    /* floating rectangles */
+    .tib-rect{position:absolute;pointer-events:none;z-index:0;border-radius:3px}
+    .tib-rect-1{width:48px;height:14px;top:50%;left:6%;transform:translateY(-50%) rotate(-8deg);background:rgba(40,167,69,.13);animation:sqFloat 11s ease-in-out infinite}
+    .tib-rect-2{width:28px;height:8px;top:50%;left:20%;transform:translateY(-50%) rotate(5deg);background:rgba(255,255,255,.07);animation:sqDrift 14s ease-in-out infinite;animation-delay:-4s}
+    .tib-rect-3{width:60px;height:10px;top:50%;left:37%;transform:translateY(-50%) rotate(-4deg);background:rgba(40,167,69,.09);animation:sqFloat 13s ease-in-out infinite reverse;animation-delay:-7s}
+    .tib-rect-4{width:20px;height:20px;top:50%;left:58%;transform:translateY(-50%) rotate(12deg);background:rgba(102,187,106,.1);animation:sqPulse 9s ease-in-out infinite;animation-delay:-2s}
+    .tib-rect-5{width:44px;height:10px;top:50%;left:73%;transform:translateY(-50%) rotate(-6deg);background:rgba(255,255,255,.06);animation:sqDrift 15s ease-in-out infinite;animation-delay:-9s}
+    .tib-rect-6{width:24px;height:16px;top:50%;left:88%;transform:translateY(-50%) rotate(8deg);background:rgba(40,167,69,.12);animation:sqFloat 10s ease-in-out infinite;animation-delay:-5s}
+    /* ensure content sits above decorations */
+    .top-infobar .container{position:relative;z-index:1;height:100%}
     .top-infobar .container{height:100%}
     .tib-inner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:16px}
-    .tib-left{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.65);white-space:nowrap}
+    .tib-left{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.65);white-space:nowrap;flex-shrink:0}
     .tib-left .material-symbols-outlined{font-size:14px;color:#66BB6A}
+    /* scrolling ticker */
+    .tib-ticker{flex:1;overflow:hidden;min-width:0;margin:0 10px;height:22px;display:flex;align-items:center;background:rgba(40,167,69,.1);border:1px solid rgba(40,167,69,.22);border-radius:4px;box-shadow:inset 0 1px 3px rgba(0,0,0,.2),0 0 10px rgba(40,167,69,.06);mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 4%,#000 96%,transparent 100%)}
+    .tib-ticker-track{display:flex;gap:0;white-space:nowrap;animation:tibScroll 28s linear infinite}
+    .tib-ticker-track:hover{animation-play-state:paused}
+    .tib-ticker-item{display:inline-flex;align-items:center;gap:6px;color:#fff;padding:0 36px;font-size:12px;font-weight:500;letter-spacing:.2px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+    .tib-ticker-item .material-symbols-outlined{font-size:13px;color:#81c784;flex-shrink:0}
+    .tib-ticker-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:#66BB6A;opacity:.9;margin:0 12px;vertical-align:middle}
+    @keyframes tibScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     .tib-right{display:flex;align-items:center;gap:0}
     .tib-seg{display:flex;align-items:center;gap:5px;padding:0 12px;color:rgba(255,255,255,.8);border-left:1px solid rgba(255,255,255,.12);white-space:nowrap}
     .tib-seg:first-child{border-left:none}
@@ -29,74 +70,169 @@
     #tib-temp{font-weight:500;color:#fff}
     #tib-cond{color:rgba(255,255,255,.65);max-width:120px;overflow:hidden;text-overflow:ellipsis}
     @media(max-width:768px){.tib-left{display:none}.tib-seg.tib-cond-seg{display:none}.tib-seg{padding:0 8px}}
-    @media(max-width:480px){.top-infobar{height:32px}.navbar-m3{top:32px!important}}
-    .navbar-m3{background:var(--md-sys-color-surface);box-shadow:var(--md-sys-elevation-2);padding:8px 16px;transition:all 300ms var(--md-sys-motion-easing-standard);position:fixed;top:36px;left:0;right:0;z-index:1000}
-    .navbar-m3.scrolled{background:var(--md-sys-color-surface-container);box-shadow:var(--md-sys-elevation-3)}
-    .navbar-m3 .navbar-brand{font:500 1.5rem/1.5 'Inter',sans-serif;color:var(--md-sys-color-on-surface)!important;display:flex;align-items:center;gap:10px;text-decoration:none}
+    @media(max-width:480px){.top-infobar{height:32px}.navbar-m3.has-infobar{top:36px!important}}
+    /* ── Navbar: pill-shaped floating capsule ── */
+    .navbar-m3{
+        background-color:#0d2415;
+        background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);
+        background-size:50px 50px;
+        padding:6px 20px;
+        transition:box-shadow .35s ease,backdrop-filter .35s ease;
+        position:fixed;top:10px;left:50%;transform:translateX(-50%);
+        width:calc(100% - 48px);max-width:1280px;
+        border-radius:50px;
+        border:1px solid rgba(40,167,69,.35);
+        box-shadow:0 4px 24px rgba(0,0,0,.35);
+        z-index:1000;
+    }
+    .navbar-m3.has-infobar{top:44px;}
+    .navbar-m3.scrolled{
+        background-color:rgba(13,36,21,.93);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        box-shadow:0 4px 28px rgba(0,0,0,.45);
+        border-color:rgba(40,167,69,.3);
+    }
+    @media(max-width:768px){.navbar-m3{width:calc(100% - 24px);top:40px;border-radius:36px}}
+
+    /* floating squares inside navbar */
+    .nav-sq-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+    .nav-sq{position:absolute;border-radius:50%;pointer-events:none;will-change:transform}
+    /* circles — kept well inside left/right edges (min 8%, max 88%) */
+    .nav-sq-a{width:48px;height:48px;top:50%;left:8%;transform:translateY(-50%);background:rgba(255,255,255,.07);animation:sqFloat 10s ease-in-out infinite}
+    .nav-sq-b{width:22px;height:22px;top:50%;left:22%;transform:translateY(-50%);background:rgba(40,167,69,.22);animation:sqDrift 13s ease-in-out infinite;animation-delay:-3s}
+    .nav-sq-c{width:60px;height:60px;top:50%;left:38%;transform:translateY(-50%);background:rgba(255,255,255,.05);animation:sqFloat 14s ease-in-out infinite reverse;animation-delay:-6s}
+    .nav-sq-d{width:16px;height:16px;top:50%;left:55%;transform:translateY(-50%);background:rgba(100,220,120,.18);animation:sqPulse 9s ease-in-out infinite;animation-delay:-2s}
+    .nav-sq-e{width:38px;height:38px;top:50%;left:70%;transform:translateY(-50%);background:rgba(255,255,255,.06);animation:sqDrift 17s ease-in-out infinite;animation-delay:-8s}
+    .nav-sq-f{width:20px;height:20px;top:50%;left:86%;transform:translateY(-50%);background:rgba(40,167,69,.16);animation:sqFloat 11s ease-in-out infinite;animation-delay:-4s}
+    @media(max-width:768px){.nav-sq-c,.nav-sq-e{display:none}}
+    @media(prefers-reduced-motion:reduce){.nav-sq{animation:none!important}}
+
+    /* container must sit above squares */
+    .navbar-m3>.container{position:relative;z-index:1}
+
+    /* brand */
+    .navbar-m3 .navbar-brand{font:500 1.5rem/1.5 'Inter',sans-serif;color:#fff!important;display:flex;align-items:center;gap:10px;text-decoration:none}
     .navbar-m3 .navbar-brand img{border-radius:var(--md-sys-shape-corner-medium);transition:transform 300ms var(--md-sys-motion-easing-emphasized)}
-    .navbar-m3 .navbar-brand:hover img{transform:scale(1.05)}
-    .navbar-m3 .nav-link{color:var(--md-sys-color-on-surface-variant)!important;font:var(--md-sys-typescale-label-large);padding:8px 16px!important;margin:0 2px;border-radius:var(--md-sys-shape-corner-full);transition:all 200ms var(--md-sys-motion-easing-standard);display:flex;align-items:center;gap:8px;position:relative}
-    .navbar-m3 .nav-link:hover{color:var(--md-sys-color-on-surface)!important;background:var(--md-sys-color-surface-container-high)}
-    .navbar-m3 .nav-link.active{color:var(--md-sys-color-on-primary-container)!important;background:var(--md-sys-color-primary-container)}
+    .navbar-m3 .navbar-brand:hover img{transform:scale(1.06)}
+
+    /* nav links — white on green */
+    .navbar-m3 .nav-link{color:rgba(255,255,255,.82)!important;font:var(--md-sys-typescale-label-large);padding:8px 14px!important;margin:0 1px;border-radius:var(--md-sys-shape-corner-full);transition:all 200ms;display:flex;align-items:center;gap:7px;position:relative}
+    .navbar-m3 .nav-link:hover{color:#fff!important;background:rgba(255,255,255,.12)}
+    .navbar-m3 .nav-link.active{color:#fff!important;background:rgba(255,255,255,.18);font-weight:600}
     .navbar-m3 .nav-link.active .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24}
     .navbar-m3 .nav-link .material-symbols-outlined{font-size:20px}
-    .navbar-m3 .navbar-toggler{border:none;padding:8px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface)}
+
+    /* toggler (mobile) */
+    .navbar-m3 .navbar-toggler{border:1.5px solid rgba(255,255,255,.3);padding:7px;border-radius:var(--md-sys-shape-corner-full);color:#fff;transition:background 200ms}
     .navbar-m3 .navbar-toggler:focus{box-shadow:none}
-    .navbar-m3 .navbar-toggler:hover{background:var(--md-sys-color-surface-container-high)}
-    .navbar-m3 .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23191c19' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")}
-    .navbar-m3 .dropdown-menu{border:none;border-radius:var(--md-sys-shape-corner-medium);box-shadow:var(--md-sys-elevation-2);background:var(--md-sys-color-surface-container);padding:4px 0;min-width:200px;margin-top:4px}
-    .navbar-m3 .dropdown-item{font:var(--md-sys-typescale-body-large);padding:12px 16px;color:var(--md-sys-color-on-surface);display:flex;align-items:center;gap:12px;transition:background 150ms}
-    .navbar-m3 .dropdown-item:hover{background:var(--md-sys-color-surface-container-high)}
-    .navbar-m3 .dropdown-item .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-on-surface-variant)}
-    .navbar-m3 .dropdown-item.active-child{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container)}
-    .navbar-m3 .dropdown-item.active-child .material-symbols-outlined{color:var(--md-sys-color-on-primary-container)}
+    .navbar-m3 .navbar-toggler:hover{background:rgba(255,255,255,.12)}
+    .navbar-m3 .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")}
+
+    /* dropdown menu — stays light for readability */
+    .navbar-m3 .dropdown-menu{border:1px solid rgba(40,167,69,.35);border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.45);background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;padding:4px 0;min-width:200px;margin-top:8px;overflow:hidden}
+    .navbar-m3 .dropdown-item{font:var(--md-sys-typescale-body-large);padding:11px 16px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:12px;transition:background 150ms}
+    .navbar-m3 .dropdown-item:hover{background:rgba(40,167,69,.18);color:#fff}
+    .navbar-m3 .dropdown-item .material-symbols-outlined{font-size:20px;color:rgba(255,255,255,.55)}
+    .navbar-m3 .dropdown-item.active-child{background:rgba(40,167,69,.25);color:#fff}
+    .navbar-m3 .dropdown-item.active-child .material-symbols-outlined{color:#81c784}
     .navbar-m3 .nav-link.dropdown-toggle::after{display:none}
     .navbar-m3 .nav-link.dropdown-toggle .dd-arrow{font-size:18px;transition:transform 200ms ease;margin-left:-4px}
     .navbar-m3 .nav-item.dropdown.show .dd-arrow{transform:rotate(180deg)}
     .navbar-m3 .nav-item.dropdown .dropdown-menu{animation:m3DropIn 200ms cubic-bezier(.05,.7,.1,1)}
     @keyframes m3DropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
     @media(min-width:993px){.navbar-m3 .nav-item.dropdown:hover>.dropdown-menu{display:block}}
-    .btn-m3-login{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:transparent;color:#2E7D32;border:1.5px solid #2E7D32;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 200ms}
-    .btn-m3-login:hover{background:rgba(46,125,50,.08);color:#2E7D32}
-    .btn-m3-signup{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;background:#2E7D32;color:#fff;border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;margin-left:8px;transition:all 200ms;box-shadow:0 2px 8px rgba(46,125,50,.3)}
-    .btn-m3-signup:hover{background:#1B5E20;box-shadow:0 4px 12px rgba(46,125,50,.4);color:#fff}
-    .user-chip{display:flex;align-items:center;gap:10px;padding:4px 16px 4px 4px;border-radius:var(--md-sys-shape-corner-full);color:var(--md-sys-color-on-surface);text-decoration:none;transition:background 150ms}
-    .user-chip:hover{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface)}
-    .user-chip-avatar{width:36px;height:36px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center}
-    .user-chip-name{font:var(--md-sys-typescale-label-large)}
+
+    /* auth buttons — white/transparent on dark navbar */
+    .btn-m3-login{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 20px;background:transparent;color:rgba(255,255,255,.88);border:1.5px solid rgba(255,255,255,.4);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;transition:all 200ms}
+    .btn-m3-login:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.65)}
+    .btn-m3-signup{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 20px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);text-decoration:none;margin-left:8px;transition:all 200ms;backdrop-filter:blur(6px)}
+    .btn-m3-signup:hover{background:rgba(255,255,255,.25);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+
+    /* user chip — white on dark */
+    .user-chip{display:flex;align-items:center;gap:10px;padding:4px 14px 4px 4px;border-radius:var(--md-sys-shape-corner-full);color:#fff;text-decoration:none;transition:background 150ms}
+    .user-chip:hover{background:rgba(255,255,255,.12);color:#fff}
+    .user-chip-avatar{width:36px;height:36px;border-radius:var(--md-sys-shape-corner-full);background:rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3)}
+    .user-chip-name{font:var(--md-sys-typescale-label-large);color:#fff}
     .main-content{min-height:calc(100vh - 200px);animation:m3FadeIn 500ms 200ms cubic-bezier(.05,.7,.1,1) both}
-    .footer-m3{background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);color:#fff;padding:48px 0 24px;margin-top:0;position:relative;overflow:hidden}
-    .footer-m3 .footer-section h5{font:var(--md-sys-typescale-title-medium);color:#fff;margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
-    .footer-m3 .footer-section h5::after{content:none}
-    .footer-m3 .footer-section h5 .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-inverse-primary)}
-    .footer-m3 .footer-section p{font:var(--md-sys-typescale-body-medium);color:rgba(255,255,255,.7)}
-    .footer-m3 .footer-section p a{color:var(--md-sys-color-inverse-primary)!important}
+    /* ===== Enhanced Footer ===== */
+    .footer-m3{background-color:#091a0f;background-image:linear-gradient(rgba(40,167,69,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.07) 1px,transparent 1px);background-size:40px 40px;color:#fff;padding:0;margin-top:0;position:relative;overflow:hidden;border-top:1px solid rgba(40,167,69,.2)}
+    .footer-m3::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#28a745 30%,#6fcf97 50%,#28a745 70%,transparent)}
+    .footer-brand-strip{padding:40px 0 32px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .footer-brand-logo{font-size:1.5rem;font-weight:800;color:#fff;display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+    .footer-brand-dot{width:10px;height:10px;border-radius:50%;background:#28a745;display:inline-block;box-shadow:0 0 8px #28a745}
+    .footer-brand-tagline{font-size:.875rem;color:rgba(255,255,255,.5);margin-top:8px;line-height:1.65;max-width:300px}
+    .footer-stat-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .footer-stat-pill{display:flex;flex-direction:column;align-items:center;background:rgba(40,167,69,.1);border:1px solid rgba(40,167,69,.22);border-radius:12px;padding:10px 18px;min-width:80px}
+    .footer-stat-num{font-size:1.3rem;font-weight:800;color:#6fcf97}
+    .footer-stat-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-top:2px}
+    .footer-cols{padding:36px 0 24px}
+    .footer-m3 .footer-section h5{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.38);margin-bottom:18px;display:flex;align-items:center;gap:7px}
+    .footer-m3 .footer-section h5 .material-symbols-outlined{font-size:15px;color:#28a745}
+    .footer-m3 .footer-section p{font-size:.875rem;color:rgba(255,255,255,.58);line-height:1.7;margin-bottom:10px}
+    .footer-m3 .footer-section p a{color:#6fcf97!important;text-decoration:none}
+    .footer-contact-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+    .footer-contact-icon{width:30px;height:30px;border-radius:8px;background:rgba(40,167,69,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .footer-contact-icon .material-symbols-outlined{font-size:15px;color:#6fcf97}
+    .footer-contact-text{font-size:.84rem;color:rgba(255,255,255,.6);line-height:1.4}
+    .footer-contact-text a{color:rgba(255,255,255,.6)!important;text-decoration:none;transition:.15s}
+    .footer-contact-text a:hover{color:#6fcf97!important}
     .footer-m3 .footer-links{list-style:none;padding:0;margin:0}
-    .footer-m3 .footer-links li{margin-bottom:4px}
-    .footer-m3 .footer-links a{font:var(--md-sys-typescale-body-medium);color:rgba(255,255,255,.65);text-decoration:none;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--md-sys-shape-corner-full);transition:all 150ms}
-    .footer-m3 .footer-links a:hover{background:rgba(255,255,255,.1);color:var(--md-sys-color-inverse-primary)}
-    .social-icons-m3{display:flex;gap:8px;flex-wrap:wrap}
-    .social-icons-m3 a{width:40px;height:40px;border-radius:var(--md-sys-shape-corner-full);background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 200ms}
-    .social-icons-m3 a:hover{background:var(--md-sys-color-inverse-primary);color:#1a2a1a;transform:translateY(-2px)}
-    .footer-bottom-m3{border-top:1px solid rgba(255,255,255,.15);padding-top:20px;margin-top:32px;text-align:center}
-    .footer-bottom-m3 p{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.5);margin:0}
+    .footer-m3 .footer-links li{margin-bottom:1px}
+    .footer-m3 .footer-links a{font-size:.875rem;color:rgba(255,255,255,.58);text-decoration:none;display:flex;align-items:center;gap:7px;padding:5px 0;transition:.15s}
+    .footer-m3 .footer-links a .material-symbols-outlined{font-size:13px;color:rgba(40,167,69,.5);transition:.15s}
+    .footer-m3 .footer-links a:hover{color:#fff}
+    .footer-m3 .footer-links a:hover .material-symbols-outlined{color:#28a745}
+    .social-icons-m3{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .social-icons-m3 a{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .2s;font-size:16px}
+    .social-icons-m3 a:hover{background:#28a745;border-color:#28a745;color:#fff;transform:translateY(-3px);box-shadow:0 6px 16px rgba(40,167,69,.4)}
+    .footer-newsletter-wrap{margin-top:16px}
+    .footer-newsletter-wrap p{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:10px}
+    .footer-nl-row{display:flex;border-radius:24px;overflow:hidden;border:1px solid rgba(40,167,69,.28);background:rgba(255,255,255,.04)}
+    .footer-nl-row input{flex:1;background:transparent;border:none;outline:none;padding:9px 16px;font-size:.83rem;color:#fff;min-width:0}
+    .footer-nl-row input::placeholder{color:rgba(255,255,255,.3)}
+    .footer-nl-row button{background:#28a745;border:none;color:#fff;padding:9px 16px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+    .footer-nl-row button:hover{background:#218838}
+    .footer-nl-row button .material-symbols-outlined{font-size:15px}
+    .footer-bottom-m3{border-top:1px solid rgba(255,255,255,.07);padding:16px 0;margin-top:0}
+    .footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .footer-bottom-m3 p{font-size:.78rem;color:rgba(255,255,255,.35);margin:0}
+    .footer-bottom-links{display:flex;gap:18px;flex-wrap:wrap}
+    .footer-bottom-links a{font-size:.75rem;color:rgba(255,255,255,.35);text-decoration:none;transition:.15s}
+    .footer-bottom-links a:hover{color:rgba(255,255,255,.75)}
     @media(max-width:992px){.navbar-m3 .navbar-collapse{padding:16px 0}.navbar-m3 .nav-link{margin:2px 0}.btn-m3-login,.btn-m3-signup{margin:8px 4px 0 0}.user-chip{margin-top:12px}}
-    @media(max-width:768px){.navbar-m3 .navbar-brand{font-size:1.25rem}.footer-m3 .footer-section{margin-bottom:24px;text-align:center}.social-icons-m3{justify-content:center}}
+    @media(max-width:768px){.navbar-m3 .navbar-brand{font-size:1.25rem}.footer-m3 .footer-section{margin-bottom:28px;text-align:center}.footer-contact-row{justify-content:center}.social-icons-m3{justify-content:center}.footer-bottom-inner{flex-direction:column;align-items:center;text-align:center}.footer-stat-pills{justify-content:center}}
     .fade-in{animation:m3FadeIn 600ms cubic-bezier(.05,.7,.1,1) both}
     @keyframes m3FadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ===== BigPipe Page Loader ===== */
-    .bigpipe-loader{position:fixed;inset:0;z-index:9999;background:var(--md-sys-color-surface);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease}
-    .bigpipe-loader.done{opacity:0;visibility:hidden;pointer-events:none}
-    .bigpipe-spinner{position:relative;width:56px;height:56px;margin-bottom:24px}
-    .bigpipe-spinner::before{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid var(--md-sys-color-surface-container-high);border-top-color:var(--md-sys-color-primary);animation:bp-spin .8s linear infinite}
-    @keyframes bp-spin{to{transform:rotate(360deg)}}
-    .bigpipe-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-    .bigpipe-logo img{width:40px;height:40px;border-radius:var(--md-sys-shape-corner-medium)}
-    .bigpipe-logo span{font:500 1.3rem/1 'Inter',sans-serif;color:var(--md-sys-color-on-surface)}
-    .bigpipe-bar{width:220px;height:4px;background:var(--md-sys-color-surface-container-high);border-radius:2px;overflow:hidden}
-    .bigpipe-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));border-radius:2px;transition:width .3s ease}
-    .bigpipe-status{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant);margin-top:12px;letter-spacing:.3px}
+    /* ===== Skeleton Page Loader ===== */
+    .sk-loader{position:fixed;inset:0;z-index:9999;background:var(--md-sys-color-surface);overflow:hidden;transition:opacity .35s ease,visibility .35s ease}
+    .sk-loader.done{opacity:0;visibility:hidden;pointer-events:none}
+    /* fake navbar */
+    .sk-nav{height:56px;background:linear-gradient(135deg,#0a1f0f,#1a3d20);display:flex;align-items:center;padding:0 24px;gap:16px}
+    .sk-nav-brand{height:20px;width:130px;border-radius:6px;background:rgba(255,255,255,.12)}
+    .sk-nav-links{display:flex;gap:12px;margin-left:auto}
+    .sk-nav-link{height:14px;border-radius:10px;background:rgba(255,255,255,.1)}
+    /* fake hero */
+    .sk-hero{height:340px;background:linear-gradient(160deg,#0d2415 0%,#1a3d20 60%,#0d2415 100%);padding:48px 24px 32px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+    .sk-hero-title{height:44px;width:55%;border-radius:8px}
+    .sk-hero-sub{height:18px;width:40%;border-radius:6px}
+    .sk-hero-btn{height:44px;width:140px;border-radius:100px;margin-top:8px}
+    /* fake cards grid */
+    .sk-section{padding:32px 24px}
+    .sk-section-title{height:24px;width:200px;border-radius:6px;margin-bottom:24px}
+    .sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .sk-card{border-radius:16px;overflow:hidden;background:var(--md-sys-color-surface-container-low)}
+    .sk-card-img{height:160px}
+    .sk-card-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+    .sk-card-line{height:13px;border-radius:4px}
+    .sk-card-line.w80{width:80%}
+    .sk-card-line.w55{width:55%}
+    .sk-card-line.w35{width:35%}
+    /* shimmer on dark bg */
+    .sk-bone{position:relative;overflow:hidden;background:rgba(255,255,255,.09);border-radius:6px}
+    .sk-bone::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.06) 50%,transparent 100%);animation:skShimmer 1.6s ease-in-out infinite}
+    @keyframes skShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
     /* ===== Pagelet Progressive Rendering ===== */
     .pagelet{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.05,.7,.1,1),transform .6s cubic-bezier(.05,.7,.1,1)}
@@ -130,7 +266,7 @@
     .md-reveal:nth-child(6){transition-delay:300ms}
 
     /* NProgress-style top bar */
-    .bigpipe-topbar{position:fixed;top:36px;left:0;height:3px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));z-index:10000;transition:width .4s ease;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(40,167,69,.4)}
+    .bigpipe-topbar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--md-sys-color-primary),var(--md-sys-color-tertiary));z-index:10000;transition:width .4s ease;border-radius:0 2px 2px 0;box-shadow:0 0 8px rgba(40,167,69,.4)}
 
     /* ===== Floating Green Squares ===== */
     html{scroll-behavior:smooth}
@@ -170,32 +306,176 @@
     @keyframes m3FadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
 
     /* ===== Page Background ===== */
-    body{background-color:#F5F7FA}
+    body{background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;background-attachment:fixed}
     .hero-lattice{background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;background-attachment:fixed}
     @media(max-width:768px){.hero-lattice{background-attachment:scroll}}
     </style>
     {% block extra_css %}{% endblock %}
+    <!-- PropBot AI Chatbot Styles -->
+    <style>
+    #ai-chatbot-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;box-shadow:0 4px 12px rgba(40,167,69,.4);cursor:pointer;z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform 200ms cubic-bezier(.05,.7,.1,1),box-shadow 200ms,background 200ms}
+    #ai-chatbot-fab:hover{background:#1B5E20;box-shadow:0 6px 20px rgba(40,167,69,.5);transform:scale(1.05)}
+    #ai-chatbot-fab .fab-icon-open,#ai-chatbot-fab .fab-icon-close{transition:opacity 150ms,transform 150ms}
+    #ai-chatbot-fab.open .fab-icon-open{opacity:0;transform:rotate(90deg);position:absolute}
+    #ai-chatbot-fab.open .fab-icon-close{opacity:1}
+    #ai-chatbot-fab:not(.open) .fab-icon-close{opacity:0;position:absolute}
+    #ai-chatbot-fab:not(.open) .fab-icon-open{opacity:1}
+    #ai-chatbot-window{position:fixed;bottom:92px;right:24px;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 200px);background:var(--md-sys-color-surface);border-radius:28px;box-shadow:0 8px 32px rgba(0,0,0,.18);display:flex;flex-direction:column;z-index:9989;overflow:hidden;transform-origin:bottom right;transition:opacity 200ms cubic-bezier(.05,.7,.1,1),transform 200ms cubic-bezier(.05,.7,.1,1)}
+    #ai-chatbot-window.hidden{opacity:0;transform:scale(0.85) translateY(16px);pointer-events:none}
+    .ai-chat-header{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .ai-chat-header-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px}
+    .ai-chat-header-info{flex:1}
+    .ai-chat-header-title{font:500 .95rem/1.3 'Inter',sans-serif}
+    .ai-chat-header-sub{font:.75rem/1.3 'Inter',sans-serif;opacity:.8}
+    .ai-chat-clear-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 150ms}
+    .ai-chat-clear-btn:hover{background:rgba(255,255,255,.3)}
+    .ai-chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--md-sys-color-surface-container-low,#f1f1f1);scroll-behavior:smooth}
+    .ai-chat-messages::-webkit-scrollbar{width:4px}
+    .ai-chat-messages::-webkit-scrollbar-thumb{background:var(--md-sys-color-outline-variant);border-radius:2px}
+    .ai-msg-row{display:flex;align-items:flex-end;gap:6px}
+    .ai-msg-row.user{flex-direction:row-reverse}
+    .ai-msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+    .ai-msg-row.user .ai-msg-avatar{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container)}
+    .ai-msg-row.bot .ai-msg-avatar{background:var(--md-sys-color-secondary-container,#cce8e8);color:var(--md-sys-color-on-secondary-container,#0b2121)}
+    .ai-msg-bubble{max-width:78%;padding:10px 13px;border-radius:18px;font:.875rem/1.5 'Inter',sans-serif;word-break:break-word;white-space:pre-wrap}
+    .ai-msg-row.user .ai-msg-bubble{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border-bottom-right-radius:4px}
+    .ai-msg-row.bot .ai-msg-bubble{background:var(--md-sys-color-surface-container-highest,#e0e0e0);color:var(--md-sys-color-on-surface);border-bottom-left-radius:4px}
+    .ai-typing-indicator{display:flex;align-items:center;gap:4px;padding:10px 14px}
+    .ai-typing-dot{width:7px;height:7px;background:var(--md-sys-color-outline,#888);border-radius:50%;animation:aiTypingPulse 1.2s ease-in-out infinite}
+    .ai-typing-dot:nth-child(2){animation-delay:.2s}
+    .ai-typing-dot:nth-child(3){animation-delay:.4s}
+    @keyframes aiTypingPulse{0%,80%,100%{opacity:.3;transform:scale(.85)}40%{opacity:1;transform:scale(1)}}
+    .ai-chat-input-area{padding:10px 12px;background:var(--md-sys-color-surface);border-top:1px solid var(--md-sys-color-outline-variant,#ccc);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+    .ai-chat-input-area textarea{flex:1;resize:none;border:1.5px solid var(--md-sys-color-outline-variant,#ccc);border-radius:20px;padding:10px 14px;font:.875rem/1.4 'Inter',sans-serif;background:var(--md-sys-color-surface-container,#f5f5f5);color:var(--md-sys-color-on-surface);outline:none;max-height:100px;overflow-y:auto;transition:border-color 150ms}
+    .ai-chat-input-area textarea:focus{border-color:var(--md-sys-color-primary)}
+    .ai-chat-send-btn{width:40px;height:40px;border-radius:50%;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 150ms,transform 150ms}
+    .ai-chat-send-btn:hover{background:#1B5E20;transform:scale(1.05)}
+    .ai-chat-send-btn:disabled{background:var(--md-sys-color-outline-variant,#ccc);cursor:not-allowed;transform:none}
+    .ai-chat-welcome{text-align:center;padding:24px 16px;color:var(--md-sys-color-on-surface-variant)}
+    .ai-chat-welcome .material-symbols-outlined{font-size:40px;color:var(--md-sys-color-primary);display:block;margin-bottom:8px}
+    @media(max-width:480px){#ai-chatbot-window{right:8px;left:8px;width:auto;bottom:80px}#ai-chatbot-fab{right:16px;bottom:16px}}
+    /* Property cards inside chat */
+    .ai-prop-grid{display:flex;flex-direction:column;gap:10px;margin-top:6px;width:100%}
+    .ai-prop-card{background:var(--md-sys-color-surface);border:1px solid var(--md-sys-color-outline-variant,#ddd);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:box-shadow 150ms}
+    .ai-prop-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.14)}
+    .ai-prop-img{width:100%;height:130px;object-fit:cover;background:var(--md-sys-color-surface-container-high,#e8e8e8);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-outline)}
+    .ai-prop-img img{width:100%;height:130px;object-fit:cover;display:block}
+    .ai-prop-img .ai-prop-noimg{font-size:36px}
+    .ai-prop-body{padding:10px 12px}
+    .ai-prop-badge{display:inline-block;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:20px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+    .ai-prop-badge.rent{background:#e8f5e9;color:#2e7d32}
+    .ai-prop-badge.sale{background:#e3f2fd;color:#1565c0}
+    .ai-prop-name{font:.875rem/1.3 'Inter',sans-serif;font-weight:600;color:var(--md-sys-color-on-surface);margin:0 0 2px}
+    .ai-prop-addr{font:.75rem/1.3 'Inter',sans-serif;color:var(--md-sys-color-on-surface-variant);margin:0 0 4px}
+    .ai-prop-price{font:600 .95rem/1.3 'Inter',sans-serif;color:var(--md-sys-color-primary);margin:0 0 4px}
+    .ai-prop-desc{font:.75rem/1.4 'Inter',sans-serif;color:var(--md-sys-color-on-surface-variant);margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-clamp:2;overflow:hidden}
+    .ai-prop-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    .ai-prop-meta span{font:.7rem 'Inter',sans-serif;color:var(--md-sys-color-on-surface-variant);display:flex;align-items:center;gap:2px}
+    .ai-prop-link{display:block;text-align:center;padding:7px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)!important;border-radius:10px;font:.8rem/1 'Inter',sans-serif;font-weight:500;text-decoration:none;transition:background 150ms}
+    .ai-prop-link:hover{background:#1B5E20}
+    /* Markdown rendering inside bot bubbles */
+    .ai-msg-row.bot .ai-msg-bubble p{margin:0 0 6px 0}
+    .ai-msg-row.bot .ai-msg-bubble p:last-child{margin-bottom:0}
+    .ai-msg-row.bot .ai-msg-bubble ul,.ai-msg-row.bot .ai-msg-bubble ol{margin:4px 0 4px 16px;padding:0}
+    .ai-msg-row.bot .ai-msg-bubble li{margin-bottom:2px}
+    .ai-msg-row.bot .ai-msg-bubble strong{font-weight:600}
+    .ai-msg-row.bot .ai-msg-bubble h1,.ai-msg-row.bot .ai-msg-bubble h2,.ai-msg-row.bot .ai-msg-bubble h3{font-size:.9rem;font-weight:600;margin:6px 0 2px}
+    .ai-msg-row.bot .ai-msg-bubble code{background:rgba(0,0,0,.08);padding:1px 4px;border-radius:4px;font-size:.8rem;font-family:monospace}
+    .ai-msg-row.bot .ai-msg-bubble pre{background:rgba(0,0,0,.08);padding:8px;border-radius:6px;overflow-x:auto;font-size:.8rem}
+    .ai-msg-row.bot .ai-msg-bubble pre code{background:none;padding:0}
+    /* ── History panel ──────────────────────────────────────── */
+    .ai-chat-history-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 150ms;margin-right:2px}
+    .ai-chat-history-btn:hover{background:rgba(255,255,255,.3)}
+    .ai-history-panel{position:absolute;inset:0;background:var(--md-sys-color-surface,#fff);z-index:10;display:flex;flex-direction:column;border-radius:28px;overflow:hidden;transition:transform 200ms cubic-bezier(.05,.7,.1,1),opacity 200ms}
+    .ai-history-panel.hidden{opacity:0;pointer-events:none;transform:translateX(100%)}
+    .ai-history-header{background:var(--md-sys-color-primary);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .ai-history-header-title{flex:1;font:500 .95rem/1.3 'Inter',sans-serif}
+    .ai-history-back-btn,.ai-new-chat-btn{background:rgba(255,255,255,.15);border:none;color:#fff;height:32px;border-radius:16px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 10px;font:.8rem 'Inter',sans-serif;transition:background 150ms;white-space:nowrap}
+    .ai-history-back-btn:hover,.ai-new-chat-btn:hover{background:rgba(255,255,255,.3)}
+    .ai-history-list{flex:1;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:4px}
+    .ai-history-list::-webkit-scrollbar{width:4px}
+    .ai-history-list::-webkit-scrollbar-thumb{background:var(--md-sys-color-outline-variant);border-radius:2px}
+    .ai-history-item{padding:10px 12px;border-radius:12px;cursor:pointer;background:var(--md-sys-color-surface-container,#f5f5f5);border:1px solid transparent;transition:background 150ms,border-color 150ms}
+    .ai-history-item:hover{background:var(--md-sys-color-surface-container-high,#ece6f0);border-color:var(--md-sys-color-outline-variant,#ccc)}
+    .ai-history-item.active{border-color:var(--md-sys-color-primary,#2e7d32);background:var(--md-sys-color-primary-container,#c8e6c9)}
+    .ai-history-item-title{font:.875rem/1.3 'Inter',sans-serif;font-weight:500;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ai-history-item-meta{font:.72rem 'Inter',sans-serif;color:var(--md-sys-color-on-surface-variant);margin-top:2px;display:flex;gap:8px}
+    .ai-history-empty{text-align:center;color:var(--md-sys-color-on-surface-variant);font:.85rem 'Inter',sans-serif;padding:32px 16px}
+    </style>
 </head>
 <body data-uid="{% if user.is_authenticated %}{{ user.id }}{% endif %}">
-    <!-- BigPipe Page Loader -->
-    <div class="bigpipe-loader" id="bigpipeLoader">
-        <div class="bigpipe-logo">
-            <img src="{% static 'images/PropertyHub.png' %}" alt="PropertyHub">
-            <span>PropertyHub</span>
+    <!-- Skeleton Page Loader -->
+    <div class="sk-loader" id="bigpipeLoader">
+        <!-- fake navbar -->
+        <div class="sk-nav">
+            <div class="sk-nav-brand sk-bone"></div>
+            <div class="sk-nav-links">
+                <div class="sk-nav-link sk-bone" style="width:52px"></div>
+                <div class="sk-nav-link sk-bone" style="width:72px"></div>
+                <div class="sk-nav-link sk-bone" style="width:60px"></div>
+                <div class="sk-nav-link sk-bone" style="width:52px"></div>
+            </div>
         </div>
-        <div class="bigpipe-spinner"></div>
-        <div class="bigpipe-bar"><div class="bigpipe-bar-fill" id="bigpipeBarFill"></div></div>
-        <div class="bigpipe-status" id="bigpipeStatus">Loading pagelets...</div>
+        <!-- fake hero -->
+        <div class="sk-hero">
+            <div class="sk-hero-title sk-bone"></div>
+            <div class="sk-hero-sub sk-bone"></div>
+            <div class="sk-hero-btn sk-bone"></div>
+        </div>
+        <!-- fake cards -->
+        <div class="sk-section">
+            <div class="sk-section-title sk-bone"></div>
+            <div class="sk-grid">
+                {% for i in "123456" %}
+                <div class="sk-card">
+                    <div class="sk-card-img sk-bone"></div>
+                    <div class="sk-card-body">
+                        <div class="sk-card-line w80 sk-bone"></div>
+                        <div class="sk-card-line w55 sk-bone"></div>
+                        <div class="sk-card-line w35 sk-bone"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
     <div class="bigpipe-topbar" id="bigpipeTopbar" style="width:0%"></div>
 
-    <!-- Top Info Bar -->
-    <div class="top-infobar" id="topInfobar">
+    <!-- Top Info Bar (homepage only) -->
+    {% if show_infobar %}<div class="top-infobar" id="topInfobar">
+        <span class="tib-orb tib-orb-1" aria-hidden="true"></span>
+        <span class="tib-orb tib-orb-2" aria-hidden="true"></span>
+        <span class="tib-orb tib-orb-3" aria-hidden="true"></span>
         <div class="container">
             <div class="tib-inner">
                 <div class="tib-left">
                     <span class="material-symbols-outlined">location_on</span>
-                    <span>Kigali, Rwanda &mdash; PropertyHub Ltd</span>
+                    <span>Kigali, Rwanda</span>
+                </div>
+                <!-- scrolling announcements ticker -->
+                <div class="tib-ticker">
+                    <div class="tib-ticker-track">
+                        {% if announcements %}
+                            {% for ann in announcements %}
+                                <span class="tib-ticker-item"><span class="material-symbols-outlined">{{ ann.icon }}</span>{{ ann.text }}</span>
+                                <span class="tib-ticker-dot"></span>
+                            {% endfor %}
+                            {# duplicate for seamless infinite loop #}
+                            {% for ann in announcements %}
+                                <span class="tib-ticker-item"><span class="material-symbols-outlined">{{ ann.icon }}</span>{{ ann.text }}</span>
+                                <span class="tib-ticker-dot"></span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="tib-ticker-item"><span class="material-symbols-outlined">campaign</span>Welcome to PropertyHub — Rwanda's premier property management platform</span>
+                            <span class="tib-ticker-dot"></span>
+                            <span class="tib-ticker-item"><span class="material-symbols-outlined">home_work</span>Browse verified listings for rent &amp; sale across Kigali and beyond</span>
+                            <span class="tib-ticker-dot"></span>
+                            <span class="tib-ticker-item"><span class="material-symbols-outlined">campaign</span>Welcome to PropertyHub — Rwanda's premier property management platform</span>
+                            <span class="tib-ticker-dot"></span>
+                            <span class="tib-ticker-item"><span class="material-symbols-outlined">home_work</span>Browse verified listings for rent &amp; sale across Kigali and beyond</span>
+                            <span class="tib-ticker-dot"></span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="tib-right">
                     <div class="tib-seg tib-cond-seg">
@@ -214,9 +494,17 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>{% endif %}
 
-    <nav class="navbar navbar-expand-lg navbar-m3">
+    <nav class="navbar navbar-expand-lg navbar-m3 {% if show_infobar %}has-infobar{% endif %}">
+        <div class="nav-sq-wrap" aria-hidden="true">
+            <span class="nav-sq nav-sq-a"></span>
+            <span class="nav-sq nav-sq-b"></span>
+            <span class="nav-sq nav-sq-c"></span>
+            <span class="nav-sq nav-sq-d"></span>
+            <span class="nav-sq nav-sq-e"></span>
+            <span class="nav-sq nav-sq-f"></span>
+        </div>
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
                 <img src="{% static 'images/PropertyHub.png' %}" alt="PropertyHub" width="40" height="40">PropertyHub
@@ -297,7 +585,7 @@
                             <span id="pubNotifBadge" style="position:absolute;top:4px;right:4px;width:16px;height:16px;background:#ba1a1a;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center">0</span>
                             {% endif %}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" style="min-width:300px;max-height:360px;overflow-y:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px 0">
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width:300px;max-height:360px;overflow-y:auto;border-radius:12px;padding:4px 0">
                             {% for n in recent_notifications %}
                             <li>
                                 <a class="dropdown-item d-flex align-items-start gap-2 {% if not n.is_read %}fw-semibold{% endif %}" href="{% url 'mark_notification_read' n.id %}" style="white-space:normal;padding:10px 14px">
@@ -313,8 +601,8 @@
                             {% empty %}
                             <li><span class="dropdown-item text-muted text-center py-3" style="font-size:.85rem">No notifications yet</span></li>
                             {% endfor %}
-                            <li><hr class="dropdown-divider m-0"></li>
-                            <li><a class="dropdown-item text-center py-2" href="{% url 'notifications' %}" style="color:#2E7D32;font-weight:600;font-size:.875rem">View all</a></li>
+                            <li><hr class="dropdown-divider m-0" style="border-color:rgba(40,167,69,.25)"></li>
+                            <li><a class="dropdown-item text-center py-2" href="{% url 'notifications' %}" style="color:#81c784;font-weight:600;font-size:.875rem">View all</a></li>
                         </ul>
                     </div>
                     <!-- User Chip -->
@@ -326,7 +614,7 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li><a class="dropdown-item" href="{% url 'feed' %}"><span class="material-symbols-outlined">dynamic_feed</span>Feed</a></li>
                             <li><a class="dropdown-item" href="{% url 'notifications' %}"><span class="material-symbols-outlined">notifications_active</span>Notifications</a></li>
-                            <li><hr class="dropdown-divider" style="margin:4px 0;border-color:var(--md-sys-color-outline-variant)"></li>
+                            <li><hr class="dropdown-divider" style="margin:4px 0;border-color:rgba(40,167,69,.25)"></li>
                             <li><a class="dropdown-item" href="{% url 'user_logout' %}"><span class="material-symbols-outlined">logout</span>Logout</a></li>
                         </ul>
                     </div>
@@ -340,140 +628,199 @@
     </nav>
     <main class="main-content fade-in">{% block content %}{% endblock %}</main>
     <footer class="footer-m3">
-        <!-- Floating squares -->
-        <div class="floating-sq floating-sq--sm floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:10%;left:5%"></div>
-        <div class="floating-sq floating-sq--md floating-sq--c2 floating-sq--a3 floating-sq--d3" style="top:40%;right:8%"></div>
-        <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a2 floating-sq--d2" style="bottom:15%;left:15%"></div>
-        <div class="floating-sq floating-sq--xs floating-sq--c4 floating-sq--a5 floating-sq--d4" style="top:20%;right:30%"></div>
-        <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a4 floating-sq--d5" style="bottom:-30px;right:-30px;transform:rotate(22deg)"></div>
         <div class="container" style="position:relative;z-index:2">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 footer-section">
-                    <h5><span class="material-symbols-outlined">mail</span>Contact Us</h5>
-                    <p>For inquiries, please reach out to us:</p>
-                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">email</span> <a href="mailto:support@PropertyHubproperties.com" style="color:var(--md-sys-color-primary);text-decoration:none">support@PropertyHubproperties.com</a></p>
-                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">phone</span> <a href="tel:+250788123456" style="color:rgba(255,255,255,.7);text-decoration:none">+250 788 123 456</a></p>
-                    <p><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">location_on</span> Kigali, Rwanda</p>
-                </div>
-                <div class="col-lg-4 col-md-6 footer-section">
-                    <h5><span class="material-symbols-outlined">link</span>Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'property_list' %}">Browse Properties</a></li>
-                        <li><a href="{% url 'index' %}#services">Our Services</a></li>
-                        <li><a href="{% url 'index' %}#featured">Featured Listings</a></li>
-                        <li><a href="{% url 'about' %}">About Us</a></li>
-                        <li><a href="{% url 'updates' %}">News & Updates</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-12 footer-section">
-                    <h5><span class="material-symbols-outlined">share</span>Follow Us</h5>
-                    <p>Stay connected with us on social media</p>
-                    <div class="social-icons-m3 mt-3">
-                        <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
-                        <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter-x"></i></a>
-                        <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
-                        <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
-                        <a href="https://github.com" target="_blank"><i class="bi bi-github"></i></a>
+
+            <!-- Brand strip -->
+            <div class="footer-brand-strip">
+                <div class="row align-items-center">
+                    <div class="col-lg-5 col-md-6 mb-4 mb-md-0">
+                        <a href="{% url 'index' %}" class="footer-brand-logo">
+                            <span class="footer-brand-dot"></span>PropertyHub
+                        </a>
+                        <p class="footer-brand-tagline">Your trusted partner for property rentals and real estate in Kigali, Rwanda. Find your perfect home today.</p>
+                        <div class="footer-stat-pills">
+                            <div class="footer-stat-pill"><span class="footer-stat-num">500+</span><span class="footer-stat-lbl">Properties</span></div>
+                            <div class="footer-stat-pill"><span class="footer-stat-num">1.2K+</span><span class="footer-stat-lbl">Tenants</span></div>
+                            <div class="footer-stat-pill"><span class="footer-stat-num">98%</span><span class="footer-stat-lbl">Satisfaction</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-6 d-flex justify-content-md-end">
+                        <div class="social-icons-m3">
+                            <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://twitter.com" target="_blank" title="X / Twitter"><i class="bi bi-twitter-x"></i></a>
+                            <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="https://wa.me/250788123456" target="_blank" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                            <a href="https://youtube.com" target="_blank" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom-m3"><p>&copy; 2026 PropertyHub Ltd. All rights reserved.</p></div>
+
+            <!-- Columns -->
+            <div class="row footer-cols">
+                <div class="col-lg-3 col-md-6 footer-section">
+                    <h5><span class="material-symbols-outlined">apartment</span>Company</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'about' %}"><span class="material-symbols-outlined">chevron_right</span>About Us</a></li>
+                        <li><a href="{% url 'index' %}#services"><span class="material-symbols-outlined">chevron_right</span>Our Services</a></li>
+                        <li><a href="{% url 'updates' %}"><span class="material-symbols-outlined">chevron_right</span>News &amp; Updates</a></li>
+                        <li><a href="{% url 'agent_directory' %}"><span class="material-symbols-outlined">chevron_right</span>Our Agents</a></li>
+                        <li><a href="#"><span class="material-symbols-outlined">chevron_right</span>Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 footer-section">
+                    <h5><span class="material-symbols-outlined">home</span>Properties</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'property_list' %}"><span class="material-symbols-outlined">chevron_right</span>For Rent</a></li>
+                        <li><a href="{% url 'sale_listings' %}"><span class="material-symbols-outlined">chevron_right</span>For Sale</a></li>
+                        <li><a href="{% url 'index' %}#featured"><span class="material-symbols-outlined">chevron_right</span>Featured Listings</a></li>
+                        <li><a href="#"><span class="material-symbols-outlined">chevron_right</span>New Developments</a></li>
+                        <li><a href="#"><span class="material-symbols-outlined">chevron_right</span>Commercial</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 footer-section">
+                    <h5><span class="material-symbols-outlined">contact_support</span>Contact</h5>
+                    <div class="footer-contact-row">
+                        <div class="footer-contact-icon"><span class="material-symbols-outlined">email</span></div>
+                        <div class="footer-contact-text"><a href="mailto:support@propertyhub.rw">support@propertyhub.rw</a></div>
+                    </div>
+                    <div class="footer-contact-row">
+                        <div class="footer-contact-icon"><span class="material-symbols-outlined">phone</span></div>
+                        <div class="footer-contact-text"><a href="tel:+250788123456">+250 788 123 456</a></div>
+                    </div>
+                    <div class="footer-contact-row">
+                        <div class="footer-contact-icon"><span class="material-symbols-outlined">schedule</span></div>
+                        <div class="footer-contact-text">Mon – Sat &nbsp;8am – 6pm</div>
+                    </div>
+                    <div class="footer-contact-row">
+                        <div class="footer-contact-icon"><span class="material-symbols-outlined">location_on</span></div>
+                        <div class="footer-contact-text">KN 5 Rd, Kigali, Rwanda</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 footer-section">
+                    <h5><span class="material-symbols-outlined">mark_email_unread</span>Newsletter</h5>
+                    <div class="footer-newsletter-wrap">
+                        <p>Get new listings and market updates delivered to your inbox.</p>
+                        <div class="footer-nl-row">
+                            <input type="email" placeholder="Your email address">
+                            <button type="button"><span class="material-symbols-outlined">send</span>Subscribe</button>
+                        </div>
+                    </div>
+                    <p style="margin-top:12px;font-size:.73rem;color:rgba(255,255,255,.28)">We respect your privacy. Unsubscribe anytime.</p>
+                </div>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="footer-bottom-m3">
+                <div class="footer-bottom-inner">
+                    <p>&copy; 2026 PropertyHub Ltd. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Cookie Policy</a>
+                        <a href="{% url 'about' %}">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </footer>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];s1.async=true;s1.src='https://embed.tawk.to/69a609c92f01051c35610a97/1jio9cfl9';s1.charset='UTF-8';s1.setAttribute('crossorigin','*');s0.parentNode.insertBefore(s1,s0);})();
+<!-- ═══════════════════ PropBot AI Chatbot Widget ═══════════════════ -->
+<!-- FAB Button -->
+<button id="ai-chatbot-fab" aria-label="Open AI Assistant" title="PropBot AI Assistant">
+    <span class="material-symbols-outlined fab-icon-open">smart_toy</span>
+    <span class="material-symbols-outlined fab-icon-close">close</span>
+</button>
+
+<!-- Chat Window -->
+<div id="ai-chatbot-window" class="hidden" role="dialog" aria-label="PropBot AI Assistant">
+    <div class="ai-chat-header">
+        <div class="ai-chat-header-avatar">
+            <span class="material-symbols-outlined" style="font-size:20px">smart_toy</span>
+        </div>
+        <div class="ai-chat-header-info">
+            <div class="ai-chat-header-title">PropBot</div>
+            <div class="ai-chat-header-sub">
+                {% if user.is_authenticated %}AI Assistant &bull; {{ user.role }}{% else %}AI Assistant{% endif %}
+            </div>
+        </div>
+        <button class="ai-chat-history-btn" id="aiHistoryBtn" title="Conversation history" aria-label="View history">
+            <span class="material-symbols-outlined" style="font-size:18px">history</span>
+        </button>
+        <button class="ai-chat-clear-btn" id="aiChatClearBtn" title="Clear conversation" aria-label="Clear conversation">
+            <span class="material-symbols-outlined" style="font-size:18px">delete_sweep</span>
+        </button>
+    </div>
+    <!-- History Panel (overlays the chat) -->
+    <div class="ai-history-panel hidden" id="aiHistoryPanel">
+        <div class="ai-history-header">
+            <button class="ai-history-back-btn" id="aiHistoryBackBtn" aria-label="Back to chat">
+                <span class="material-symbols-outlined" style="font-size:16px">arrow_back</span>
+            </button>
+            <span class="ai-history-header-title">Conversations</span>
+            <button class="ai-new-chat-btn" id="aiNewChatBtn">
+                <span class="material-symbols-outlined" style="font-size:15px">add</span> New Chat
+            </button>
+        </div>
+        <div class="ai-history-list" id="aiHistoryList">
+            <p class="ai-history-empty">Loading history...</p>
+        </div>
+    </div>
+    <div class="ai-chat-messages" id="aiChatMessages">
+        <div class="ai-chat-welcome" id="aiChatWelcome">
+            <span class="material-symbols-outlined">apartment</span>
+            <strong style="display:block;margin-bottom:6px;color:var(--md-sys-color-on-surface)">
+                Hi{% if user.is_authenticated %}, {{ user.get_full_name|default:user.username }}{% endif %}!
+            </strong>
+            <p style="font:.85rem/1.5 'Inter',sans-serif;margin:0">I'm PropBot, your PropHub AI assistant. Ask me anything about properties, leases, maintenance, or how to use the platform.</p>
+        </div>
+    </div>
+    <div class="ai-chat-input-area">
+        <textarea id="aiChatInput" placeholder="Ask PropBot anything..." rows="1" aria-label="Message input" maxlength="1000"></textarea>
+        <button class="ai-chat-send-btn" id="aiChatSendBtn" aria-label="Send message">
+            <span class="material-symbols-outlined" style="font-size:20px">send</span>
+        </button>
+    </div>
+</div>
+
+<script>
+window.PROPBOT_CONFIG = {
+    chatUrl: "{% url 'chatbot_chat' %}",
+    historyUrl: "{% url 'chatbot_history' %}",
+    historyDetailUrl: "{% url 'chatbot_history_detail' conv_id=1 %}".replace('/1/', '/'),
+    csrfToken: "{{ csrf_token }}",
+    userInitial: "{% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}?{% endif %}",
+};
 </script>
-<!--End of Tawk.to Script-->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{% static 'js/ai-chatbot.js' %}"></script>
     <script>
-    /* ===== BigPipe Progressive Loading Engine ===== */
+    /* ===== Skeleton Loader Dismiss ===== */
     (function(){
-        var loader=document.getElementById('bigpipeLoader');
-        var barFill=document.getElementById('bigpipeBarFill');
-        var status=document.getElementById('bigpipeStatus');
-        var topbar=document.getElementById('bigpipeTopbar');
-        var pagelets=document.querySelectorAll('.pagelet');
-        var totalPagelets=pagelets.length||1;
-        var loadedCount=0;
-        var stages=['Initializing layout...','Loading navigation...','Rendering hero section...','Loading content blocks...','Rendering cards & media...','Finalizing page...'];
-        var stageIndex=0;
+        var loader = document.getElementById('bigpipeLoader');
+        var topbar = document.getElementById('bigpipeTopbar');
 
-        function updateProgress(pct){
-            if(barFill)barFill.style.width=pct+'%';
-            if(topbar)topbar.style.width=pct+'%';
+        function dismiss(){
+            if(!loader || loader.classList.contains('done')) return;
+            if(topbar){ topbar.style.width='100%'; setTimeout(function(){ topbar.style.opacity='0'; }, 300); }
+            loader.classList.add('done');
+            document.querySelectorAll('.pagelet').forEach(function(p){ p.classList.add('loaded'); });
         }
 
-        function updateStatus(){
-            if(status && stageIndex<stages.length){
-                status.textContent=stages[stageIndex];
-                stageIndex++;
-            }
-        }
-
-        /* Phase 1: Quick initial progress */
-        updateProgress(10);
-        updateStatus();
-
-        /* Phase 2: Simulate pagelet streaming */
-        function loadNextPagelet(){
-            if(loadedCount<totalPagelets){
-                var pagelet=pagelets[loadedCount];
-                pagelet.classList.add('loaded');
-                loadedCount++;
-                var pct=20+Math.floor((loadedCount/totalPagelets)*60);
-                updateProgress(pct);
-                updateStatus();
-                setTimeout(loadNextPagelet,350);
-            } else {
-                finishLoading();
-            }
-        }
-
-        function finishLoading(){
-            updateProgress(100);
-            if(status)status.textContent='Complete!';
-            setTimeout(function(){
-                if(loader)loader.classList.add('done');
-                if(topbar){topbar.style.width='100%';setTimeout(function(){topbar.style.opacity='0'},300)}
-                /* If no pagelets exist, just fade in normally */
-                document.querySelectorAll('.pagelet').forEach(function(p){p.classList.add('loaded')});
-            },250);
-        }
-
-        /* Start when DOM is ready */
-        if(document.readyState==='loading'){
-            document.addEventListener('DOMContentLoaded',function(){
-                updateProgress(20);updateStatus();
-                setTimeout(function(){
-                    if(totalPagelets>0 && pagelets.length>0){loadNextPagelet()}
-                    else{finishLoading()}
-                },200);
-            });
+        /* Dismiss as soon as DOM + images are ready */
+        if(document.readyState === 'complete'){
+            setTimeout(dismiss, 120);
         } else {
-            updateProgress(20);updateStatus();
-            setTimeout(function(){
-                if(totalPagelets>0 && pagelets.length>0){loadNextPagelet()}
-                else{finishLoading()}
-            },200);
+            window.addEventListener('load', function(){ setTimeout(dismiss, 120); });
+            /* Safety cap: never show skeleton more than 2.5s */
+            setTimeout(dismiss, 2500);
         }
-
-        /* Safety: auto-dismiss after 4s max */
-        setTimeout(function(){
-            if(loader && !loader.classList.contains('done'))finishLoading();
-        },4000);
-
-        /* Also complete on window load */
-        window.addEventListener('load',function(){
-            setTimeout(function(){
-                if(loader && !loader.classList.contains('done'))finishLoading();
-            },300);
-        });
     })();
 
     /* ===== Scroll & UI Logic ===== */
@@ -597,5 +944,802 @@ var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     </script>
 
     {% block extra_js %}{% endblock %}
+
+{% if user.is_authenticated %}
+<!-- ═══════════════════════════════════════════════════════════
+     FB-STYLE MESSENGER  (only for authenticated users)
+════════════════════════════════════════════════════════════ -->
+<style>
+/* ══════════════════════════════════════════════
+   MESSENGER — Premium Redesign
+══════════════════════════════════════════════ */
+:root{
+  --mg:#0d2415;--mg2:#1a4a1e;--mg3:#2E7D32;--mg4:#43A047;
+  --mg-light:#E8F5E9;--mg-lighter:#F1F8F1;
+  --mg-bubble-me:linear-gradient(135deg,#1B5E20,#2E7D32,#43A047);
+  --mg-bubble-them:#EFF3EF;
+  --mg-border:rgba(46,125,50,.15);
+  --mg-w:330px;--mg-h:440px;
+  --mg-shadow:0 20px 60px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.12);
+  --mg-shadow-sm:0 4px 20px rgba(0,0,0,.12);
+}
+
+/* ─── Keyframes ─── */
+@keyframes mgPulseRing{0%{transform:scale(1);opacity:.6}70%{transform:scale(1.55);opacity:0}100%{transform:scale(1.55);opacity:0}}
+@keyframes mgBounceIn{0%{transform:scale(.8) translateY(12px);opacity:0}60%{transform:scale(1.04) translateY(-3px);opacity:1}100%{transform:scale(1) translateY(0);opacity:1}}
+@keyframes mgSlideUp{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes mgFadeIn{0%{opacity:0}100%{opacity:1}}
+@keyframes mgTypeDot{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1}}
+@keyframes mgOnline{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,.4)}70%{box-shadow:0 0 0 5px rgba(76,175,80,0)}}
+@keyframes mgSendPop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+
+/* ─── Messenger FAB ─── */
+#phMessengerBtn{
+  position:fixed;bottom:90px;right:26px;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(145deg,var(--mg),var(--mg2),var(--mg3));
+  border:none;
+  box-shadow:0 6px 20px rgba(13,36,21,.45),0 2px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.1);
+  cursor:pointer;z-index:8900;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;
+  outline:none;
+}
+#phMessengerBtn::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(67,160,71,.4);
+  animation:mgPulseRing 2.4s ease-out infinite;
+  pointer-events:none;
+}
+#phMessengerBtn:hover{transform:scale(1.1) translateY(-2px);box-shadow:0 10px 32px rgba(13,36,21,.5),0 4px 12px rgba(0,0,0,.25)}
+#phMessengerBtn:active{transform:scale(.96)}
+#phMessengerBtn .material-symbols-outlined{font-size:26px;transition:transform .2s}
+#phMessengerBtn:hover .material-symbols-outlined{transform:rotate(-8deg) scale(1.1)}
+#phMsgBadge{
+  position:absolute;top:-3px;right:-3px;
+  background:linear-gradient(135deg,#E53935,#C62828);
+  color:#fff;font-size:9px;font-weight:800;
+  min-width:20px;height:20px;border-radius:10px;
+  display:none;align-items:center;justify-content:center;
+  padding:0 5px;border:2.5px solid #fff;
+  box-shadow:0 2px 6px rgba(229,57,53,.5);
+  font-family:'Inter',sans-serif;
+}
+
+/* ─── Contacts Panel ─── */
+#phContactsPanel{
+  position:fixed;bottom:160px;right:26px;
+  width:310px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:20px;
+  box-shadow:var(--mg-shadow);
+  border:1px solid var(--mg-border);
+  z-index:8890;
+  display:none;flex-direction:column;
+  overflow:hidden;
+  max-height:500px;
+  animation:mgBounceIn .3s cubic-bezier(.34,1.56,.64,1);
+  transform-origin:bottom right;
+}
+#phContactsPanel.open{display:flex}
+
+.ph-cp-head{
+  background:linear-gradient(135deg,var(--mg) 0%,var(--mg2) 50%,#1e5c22 100%);
+  padding:16px 18px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+}
+.ph-cp-head::before{
+  content:'';position:absolute;top:-30px;right:-20px;
+  width:90px;height:90px;border-radius:50%;
+  background:rgba(255,255,255,.05);pointer-events:none;
+}
+.ph-cp-head::after{
+  content:'';position:absolute;bottom:-25px;left:20px;
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none;
+}
+.ph-cp-head-title{
+  color:#fff;font:700 1rem/1 'Inter',sans-serif;
+  display:flex;align-items:center;gap:9px;
+}
+.ph-cp-head-title .material-symbols-outlined{
+  font-size:22px;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));
+}
+.ph-cp-head-sub{
+  font-size:.72rem;color:rgba(255,255,255,.6);
+  font-weight:400;display:block;margin-top:2px;
+}
+.ph-cp-close{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;transition:background .15s,transform .15s;
+  flex-shrink:0;
+}
+.ph-cp-close:hover{background:rgba(255,255,255,.22);transform:rotate(90deg)}
+.ph-cp-close .material-symbols-outlined{font-size:15px}
+
+.ph-cp-search{
+  padding:12px 14px 10px;
+  border-bottom:1px solid #EEF2EE;
+  background:linear-gradient(180deg,#F7FBF7,#fff);
+  flex-shrink:0;
+}
+.ph-cp-search-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:#F1F5F1;border:1.5px solid transparent;
+  border-radius:22px;padding:7px 14px;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.ph-cp-search-wrap:focus-within{
+  border-color:var(--mg3);background:#fff;
+  box-shadow:0 0 0 3px rgba(46,125,50,.1);
+}
+.ph-cp-search-wrap .material-symbols-outlined{font-size:16px;color:#9CA3AF;flex-shrink:0}
+.ph-cp-search-wrap:focus-within .material-symbols-outlined{color:var(--mg3)}
+#phContactSearch{
+  flex:1;border:none;background:transparent;
+  font-size:.85rem;font-family:'Inter',sans-serif;
+  outline:none;color:#111827;
+}
+#phContactSearch::placeholder{color:#B0BEC5}
+
+.ph-cp-list{overflow-y:auto;flex:1;padding:4px 0}
+.ph-cp-list::-webkit-scrollbar{width:3px}
+.ph-cp-list::-webkit-scrollbar-track{background:transparent}
+.ph-cp-list::-webkit-scrollbar-thumb{background:#C8E6C9;border-radius:3px}
+
+.ph-contact-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;cursor:pointer;
+  transition:background .15s;position:relative;
+}
+.ph-contact-item::after{
+  content:'';position:absolute;left:62px;right:0;bottom:0;
+  height:1px;background:#F0F4F0;
+}
+.ph-contact-item:last-child::after{display:none}
+.ph-contact-item:hover{background:#F4FBF4}
+.ph-contact-item:active{background:#E8F5E9}
+
+.ph-c-av{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--mg3),var(--mg4),#81C784);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;flex-shrink:0;position:relative;
+  box-shadow:0 2px 8px rgba(46,125,50,.25);
+  font-family:'Inter',sans-serif;
+}
+.ph-c-online{
+  position:absolute;bottom:1px;right:1px;
+  width:12px;height:12px;border-radius:50%;
+  background:#4CAF50;border:2.5px solid #fff;
+  animation:mgOnline 2s ease-in-out infinite;
+}
+.ph-c-info{flex:1;min-width:0}
+.ph-c-name{
+  font:600 .88rem/1.3 'Inter',sans-serif;
+  color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ph-c-role{
+  font-size:.7rem;color:#6B7280;font-weight:500;
+  background:#F3F4F6;border-radius:4px;
+  padding:1px 5px;display:inline-block;margin:1px 0;
+}
+.ph-c-last{
+  font-size:.76rem;color:#9CA3AF;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;
+}
+.ph-c-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.ph-c-time{font-size:.67rem;color:#B0BEC5;font-family:'Inter',sans-serif}
+.ph-c-badge{
+  background:linear-gradient(135deg,#E53935,#C62828);
+  color:#fff;font-size:.65rem;font-weight:800;
+  min-width:18px;height:18px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 5px;box-shadow:0 2px 5px rgba(229,57,53,.35);
+  font-family:'Inter',sans-serif;
+}
+.ph-cp-empty{
+  padding:40px 20px;text-align:center;
+  color:#9CA3AF;font-size:.85rem;
+  font-family:'Inter',sans-serif;
+}
+.ph-cp-empty .material-symbols-outlined{
+  font-size:48px;display:block;margin-bottom:10px;
+  color:#C8E6C9;
+}
+.ph-cp-empty strong{display:block;color:#6B7280;margin-bottom:4px}
+
+/* ─── Chat Windows Strip ─── */
+#phChatWindows{
+  position:fixed;bottom:0;right:96px;
+  display:flex;align-items:flex-end;gap:12px;
+  z-index:8880;pointer-events:none;
+}
+
+/* ─── Single Chat Window ─── */
+.ph-win{
+  width:var(--mg-w);
+  background:#fff;
+  border-radius:18px 18px 0 0;
+  box-shadow:var(--mg-shadow);
+  display:flex;flex-direction:column;
+  pointer-events:all;
+  border:1px solid var(--mg-border);
+  border-bottom:none;
+  animation:mgSlideUp .3s cubic-bezier(.34,1.56,.64,1);
+  transform-origin:bottom center;
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.ph-win:hover{box-shadow:0 24px 70px rgba(0,0,0,.22),0 10px 28px rgba(0,0,0,.14)}
+.ph-win.minimized{height:52px!important;overflow:hidden}
+
+.ph-win-head{
+  background:linear-gradient(135deg,var(--mg) 0%,var(--mg2) 50%,#205c25 100%);
+  border-radius:18px 18px 0 0;
+  padding:0 14px;height:54px;
+  display:flex;align-items:center;gap:11px;
+  cursor:pointer;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.ph-win-head::before{
+  content:'';position:absolute;top:-20px;right:-10px;
+  width:70px;height:70px;border-radius:50%;
+  background:rgba(255,255,255,.06);pointer-events:none;
+}
+.ph-win-av-wrap{position:relative;flex-shrink:0}
+.ph-win-av{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--mg3),var(--mg4),#81C784);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;
+  border:2px solid rgba(255,255,255,.3);
+  font-family:'Inter',sans-serif;
+}
+.ph-win-status-dot{
+  position:absolute;bottom:1px;right:1px;
+  width:10px;height:10px;border-radius:50%;
+  background:#4CAF50;border:2px solid rgba(13,36,21,.8);
+}
+.ph-win-info{flex:1;min-width:0}
+.ph-win-name{
+  color:#fff;font:600 .9rem/1.2 'Inter',sans-serif;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ph-win-status-text{
+  font-size:.68rem;color:rgba(255,255,255,.65);
+  display:flex;align-items:center;gap:4px;margin-top:1px;
+}
+.ph-win-status-text::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:#4CAF50;flex-shrink:0;
+}
+.ph-win-btns{display:flex;gap:5px;flex-shrink:0}
+.ph-win-btn{
+  width:26px;height:26px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.1);
+  color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,transform .15s;
+}
+.ph-win-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.1)}
+.ph-win-btn:active{transform:scale(.95)}
+.ph-win-btn .material-symbols-outlined{font-size:14px}
+
+/* Messages area */
+.ph-win-msgs{
+  flex:1;overflow-y:auto;
+  padding:14px 12px 6px;
+  display:flex;flex-direction:column;gap:4px;
+  height:calc(var(--mg-h) - 110px);
+  background:linear-gradient(180deg,#F9FBF9 0%,#fff 100%);
+}
+.ph-win-msgs::-webkit-scrollbar{width:3px}
+.ph-win-msgs::-webkit-scrollbar-track{background:transparent}
+.ph-win-msgs::-webkit-scrollbar-thumb{background:#C8E6C9;border-radius:3px}
+
+/* Message bubbles */
+.ph-msg{display:flex;align-items:flex-end;gap:7px;max-width:88%}
+.ph-msg.me{flex-direction:row-reverse;align-self:flex-end}
+.ph-msg.them{align-self:flex-start}
+.ph-msg-av{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--mg3),var(--mg4));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:700;flex-shrink:0;
+  font-family:'Inter',sans-serif;
+}
+.ph-bubble-wrap{display:flex;flex-direction:column}
+.ph-msg.me .ph-bubble-wrap{align-items:flex-end}
+.ph-msg.them .ph-bubble-wrap{align-items:flex-start}
+.ph-bubble{
+  padding:9px 13px;
+  border-radius:18px;
+  font-size:.845rem;line-height:1.5;
+  word-break:break-word;max-width:210px;
+  font-family:'Inter',sans-serif;
+  animation:mgSendPop .2s ease;
+  position:relative;
+}
+.ph-msg.me .ph-bubble{
+  background:var(--mg-bubble-me);color:#fff;
+  border-bottom-right-radius:5px;
+  box-shadow:0 2px 10px rgba(27,94,32,.3);
+}
+.ph-msg.them .ph-bubble{
+  background:var(--mg-bubble-them);
+  color:#1F2937;border-bottom-left-radius:5px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.ph-msg-time{
+  font-size:.63rem;color:#B0BEC5;
+  margin-top:3px;padding:0 2px;
+  font-family:'Inter',sans-serif;
+}
+
+/* Typing indicator */
+.ph-typing{
+  display:none;align-items:center;gap:4px;
+  padding:8px 12px;align-self:flex-start;
+  margin-left:33px;
+}
+.ph-typing.show{display:flex}
+.ph-typing-bubble{
+  background:var(--mg-bubble-them);
+  border-radius:18px 18px 18px 5px;
+  padding:10px 14px;
+  display:flex;align-items:center;gap:4px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.ph-typing-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#9CA3AF;
+  animation:mgTypeDot 1.4s ease-in-out infinite;
+}
+.ph-typing-dot:nth-child(2){animation-delay:.16s}
+.ph-typing-dot:nth-child(3){animation-delay:.32s}
+
+/* Date separator */
+.ph-date-sep{
+  text-align:center;font-size:.68rem;color:#9CA3AF;
+  margin:8px 0 4px;display:flex;align-items:center;gap:8px;
+  font-family:'Inter',sans-serif;
+}
+.ph-date-sep::before,.ph-date-sep::after{
+  content:'';flex:1;height:1px;background:#EDF2ED;
+}
+.ph-date-sep span{
+  background:#F0F5F0;border-radius:10px;
+  padding:2px 10px;white-space:nowrap;
+  font-weight:500;
+}
+
+/* Input area */
+.ph-win-input{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;
+  border-top:1px solid #EEF2EE;
+  background:#fff;flex-shrink:0;
+}
+.ph-win-input-inner{
+  flex:1;display:flex;align-items:center;
+  background:#F2F6F2;
+  border:1.5px solid transparent;
+  border-radius:24px;padding:6px 14px;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.ph-win-input-inner:focus-within{
+  border-color:var(--mg3);background:#fff;
+  box-shadow:0 0 0 3px rgba(46,125,50,.08);
+}
+.ph-win-input-inner input{
+  flex:1;border:none;background:transparent;
+  font-size:.85rem;font-family:'Inter',sans-serif;
+  outline:none;color:#111827;min-width:0;
+}
+.ph-win-input-inner input::placeholder{color:#B0BEC5}
+.ph-win-send{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--mg3),var(--mg4));
+  border:none;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,opacity .2s;
+  box-shadow:0 3px 10px rgba(46,125,50,.35);
+}
+.ph-win-send:hover{transform:scale(1.1) translateY(-1px);box-shadow:0 5px 16px rgba(46,125,50,.45)}
+.ph-win-send:active{transform:scale(.95)}
+.ph-win-send .material-symbols-outlined{font-size:17px}
+
+.ph-win-loading{
+  padding:30px 16px;text-align:center;
+  color:#B0BEC5;font-size:.82rem;
+  font-family:'Inter',sans-serif;
+}
+.ph-win-loading .material-symbols-outlined{
+  font-size:32px;display:block;margin-bottom:8px;
+  color:#C8E6C9;animation:mgFadeIn 1s ease infinite alternate;
+}
+
+/* Responsive */
+@media(max-width:576px){
+  #phChatWindows{right:10px;gap:8px}
+  #phContactsPanel{right:10px;width:calc(100vw - 20px)}
+  #phMessengerBtn{bottom:84px;right:16px}
+  .ph-win{--mg-w:calc(100vw - 20px)}
+}
+</style>
+
+<!-- ── Messenger FAB ── -->
+<button id="phMessengerBtn" title="Messages" aria-label="Open messages">
+    <span class="material-symbols-outlined">chat_bubble</span>
+    <span id="phMsgBadge"></span>
+</button>
+
+<!-- ── Contacts Panel ── -->
+<div id="phContactsPanel">
+    <div class="ph-cp-head">
+        <div class="ph-cp-head-title">
+            <span class="material-symbols-outlined">forum</span>
+            <div>
+                Messages
+                <span class="ph-cp-head-sub">Your conversations</span>
+            </div>
+        </div>
+        <button class="ph-cp-close" id="phCpClose" aria-label="Close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="ph-cp-search">
+        <div class="ph-cp-search-wrap">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="phContactSearch" placeholder="Search conversations..." autocomplete="off">
+        </div>
+    </div>
+    <div class="ph-cp-list" id="phContactList">
+        <div class="ph-cp-empty">
+            <span class="material-symbols-outlined">forum</span>
+            <strong>Loading…</strong>
+            Fetching your conversations
+        </div>
+    </div>
+</div>
+
+<!-- ── Chat Windows Container ── -->
+<div id="phChatWindows"></div>
+
+<!-- Django context for messenger JS (data attrs avoid linter false positives) -->
+<div id="phCtx"
+     data-uid="{{ user.id }}"
+     data-init="{{ user.username|slice:':1'|upper }}"
+     style="display:none" aria-hidden="true"></div>
+
+<script>
+(function(){
+'use strict';
+const _ctx   = document.getElementById('phCtx');
+const ME_ID   = parseInt(_ctx.dataset.uid, 10);
+const ME_INIT = _ctx.dataset.init;
+const CSRF    = (window.PROPBOT_CONFIG && window.PROPBOT_CONFIG.csrfToken) || '';
+
+/* ── State ── */
+const openWindows = {};   // contact_id → window element
+let contacts = [];
+let totalUnread = 0;
+
+/* ── Elements ── */
+const messengerBtn  = document.getElementById('phMessengerBtn');
+const msgBadge      = document.getElementById('phMsgBadge');
+const contactsPanel = document.getElementById('phContactsPanel');
+const cpClose       = document.getElementById('phCpClose');
+const contactList   = document.getElementById('phContactList');
+const contactSearch = document.getElementById('phContactSearch');
+const chatWindows   = document.getElementById('phChatWindows');
+
+/* ── Badge ── */
+function updateBadge(n){
+    totalUnread = n;
+    if(n > 0){
+        msgBadge.textContent = n > 99 ? '99+' : n;
+        msgBadge.style.display = 'flex';
+    } else {
+        msgBadge.style.display = 'none';
+    }
+}
+
+/* ── Load Contacts ── */
+function loadContacts(){
+    fetch('/api/chat/contacts/', {headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(r => r.json())
+    .then(data => {
+        contacts = data.contacts || [];
+        updateBadge(data.total_unread || 0);
+        renderContacts(contacts);
+    }).catch(() => {
+        contactList.innerHTML = '<div class="ph-cp-empty"><span class="material-symbols-outlined">error</span>Could not load contacts.</div>';
+    });
+}
+
+function renderContacts(list){
+    if(!list.length){
+        contactList.innerHTML = '<div class="ph-cp-empty"><span class="material-symbols-outlined">forum</span>No conversations yet.<br>Start messaging people.</div>';
+        return;
+    }
+    contactList.innerHTML = list.map(c => `
+        <div class="ph-contact-item" data-id="${c.user_id}" data-name="${c.name}" data-init="${c.initial}" data-role="${c.role}">
+            <div class="ph-c-av">${c.initial}</div>
+            <div class="ph-c-info">
+                <div class="ph-c-name">${c.name}</div>
+                <div class="ph-c-role">${c.role}</div>
+                <div class="ph-c-last">${c.last_message || 'Start a conversation'}</div>
+            </div>
+            <div class="ph-c-meta">
+                <span class="ph-c-time">${c.last_time}</span>
+                ${c.unread > 0 ? `<span class="ph-c-badge">${c.unread}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    contactList.querySelectorAll('.ph-contact-item').forEach(el => {
+        el.addEventListener('click', () => {
+            openChat(parseInt(el.dataset.id), el.dataset.name, el.dataset.init, el.dataset.role);
+            contactsPanel.classList.remove('open');
+        });
+    });
+}
+
+/* ── Contact Search ── */
+contactSearch.addEventListener('input', function(){
+    const q = this.value.toLowerCase();
+    renderContacts(q ? contacts.filter(c => c.name.toLowerCase().includes(q)) : contacts);
+});
+
+/* ── Toggle Panel ── */
+messengerBtn.addEventListener('click', () => {
+    const isOpen = contactsPanel.classList.contains('open');
+    contactsPanel.classList.toggle('open');
+    if(!isOpen){ loadContacts(); }
+});
+cpClose.addEventListener('click', () => contactsPanel.classList.remove('open'));
+
+/* ── Open Chat Window ── */
+function openChat(contactId, name, initial, role){
+    if(openWindows[contactId]){
+        // restore if minimised
+        const win = openWindows[contactId];
+        win.classList.remove('minimized');
+        win.querySelector('.ph-win-input input').focus();
+        return;
+    }
+    const win = buildWindow(contactId, name, initial, role);
+    chatWindows.appendChild(win);
+    openWindows[contactId] = win;
+    loadHistory(contactId, win);
+    connectWS(contactId, name, initial, win);
+}
+
+/* ── Build Window DOM ── */
+function buildWindow(contactId, name, initial, role){
+    const win = document.createElement('div');
+    win.className = 'ph-win';
+    win.style.height = 'var(--ch-h)';
+    win.innerHTML = `
+        <div class="ph-win-head" title="Click to minimize">
+            <div class="ph-win-av-wrap">
+                <div class="ph-win-av">${initial}</div>
+                <span class="ph-win-status-dot"></span>
+            </div>
+            <div class="ph-win-info">
+                <div class="ph-win-name">${name}</div>
+                <div class="ph-win-status-text">Active now</div>
+            </div>
+            <div class="ph-win-btns">
+                <button class="ph-win-btn ph-min-btn" title="Minimize"><span class="material-symbols-outlined">remove</span></button>
+                <button class="ph-win-btn ph-cls-btn" title="Close"><span class="material-symbols-outlined">close</span></button>
+            </div>
+        </div>
+        <div class="ph-win-msgs" id="phMsgs_${contactId}">
+            <div class="ph-win-loading">
+                <span class="material-symbols-outlined">chat_bubble</span>
+                Loading messages…
+            </div>
+        </div>
+        <div class="ph-typing" id="phTyping_${contactId}">
+            <div class="ph-typing-bubble">
+                <div class="ph-typing-dot"></div>
+                <div class="ph-typing-dot"></div>
+                <div class="ph-typing-dot"></div>
+            </div>
+        </div>
+        <div class="ph-win-input">
+            <div class="ph-win-input-inner">
+                <input type="text" id="phInput_${contactId}" placeholder="Write a message…" autocomplete="off">
+            </div>
+            <button class="ph-win-send" id="phSend_${contactId}" title="Send"><span class="material-symbols-outlined">send</span></button>
+        </div>
+    `;
+
+    // minimize on header click
+    win.querySelector('.ph-win-head').addEventListener('click', e => {
+        if(e.target.closest('.ph-win-btn')) return;
+        win.classList.toggle('minimized');
+    });
+    win.querySelector('.ph-min-btn').addEventListener('click', () => win.classList.toggle('minimized'));
+    win.querySelector('.ph-cls-btn').addEventListener('click', () => {
+        if(win._ws){ try{ win._ws.close(); }catch(e){} }
+        win.remove();
+        delete openWindows[contactId];
+    });
+
+    // send on Enter
+    win.querySelector(`#phInput_${contactId}`).addEventListener('keydown', e => {
+        if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(contactId, win); }
+    });
+    win.querySelector(`#phSend_${contactId}`).addEventListener('click', () => sendMsg(contactId, win));
+
+    return win;
+}
+
+/* ── Load Message History ── */
+function loadHistory(contactId, win){
+    fetch(`/api/chat/history/${contactId}/`, {headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(r => r.json())
+    .then(data => {
+        const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
+        msgsEl.innerHTML = '';
+        if(!data.messages.length){
+            msgsEl.innerHTML = '<div style="text-align:center;color:#9CA3AF;font-size:.8rem;margin-top:20px">No messages yet. Say hello!</div>';
+        } else {
+            let lastDate = '';
+            data.messages.forEach(m => {
+                if(m.date !== lastDate){
+                    const sep = document.createElement('div');
+                    sep.className = 'ph-date-sep';
+                    sep.textContent = m.date;
+                    msgsEl.appendChild(sep);
+                    lastDate = m.date;
+                }
+                msgsEl.appendChild(buildBubble(m.sender_id === ME_ID, ME_INIT, data.contact.initial, m.content, m.time));
+            });
+        }
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+        // update unread badge
+        loadContacts();
+    });
+}
+
+/* ── Build Message Bubble ── */
+function buildBubble(isMe, meInit, themInit, content, time){
+    const wrap = document.createElement('div');
+    wrap.className = 'ph-msg ' + (isMe ? 'me' : 'them');
+    wrap.innerHTML = `
+        ${!isMe ? `<div class="ph-msg-av">${themInit}</div>` : ''}
+        <div>
+            <div class="ph-bubble">${escapeHtml(content)}</div>
+            <div class="ph-msg-time">${time}</div>
+        </div>
+        ${isMe ? `<div class="ph-msg-av">${meInit}</div>` : ''}
+    `;
+    return wrap;
+}
+
+/* ── Send Message via REST (fallback if WS unavailable) ── */
+function sendMsg(contactId, win){
+    const input = win.querySelector(`#phInput_${contactId}`);
+    const content = input.value.trim();
+    if(!content) return;
+    input.value = '';
+
+    // Optimistic UI
+    const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
+    const c = contacts.find(c => c.user_id === contactId);
+    const themInit = c ? c.initial : '?';
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    const bubble = buildBubble(true, ME_INIT, themInit, content, timeStr);
+    msgsEl.appendChild(bubble);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    // Send via WebSocket if open, otherwise REST
+    if(win._ws && win._ws.readyState === WebSocket.OPEN){
+        win._ws.send(JSON.stringify({type:'message', content}));
+    } else {
+        fetch('/api/chat/send/', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': CSRF},
+            body: JSON.stringify({to_id: contactId, content})
+        });
+    }
+}
+
+/* ── WebSocket connection per window ── */
+function connectWS(contactId, name, initial, win){
+    const lo = Math.min(ME_ID, contactId);
+    const hi = Math.max(ME_ID, contactId);
+    const roomId = `${lo}_${hi}`;
+    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${proto}://${location.host}/ws/chat/${roomId}/`);
+    win._ws = ws;
+    win._wsContactInitial = initial;
+
+    ws.onopen = () => {
+        ws.send(JSON.stringify({type: 'mark_read', user_id: ME_ID}));
+    };
+
+    ws.onmessage = e => {
+        let d;
+        try { d = JSON.parse(e.data); } catch(ex){ return; }
+        if(d.type === 'message' && d.sender_id !== ME_ID){
+            const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
+            if(msgsEl){
+                const bubble = buildBubble(false, ME_INIT, initial, d.content, d.timestamp || '');
+                msgsEl.appendChild(bubble);
+                msgsEl.scrollTop = msgsEl.scrollHeight;
+            }
+            loadContacts();
+        }
+        if(d.type === 'typing'){
+            const typingEl = win.querySelector(`#phTyping_${contactId}`);
+            if(typingEl){
+                typingEl.classList.toggle('show', d.is_typing && d.sender_id !== ME_ID);
+            }
+        }
+    };
+
+    ws.onclose = () => {
+        // reconnect after 3s
+        setTimeout(() => {
+            if(openWindows[contactId]) connectWS(contactId, name, initial, win);
+        }, 3000);
+    };
+
+    // Typing indicator emit
+    const input = win.querySelector(`#phInput_${contactId}`);
+    let typingTimer;
+    let wasTyping = false;
+    input.addEventListener('input', () => {
+        if(!wasTyping && ws.readyState === WebSocket.OPEN){
+            ws.send(JSON.stringify({type:'typing', is_typing:true, sender_id: ME_ID}));
+            wasTyping = true;
+        }
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            if(ws.readyState === WebSocket.OPEN){
+                ws.send(JSON.stringify({type:'typing', is_typing:false, sender_id: ME_ID}));
+            }
+            wasTyping = false;
+        }, 1500);
+    });
+}
+
+/* ── Incoming WS notification → update badge + show in window ── */
+function handleGlobalNotif(data){
+    if(data.notification_type === 'message'){
+        loadContacts();
+        // if window is open for that sender, messages handled in that window's WS
+    }
+}
+window._phHandleNotif = handleGlobalNotif;
+
+/* ── Helpers ── */
+function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Init: load unread count ── */
+loadContacts();
+setInterval(loadContacts, 30000);
+
+})();
+</script>
+{% endif %}
 </body>
 </html>

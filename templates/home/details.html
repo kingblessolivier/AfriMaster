@@ -3,426 +3,853 @@
 
 {% block title %}{{ property.name }} - PropertyHub Ltd{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-    /* Hero */
-    .m3-detail-hero{margin-top:112px;padding:60px 0 50px;background:linear-gradient(160deg,#1a2a1a 0%,#1e3e2e 50%,#0d4a25 100%);position:relative;overflow:hidden}
-    .m3-detail-hero::before{content:'';position:absolute;width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .m3-detail-hero-inner{position:relative;z-index:2}
-    .m3-breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-    .m3-breadcrumb a,.m3-breadcrumb span{font:var(--md-sys-typescale-body-small);text-decoration:none}
-    .m3-breadcrumb a{color:rgba(255,255,255,.6);transition:color .2s;display:inline-flex;align-items:center;gap:4px}
-    .m3-breadcrumb a:hover{color:#fff}
-    .m3-breadcrumb .m3-bc-sep{color:rgba(255,255,255,.3)}
-    .m3-breadcrumb .m3-bc-sep .material-symbols-outlined{font-size:16px}
-    .m3-breadcrumb .m3-bc-current{color:var(--md-sys-color-inverse-primary);font-weight:600}
-    .m3-detail-hero h1{font:500 2.4rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:14px}
-    .m3-detail-hero-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-    .m3-hero-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);letter-spacing:.3px}
-    .m3-pill-type{background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(8px)}
-    .m3-pill-avail{background:rgba(40,167,69,.3);color:#7ddf9b}
-    .m3-pill-rented{background:rgba(220,53,69,.3);color:#ff8a98}
-    .m3-hero-loc{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font:var(--md-sys-typescale-body-small)}
-    .m3-hero-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-inverse-primary)}
+/* ═══ RESET & BASE ═══ */
+.det-page{min-height:100vh;padding-top:80px}
 
-    /* Main */
-    .m3-detail-main{padding:40px 0 80px;background:var(--md-sys-color-surface-container)}
+/* ═══ GALLERY SLIDER ═══ */
+.det-gallery{position:relative;background:#000;margin-bottom:0}
+/* Main slide area */
+.det-slides{position:relative;height:520px;overflow:hidden}
+.det-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease}
+.det-slide.active{opacity:1;z-index:1}
+.det-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.det-slide-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.78) 100%)}
+/* Hero text over slides */
+.det-hero-content{position:absolute;bottom:0;left:0;right:0;padding:40px 0 36px;z-index:5}
+.det-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.det-breadcrumb a{color:rgba(255,255,255,.6);font-size:.8rem;text-decoration:none;transition:color .15s}
+.det-breadcrumb a:hover{color:#fff}
+.det-breadcrumb .sep{color:rgba(255,255,255,.3);font-size:14px}
+.det-breadcrumb .cur{color:#81c784;font-size:.8rem;font-weight:600}
+.det-gallery h1{font:700 2.6rem/1.15 'Inter',sans-serif;color:#fff;margin-bottom:14px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.det-hero-chips{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.det-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:50px;font-size:.78rem;font-weight:600;letter-spacing:.3px}
+.det-chip-type{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)}
+.det-chip-avail{background:rgba(34,197,94,.25);color:#86efac;border:1px solid rgba(34,197,94,.35)}
+.det-chip-rented{background:rgba(239,68,68,.25);color:#fca5a5;border:1px solid rgba(239,68,68,.35)}
+.det-chip-loc{background:transparent;color:rgba(255,255,255,.75);border:none;padding-left:0}
+.det-chip-loc .material-symbols-outlined{color:#81c784}
+/* Nav arrows */
+.det-slide-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:6;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);color:#fff;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;backdrop-filter:blur(6px)}
+.det-slide-btn:hover{background:rgba(0,0,0,.7);border-color:rgba(255,255,255,.5)}
+.det-slide-btn.prev{left:16px}
+.det-slide-btn.next{right:16px}
+.det-slide-btn .material-symbols-outlined{font-size:22px}
+/* Counter badge */
+.det-photo-badge{position:absolute;top:18px;right:18px;z-index:6;background:rgba(0,0,0,.55);color:#fff;padding:6px 14px;border-radius:50px;font-size:.8rem;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:6px}
+/* Dot indicators */
+.det-dots{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:6px}
+.det-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;border:none}
+.det-dot.active{background:#fff;width:24px;border-radius:4px}
+/* Thumbnail strip */
+.det-thumbs{display:flex;gap:6px;padding:8px 12px;background:#111;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#333 #111}
+.det-thumbs::-webkit-scrollbar{height:4px}
+.det-thumbs::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.det-thumb{flex-shrink:0;width:80px;height:56px;border-radius:6px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;opacity:.55}
+.det-thumb.active{border-color:#28a745;opacity:1}
+.det-thumb:hover{opacity:.85}
+.det-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+/* Lightbox */
+.det-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.det-lightbox.open{opacity:1;pointer-events:all}
+.det-lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.det-lb-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.det-lb-close:hover{background:rgba(255,255,255,.3)}
+.det-lb-prev,.det-lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:50px;height:50px;border-radius:50%;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.det-lb-prev:hover,.det-lb-next:hover{background:rgba(255,255,255,.25)}
+.det-lb-prev{left:20px}
+.det-lb-next{right:20px}
+.det-lb-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font:.85rem 'Inter',sans-serif}
+@media(max-width:992px){.det-slides{height:400px}.det-gallery h1{font-size:2rem}}
+@media(max-width:768px){.det-slides{height:300px}.det-gallery h1{font-size:1.6rem}.det-thumb{width:60px;height:42px}}
+@media(max-width:576px){.det-slides{height:240px}.det-gallery h1{font-size:1.3rem}.det-slide-btn{width:36px;height:36px}}
 
-    /* Image Card */
-    .m3-img-card{border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;position:relative;margin-bottom:28px;box-shadow:var(--md-sys-elevation-2)}
-    .m3-img-card img{width:100%;height:450px;object-fit:cover;display:block}
-    .m3-img-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
-    .m3-detail-price{font:500 2rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-    .m3-detail-price small{font:var(--md-sys-typescale-label-small);font-weight:500;opacity:.85}
+/* ═══ PRICE RIBBON ═══ */
+.det-ribbon{background:linear-gradient(135deg,#0a2e14 0%,#1a4a28 100%);border-bottom:1px solid rgba(40,167,69,.3);padding:18px 0}
+.det-ribbon-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.det-price-big{font:700 2.2rem/1 'Inter',sans-serif;color:#fff}
+.det-price-big span{font-size:1rem;color:rgba(255,255,255,.55);font-weight:400;margin-left:4px}
+.det-ribbon-stats{display:flex;gap:28px;flex-wrap:wrap}
+.det-rstat{text-align:center}
+.det-rstat-v{font:600 1.1rem/1 'Inter',sans-serif;color:#fff}
+.det-rstat-l{font:.72rem 'Inter',sans-serif;color:rgba(255,255,255,.5);margin-top:3px}
+.det-ribbon-actions{display:flex;gap:10px}
+.det-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:50px;font:.85rem/1 'Inter',sans-serif;font-weight:600;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.det-btn-primary{background:#28a745;color:#fff}
+.det-btn-primary:hover{background:#1e7e34;color:#fff;box-shadow:0 4px 16px rgba(40,167,69,.4)}
+.det-btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.det-btn-ghost:hover{background:rgba(255,255,255,.18);color:#fff}
 
-    /* Info Cards */
-    .m3-info-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:28px;border:1px solid var(--md-sys-color-outline-variant);margin-bottom:24px;transition:all 300ms var(--md-sys-motion-easing-standard)}
-    .m3-info-card:hover{box-shadow:var(--md-sys-elevation-1)}
-    .m3-info-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-    .m3-info-card-title .material-symbols-outlined{font-size:20px;color:var(--md-sys-color-primary)}
+/* ═══ BODY LAYOUT ═══ */
+.det-body{padding:40px 0 80px;background:#F5F7FA}
+.det-col-main{}
+.det-col-side{}
 
-    /* Features Grid */
-    .m3-feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px}
-    .m3-feat-item{text-align:center;padding:20px 12px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium);transition:all 300ms var(--md-sys-motion-easing-standard)}
-    .m3-feat-item:hover{background:var(--md-sys-color-primary-container);transform:translateY(-4px);box-shadow:var(--md-sys-elevation-1)}
-    .m3-feat-item .material-symbols-outlined{font-size:1.4rem;color:var(--md-sys-color-primary);margin-bottom:8px;display:block}
-    .m3-feat-val{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:2px}
-    .m3-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
+/* ═══ CARDS ═══ */
+.det-card{background:#fff;border:1px solid #e8edf2;border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.det-card-title{font:600 1rem/1 'Inter',sans-serif;color:#1a2e1a;margin-bottom:20px;display:flex;align-items:center;gap:9px}
+.det-card-title .material-symbols-outlined{font-size:20px;color:#28a745}
 
-    /* Description */
-    .m3-desc-text{color:var(--md-sys-color-on-surface-variant);line-height:1.8;font:var(--md-sys-typescale-body-large)}
+/* ═══ FEATURES GRID ═══ */
+.det-feats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.det-feat{background:#f0f7f1;border:1px solid #d4edda;border-radius:14px;padding:18px 12px;text-align:center;transition:all .2s}
+.det-feat:hover{background:#e6f4ea;border-color:#28a745;transform:translateY(-3px);box-shadow:0 4px 16px rgba(40,167,69,.12)}
+.det-feat .material-symbols-outlined{font-size:1.6rem;color:#28a745;display:block;margin-bottom:8px}
+.det-feat-v{font:600 1.1rem/1 'Inter',sans-serif;color:#1a2e1a;margin-bottom:4px}
+.det-feat-l{font:.72rem 'Inter',sans-serif;color:#6c757d;text-transform:uppercase;letter-spacing:.4px}
 
-    /* Owner Info */
-    .m3-owner-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium)}
-    .m3-owner-avatar{width:50px;height:50px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-primary-container);overflow:hidden}
-    .m3-owner-avatar .material-symbols-outlined{font-size:1.4rem}
-    .m3-owner-name{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface)}
-    .m3-owner-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
+/* ═══ DESCRIPTION ═══ */
+.det-desc{color:#495057;line-height:1.85;font-size:.95rem}
 
-    /* Action Buttons */
-    .m3-action-btns{display:flex;flex-direction:column;gap:12px}
-    .m3-btn-action{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:var(--md-sys-shape-corner-medium);font:var(--md-sys-typescale-label-large);transition:all 200ms var(--md-sys-motion-easing-standard);text-decoration:none;border:none;cursor:pointer}
-    .m3-btn-action:hover{transform:translateY(-2px)}
-    .m3-btn-action .material-symbols-outlined{font-size:20px}
-    .m3-btn-act-primary{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
-    .m3-btn-act-primary:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-primary)}
-    .m3-btn-act-secondary{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
-    .m3-btn-act-secondary:hover{box-shadow:var(--md-sys-elevation-1);color:var(--md-sys-color-on-secondary-container)}
-    .m3-btn-act-outline{background:transparent;color:var(--md-sys-color-on-surface);border:1px solid var(--md-sys-color-outline-variant)}
-    .m3-btn-act-outline:hover{border-color:var(--md-sys-color-primary);color:var(--md-sys-color-primary);background:rgba(40,167,69,.04)}
-    .m3-btn-act-disabled{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface-variant);cursor:not-allowed;opacity:.7}
+/* ═══ OWNER ═══ */
+.det-owner-row{display:flex;align-items:center;gap:16px;padding:16px;background:#f8fdf9;border-radius:14px;border:1px solid #d4edda}
+.det-owner-av{width:54px;height:54px;border-radius:14px;overflow:hidden;background:#e6f4ea;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #b8dfc0}
+.det-owner-av img{width:100%;height:100%;object-fit:cover}
+.det-owner-av .material-symbols-outlined{font-size:1.6rem;color:#28a745}
+.det-owner-name{font:600 1rem/1 'Inter',sans-serif;color:#1a2e1a;margin-bottom:4px}
+.det-owner-lbl{font:.78rem 'Inter',sans-serif;color:#6c757d}
+.det-owner-contact{margin-left:auto;display:flex;gap:8px}
+.det-contact-btn{width:36px;height:36px;border-radius:50%;background:#f0f7f1;border:1px solid #b8dfc0;color:#28a745;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .2s}
+.det-contact-btn:hover{background:#28a745;color:#fff;border-color:#28a745}
+.det-contact-btn .material-symbols-outlined{font-size:18px}
 
-    /* Inquiry Section */
-    .m3-inquiry-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;box-shadow:var(--md-sys-elevation-1);border:1px solid var(--md-sys-color-outline-variant)}
-    .m3-inquiry-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);padding:20px 28px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
-    .m3-inquiry-header .material-symbols-outlined{font-size:20px}
-    .m3-inquiry-body{padding:28px}
-    .m3-inquiry-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
-    .m3-inquiry-body .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
-    .m3-inquiry-body label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-    .m3-inquiry-body label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
-    .m3-btn-submit{width:100%;height:48px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 200ms}
-    .m3-btn-submit:hover{box-shadow:var(--md-sys-elevation-1)}
+/* ═══ MAP ═══ */
+.det-map-wrap{border-radius:14px;overflow:hidden;border:1px solid #dee2e6;height:340px;position:relative}
+.det-map-wrap #propertyMap{width:100%;height:100%}
+.det-map-addr{display:flex;align-items:center;gap:8px;padding:12px 0 0;color:#6c757d;font-size:.85rem}
+.det-map-addr .material-symbols-outlined{font-size:18px;color:#28a745;flex-shrink:0}
 
-    /* Featured Strip */
-    .m3-featured-strip{padding:60px 0;background:var(--md-sys-color-surface)}
-    .m3-strip-title{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:28px;display:flex;align-items:center;gap:10px}
-    .m3-strip-title .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:24px}
-    .m3-mini-prop{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-medium);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized)}
-    .m3-mini-prop:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-mini-prop-img{height:160px;overflow:hidden}
-    .m3-mini-prop-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-    .m3-mini-prop:hover .m3-mini-prop-img img{transform:scale(1.06)}
-    .m3-mini-prop-body{padding:16px}
-    .m3-mini-prop-body h6{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .m3-mini-prop-price{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-primary)}
+/* ═══ INQUIRY ═══ */
+.det-inquiry-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#f0f7f1;border-radius:14px 14px 0 0;margin:-28px -28px 22px;border-bottom:1px solid #d4edda}
+.det-inquiry-header .material-symbols-outlined{color:#28a745;font-size:20px}
+.det-inquiry-header span:last-child{font:600 .95rem/1 'Inter',sans-serif;color:#1a2e1a}
+.det-form-label{font:.8rem/1 'Inter',sans-serif;font-weight:600;color:#495057;margin-bottom:7px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.4px}
+.det-form-label .material-symbols-outlined{font-size:15px;color:#28a745}
+.det-input{width:100%;background:#fff;border:1.5px solid #dee2e6;border-radius:10px;padding:12px 14px;color:#212529;font:.9rem 'Inter',sans-serif;transition:all .2s;outline:none}
+.det-input::placeholder{color:#adb5bd}
+.det-input:focus{border-color:#28a745;box-shadow:0 0 0 3px rgba(40,167,69,.1)}
+.det-btn-submit{width:100%;height:48px;background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border:none;border-radius:50px;font:.9rem/1 'Inter',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:4px}
+.det-btn-submit:hover{box-shadow:0 6px 20px rgba(40,167,69,.35);transform:translateY(-1px)}
 
-    /* Alert */
-    .m3-alert-float{position:fixed;top:100px;right:20px;z-index:1050;max-width:400px}
-    .m3-alert-float .alert{border-radius:var(--md-sys-shape-corner-medium);border:none;display:flex;align-items:center;gap:10px;font:var(--md-sys-typescale-body-medium)}
+/* ═══ SIDEBAR PRICE CARD ═══ */
+.det-price-card{background:linear-gradient(160deg,#0a2e14 0%,#1a4a28 60%,#0d3d1c 100%);border:1px solid rgba(40,167,69,.35);border-radius:20px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+.det-price-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(40,167,69,.2) 0%,transparent 70%);border-radius:50%}
+.det-pc-label{font:.75rem 'Inter',sans-serif;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.det-pc-price{font:700 2rem/1 'Inter',sans-serif;color:#fff;margin-bottom:6px}
+.det-pc-price em{font:.9rem 'Inter',sans-serif;font-weight:400;color:rgba(255,255,255,.5);font-style:normal}
+.det-pc-divider{border:none;border-top:1px solid rgba(40,167,69,.2);margin:18px 0}
+.det-pc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.det-pc-stat{background:rgba(255,255,255,.07);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.det-pc-stat-v{font:600 1rem/1 'Inter',sans-serif;color:#fff;margin-bottom:4px}
+.det-pc-stat-l{font:.7rem 'Inter',sans-serif;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.4px}
 
-    /* Modal */
-    .m3-modal .modal-content{border-radius:var(--md-sys-shape-corner-extra-large);border:none;overflow:hidden}
-    .m3-modal .modal-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;padding:20px 28px}
-    .m3-modal .modal-header .modal-title{font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
-    .m3-modal .modal-body{padding:28px}
-    .m3-modal .modal-footer{border-top:1px solid var(--md-sys-color-outline-variant);padding:16px 28px}
-    .m3-modal .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms}
-    .m3-modal .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
-    .m3-modal .form-label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);display:flex;align-items:center;gap:6px}
-    .m3-modal .form-label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
+/* ═══ ACTION BUTTONS SIDEBAR ═══ */
+.det-actions{display:flex;flex-direction:column;gap:10px}
+.det-act-btn{display:flex;align-items:center;gap:10px;padding:13px 18px;border-radius:12px;font:.88rem/1 'Inter',sans-serif;font-weight:500;border:none;cursor:pointer;transition:all .2s;text-decoration:none;width:100%}
+.det-act-btn .material-symbols-outlined{font-size:20px}
+.det-act-primary{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff}
+.det-act-primary:hover{box-shadow:0 6px 20px rgba(40,167,69,.35);color:#fff;transform:translateY(-1px)}
+.det-act-secondary{background:#f0f7f1;color:#1e7e34;border:1px solid #b8dfc0}
+.det-act-secondary:hover{background:#e6f4ea;color:#155724;border-color:#28a745}
+.det-act-outline{background:#fff;color:#495057;border:1px solid #dee2e6}
+.det-act-outline:hover{background:#f8f9fa;color:#212529;border-color:#adb5bd}
+.det-act-disabled{background:#f8f9fa;color:#adb5bd;border:1px solid #e9ecef;cursor:not-allowed}
 
-    /* Price Card */
-    .m3-price-card{background:linear-gradient(135deg,var(--md-sys-color-inverse-surface),#0d4a25);color:#fff;border:none;border-radius:var(--md-sys-shape-corner-large);padding:28px}
-    .m3-price-label{font:var(--md-sys-typescale-body-small);color:rgba(255,255,255,.6);margin-bottom:4px}
-    .m3-price-val{font:500 2rem/1 'Inter',sans-serif;margin-bottom:16px}
-    .m3-price-val span{font:var(--md-sys-typescale-body-medium);opacity:.7}
-    .m3-price-stats{display:flex;gap:10px;margin-bottom:16px}
-    .m3-price-stat{flex:1;background:rgba(255,255,255,.1);padding:12px;border-radius:var(--md-sys-shape-corner-medium);text-align:center}
-    .m3-price-stat-v{font:var(--md-sys-typescale-title-small)}
-    .m3-price-stat-l{font:var(--md-sys-typescale-label-small);opacity:.6}
+/* ═══ LISTING INFO ═══ */
+.det-info-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.det-info-row:last-child{border-bottom:none}
+.det-info-row .material-symbols-outlined{font-size:18px;color:#28a745;flex-shrink:0}
+.det-info-lbl{font:.75rem 'Inter',sans-serif;color:#6c757d;text-transform:uppercase;letter-spacing:.4px}
+.det-info-val{font:.9rem 'Inter',sans-serif;color:#212529;font-weight:500}
 
-    @media(max-width:992px){.m3-img-card img{height:350px}}
-    @media(max-width:768px){
-        .m3-detail-hero h1{font-size:1.8rem}
-        .m3-img-card img{height:280px}
-        .m3-feat-grid{grid-template-columns:repeat(2,1fr)}
-        .m3-detail-price{font-size:1.6rem}
-    }
-    @media(max-width:576px){
-        .m3-img-card img{height:220px}
-        .m3-detail-hero h1{font-size:1.5rem}
-        .m3-feat-grid{grid-template-columns:1fr 1fr}
-    }
+/* ═══ FEATURED ═══ */
+.det-featured{padding:50px 0;background:#fff;border-top:1px solid #e8edf2}
+.det-featured-title{font:600 1.3rem/1 'Inter',sans-serif;color:#1a2e1a;margin-bottom:28px;display:flex;align-items:center;gap:10px}
+.det-featured-title .material-symbols-outlined{color:#28a745;font-size:22px}
+.det-mini{border-radius:16px;overflow:hidden;border:1px solid #e8edf2;background:#fff;transition:all .25s;text-decoration:none;display:block;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.det-mini:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(0,0,0,.12);border-color:#b8dfc0}
+.det-mini-img{height:150px;overflow:hidden;position:relative}
+.det-mini-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.det-mini:hover .det-mini-img img{transform:scale(1.07)}
+.det-mini-body{padding:14px}
+.det-mini-name{font:.85rem/1.3 'Inter',sans-serif;font-weight:600;color:#1a2e1a;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.det-mini-price{font:.8rem 'Inter',sans-serif;color:#28a745;font-weight:600}
+.det-mini-type{font:.7rem 'Inter',sans-serif;color:#6c757d;margin-top:2px}
+
+/* ═══ ALERT ═══ */
+.det-alert{position:fixed;top:90px;right:20px;z-index:2000;max-width:380px}
+.det-alert .alert{border-radius:14px;display:flex;align-items:center;gap:10px;font:.875rem 'Inter',sans-serif}
+
+/* ═══ MODALS ═══ */
+.det-modal .modal-content{border-radius:20px;border:1px solid rgba(40,167,69,.35);background:#0f2a18;background-image:linear-gradient(rgba(40,167,69,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.07) 1px,transparent 1px);background-size:50px 50px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.det-modal .modal-header{background:rgba(40,167,69,.15);border-bottom:1px solid rgba(40,167,69,.25);padding:20px 24px}
+.det-modal .modal-title{font:600 1.05rem/1 'Inter',sans-serif;color:#fff;display:flex;align-items:center;gap:9px}
+.det-modal .modal-title .material-symbols-outlined{color:#66bb6a;font-size:20px}
+.det-modal .btn-close{filter:invert(1) opacity(.7)}
+.det-modal .modal-body{padding:24px;color:#fff}
+.det-modal .modal-footer{border-top:1px solid rgba(40,167,69,.18);padding:16px 24px;background:rgba(0,0,0,.15)}
+/* form labels */
+.det-modal .form-label{font:.78rem 'Inter',sans-serif;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.det-modal .form-label .material-symbols-outlined{font-size:15px;color:#66bb6a}
+/* inputs */
+.det-modal .form-control{background:rgba(255,255,255,.08);border:1.5px solid rgba(40,167,69,.3);border-radius:10px;padding:12px 14px;color:#fff;font:.9rem 'Inter',sans-serif;color-scheme:dark}
+.det-modal .form-control:focus{border-color:#28a745;background:rgba(255,255,255,.12);box-shadow:0 0 0 3px rgba(40,167,69,.15);color:#fff}
+.det-modal .form-control::placeholder{color:rgba(255,255,255,.3)}
+/* owner row inside modal — override light-theme styles */
+.det-modal .det-owner-row{background:rgba(40,167,69,.1);border-color:rgba(40,167,69,.25)}
+.det-modal .det-owner-av{background:rgba(40,167,69,.2);border-color:rgba(40,167,69,.35)}
+.det-modal .det-owner-av .material-symbols-outlined{color:#81c784}
+.det-modal .det-owner-name{color:#fff}
+.det-modal .det-owner-lbl{color:rgba(255,255,255,.5)}
+/* buttons */
+.det-modal-cancel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:50px;padding:10px 22px;font:.85rem 'Inter',sans-serif;cursor:pointer;transition:all .2s}
+.det-modal-cancel:hover{background:rgba(255,255,255,.15);color:#fff}
+.det-modal-confirm{background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border:none;border-radius:50px;padding:10px 22px;font:.85rem 'Inter',sans-serif;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none}
+.det-modal-confirm:hover{box-shadow:0 4px 16px rgba(40,167,69,.4);color:#fff}
+/* contact rows inside modal */
+.det-modal-contact-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(40,167,69,.12);border:1px solid rgba(40,167,69,.25);border-radius:12px;color:#fff;text-decoration:none;margin-bottom:10px;font:.9rem 'Inter',sans-serif;transition:background .2s}
+.det-modal-contact-row:hover{background:rgba(40,167,69,.22);color:#fff}
+.det-modal-contact-row .material-symbols-outlined{color:#66bb6a;font-size:20px;flex-shrink:0}
+.det-modal-info-note{background:rgba(40,167,69,.08);border:1px solid rgba(40,167,69,.18);border-radius:12px;padding:12px 16px;font:.82rem 'Inter',sans-serif;color:rgba(255,255,255,.5);display:flex;gap:9px;align-items:flex-start;margin-top:6px}
+.det-modal-info-note .material-symbols-outlined{color:#66bb6a}
+
+/* Leaflet custom marker */
+.det-map-marker{background:#28a745;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.leaflet-popup-content-wrapper{background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:12px;color:#fff}
+.leaflet-popup-tip{background:#0d2415}
+.leaflet-popup-content{margin:12px 16px;font:.85rem 'Inter',sans-serif}
+.leaflet-popup-content strong{color:#81c784}
+
+@media(max-width:992px){
+    .det-feats{grid-template-columns:repeat(2,1fr)}
+    .det-ribbon-actions{display:none}
+}
+@media(max-width:768px){
+    .det-feats{grid-template-columns:repeat(2,1fr)}
+    .det-map-wrap{height:260px}
+    .det-ribbon-stats{gap:16px}
+}
 </style>
+{% endblock %}
 
-<!-- Alerts -->
-<div class="m3-alert-float">
+{% block content %}
+<div class="det-page">
+
+<!-- ── ALERTS ── -->
+<div class="det-alert">
     {% if messages %}{% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <span class="material-symbols-outlined" style="font-size:20px">{% if message.tags == 'success' %}check_circle{% else %}warning{% endif %}</span>{{ message }}
+    <div class="alert alert-dismissible fade show" role="alert">
+        <span class="material-symbols-outlined" style="font-size:18px">{% if message.tags == 'success' %}check_circle{% else %}warning{% endif %}</span>
+        {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endfor %}{% endif %}
 </div>
 
-<!-- Hero -->
-<section class="m3-detail-hero">
-    <div class="container">
-        <div class="m3-detail-hero-inner">
-            <div class="m3-breadcrumb">
-                <a href="{% url 'index' %}"><span class="material-symbols-outlined" style="font-size:16px">home</span> Home</a>
-                <span class="m3-bc-sep"><span class="material-symbols-outlined">chevron_right</span></span>
-                <a href="{% url 'property_list' %}">Properties</a>
-                <span class="m3-bc-sep"><span class="material-symbols-outlined">chevron_right</span></span>
-                <span class="m3-bc-current">{{ property.name }}</span>
+<!-- ── GALLERY SLIDER ── -->
+{% with extra_imgs=property.extra_images.all total_imgs=property.extra_images.count|add:1 %}
+<div class="det-gallery" id="detGallery">
+
+    <!-- Slides -->
+    <div class="det-slides" id="detSlides">
+
+        <!-- Slide 0: main image -->
+        <div class="det-slide active" data-index="0">
+            {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.name }}" onclick="openLightbox(0)">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">
+            {% endif %}
+            <div class="det-slide-overlay"></div>
+        </div>
+
+        <!-- Extra slides -->
+        {% for img in extra_imgs %}
+        <div class="det-slide" data-index="{{ forloop.counter }}">
+            <img src="{{ img.image.url }}" alt="{{ property.name }} photo {{ forloop.counter|add:1 }}" onclick="openLightbox({{ forloop.counter }})">
+            <div class="det-slide-overlay"></div>
+        </div>
+        {% endfor %}
+
+        <!-- Hero text always on top -->
+        <div class="det-hero-content">
+            <div class="container">
+                <div class="det-breadcrumb">
+                    <a href="{% url 'index' %}"><span class="material-symbols-outlined" style="font-size:14px">home</span> Home</a>
+                    <span class="sep material-symbols-outlined" style="font-size:14px">chevron_right</span>
+                    <a href="{% url 'property_list' %}">Properties</a>
+                    <span class="sep material-symbols-outlined" style="font-size:14px">chevron_right</span>
+                    <span class="cur">{{ property.name }}</span>
+                </div>
+                <h1>{{ property.name }}</h1>
+                <div class="det-hero-chips">
+                    <span class="det-chip det-chip-type"><span class="material-symbols-outlined" style="font-size:13px">apartment</span> {{ property.get_types_display }}</span>
+                    <span class="det-chip {% if property.status == 'Available' %}det-chip-avail{% else %}det-chip-rented{% endif %}">
+                        <span class="material-symbols-outlined" style="font-size:13px">{% if property.status == 'Available' %}check_circle{% else %}key{% endif %}</span> {{ property.status }}
+                    </span>
+                    <span class="det-chip det-chip-loc"><span class="material-symbols-outlined" style="font-size:15px">location_on</span> {{ property.address }}</span>
+                </div>
             </div>
-            <h1>{{ property.name }}</h1>
-            <div class="m3-detail-hero-meta">
-                <span class="m3-hero-pill m3-pill-type"><span class="material-symbols-outlined" style="font-size:14px">label</span> {{ property.get_types_display }}</span>
-                <span class="m3-hero-pill {% if property.status == 'Available' %}m3-pill-avail{% else %}m3-pill-rented{% endif %}">
-                    <span class="material-symbols-outlined" style="font-size:14px">{% if property.status == 'Available' %}check_circle{% else %}key{% endif %}</span> {{ property.status }}
-                </span>
-                <span class="m3-hero-loc"><span class="material-symbols-outlined">location_on</span> {{ property.address }}</span>
+        </div>
+
+        <!-- Dot indicators -->
+        {% if total_imgs > 1 %}
+        <div class="det-dots" id="detDots">
+            <button class="det-dot active" onclick="goToSlide(0)"></button>
+            {% for img in extra_imgs %}
+            <button class="det-dot" onclick="goToSlide({{ forloop.counter }})"></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Photo counter -->
+        <div class="det-photo-badge">
+            <span class="material-symbols-outlined" style="font-size:15px">photo_camera</span>
+            <span id="slideCounter">1</span> / {{ total_imgs }}
+        </div>
+
+        <!-- Prev / Next (only if more than 1 photo) -->
+        {% if total_imgs > 1 %}
+        <button class="det-slide-btn prev" onclick="prevSlide()"><span class="material-symbols-outlined">chevron_left</span></button>
+        <button class="det-slide-btn next" onclick="nextSlide()"><span class="material-symbols-outlined">chevron_right</span></button>
+        {% endif %}
+    </div>
+
+    <!-- Thumbnail strip -->
+    {% if total_imgs > 1 %}
+    <div class="det-thumbs" id="detThumbs">
+        <div class="det-thumb active" onclick="goToSlide(0)" id="thumb-0">
+            {% if property.image %}<img src="{{ property.image.url }}" alt="Photo 1">
+            {% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="Photo 1">{% endif %}
+        </div>
+        {% for img in extra_imgs %}
+        <div class="det-thumb" onclick="goToSlide({{ forloop.counter }})" id="thumb-{{ forloop.counter }}">
+            <img src="{{ img.image.url }}" alt="Photo {{ forloop.counter|add:1 }}">
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div><!-- end .det-gallery -->
+{% endwith %}
+
+<!-- ── PRICE RIBBON ── -->
+<div class="det-ribbon">
+    <div class="container">
+        <div class="det-ribbon-inner">
+            <div class="det-price-big">{{ property.price|floatformat:0 }} Frw <span>/ month</span></div>
+            <div class="det-ribbon-stats">
+                <div class="det-rstat">
+                    <div class="det-rstat-v">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                    <div class="det-rstat-l">Bedrooms</div>
+                </div>
+                <div class="det-rstat">
+                    <div class="det-rstat-v">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                    <div class="det-rstat-l">Bathrooms</div>
+                </div>
+                <div class="det-rstat">
+                    <div class="det-rstat-v">{{ property.number_of_units }}</div>
+                    <div class="det-rstat-l">Units</div>
+                </div>
+                <div class="det-rstat">
+                    <div class="det-rstat-v">{{ property.date_added|date:"Y" }}</div>
+                    <div class="det-rstat-l">Listed</div>
+                </div>
+            </div>
+            <div class="det-ribbon-actions">
+                {% if user.is_authenticated and not liked_properties %}
+                <a href="{% url 'like_property' property.id %}" class="det-btn det-btn-ghost"><span class="material-symbols-outlined" style="font-size:17px">favorite</span> Save</a>
+                {% endif %}
+                <button type="button" class="det-btn det-btn-primary" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><span class="material-symbols-outlined" style="font-size:17px">mail</span> Contact Owner</button>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Main Content -->
-<section class="m3-detail-main">
+<!-- ── BODY ── -->
+<div class="det-body">
     <div class="container">
-        <div class="row">
-            <!-- Left Column -->
-            <div class="col-lg-8">
-                <!-- Image -->
-                <div class="m3-img-card">
-                    {% if property.image %}
-                        <img src="{{ property.image.url }}" alt="{{ property.name }}">
-                    {% else %}
-                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">
-                    {% endif %}
-                    <div class="m3-img-overlay">
-                        <div class="m3-detail-price">{{ property.price|floatformat:0 }} Frw <small>/month</small></div>
-                    </div>
-                </div>
+        <div class="row g-4">
 
-                <!-- Features -->
-                <div class="m3-info-card">
-                    <div class="m3-info-card-title"><span class="material-symbols-outlined">grid_view</span> Property Details</div>
-                    <div class="m3-feat-grid">
-                        <div class="m3-feat-item">
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-8 det-col-main">
+
+                <!-- Property Details -->
+                <div class="det-card">
+                    <div class="det-card-title"><span class="material-symbols-outlined">grid_view</span> Property Details</div>
+                    <div class="det-feats">
+                        <div class="det-feat">
                             <span class="material-symbols-outlined">bed</span>
-                            <div class="m3-feat-val">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
-                            <div class="m3-feat-lbl">Bedrooms</div>
+                            <div class="det-feat-v">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                            <div class="det-feat-l">Bedrooms</div>
                         </div>
-                        <div class="m3-feat-item">
+                        <div class="det-feat">
                             <span class="material-symbols-outlined">bathtub</span>
-                            <div class="m3-feat-val">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
-                            <div class="m3-feat-lbl">Bathrooms</div>
+                            <div class="det-feat-v">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                            <div class="det-feat-l">Bathrooms</div>
                         </div>
-                        <div class="m3-feat-item">
+                        <div class="det-feat">
                             <span class="material-symbols-outlined">door_open</span>
-                            <div class="m3-feat-val">{{ property.number_of_units }}</div>
-                            <div class="m3-feat-lbl">Units</div>
+                            <div class="det-feat-v">{{ property.number_of_units }}</div>
+                            <div class="det-feat-l">Units</div>
                         </div>
-                        <div class="m3-feat-item">
+                        <div class="det-feat">
                             <span class="material-symbols-outlined">apartment</span>
-                            <div class="m3-feat-val">{{ property.get_types_display }}</div>
-                            <div class="m3-feat-lbl">Type</div>
+                            <div class="det-feat-v">{{ property.get_types_display }}</div>
+                            <div class="det-feat-l">Type</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Description -->
-                <div class="m3-info-card">
-                    <div class="m3-info-card-title"><span class="material-symbols-outlined">description</span> Description</div>
-                    <p class="m3-desc-text">{{ property.description }}</p>
+                <div class="det-card">
+                    <div class="det-card-title"><span class="material-symbols-outlined">description</span> About This Property</div>
+                    <p class="det-desc">{{ property.description }}</p>
                 </div>
 
-                <!-- Owner Info -->
-                <div class="m3-info-card">
-                    <div class="m3-info-card-title"><span class="material-symbols-outlined">person</span> Property Owner</div>
-                    <div class="m3-owner-row">
-                        <div class="m3-owner-avatar">
+                <!-- Owner -->
+                <div class="det-card">
+                    <div class="det-card-title"><span class="material-symbols-outlined">person</span> Property Owner</div>
+                    <div class="det-owner-row">
+                        <div class="det-owner-av">
                             {% if property.owner.image %}
-                                <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--md-sys-shape-corner-medium)">
+                                <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}">
                             {% else %}
                                 <span class="material-symbols-outlined">person</span>
                             {% endif %}
                         </div>
                         <div>
-                            <div class="m3-owner-name">{{ property.owner.name }}</div>
-                            <div class="m3-owner-lbl">Property Owner</div>
+                            <div class="det-owner-name">{{ property.owner.name }}</div>
+                            <div class="det-owner-lbl">Verified Property Owner</div>
+                        </div>
+                        <div class="det-owner-contact">
+                            {% if property.owner.phone_number %}
+                            <a href="tel:{{ property.owner.phone_number }}" class="det-contact-btn" title="Call"><span class="material-symbols-outlined">phone</span></a>
+                            {% endif %}
+                            {% if property.owner.email %}
+                            <a href="mailto:{{ property.owner.email }}" class="det-contact-btn" title="Email"><span class="material-symbols-outlined">mail</span></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
 
-                <!-- Inquiry Form -->
-                <div class="m3-inquiry-card">
-                    <div class="m3-inquiry-header"><span class="material-symbols-outlined">send</span> Send an Inquiry</div>
-                    <div class="m3-inquiry-body">
-                        <form method="POST" action="/customer_enquiry/{{ property.id }}">
-                            {% csrf_token %}
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label for="name"><span class="material-symbols-outlined">person</span> Your Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="email"><span class="material-symbols-outlined">email</span> Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message"><span class="material-symbols-outlined">chat</span> Message</label>
-                                <textarea class="form-control" id="message" name="enquiry" rows="4" placeholder="Write your message about {{ property.name }}..." required></textarea>
-                            </div>
-                            <button type="submit" class="m3-btn-submit">
-                                <span class="material-symbols-outlined" style="font-size:20px">send</span> Send Inquiry
-                            </button>
-                        </form>
+                <!-- Map -->
+                <div class="det-card">
+                    <div class="det-card-title"><span class="material-symbols-outlined">map</span> Location</div>
+                    <div class="det-map-wrap">
+                        <div id="propertyMap"></div>
                     </div>
+                    <div class="det-map-addr">
+                        <span class="material-symbols-outlined">location_on</span>
+                        {{ property.address }}
+                    </div>
+                </div>
+
+                <!-- Inquiry -->
+                <div class="det-card">
+                    <div class="det-inquiry-header">
+                        <span class="material-symbols-outlined">send</span>
+                        <span>Send an Inquiry</span>
+                    </div>
+                    <form method="POST" action="/customer_enquiry/{{ property.id }}">
+                        {% csrf_token %}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="det-form-label"><span class="material-symbols-outlined">person</span> Name</label>
+                                <input type="text" class="det-input" name="name" placeholder="Your full name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="det-form-label"><span class="material-symbols-outlined">email</span> Email</label>
+                                <input type="email" class="det-input" name="email" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="det-form-label"><span class="material-symbols-outlined">chat</span> Message</label>
+                            <textarea class="det-input" name="enquiry" rows="4" placeholder="I'm interested in {{ property.name }}..." required style="height:auto;resize:vertical"></textarea>
+                        </div>
+                        <button type="submit" class="det-btn-submit">
+                            <span class="material-symbols-outlined" style="font-size:18px">send</span> Send Inquiry
+                        </button>
+                    </form>
                 </div>
             </div>
 
-            <!-- Right Sidebar -->
-            <div class="col-lg-4">
-                <!-- Price Card -->
-                <div class="m3-info-card m3-price-card" style="margin-bottom:24px">
-                    <div class="m3-price-label">Monthly Price</div>
-                    <div class="m3-price-val">{{ property.price|floatformat:0 }} <span>Frw</span></div>
-                    <div class="m3-price-stats">
-                        <div class="m3-price-stat">
-                            <div class="m3-price-stat-v">{{ property.number_of_units }}</div>
-                            <div class="m3-price-stat-l">Units</div>
-                        </div>
-                        <div class="m3-price-stat">
-                            <div class="m3-price-stat-v">{{ property.status }}</div>
-                            <div class="m3-price-stat-l">Status</div>
-                        </div>
-                    </div>
-                </div>
+            <!-- RIGHT SIDEBAR -->
+            <div class="col-lg-4 det-col-side">
+                <div style="position:sticky;top:85px">
 
-                <!-- Actions -->
-                <div class="m3-info-card">
-                    <div class="m3-info-card-title"><span class="material-symbols-outlined">bolt</span> Quick Actions</div>
-                    <div class="m3-action-btns">
-                        {% if user.is_authenticated %}
-                            {% if liked_properties %}
-                                <button class="m3-btn-action m3-btn-act-disabled" disabled><span class="material-symbols-outlined">favorite</span> Already Liked</button>
-                            {% else %}
-                                <a href="{% url 'like_property' property.id %}" class="m3-btn-action m3-btn-act-primary"><span class="material-symbols-outlined">favorite</span> Like Property</a>
-                            {% endif %}
-                            {% if tenant_visits %}
-                                <button class="m3-btn-action m3-btn-act-disabled" disabled><span class="material-symbols-outlined">event_available</span> Visit Scheduled</button>
-                            {% else %}
-                                <button type="button" class="m3-btn-action m3-btn-act-secondary" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal"><span class="material-symbols-outlined">calendar_add_on</span> Schedule Visit</button>
-                            {% endif %}
-                        {% endif %}
-                        <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="m3-btn-action m3-btn-act-outline"><span class="material-symbols-outlined">map</span> View on Map</a>
-                        <button type="button" class="m3-btn-action m3-btn-act-outline" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><span class="material-symbols-outlined">mail</span> Contact Owner</button>
+                    <!-- Price Card -->
+                    <div class="det-price-card">
+                        <div class="det-pc-label">Monthly Rent</div>
+                        <div class="det-pc-price">{{ property.price|floatformat:0 }} Frw <em>/ mo</em></div>
+                        <hr class="det-pc-divider">
+                        <div class="det-pc-stats">
+                            <div class="det-pc-stat">
+                                <div class="det-pc-stat-v">{{ property.number_of_units }}</div>
+                                <div class="det-pc-stat-l">Units</div>
+                            </div>
+                            <div class="det-pc-stat">
+                                <div class="det-pc-stat-v">{% with u=property.units.first %}{{ u.bedrooms|default:"—" }}{% endwith %}</div>
+                                <div class="det-pc-stat-l">Beds</div>
+                            </div>
+                            <div class="det-pc-stat">
+                                <div class="det-pc-stat-v">{% with u=property.units.first %}{{ u.bathrooms|default:"—" }}{% endwith %}</div>
+                                <div class="det-pc-stat-l">Baths</div>
+                            </div>
+                            <div class="det-pc-stat">
+                                <div class="det-pc-stat-v" style="font-size:.8rem;{% if property.status == 'Available' %}color:#86efac{% else %}color:#fca5a5{% endif %}">{{ property.status }}</div>
+                                <div class="det-pc-stat-l">Status</div>
+                            </div>
+                        </div>
+                        <button type="button" class="det-btn-submit" data-bs-toggle="modal" data-bs-target="#contactOwnerModal">
+                            <span class="material-symbols-outlined" style="font-size:18px">mail</span> Contact Owner
+                        </button>
                     </div>
-                </div>
 
-                <!-- Listed Date -->
-                <div class="m3-info-card">
-                    <div class="m3-info-card-title"><span class="material-symbols-outlined">calendar_today</span> Listing Info</div>
-                    <div style="display:flex;align-items:center;gap:10px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-medium)">
-                        <span class="material-symbols-outlined" style="font-size:18px;color:var(--md-sys-color-primary)">schedule</span>
-                        Listed {{ property.date_added|date:"M d, Y" }}
+                    <!-- Quick Actions -->
+                    <div class="det-card">
+                        <div class="det-card-title"><span class="material-symbols-outlined">bolt</span> Quick Actions</div>
+                        <div class="det-actions">
+                            {% if user.is_authenticated %}
+                                {% if liked_properties %}
+                                    <button class="det-act-btn det-act-disabled" disabled><span class="material-symbols-outlined">favorite</span> Saved to Favourites</button>
+                                {% else %}
+                                    <a href="{% url 'like_property' property.id %}" class="det-act-btn det-act-secondary"><span class="material-symbols-outlined">favorite</span> Save Property</a>
+                                {% endif %}
+                                {% if tenant_visits %}
+                                    <button class="det-act-btn det-act-disabled" disabled><span class="material-symbols-outlined">event_available</span> Visit Scheduled</button>
+                                {% else %}
+                                    <button type="button" class="det-act-btn det-act-secondary" data-bs-toggle="modal" data-bs-target="#scheduleVisitModal"><span class="material-symbols-outlined">calendar_add_on</span> Schedule a Visit</button>
+                                {% endif %}
+                            {% endif %}
+                            <a href="https://maps.google.com?q={{ property.address|urlencode }}" target="_blank" class="det-act-btn det-act-outline"><span class="material-symbols-outlined">open_in_new</span> Open in Google Maps</a>
+                            <button type="button" class="det-act-btn det-act-outline" data-bs-toggle="modal" data-bs-target="#contactOwnerModal"><span class="material-symbols-outlined">person</span> View Owner Info</button>
+                        </div>
                     </div>
+
+                    <!-- Listing Info -->
+                    <div class="det-card">
+                        <div class="det-card-title"><span class="material-symbols-outlined">info</span> Listing Info</div>
+                        <div class="det-info-row">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            <div>
+                                <div class="det-info-lbl">Listed On</div>
+                                <div class="det-info-val">{{ property.date_added|date:"M d, Y" }}</div>
+                            </div>
+                        </div>
+                        <div class="det-info-row">
+                            <span class="material-symbols-outlined">label</span>
+                            <div>
+                                <div class="det-info-lbl">Property Type</div>
+                                <div class="det-info-val">{{ property.get_types_display }}</div>
+                            </div>
+                        </div>
+                        <div class="det-info-row">
+                            <span class="material-symbols-outlined">location_on</span>
+                            <div>
+                                <div class="det-info-lbl">Address</div>
+                                <div class="det-info-val">{{ property.address }}</div>
+                            </div>
+                        </div>
+                        <div class="det-info-row">
+                            <span class="material-symbols-outlined">tag</span>
+                            <div>
+                                <div class="det-info-lbl">Property ID</div>
+                                <div class="det-info-val">#{{ property.id }}</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Featured Properties -->
+<!-- ── FEATURED ── -->
 {% if featured_properties %}
-<section class="m3-featured-strip">
+<div class="det-featured">
     <div class="container">
-        <div class="m3-strip-title"><span class="material-symbols-outlined">star</span> You May Also Like</div>
-        <div class="row g-4">
+        <div class="det-featured-title"><span class="material-symbols-outlined">star</span> You May Also Like</div>
+        <div class="row g-3">
             {% for fp in featured_properties %}
             <div class="col-lg-2 col-md-4 col-6">
-                <a href="{% url 'property_view' fp.id %}" class="text-decoration-none">
-                    <div class="m3-mini-prop">
-                        <div class="m3-mini-prop-img">
-                            {% if fp.image %}<img src="{{ fp.image.url }}" alt="{{ fp.name }}" loading="lazy">
-                            {% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ fp.name }}">{% endif %}
-                        </div>
-                        <div class="m3-mini-prop-body">
-                            <h6>{{ fp.name }}</h6>
-                            <div class="m3-mini-prop-price">{{ fp.price|floatformat:0 }} Frw</div>
-                        </div>
+                <a href="{% url 'property_view' fp.id %}" class="det-mini">
+                    <div class="det-mini-img">
+                        {% if fp.image %}<img src="{{ fp.image.url }}" alt="{{ fp.name }}" loading="lazy">
+                        {% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ fp.name }}">{% endif %}
+                    </div>
+                    <div class="det-mini-body">
+                        <div class="det-mini-name">{{ fp.name }}</div>
+                        <div class="det-mini-price">{{ fp.price|floatformat:0 }} Frw</div>
+                        <div class="det-mini-type">{{ fp.get_types_display }}</div>
                     </div>
                 </a>
             </div>
             {% endfor %}
         </div>
     </div>
-</section>
+</div>
 {% endif %}
 
-<!-- Schedule Visit Modal -->
-<div class="modal fade m3-modal" id="scheduleVisitModal" tabindex="-1">
+</div><!-- end .det-page -->
+
+<!-- ── SCHEDULE VISIT MODAL ── -->
+<div class="modal fade det-modal" id="scheduleVisitModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><span class="material-symbols-outlined">calendar_add_on</span>Schedule a Visit</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title"><span class="material-symbols-outlined">calendar_add_on</span> Schedule a Visit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{% url 'schedule_visit' property.id %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label"><span class="material-symbols-outlined">event</span> Date & Time</label>
+                        <label class="form-label"><span class="material-symbols-outlined">event</span> Preferred Date & Time</label>
                         <input type="datetime-local" class="form-control" id="visit_date" name="visit_date" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label class="form-label"><span class="material-symbols-outlined">notes</span> Notes</label>
-                        <textarea class="form-control" name="description" rows="3" placeholder="Any specific requirements..." required></textarea>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Any specific requirements or questions..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="md-btn-outlined" data-bs-dismiss="modal" style="height:40px;padding:0 20px">Cancel</button>
-                    <button type="submit" class="md-btn-filled" style="height:40px;padding:0 20px"><span class="material-symbols-outlined" style="font-size:18px">check</span> Schedule</button>
+                    <button type="button" class="det-modal-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="det-modal-confirm"><span class="material-symbols-outlined" style="font-size:17px">check</span> Confirm Visit</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Contact Owner Modal -->
-<div class="modal fade m3-modal" id="contactOwnerModal" tabindex="-1">
+<!-- ── CONTACT OWNER MODAL ── -->
+<div class="modal fade det-modal" id="contactOwnerModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><span class="material-symbols-outlined">person</span>Contact Owner</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title"><span class="material-symbols-outlined">person</span> Contact Owner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="m3-owner-row mb-3">
-                    <div class="m3-owner-avatar"><span class="material-symbols-outlined">person</span></div>
+                <div class="det-owner-row mb-4">
+                    <div class="det-owner-av">
+                        {% if property.owner.image %}
+                            <img src="{{ property.owner.image.url }}" alt="{{ property.owner.name }}">
+                        {% else %}
+                            <span class="material-symbols-outlined">person</span>
+                        {% endif %}
+                    </div>
                     <div>
-                        <div class="m3-owner-name">{{ property.owner.name }}</div>
-                        <div class="m3-owner-lbl">Property Owner</div>
+                        <div class="det-owner-name">{{ property.owner.name }}</div>
+                        <div class="det-owner-lbl">Verified Property Owner</div>
                     </div>
                 </div>
                 {% if property.owner.phone_number %}
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font:var(--md-sys-typescale-body-medium)">
-                    <span class="material-symbols-outlined" style="font-size:20px;color:var(--md-sys-color-primary)">phone</span>
-                    <a href="tel:{{ property.owner.phone_number }}" style="color:var(--md-sys-color-on-surface);text-decoration:none">{{ property.owner.phone_number }}</a>
-                </div>
+                <a href="tel:{{ property.owner.phone_number }}" class="det-modal-contact-row">
+                    <span class="material-symbols-outlined">phone</span>
+                    <span>{{ property.owner.phone_number }}</span>
+                </a>
                 {% endif %}
                 {% if property.owner.email %}
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;font:var(--md-sys-typescale-body-medium)">
-                    <span class="material-symbols-outlined" style="font-size:20px;color:var(--md-sys-color-primary)">email</span>
-                    <a href="mailto:{{ property.owner.email }}" style="color:var(--md-sys-color-on-surface);text-decoration:none">{{ property.owner.email }}</a>
-                </div>
+                <a href="mailto:{{ property.owner.email }}" class="det-modal-contact-row">
+                    <span class="material-symbols-outlined">mail</span>
+                    <span>{{ property.owner.email }}</span>
+                </a>
                 {% endif %}
-                <div style="background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border-radius:var(--md-sys-shape-corner-medium);padding:14px 18px;font:var(--md-sys-typescale-body-small);display:flex;align-items:center;gap:10px">
-                    <span class="material-symbols-outlined" style="font-size:18px">info</span>
+                <div class="det-modal-info-note">
+                    <span class="material-symbols-outlined" style="font-size:16px;flex-shrink:0;margin-top:1px">info</span>
                     For detailed inquiries, use the inquiry form on this page.
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="md-btn-outlined" data-bs-dismiss="modal" style="height:40px;padding:0 20px">Close</button>
+                <button type="button" class="det-modal-cancel" data-bs-dismiss="modal">Close</button>
                 {% if property.owner.phone_number %}
-                <a href="tel:{{ property.owner.phone_number }}" class="md-btn-filled" style="height:40px;padding:0 20px"><span class="material-symbols-outlined" style="font-size:18px">phone</span> Call</a>
+                <a href="tel:{{ property.owner.phone_number }}" class="det-modal-confirm"><span class="material-symbols-outlined" style="font-size:17px">phone</span> Call Now</a>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    var v=document.getElementById('visit_date');
-    if(v){var d=new Date();d.setDate(d.getDate()+1);var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');v.min=y+'-'+m+'-'+day+'T08:00';v.value=y+'-'+m+'-'+day+'T10:00'}
-    document.querySelectorAll('.m3-alert-float .alert').forEach(function(a){setTimeout(function(){try{new bootstrap.Alert(a).close()}catch(e){}},5000)});
-});
-</script>
-{% endblock %}
 
+    /* ── Move modals & lightbox to <body> so Bootstrap backdrop doesn't trap them ── */
+    document.querySelectorAll('.det-modal').forEach(function(m){
+        document.body.appendChild(m);
+    });
+    var lb = document.getElementById('detLightbox');
+    if(lb) document.body.appendChild(lb);
+
+    /* ── Gallery ── */
+    initGallery();
+
+    /* ── Visit date defaults ── */
+    var v = document.getElementById('visit_date');
+    if(v){
+        var d = new Date(); d.setDate(d.getDate()+1);
+        var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+        v.min = y+'-'+m+'-'+day+'T08:00';
+        v.value = y+'-'+m+'-'+day+'T10:00';
+    }
+
+    /* ── Auto-dismiss alerts ── */
+    document.querySelectorAll('.det-alert .alert').forEach(function(a){
+        setTimeout(function(){try{new bootstrap.Alert(a).close()}catch(e){}}, 5000);
+    });
+
+    /* ── Leaflet Map ── */
+    var address = "{{ property.address|escapejs }}";
+    var map = L.map('propertyMap', {zoomControl:true, scrollWheelZoom:false});
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    /* Custom green marker */
+    var markerIcon = L.divIcon({
+        html: '<div style="background:#28a745;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        className: ''
+    });
+
+    /* Geocode with Nominatim */
+    var geocodeUrl = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address + ', Rwanda');
+
+    fetch(geocodeUrl, {headers:{'Accept-Language':'en'}})
+        .then(function(r){return r.json()})
+        .then(function(data){
+            if(data && data.length > 0){
+                var lat = parseFloat(data[0].lat);
+                var lng = parseFloat(data[0].lon);
+                map.setView([lat, lng], 16);
+                var marker = L.marker([lat, lng], {icon: markerIcon}).addTo(map);
+                marker.bindPopup('<strong>{{ property.name|escapejs }}</strong><br><span style="color:rgba(255,255,255,.6);font-size:.8rem">{{ property.address|escapejs }}</span>').openPopup();
+            } else {
+                /* Fallback: centre on Kigali */
+                map.setView([-1.9441, 30.0619], 13);
+                L.marker([-1.9441, 30.0619], {icon: markerIcon}).addTo(map)
+                    .bindPopup('<strong>{{ property.name|escapejs }}</strong><br><span style="color:rgba(255,255,255,.6);font-size:.8rem">{{ property.address|escapejs }}</span>').openPopup();
+            }
+        })
+        .catch(function(){
+            map.setView([-1.9441, 30.0619], 13);
+        });
+});
+
+/* ── Gallery Slider ── */
+var currentSlide = 0;
+var slides, dots, thumbs, total, autoTimer;
+
+function initGallery(){
+    slides = document.querySelectorAll('.det-slide');
+    dots   = document.querySelectorAll('.det-dot');
+    thumbs = document.querySelectorAll('.det-thumb');
+    total  = slides.length;
+
+    /* Build lightbox image list */
+    slides.forEach(function(s){
+        var img = s.querySelector('img');
+        if(img) lbImages.push({src: img.src, alt: img.alt});
+    });
+
+    if(total > 1) startAutoPlay();
+}
+
+function goToSlide(n){
+    if(!slides || total <= 1) return;
+    slides[currentSlide].classList.remove('active');
+    if(dots[currentSlide])   dots[currentSlide].classList.remove('active');
+    if(thumbs[currentSlide]) thumbs[currentSlide].classList.remove('active');
+
+    currentSlide = (n + total) % total;
+
+    slides[currentSlide].classList.add('active');
+    if(dots[currentSlide])   dots[currentSlide].classList.add('active');
+    if(thumbs[currentSlide]){
+        thumbs[currentSlide].classList.add('active');
+        var strip = document.getElementById('detThumbs');
+        if(strip){
+            var t = thumbs[currentSlide];
+            strip.scrollLeft = t.offsetLeft - strip.offsetWidth/2 + t.offsetWidth/2;
+        }
+    }
+    var ctr = document.getElementById('slideCounter');
+    if(ctr) ctr.textContent = currentSlide + 1;
+}
+
+function nextSlide(){ goToSlide(currentSlide + 1); }
+function prevSlide(){ goToSlide(currentSlide - 1); }
+
+function startAutoPlay(){
+    clearInterval(autoTimer);
+    autoTimer = setInterval(function(){ nextSlide(); }, 4000);
+}
+
+/* Pause on hover, resume on leave */
+var gallery = document.getElementById('detGallery');
+if(gallery){
+    gallery.addEventListener('mouseenter', function(){ clearInterval(autoTimer); });
+    gallery.addEventListener('mouseleave', function(){ if(total > 1) startAutoPlay(); });
+}
+
+/* Keyboard navigation */
+document.addEventListener('keydown', function(e){
+    if(document.querySelector('.det-lightbox.open')){
+        if(e.key==='ArrowRight') lbNext();
+        if(e.key==='ArrowLeft')  lbPrev();
+        if(e.key==='Escape')     closeLightbox();
+    } else {
+        if(e.key==='ArrowRight'){ nextSlide(); startAutoPlay(); }
+        if(e.key==='ArrowLeft'){  prevSlide(); startAutoPlay(); }
+    }
+});
+
+/* ── Lightbox ── */
+var lbImages = [];
+var lbIndex  = 0;
+var lb       = document.getElementById('detLightbox');
+var lbImg   = document.getElementById('lbImg');
+var lbCtr   = document.getElementById('lbCounter');
+
+function openLightbox(idx){
+    lbIndex = idx;
+    lbImg.src = lbImages[idx].src;
+    if(lbCtr) lbCtr.textContent = (idx+1) + ' / ' + lbImages.length;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+    lb.classList.remove('open');
+    document.body.style.overflow='';
+}
+function lbNext(){
+    lbIndex = (lbIndex + 1) % lbImages.length;
+    lbImg.src = lbImages[lbIndex].src;
+    if(lbCtr) lbCtr.textContent = (lbIndex+1) + ' / ' + lbImages.length;
+}
+function lbPrev(){
+    lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+    lbImg.src = lbImages[lbIndex].src;
+    if(lbCtr) lbCtr.textContent = (lbIndex+1) + ' / ' + lbImages.length;
+}
+if(lb) lb.addEventListener('click', function(e){ if(e.target===lb) closeLightbox(); });
+</script>
+
+<!-- ── LIGHTBOX ── -->
+<div class="det-lightbox" id="detLightbox">
+    <button class="det-lb-close" onclick="closeLightbox()"><span class="material-symbols-outlined">close</span></button>
+    <button class="det-lb-prev" onclick="lbPrev()"><span class="material-symbols-outlined">chevron_left</span></button>
+    <img id="lbImg" src="" alt="Property photo">
+    <button class="det-lb-next" onclick="lbNext()"><span class="material-symbols-outlined">chevron_right</span></button>
+    <div class="det-lb-counter" id="lbCounter"></div>
+</div>
+
+{% endblock %}

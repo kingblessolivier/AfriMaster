@@ -71,7 +71,9 @@
                 <a class="m3-sidebar-link" href="{% url 'admin_all_offers' %}" id="offersLink"><span class="material-symbols-outlined">local_offer</span>Offers</a>
 
                 <div class="m3-sidebar-section">System</div>
-                <a class="m3-sidebar-link" href="#" id="ReportsLink"><span class="material-symbols-outlined">analytics</span>Reports</a>
+                <a class="m3-sidebar-link" href="{% url 'announcements_admin' %}" id="announcementsLink"><span class="material-symbols-outlined">campaign</span>Announcements</a>
+                <a class="m3-sidebar-link" href="{% url 'system_logs' %}" id="syslogsLink"><span class="material-symbols-outlined">terminal</span>System Logs</a>
+                <a class="m3-sidebar-link" href="{% url 'admin_reports' %}" id="ReportsLink"><span class="material-symbols-outlined">analytics</span>Reports</a>
                 <a class="m3-sidebar-link" href="#" id="SettingsLink"><span class="material-symbols-outlined">settings</span>Settings</a>
                 <a class="m3-sidebar-link" href="{% url 'index' %}" id="siteLink"><span class="material-symbols-outlined">language</span>Visit Site</a>
             </nav>
@@ -143,7 +145,20 @@
             </div>
 
             <footer class="m3-dash-footer">
-                <p>&copy; 2026 PropertyHub Ltd. All rights reserved.</p>
+                <div class="m3-footer-inner">
+                    <div class="m3-footer-brand">
+                        <span class="m3-footer-dot"></span>
+                        <span class="m3-footer-name">PropertyHub</span>
+                        <span class="m3-footer-version">Admin v2.0</span>
+                    </div>
+                    <div class="m3-footer-links">
+                        <a href="{% url 'admin_dashboard' %}"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+                        <a href="{% url 'admin_reports' %}"><span class="material-symbols-outlined">analytics</span>Reports</a>
+                        <a href="{% url 'system_logs' %}"><span class="material-symbols-outlined">terminal</span>Logs</a>
+                        <a href="{% url 'index' %}" target="_blank"><span class="material-symbols-outlined">language</span>View Site</a>
+                    </div>
+                    <p class="m3-footer-copy">&copy; 2026 PropertyHub Ltd.</p>
+                </div>
             </footer>
         </div>
     </div>

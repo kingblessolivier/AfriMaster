@@ -116,10 +116,15 @@
                         </div>
                         <div class="mb-3">
                             <label for="propertyImage" class="form-label">
-                                <i class="fas fa-image"></i> Property Image
+                                <i class="fas fa-image"></i> Cover Image
                             </label>
-                            <input type="file" class="form-control" id="propertyImage" name="image" required data-bs-toggle="tooltip" title="Upload an image of the property">
+                            <input type="file" class="form-control" id="propertyImage" name="image" accept="image/*" required data-bs-toggle="tooltip" title="Main cover photo of the property">
                             <div class="invalid-feedback">Please provide a property image.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-images"></i> Additional Photos <small class="text-muted">(optional, select multiple)</small></label>
+                            <input type="file" class="form-control" name="extra_images" id="ownerExtraImages" accept="image/*" multiple>
+                            <div id="ownerExtraPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -163,6 +168,23 @@
 </div>
 
 <script>
+    document.getElementById('ownerExtraImages').addEventListener('change', function(){
+        var preview = document.getElementById('ownerExtraPreview');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(function(file){
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var wrap = document.createElement('div');
+                wrap.style.cssText = 'position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:1px solid #ddd';
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+                wrap.appendChild(img);
+                preview.appendChild(wrap);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

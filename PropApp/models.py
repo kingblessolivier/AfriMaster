@@ -90,6 +90,20 @@ class Property(models.Model):
     def __str__(self):
         return f"{self.name} at {self.address}"
 
+class PropertyImage(models.Model):
+    property    = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='extra_images')
+    image       = models.ImageField(upload_to='property_images')
+    caption     = models.CharField(max_length=100, blank=True)
+    order       = models.PositiveSmallIntegerField(default=0)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'uploaded_at']
+
+    def __str__(self):
+        return f"Image for {self.property.name} (#{self.pk})"
+
+
 class Unit(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='units')
     unit_number = models.IntegerField()
@@ -525,6 +539,133 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"→ {self.recipient.username}: {self.message[:60]}"
+
+
+# ─────────────────────────────────────────────────────────────
+# AI Chatbot History Models
+# ─────────────────────────────────────────────────────────────
+
+class ChatConversation(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, related_name='chat_conversations'
+    )
+    session_key = models.CharField(max_length=40, null=True, blank=True)
+    title = models.CharField(max_length=120, default='New Chat')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"Chat #{self.id}: {self.title}"
+
+
+class ChatMessage(models.Model):
+    conversation = models.ForeignKey(
+        ChatConversation, on_delete=models.CASCADE, related_name='chat_messages'
+    )
+    role = models.CharField(max_length=10)  # 'user' or 'bot'
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"[{self.role}] {self.content[:60]}"
+
+
+# ─── System Logs ───────────────────────────────────────────────────────────────
+
+class SystemLog(models.Model):
+    LOG_LEVELS = [
+        ('DEBUG',    'Debug'),
+        ('INFO',     'Info'),
+        ('WARNING',  'Warning'),
+        ('ERROR',    'Error'),
+        ('CRITICAL', 'Critical'),
+    ]
+
+    LOG_CATEGORIES = [
+        ('AUTH',        'Authentication'),
+        ('USER',        'User Management'),
+        ('PROPERTY',    'Property'),
+        ('LEASE',       'Lease'),
+        ('PAYMENT',     'Payment'),
+        ('MAINTENANCE', 'Maintenance'),
+        ('MARKETPLACE', 'Marketplace'),
+        ('MESSAGING',   'Messaging'),
+        ('SECURITY',    'Security'),
+        ('API',         'API'),
+        ('CHAT',        'AI Chatbot'),
+        ('SYSTEM',      'System'),
+    ]
+
+    LEVEL_COLORS = {
+        'DEBUG':    'secondary',
+        'INFO':     'primary',
+        'WARNING':  'warning',
+        'ERROR':    'danger',
+        'CRITICAL': 'dark',
+    }
+
+    timestamp   = models.DateTimeField(auto_now_add=True, db_index=True)
+    level       = models.CharField(max_length=10, choices=LOG_LEVELS, default='INFO', db_index=True)
+    category    = models.CharField(max_length=20, choices=LOG_CATEGORIES, default='SYSTEM', db_index=True)
+    message     = models.TextField()
+    user        = models.ForeignKey(
+        'PropApp.User', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='system_logs'
+    )
+    ip_address  = models.GenericIPAddressField(null=True, blank=True)
+    path        = models.CharField(max_length=500, blank=True)
+    method      = models.CharField(max_length=10, blank=True)
+    status_code = models.PositiveSmallIntegerField(null=True, blank=True)
+    details     = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = 'System Log'
+        verbose_name_plural = 'System Logs'
+
+    def __str__(self):
+        user_str = self.user.username if self.user else 'anonymous'
+        return f"[{self.level}] {self.category} — {self.message[:80]} ({user_str})"
+
+    @property
+    def badge_color(self):
+        return self.LEVEL_COLORS.get(self.level, 'secondary')
+
+
+class Announcement(models.Model):
+    ICON_CHOICES = [
+        ('campaign',        'Campaign'),
+        ('home_work',       'Home / Property'),
+        ('real_estate_agent','Agent'),
+        ('verified',        'Verified'),
+        ('star',            'Star'),
+        ('info',            'Info'),
+        ('warning',         'Warning'),
+        ('celebration',     'Celebration'),
+        ('local_offer',     'Offer'),
+        ('schedule',        'Schedule'),
+    ]
+
+    text       = models.CharField(max_length=200, help_text='Text shown in the scrolling ticker')
+    icon       = models.CharField(max_length=40, choices=ICON_CHOICES, default='campaign')
+    is_active  = models.BooleanField(default=True, help_text='Uncheck to hide without deleting')
+    order      = models.PositiveSmallIntegerField(default=0, help_text='Lower = shown first')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+        verbose_name = 'Announcement'
+        verbose_name_plural = 'Announcements'
+
+    def __str__(self):
+        return self.text[:80]
 
 
 

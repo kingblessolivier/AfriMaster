@@ -1,6 +1,6 @@
 from django.db.models import Count
 
-from .models import Message, Tenant, Owner, Agent, Seller, Notification
+from .models import Message, Tenant, Owner, Agent, Seller, Notification, Announcement
 
 
 def global_context(request):
@@ -43,7 +43,10 @@ def global_context(request):
             .order_by('-created_at')[:5]
         )
 
+    announcements = list(Announcement.objects.filter(is_active=True))
+
     return {
+        'announcements': announcements,
         'message_total': message_total,
         'unread_messages': unread_messages,
         'is_tenant': is_tenant,

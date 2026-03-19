@@ -68,39 +68,42 @@
     .m3-active-tag a{color:var(--md-sys-color-on-primary-container);text-decoration:none;font-size:.85rem;line-height:1;display:flex}
     .m3-active-tag a:hover{color:var(--md-sys-color-error)}
 
-    /* Property Card */
-    .m3-prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
-    .m3-prop-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized);display:flex;flex-direction:column}
-    .m3-prop-card:hover{transform:translateY(-6px);box-shadow:var(--md-sys-elevation-3);border-color:transparent}
-    .m3-prop-card-img{position:relative;height:220px;overflow:hidden}
-    .m3-prop-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-    .m3-prop-card:hover .m3-prop-card-img img{transform:scale(1.08)}
-    .m3-prop-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.4));pointer-events:none}
-    .m3-img-badges{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:2}
-    .m3-badge-type{background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase;box-shadow:var(--md-sys-elevation-1)}
-    .m3-badge-status{padding:5px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-small);text-transform:uppercase}
+    /* ── Rental Property Card (compact redesign) ── */
+    .m3-prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:16px}
+
+    .m3-prop-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:transform .22s,box-shadow .22s,border-color .22s;display:flex;flex-direction:column}
+    .m3-prop-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.10);border-color:transparent}
+
+    .m3-prop-card-img{position:relative;height:168px;overflow:hidden;background:#e8f5e9;flex-shrink:0}
+    .m3-prop-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .m3-prop-card:hover .m3-prop-card-img img{transform:scale(1.05)}
+    .m3-prop-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.52) 100%);pointer-events:none}
+
+    .m3-img-badges{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;z-index:2;gap:6px}
+    .m3-badge-type{background:rgba(255,255,255,.9);color:#1a1c18;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:600;text-transform:uppercase}
+    .m3-badge-status{padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:700;text-transform:uppercase}
     .m3-badge-available{background:rgba(40,167,69,.9);color:#fff}
     .m3-badge-rented{background:rgba(220,53,69,.9);color:#fff}
-    .m3-img-price{position:absolute;bottom:14px;left:14px;z-index:2}
-    .m3-price-tag{font:500 1.35rem/1 'Inter',sans-serif;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-    .m3-price-tag small{font:var(--md-sys-typescale-label-small);opacity:.85}
-    .m3-prop-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
-    .m3-prop-card-title{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    .m3-prop-card-loc{display:flex;align-items:center;gap:6px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-small);margin-bottom:16px}
-    .m3-prop-card-loc .material-symbols-outlined{font-size:16px;color:var(--md-sys-color-primary)}
-    .m3-prop-feats{display:flex;gap:0;padding:14px 0;margin-bottom:16px;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant)}
-    .m3-prop-feat{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
-    .m3-prop-feat:not(:last-child)::after{content:'';position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--md-sys-color-outline-variant)}
-    .m3-prop-feat-icon{width:34px;height:34px;border-radius:var(--md-sys-shape-corner-small);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
-    .m3-prop-feat-icon .material-symbols-outlined{font-size:18px;color:var(--md-sys-color-on-primary-container)}
-    .m3-prop-feat-val{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface)}
-    .m3-prop-feat-lbl{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant)}
-    .m3-prop-card-desc{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1;margin-bottom:16px}
-    .m3-prop-card-ft{padding:0 20px 20px}
-    .m3-btn-details{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;transition:all 300ms;text-decoration:none}
-    .m3-btn-details:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:var(--md-sys-elevation-1)}
-    .m3-btn-details .material-symbols-outlined{font-size:18px;transition:transform .3s}
-    .m3-btn-details:hover .material-symbols-outlined{transform:translateX(4px)}
+
+    .m3-img-price{position:absolute;bottom:9px;left:10px;z-index:2}
+    .m3-price-tag{font-size:1.05rem;font-weight:800;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.45);line-height:1}
+    .m3-price-tag small{font-size:.65rem;font-weight:500;opacity:.9}
+
+    .m3-prop-card-body{padding:13px 13px 8px;flex:1;display:flex;flex-direction:column;gap:5px}
+    .m3-prop-card-title{font-size:.875rem;font-weight:700;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .m3-prop-card-loc{display:flex;align-items:center;gap:3px;font-size:.72rem;color:var(--md-sys-color-on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .m3-prop-card-loc .material-symbols-outlined{font-size:13px;color:var(--md-sys-color-primary);flex-shrink:0}
+
+    .m3-prop-feats-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--md-sys-color-outline-variant);font-size:.72rem;color:var(--md-sys-color-on-surface-variant)}
+    .m3-prop-feat-item{display:flex;align-items:center;gap:3px}
+    .m3-prop-feat-item .material-symbols-outlined{font-size:14px;color:var(--md-sys-color-primary)}
+    .m3-prop-feat-item b{color:var(--md-sys-color-on-surface);font-weight:700}
+
+    .m3-prop-card-ft{padding:8px 13px 13px}
+    .m3-btn-details{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border:none;border-radius:24px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .18s,color .18s;text-decoration:none}
+    .m3-btn-details:hover{background:var(--md-sys-color-primary);color:#fff}
+    .m3-btn-details .material-symbols-outlined{font-size:15px;transition:transform .2s}
+    .m3-btn-details:hover .material-symbols-outlined{transform:translateX(3px)}
 
     /* Empty State */
     .m3-empty{text-align:center;padding:80px 30px;background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:2px dashed var(--md-sys-color-outline-variant);grid-column:1/-1}
@@ -166,6 +169,33 @@
         </div>
     </div>
 </section>
+
+<!-- Map Section -->
+<div class="prop-map-section" id="propMapSection" style="display:none">
+    <div style="position:relative;height:460px;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2)">
+        <div id="propListingsMap" style="width:100%;height:100%"></div>
+        <div style="position:absolute;top:14px;left:14px;z-index:1000;background:#0d2415;border:1px solid rgba(40,167,69,.35);border-radius:12px;padding:10px 16px;color:#fff;font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">location_on</span>
+            <span id="propMapCount">0</span> properties on map
+        </div>
+    </div>
+</div>
+
+<!-- Map Toggle Bar -->
+<div style="background:#0d2415;border-top:1px solid rgba(40,167,69,.2);border-bottom:1px solid rgba(40,167,69,.2);padding:10px 0">
+    <div class="container">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <span style="color:rgba(255,255,255,.6);font:.82rem 'Inter',sans-serif;display:flex;align-items:center;gap:6px">
+                <span class="material-symbols-outlined" style="font-size:16px;color:#66bb6a">map</span>
+                See all rental properties on a map
+            </span>
+            <button id="togglePropMap" onclick="togglePropertyMap()" style="background:rgba(40,167,69,.15);border:1px solid rgba(40,167,69,.35);color:#81c784;padding:8px 20px;border-radius:50px;font:.82rem 'Inter',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s">
+                <span class="material-symbols-outlined" style="font-size:16px">map</span>
+                <span id="propMapBtnTxt">Show Map</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Main Content -->
 <section class="m3-prop-main">
@@ -272,7 +302,8 @@
                         {% for property in property_list %}
                         <div class="m3-prop-card md-reveal">
                             <div class="m3-prop-card-img">
-                                {% if property.image %}<img src="{{ property.image.url }}" alt="{{ property.name }}" loading="lazy">{% else %}<img src="{% static 'images/placeholder.jpg' %}" alt="{{ property.name }}">{% endif %}
+                                {% if property.image %}<img src="{{ property.image.url }}" alt="{{ property.name }}" loading="lazy">
+                                {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:44px;color:var(--md-sys-color-primary);opacity:.35">apartment</span></div>{% endif %}
                                 <div class="m3-img-badges">
                                     <span class="m3-badge-type">{{ property.get_types_display }}</span>
                                     <span class="m3-badge-status {% if property.status == 'Available' %}m3-badge-available{% else %}m3-badge-rented{% endif %}">{{ property.status }}</span>
@@ -280,26 +311,15 @@
                                 <div class="m3-img-price"><div class="m3-price-tag">{{ property.price|floatformat:0 }} <small>Frw/mo</small></div></div>
                             </div>
                             <div class="m3-prop-card-body">
-                                <h5 class="m3-prop-card-title">{{ property.name }}</h5>
-                                <div class="m3-prop-card-loc"><span class="material-symbols-outlined">location_on</span><span>{{ property.address }}</span></div>
-                                <div class="m3-prop-feats">
-                                    <div class="m3-prop-feat">
-                                        <div class="m3-prop-feat-icon"><span class="material-symbols-outlined">bed</span></div>
-                                        <span class="m3-prop-feat-val">{% with first_unit=property.units.first %}{{ first_unit.bedrooms|default:"—" }}{% endwith %}</span>
-                                        <span class="m3-prop-feat-lbl">Beds</span>
-                                    </div>
-                                    <div class="m3-prop-feat">
-                                        <div class="m3-prop-feat-icon"><span class="material-symbols-outlined">bathtub</span></div>
-                                        <span class="m3-prop-feat-val">{% with first_unit=property.units.first %}{{ first_unit.bathrooms|default:"—" }}{% endwith %}</span>
-                                        <span class="m3-prop-feat-lbl">Baths</span>
-                                    </div>
-                                    <div class="m3-prop-feat">
-                                        <div class="m3-prop-feat-icon"><span class="material-symbols-outlined">layers</span></div>
-                                        <span class="m3-prop-feat-val">{{ property.number_of_units }}</span>
-                                        <span class="m3-prop-feat-lbl">Units</span>
-                                    </div>
+                                <div class="m3-prop-card-title">{{ property.name }}</div>
+                                <div class="m3-prop-card-loc"><span class="material-symbols-outlined">location_on</span>{{ property.address }}</div>
+                                <div class="m3-prop-feats-row">
+                                    {% with u=property.units.first %}
+                                    <span class="m3-prop-feat-item"><span class="material-symbols-outlined">bed</span><b>{{ u.bedrooms|default:"—" }}</b>&nbsp;Beds</span>
+                                    <span class="m3-prop-feat-item"><span class="material-symbols-outlined">bathtub</span><b>{{ u.bathrooms|default:"—" }}</b>&nbsp;Bath</span>
+                                    {% endwith %}
+                                    <span class="m3-prop-feat-item"><span class="material-symbols-outlined">layers</span><b>{{ property.number_of_units }}</b>&nbsp;Units</span>
                                 </div>
-                                <p class="m3-prop-card-desc">{{ property.description }}</p>
                             </div>
                             <div class="m3-prop-card-ft">
                                 <a href="{% url 'property_view' property.id %}" class="m3-btn-details">View Details <span class="material-symbols-outlined">arrow_forward</span></a>
@@ -427,4 +447,62 @@ function closeFilterDrawer() {
 }
 </script>
 
+<!-- Leaflet Map Scripts -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var propMap = null;
+var propMapInit = false;
+var propData = {{ map_properties|safe }};
+
+var markerIcon = L.divIcon({
+    html:'<div style="background:#28a745;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.45)"></div>',
+    iconSize:[14,14],iconAnchor:[7,7],className:''
+});
+
+function togglePropertyMap(){
+    var sec = document.getElementById('propMapSection');
+    var btn = document.getElementById('propMapBtnTxt');
+    var visible = sec.style.display !== 'none';
+    if(visible){
+        sec.style.display='none'; btn.textContent='Show Map';
+    } else {
+        sec.style.display='block'; btn.textContent='Hide Map';
+        if(!propMapInit){ initPropMap(); propMapInit=true; }
+    }
+}
+
+function initPropMap(){
+    propMap = L.map('propListingsMap',{scrollWheelZoom:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19
+    }).addTo(propMap);
+    propMap.setView([-1.9441,30.0619],13);
+
+    var placed=0, total=propData.length, delay=0;
+    document.getElementById('propMapCount').textContent=total;
+
+    propData.forEach(function(p){
+        setTimeout(function(){
+            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(p.address+', Rwanda'),
+                  {headers:{'Accept-Language':'en'}})
+            .then(function(r){return r.json()})
+            .then(function(data){
+                if(data&&data.length>0){
+                    var lat=parseFloat(data[0].lat), lng=parseFloat(data[0].lon);
+                    var badge = p.status==='Available'
+                        ? '<span style="background:#28a745;color:#fff;padding:2px 8px;border-radius:50px;font-size:.72rem">Available</span>'
+                        : '<span style="background:#dc3545;color:#fff;padding:2px 8px;border-radius:50px;font-size:.72rem">Rented</span>';
+                    L.marker([lat,lng],{icon:markerIcon}).addTo(propMap)
+                     .bindPopup('<div style="min-width:160px"><strong style="color:#1a2e1a;font-size:.9rem">'+p.name+'</strong><br>'
+                        +'<span style="color:#6c757d;font-size:.78rem">'+p.type+'</span> '+badge+'<br>'
+                        +'<strong style="color:#28a745;font-size:.88rem">'+parseInt(p.price).toLocaleString()+' Frw/mo</strong><br>'
+                        +'<a href="'+p.url+'" style="color:#28a745;font-size:.8rem;font-weight:600">View details →</a></div>');
+                }
+            }).catch(function(){});
+        }, delay);
+        delay += 1100; // Nominatim rate limit: 1 req/sec
+    });
+}
+</script>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .forms import TenantProfileForm, MessageForm, MaintenanceRequestForm
 from .forms import AgentProfileForm, SellerProfileForm, SalePropertyForm, OfferForm, PropertyInquiryForm, SiteVisitForm, AgentReviewForm
 from django.views.decorators.csrf import csrf_exempt
-from .models import Lease, Payment, MaintenanceRequest, Message, LikedProperties, Visit
+from .models import Lease, Payment, MaintenanceRequest, Message, LikedProperties, Visit, Announcement, PropertyImage
 from .models import Agent, Seller, SaleProperty, Offer, AgentAssignment, SiteVisit, PropertyInquiry, AgentReview
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
@@ -217,6 +217,7 @@ def index(request):
         'total_tenants': total_tenants,
         'sale_properties_featured': sale_properties_featured,
         'featured_agents': featured_agents,
+        'show_infobar': True,
     }
     return render(request, 'home/home.html', context)
 
@@ -284,6 +285,20 @@ def property_list(request):
     # Get distinct property types for filter options
     type_choices = Property.objects.values_list('types', flat=True).distinct()
 
+    # All (filtered) properties for map — not paginated
+    map_properties = json.dumps([
+        {
+            'id': p.id,
+            'name': p.name,
+            'address': p.address,
+            'price': p.price,
+            'status': p.status,
+            'type': p.get_types_display(),
+            'url': f'/properties/{p.id}',
+        }
+        for p in properties
+    ])
+
     context = {
         'property_list': page_obj,
         'page_obj': page_obj,
@@ -295,6 +310,7 @@ def property_list(request):
         'current_sort': sort,
         'current_status': status,
         'type_choices': type_choices,
+        'map_properties': map_properties,
     }
 
     return render(request, 'home/properties.html', context)
@@ -351,6 +367,7 @@ def register(request):
 
 @csrf_exempt
 def user_register(request):
+    from .log_service import syslog
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -367,6 +384,7 @@ def user_register(request):
             user = User(username=username, email=email, role=role)
             user.set_password(password)
             user.save()
+            syslog('AUTH', f"New account registered: '{username}'", request=request, username=username)
             messages.success(request, 'Account created successfully')
             return redirect('user_login')
     else:
@@ -536,7 +554,9 @@ def totals(request):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def delete_property(request, id):
+    from .log_service import syslog
     property = Property.objects.get(id=id)
+    syslog('PROPERTY', f"Property deleted: '{property.name}' (id={id})", level='WARNING', user=request.user, request=request, property_id=id)
     property.delete()
     messages.success(request, 'Property deleted successfully')
     return redirect('admin_properties')
@@ -590,6 +610,11 @@ def add_property(request):
                     is_available=availabilities[i] == 'on' if availabilities[i] else False
                 )
 
+            for img in request.FILES.getlist('extra_images'):
+                PropertyImage.objects.create(property=property_instance, image=img)
+
+            from .log_service import syslog
+            syslog('PROPERTY', f"Property added: '{name}' (id={property_instance.pk})", user=request.user, request=request, property_id=property_instance.pk)
             messages.success(request, 'Property added successfully')
             return redirect('admin_properties')
         except Exception as e:
@@ -734,10 +759,22 @@ def edit_property(request, id):
             property_instance.image = request.FILES['image']
 
         property_instance.save()
+
+        # delete individually selected extra images
+        for del_id in request.POST.getlist('delete_images'):
+            PropertyImage.objects.filter(pk=del_id, property=property_instance).delete()
+
+        # save newly uploaded extra images
+        for img in request.FILES.getlist('extra_images'):
+            PropertyImage.objects.create(property=property_instance, image=img)
+
+        from .log_service import syslog
+        syslog('PROPERTY', f"Property updated: '{property_instance.name}' (id={id})", user=request.user, request=request, property_id=id)
         messages.success(request, 'Property updated successfully!')
         return redirect('admin_properties')
 
-    return render(request, 'admin/properties/edit_property.html', {'property': property_instance})
+    extra_images = property_instance.extra_images.all()
+    return render(request, 'admin/properties/edit_property.html', {'property': property_instance, 'extra_images': extra_images})
 
 
 @csrf_exempt
@@ -908,11 +945,13 @@ def add_user(request):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def delete_user(request, id):
+    from .log_service import syslog
     user = User.objects.get(id=id)
     if user.is_superuser:
         messages.error(request, 'You can\'t delete this user')
         return redirect('admin_users')
     else:
+        syslog('USER', f"User account deleted: '{user.username}' (role: {user.role})", level='WARNING', user=request.user, request=request, deleted_user_id=id, deleted_username=user.username)
         user.delete()
         messages.success(request, 'User deleted successfully')
         return redirect('admin_users')
@@ -922,6 +961,7 @@ def delete_user(request, id):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def disapprove_user(request, id):
+    from .log_service import syslog
     user = User.objects.get(id=id)
     if user.role == 'Admin':
         messages.error(request, 'Admin cannot be deactivated')
@@ -931,6 +971,7 @@ def disapprove_user(request, id):
     else:
         user.is_active = False
         user.save()
+        syslog('USER', f"User deactivated: '{user.username}'", level='WARNING', user=request.user, request=request, target_user=user.username)
         messages.success(request, 'User deactivated successfully')
     return redirect('admin_users')
 
@@ -939,6 +980,7 @@ def disapprove_user(request, id):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def approve_user(request, id):
+    from .log_service import syslog
     user = User.objects.get(id=id)
     if user.role == 'Admin':
         messages.error(request, 'Admin cannot be activated')
@@ -948,6 +990,7 @@ def approve_user(request, id):
     else:
         user.is_active = True
         user.save()
+        syslog('USER', f"User activated: '{user.username}'", user=request.user, request=request, target_user=user.username)
     messages.success(request, 'User activated successfully')
     return redirect('admin_users')
 
@@ -1026,6 +1069,7 @@ def adding_owner(request):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def add_owner(request):
+    from .log_service import syslog
     if request.method == 'POST':
         name = request.POST['name']
         email = request.POST['email']
@@ -1042,6 +1086,7 @@ def add_owner(request):
             image=image
         )
         new_owner.save()
+        syslog('USER', f"Owner profile created: '{name}' (id={new_owner.pk})", user=request.user, request=request, owner_id=new_owner.pk)
         messages.success(request, 'Owner added successfully!')
         return redirect('admin_owners')
     return render(request, 'admin/owners/add_owner.html')
@@ -1088,7 +1133,9 @@ def edit_owner(request, id):
 @login_required(login_url='user_login')
 @user_passes_test(is_admin, login_url='user_login')
 def delete_owner(request, id):
+    from .log_service import syslog
     owner = Owner.objects.get(id=id)
+    syslog('USER', f"Owner deleted: '{owner.name}' (id={id})", level='WARNING', user=request.user, request=request, owner_id=id)
     owner.delete()
     messages.success(request, 'Owner deleted successfully')
     return redirect('admin_owners')
@@ -1325,8 +1372,10 @@ def admin_tenants(request):
 
 @csrf_exempt
 def delete_tenant(request, tenant_id):
+    from .log_service import syslog
     if request.method == "POST":
         tenant = get_object_or_404(Tenant, id=tenant_id)
+        syslog('USER', f"Tenant deleted (id={tenant_id})", level='WARNING', user=request.user, request=request, tenant_id=tenant_id)
         tenant.delete()
         return redirect('admin_tenants')
 
@@ -1359,16 +1408,20 @@ def lease_details(request, lease_id):
 
 @csrf_exempt
 def sign_lease(request, lease_id):
+    from .log_service import syslog
     lease = get_object_or_404(Lease, id=lease_id)
     lease.contract_signed = True
     lease.save()
+    syslog('LEASE', f"Lease signed (id={lease_id})", user=request.user, request=request, lease_id=lease_id)
     messages.success(request, 'Lease marked as signed.')
     return redirect('manage_leases')
 
 
 @csrf_exempt
 def delete_lease(request, lease_id):
+    from .log_service import syslog
     lease = get_object_or_404(Lease, id=lease_id)
+    syslog('LEASE', f"Lease deleted (id={lease_id})", level='WARNING', user=request.user, request=request, lease_id=lease_id)
     lease.delete()
     messages.success(request, 'Lease deleted successfully.')
     return redirect('manage_leases')
@@ -1376,9 +1429,11 @@ def delete_lease(request, lease_id):
 
 @csrf_exempt
 def archive_lease(request, lease_id):
+    from .log_service import syslog
     lease = get_object_or_404(Lease, id=lease_id)
     lease.contract_archived = True
     lease.save()
+    syslog('LEASE', f"Lease archived (id={lease_id})", user=request.user, request=request, lease_id=lease_id)
     messages.success(request, 'Lease archived successfully.')
     return redirect('manage_leases')
 
@@ -1484,11 +1539,13 @@ def mail_enquiry(request, id):
 @login_required
 @user_passes_test(is_admin)
 def make_owner(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
 
     if request.method == 'POST':
-        user.role = 'Owner'  # Adjust based on how you store roles
+        user.role = 'Owner'
         user.save()
+        syslog('USER', f"Role changed → Owner: '{user.username}'", user=request.user, request=request, target_user=user.username)
         messages.success(request, 'User made Owner successfully.')
         return redirect('admin_users')
 
@@ -1499,11 +1556,13 @@ def make_owner(request, user_id):
 @login_required
 @user_passes_test(is_admin)
 def make_admin(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
 
     if request.method == 'POST':
-        user.role = 'Admin'  # Adjust based on how you store roles
+        user.role = 'Admin'
         user.save()
+        syslog('USER', f"Role changed → Admin: '{user.username}'", level='WARNING', user=request.user, request=request, target_user=user.username)
         messages.success(request, 'User made Admin successfully.')
         return redirect('admin_users')
 
@@ -1512,18 +1571,22 @@ def make_admin(request, user_id):
 
 @csrf_exempt
 def unmake_owner(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
-    user.role = 'Tenant'  # Adjust based on how you store roles
+    user.role = 'Tenant'
     user.save()
+    syslog('USER', f"Role revoked (Owner → Tenant): '{user.username}'", user=request.user, request=request, target_user=user.username)
     messages.success(request, 'User made Tenant successfully.')
     return redirect('admin_users')
 
 
 @csrf_exempt
 def unmake_admin(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
-    user.role = 'Tenant'  # Adjust based on how you store roles
+    user.role = 'Tenant'
     user.save()
+    syslog('USER', f"Role revoked (Admin → Tenant): '{user.username}'", level='WARNING', user=request.user, request=request, target_user=user.username)
     messages.success(request, 'User made Tenant successfully.')
     return redirect('admin_users')
 
@@ -1532,10 +1595,12 @@ def unmake_admin(request, user_id):
 @login_required
 @user_passes_test(is_admin)
 def make_agent(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         user.role = 'Agent'
         user.save()
+        syslog('USER', f"Role changed → Agent: '{user.username}'", user=request.user, request=request, target_user=user.username)
         messages.success(request, 'User made Agent successfully.')
         return redirect('admin_users')
     return render(request, 'admin/users/users.html', {'user': user})
@@ -1545,10 +1610,12 @@ def make_agent(request, user_id):
 @login_required
 @user_passes_test(is_admin)
 def make_seller(request, user_id):
+    from .log_service import syslog
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         user.role = 'Seller'
         user.save()
+        syslog('USER', f"Role changed → Seller: '{user.username}'", user=request.user, request=request, target_user=user.username)
         messages.success(request, 'User made Seller successfully.')
         return redirect('admin_users')
     return render(request, 'admin/users/users.html', {'user': user})
@@ -1711,6 +1778,9 @@ def owner_add_property(request, user_id):
                     is_available=availabilities[i] == 'on' if availabilities[i] else False
                 )
 
+            for img in request.FILES.getlist('extra_images'):
+                PropertyImage.objects.create(property=property_instance, image=img)
+
             messages.success(request, 'Property added successfully')
             return redirect('owner_properties', owner.user.id)
         except Exception as e:
@@ -1847,6 +1917,12 @@ def owner_edit_property(request, property_id):
                         is_available=availabilities[i] == 'on' if availabilities[i] else False
                     )
 
+            for del_id in request.POST.getlist('delete_images'):
+                PropertyImage.objects.filter(pk=del_id, property=property_instance).delete()
+
+            for img in request.FILES.getlist('extra_images'):
+                PropertyImage.objects.create(property=property_instance, image=img)
+
             messages.success(request, 'Property updated successfully')
             return redirect('owner_properties', owner.user.id)
         except Exception as e:
@@ -1864,12 +1940,14 @@ def owner_edit_property(request, property_id):
             'is_available': unit.is_available
         })
 
+    extra_images = property_instance.extra_images.all()
     return render(request, 'Others_dashboard/owners/owner_properties/owner_editproperty.html', {
         'user': user,
         'owner': owner,
         'property_instance': property_instance,
         'units': units,
-        'unit_data': unit_data
+        'unit_data': unit_data,
+        'extra_images': extra_images,
     })
 
 
@@ -2667,7 +2745,7 @@ def add_lease(request):
 
     if request.method == 'POST':
         try:
-            Lease.objects.create(
+            new_lease = Lease.objects.create(
                 tenant_id=request.POST.get('tenant_id'),
                 property_id=request.POST.get('property_id'),
                 start_date=request.POST.get('start_date'),
@@ -2677,6 +2755,8 @@ def add_lease(request):
                 contract_signed=request.POST.get('contract_signed') == 'true',
                 contract_accepted=request.POST.get('contract_accepted') == 'true',
             )
+            from .log_service import syslog
+            syslog('LEASE', f"Lease created (id={new_lease.pk})", user=request.user, request=request, lease_id=new_lease.pk)
             messages.success(request, 'Lease created successfully.')
             return redirect('manage_leases')
         except Exception as e:
@@ -2714,6 +2794,8 @@ def edit_lease(request, lease_id):
             lease.contract_signed = request.POST.get('contract_signed') == 'true'
             lease.contract_accepted = request.POST.get('contract_accepted') == 'true'
             lease.save()
+            from .log_service import syslog
+            syslog('LEASE', f"Lease updated (id={lease_id})", user=request.user, request=request, lease_id=lease_id)
             messages.success(request, 'Lease updated successfully.')
             return redirect('manage_leases')
         except Exception as e:
@@ -2981,6 +3063,26 @@ def sale_listings(request):
     page = request.GET.get('page')
     listings = paginator.get_page(page)
 
+    # All (filtered) sale listings for map — not paginated
+    all_listings_qs = SaleProperty.objects.filter(status='listed')
+    if ptype:   all_listings_qs = all_listings_qs.filter(property_type=ptype)
+    if city:    all_listings_qs = all_listings_qs.filter(city__icontains=city)
+    if min_price: all_listings_qs = all_listings_qs.filter(price__gte=min_price)
+    if max_price: all_listings_qs = all_listings_qs.filter(price__lte=max_price)
+    if search:  all_listings_qs = all_listings_qs.filter(Q(title__icontains=search)|Q(description__icontains=search)|Q(address__icontains=search))
+
+    map_listings = json.dumps([
+        {
+            'id': p.id,
+            'name': p.title,
+            'address': p.address,
+            'price': str(p.price),
+            'type': p.property_type,
+            'url': f'/for-sale/{p.id}/',
+        }
+        for p in all_listings_qs
+    ])
+
     context = {
         'listings': listings,
         'sale_property_types': SaleProperty._meta.get_field('property_type').choices,
@@ -2989,6 +3091,7 @@ def sale_listings(request):
         'current_min': min_price,
         'current_max': max_price,
         'current_search': search,
+        'map_listings': map_listings,
     }
     return render(request, 'home/sale_listings.html', context)
 
@@ -3715,3 +3818,1050 @@ def mark_notification_read(request, notif_id):
 def mark_all_notifications_read(request):
     Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
     return redirect('notifications')
+
+
+# ═══════════════════════════════════════════════════════════════
+# PROPBOT AI CHATBOT  (Anthropic Claude API)
+# ═══════════════════════════════════════════════════════════════
+
+import logging as _logging
+from asgiref.sync import sync_to_async
+
+_chatbot_logger = _logging.getLogger(__name__)
+
+# Keywords that signal the user is searching for a property
+_RENT_KEYWORDS   = {'for rent', 'to rent', 'renting', 'rental', 'rent a', 'house to rent', 'place to rent', 'room to rent', 'rentals', 'monthly rent'}
+_SALE_KEYWORDS   = {'for sale', 'to buy', 'buying', 'purchase', 'house to buy', 'invest', 'on sale', 'buy a', 'buy house', 'buy property', 'for purchase'}
+_PROP_KEYWORDS   = {'house', 'apartment', 'flat', 'studio', 'duplex', 'villa', 'condo', 'property', 'properties', 'bedroom', 'unit', 'place', 'home', 'homes', 'listing', 'listings'}
+_SEARCH_TRIGGERS = {'show', 'find', 'search', 'list', 'available', 'looking for', 'need a', 'want a', 'get me', 'any', 'show me', 'view', 'see', 'display', 'browse', 'what is available', "what's available"}
+_CHEAP_KEYWORDS  = {'cheap', 'affordable', 'low price', 'low-price', 'budget', 'inexpensive', 'cheapest', 'lowest', 'best price', 'economy', 'low cost', 'low rent'}
+_LUXURY_KEYWORDS = {'luxury', 'premium', 'expensive', 'high-end', 'executive', 'posh', 'upscale', 'high end'}
+
+
+def _detect_property_search(message):
+    """
+    Detect if the user is asking for property listings.
+    Returns (intent, sort) where intent is 'rent'|'sale'|'both'|None
+    and sort is 'asc'|'desc'|'default'.
+    Requires a property keyword AND either a rent/sale/search keyword.
+    """
+    msg = message.lower()
+
+    has_prop    = any(k in msg for k in _PROP_KEYWORDS)
+    has_rent    = any(k in msg for k in _RENT_KEYWORDS)
+    has_sale    = any(k in msg for k in _SALE_KEYWORDS)
+    has_trigger = any(k in msg for k in _SEARCH_TRIGGERS)
+    has_cheap   = any(k in msg for k in _CHEAP_KEYWORDS)
+    has_luxury  = any(k in msg for k in _LUXURY_KEYWORDS)
+
+    # Must have a property keyword, and at least a search/rent/sale/cheap signal
+    if not has_prop:
+        return None, 'default'
+    if not (has_rent or has_sale or has_trigger or has_cheap or has_luxury):
+        return None, 'default'
+
+    if has_rent and not has_sale:
+        intent = 'rent'
+    elif has_sale and not has_rent:
+        intent = 'sale'
+    else:
+        intent = 'both'
+
+    sort = 'asc' if has_cheap else ('desc' if has_luxury else 'default')
+    return intent, sort
+
+
+def _search_properties(intent, sort, limit=4):
+    """Query DB for rental and/or sale properties. Returns list of dicts."""
+    from .models import Property, SaleProperty
+    from django.conf import settings as _s
+
+    media_url = getattr(_s, 'MEDIA_URL', '/media/')
+    results = []
+
+    if intent in ('rent', 'both'):
+        qs = Property.objects.filter(status='Available')
+        if sort == 'asc':
+            qs = qs.order_by('price')
+        elif sort == 'desc':
+            qs = qs.order_by('-price')
+        else:
+            qs = qs.order_by('-date_added')
+        for p in qs[:limit]:
+            results.append({
+                'id': p.id,
+                'listing_type': 'rent',
+                'name': p.name,
+                'address': p.address,
+                'price': p.price,
+                'price_label': f"RWF {p.price:,}/mo",
+                'type': p.types,
+                'status': p.status,
+                'units': p.number_of_units,
+                'description': (p.description or '')[:120],
+                'image': media_url + str(p.image) if p.image else None,
+                'url': f'/properties/',
+            })
+
+    if intent in ('sale', 'both'):
+        qs = SaleProperty.objects.filter(status='listed')
+        if sort == 'asc':
+            qs = qs.order_by('price')
+        elif sort == 'desc':
+            qs = qs.order_by('-price')
+        else:
+            qs = qs.order_by('-date_listed')
+        for p in qs[:limit]:
+            results.append({
+                'id': p.id,
+                'listing_type': 'sale',
+                'name': p.title,
+                'address': f"{p.address}, {p.city}",
+                'price': float(p.price),
+                'price_label': f"RWF {float(p.price):,.0f}",
+                'type': p.property_type,
+                'status': p.status,
+                'bedrooms': p.bedrooms,
+                'bathrooms': p.bathrooms,
+                'description': (p.description or '')[:120],
+                'image': media_url + str(p.image) if p.image else None,
+                'url': f'/for-sale/',
+            })
+
+    return results
+
+
+def _build_system_prompt(user, data):
+    """Return a role-aware system prompt enriched with real database context."""
+    base = (
+        "You are PropBot, a helpful AI assistant embedded in PropHub — "
+        "a property management and real estate platform. "
+        "Be concise, friendly, and practical. Always refer to the platform as 'PropHub'. "
+        "IMPORTANT: Write in plain text only. Do NOT use any markdown formatting — "
+        "no asterisks, no bold, no headers, no dashes for bullet points, no backticks. "
+        "Write naturally as if texting a colleague. Keep responses brief and to the point. "
+        "When the user asks about their data, use the live context provided below to answer accurately. "
+        "CRITICAL RULE — PROPERTY SEARCHES: When the system indicates property cards are being shown, "
+        "you MUST reply with ONE short sentence only, like: 'Found 3 affordable houses for rent — check the cards below!' "
+        "Do NOT list property names, prices, or any details. The UI already shows photo cards with all details. "
+        "Never say you cannot show images — the UI handles that automatically.\n\n"
+    )
+
+    if not user.is_authenticated:
+        return base + (
+            "The current visitor is not logged in. "
+            "They can browse available rental and sale property listings freely — help them find properties without requiring login. "
+            "Only suggest registering or logging in if they ask about account-specific features like their own lease, payments, maintenance requests, or sending messages. "
+            "Do NOT tell them to log in just because they want to see properties."
+        )
+
+    role = getattr(user, 'role', 'Tenant')
+    name = user.get_full_name() or user.username
+    ctx = f"You are talking to {name} (role: {role}).\n\nLIVE DATA FROM THE SYSTEM:\n"
+
+    if role == 'Tenant':
+        lease = data.get('lease')
+        maintenance = data.get('maintenance', [])
+        payments = data.get('payments', [])
+        unread = data.get('unread_messages', 0)
+
+        ctx += f"Tenant name: {name}\n"
+        if lease:
+            ctx += (
+                f"Active lease: Property '{lease['property']}', "
+                f"rent RWF {lease['rent']:,}/month, "
+                f"lease runs {lease['start']} to {lease['end']}, "
+                f"contract signed: {lease['signed']}, accepted: {lease['accepted']}.\n"
+            )
+        else:
+            ctx += "Active lease: none currently.\n"
+
+        if maintenance:
+            ctx += f"Maintenance requests ({len(maintenance)} total):\n"
+            for m in maintenance[:5]:
+                ctx += f"  - [{m['status']}] {m['title']} (submitted {m['date']})\n"
+        else:
+            ctx += "Maintenance requests: none.\n"
+
+        if payments:
+            ctx += f"Recent payments ({len(payments)} on record):\n"
+            for p in payments[:3]:
+                ctx += f"  - RWF {p['amount']:,} paid on {p['date']}\n"
+        else:
+            ctx += "Payments: no payments recorded yet.\n"
+
+        ctx += f"Unread messages: {unread}.\n"
+        ctx += "\nHelp this tenant with their lease, maintenance requests, payment history, and PropHub navigation."
+
+    elif role == 'Owner':
+        properties = data.get('properties', [])
+        maintenance = data.get('maintenance', [])
+        unread = data.get('unread_messages', 0)
+        total_tenants = data.get('total_tenants', 0)
+
+        ctx += f"Owner name: {name}\n"
+        ctx += f"Total properties listed: {len(properties)}, Total tenants: {total_tenants}.\n"
+        if properties:
+            ctx += "Properties:\n"
+            for p in properties[:8]:
+                ctx += f"  - '{p['name']}' at {p['address']} | status: {p['status']} | price: RWF {p['price']:,} | units: {p['units']}\n"
+        if maintenance:
+            ctx += f"Open/In-progress maintenance requests ({len(maintenance)}):\n"
+            for m in maintenance[:5]:
+                ctx += f"  - [{m['status']}] {m['title']} on property '{m['property']}'\n"
+        ctx += f"Unread messages: {unread}.\n"
+        ctx += "\nHelp this owner manage their properties, tenants, leases, maintenance, and payments."
+
+    elif role == 'Admin':
+        s = data.get('stats', {})
+        ctx += (
+            f"System overview: {s.get('users',0)} total users, "
+            f"{s.get('tenants',0)} tenants, {s.get('owners',0)} owners, "
+            f"{s.get('agents',0)} agents, {s.get('sellers',0)} sellers.\n"
+            f"Properties: {s.get('properties',0)} rental properties, "
+            f"{s.get('sale_properties',0)} sale listings.\n"
+            f"Leases: {s.get('leases',0)} active leases.\n"
+            f"Maintenance: {s.get('open_maintenance',0)} open requests, "
+            f"{s.get('inprogress_maintenance',0)} in progress.\n"
+            f"Messages: {s.get('unread_messages',0)} unread messages system-wide.\n"
+        )
+        ctx += "\nHelp this admin manage and oversee the entire PropHub system."
+
+    elif role == 'Agent':
+        properties = data.get('properties', [])
+        visits = data.get('visits', [])
+        offers = data.get('offers', [])
+
+        ctx += f"Agent name: {name}\n"
+        ctx += f"Assigned sale properties: {len(properties)}.\n"
+        if properties:
+            for p in properties[:5]:
+                ctx += f"  - '{p['title']}' in {p['city']} | RWF {p['price']:,} | status: {p['status']}\n"
+        ctx += f"Upcoming site visits: {len(visits)}.\n"
+        if visits:
+            for v in visits[:3]:
+                ctx += f"  - '{v['property']}' on {v['date']} | status: {v['status']}\n"
+        ctx += f"Pending offers to handle: {len(offers)}.\n"
+        ctx += "\nHelp this agent manage their assigned properties, site visits, and offers."
+
+    elif role == 'Seller':
+        properties = data.get('properties', [])
+        offers = data.get('offers', [])
+
+        ctx += f"Seller name: {name}\n"
+        ctx += f"Listed properties: {len(properties)}.\n"
+        if properties:
+            for p in properties[:5]:
+                ctx += f"  - '{p['title']}' | RWF {p['price']:,} | status: {p['status']} | offers: {p['offer_count']}\n"
+        ctx += f"Total offers received: {len(offers)}.\n"
+        if offers:
+            for o in offers[:3]:
+                ctx += f"  - Offer of RWF {o['amount']:,} on '{o['property']}' | status: {o['status']}\n"
+        ctx += "\nHelp this seller manage their listings, respond to offers, and track sale progress."
+
+    else:
+        ctx += "Help this user navigate PropHub."
+
+    return base + ctx
+
+
+def _fetch_user_data(user):
+    """Fetch live database context for the current user. Runs inside sync_to_async."""
+    from .models import (
+        Tenant, Owner, Lease, Property, MaintenanceRequest, Payment,
+        Message, SaleProperty, Offer, SiteVisit, Agent, Seller, User as UserModel,
+    )
+    role = getattr(user, 'role', 'Tenant')
+    data = {}
+
+    try:
+        if role == 'Tenant':
+            try:
+                tenant = Tenant.objects.get(user=user)
+            except Tenant.DoesNotExist:
+                return data
+
+            lease = Lease.objects.filter(tenant=tenant).order_by('-start_date').first()
+            if lease:
+                data['lease'] = {
+                    'property': lease.property.name if lease.property else 'N/A',
+                    'rent': lease.rent_amount,
+                    'start': str(lease.start_date),
+                    'end': str(lease.end_date),
+                    'signed': lease.contract_signed,
+                    'accepted': lease.contract_accepted,
+                }
+
+            maintenance = MaintenanceRequest.objects.filter(tenant=tenant).order_by('-request_date')[:10]
+            data['maintenance'] = [
+                {'title': m.title, 'status': m.status, 'date': str(m.request_date.date())}
+                for m in maintenance
+            ]
+
+            payments = Payment.objects.filter(tenant=tenant).order_by('-date_paid')[:5]
+            data['payments'] = [
+                {'amount': p.amount, 'date': str(p.date_paid.date())}
+                for p in payments
+            ]
+
+            data['unread_messages'] = Message.objects.filter(recipient=user, is_read=False).count()
+
+        elif role == 'Owner':
+            try:
+                owner = Owner.objects.get(user=user)
+            except Owner.DoesNotExist:
+                return data
+
+            properties = Property.objects.filter(owner=owner)
+            data['properties'] = [
+                {
+                    'name': p.name,
+                    'address': p.address,
+                    'status': p.status,
+                    'price': p.price,
+                    'units': p.number_of_units,
+                }
+                for p in properties[:10]
+            ]
+
+            property_ids = properties.values_list('id', flat=True)
+            maintenance = MaintenanceRequest.objects.filter(
+                property_id__in=property_ids,
+                status__in=['open', 'in_progress']
+            ).order_by('-request_date')[:10]
+            data['maintenance'] = [
+                {'title': m.title, 'status': m.status, 'property': m.property.name if m.property else 'N/A'}
+                for m in maintenance
+            ]
+
+            tenant_ids = Lease.objects.filter(
+                property_id__in=property_ids
+            ).values_list('tenant_id', flat=True).distinct()
+            data['total_tenants'] = len(set(tenant_ids))
+            data['unread_messages'] = Message.objects.filter(recipient=user, is_read=False).count()
+
+        elif role == 'Admin':
+            data['stats'] = {
+                'users': UserModel.objects.count(),
+                'tenants': UserModel.objects.filter(role='Tenant').count(),
+                'owners': UserModel.objects.filter(role='Owner').count(),
+                'agents': UserModel.objects.filter(role='Agent').count(),
+                'sellers': UserModel.objects.filter(role='Seller').count(),
+                'properties': Property.objects.count(),
+                'sale_properties': SaleProperty.objects.count(),
+                'leases': Lease.objects.filter(contract_accepted=True).count(),
+                'open_maintenance': MaintenanceRequest.objects.filter(status='open').count(),
+                'inprogress_maintenance': MaintenanceRequest.objects.filter(status='in_progress').count(),
+                'unread_messages': Message.objects.filter(is_read=False).count(),
+            }
+
+        elif role == 'Agent':
+            try:
+                agent = Agent.objects.get(user=user)
+            except Agent.DoesNotExist:
+                return data
+
+            assigned = SaleProperty.objects.filter(assigned_agent=agent)
+            data['properties'] = [
+                {'title': p.title, 'city': p.city, 'price': float(p.price), 'status': p.status}
+                for p in assigned[:8]
+            ]
+
+            visits = SiteVisit.objects.filter(agent=agent, status='scheduled').order_by('scheduled_date')[:5]
+            data['visits'] = [
+                {'property': v.sale_property.title, 'date': str(v.scheduled_date.date()), 'status': v.status}
+                for v in visits
+            ]
+
+            offers = Offer.objects.filter(agent=agent, status='pending')
+            data['offers'] = [
+                {'property': o.sale_property.title, 'amount': float(o.amount), 'status': o.status}
+                for o in offers[:5]
+            ]
+
+        elif role == 'Seller':
+            try:
+                seller = Seller.objects.get(user=user)
+            except Seller.DoesNotExist:
+                return data
+
+            properties = SaleProperty.objects.filter(seller=seller)
+            data['properties'] = [
+                {
+                    'title': p.title,
+                    'price': float(p.price),
+                    'status': p.status,
+                    'offer_count': p.offers.count(),
+                }
+                for p in properties[:8]
+            ]
+
+            offers = Offer.objects.filter(sale_property__seller=seller).order_by('-created_at')[:5]
+            data['offers'] = [
+                {'property': o.sale_property.title, 'amount': float(o.amount), 'status': o.status}
+                for o in offers
+            ]
+
+    except Exception as exc:
+        _chatbot_logger.error("Error fetching user data for chatbot: %s", exc)
+
+    return data
+
+
+def _call_claude(messages_payload, api_key, model):
+    """Call Anthropic API directly via requests (no SDK event-loop dependency)."""
+    import requests as _requests
+    system_prompt = ""
+    chat_messages = []
+    for m in messages_payload:
+        if m["role"] == "system":
+            system_prompt = m["content"]
+        else:
+            role = "assistant" if m["role"] == "bot" else "user"
+            chat_messages.append({"role": role, "content": m["content"]})
+
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+    payload = {
+        "model": model,
+        "max_tokens": 1024,
+        "messages": chat_messages,
+    }
+    if system_prompt:
+        payload["system"] = system_prompt
+
+    resp = _requests.post(
+        "https://api.anthropic.com/v1/messages",
+        headers=headers,
+        json=payload,
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return resp.json()["content"][0]["text"]
+
+
+@csrf_exempt
+async def chatbot_chat(request):
+    """
+    Async POST endpoint for PropBot AI chatbot.
+    Body: { "message": "...", "clear": false }
+    Returns: { "reply": "...", "history_length": N }
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    user_message = data.get('message', '').strip()
+    clear_history = data.get('clear', False)
+    conversation_id = data.get('conversation_id')
+
+    if not user_message and not clear_history:
+        return JsonResponse({'error': 'No message provided'}, status=400)
+
+    # All session + user access must happen inside sync_to_async
+    # because request.user is a lazy DB object and request.session is sync-only
+    @sync_to_async
+    def get_context():
+        """Return (history, system_prompt, property_results, conv_id) from sync context."""
+        from .models import ChatConversation
+        if clear_history:
+            request.session['ai_chat_history'] = []
+            request.session.modified = True
+            return [], '', [], None
+        history = list(request.session.get('ai_chat_history', []))
+        live_data = _fetch_user_data(request.user)
+
+        # Create or get the DB conversation record
+        conv = None
+        if conversation_id:
+            try:
+                conv = ChatConversation.objects.get(id=conversation_id)
+            except ChatConversation.DoesNotExist:
+                pass
+        if conv is None:
+            title = user_message[:60] if user_message else 'New Chat'
+            if request.user.is_authenticated:
+                conv = ChatConversation.objects.create(user=request.user, title=title)
+            else:
+                if not request.session.session_key:
+                    request.session.create()
+                conv = ChatConversation.objects.create(
+                    session_key=request.session.session_key, title=title
+                )
+
+        # Property search intent detection
+        intent, sort = _detect_property_search(user_message)
+        prop_results = []
+        prop_context = ''
+        if intent:
+            prop_results = _search_properties(intent, sort, limit=4)
+            if prop_results:
+                label = 'for rent' if intent == 'rent' else ('for sale' if intent == 'sale' else 'for rent/sale')
+                prop_context = (
+                    f'\n\n[SYSTEM: {len(prop_results)} property card(s) {label} are being displayed '
+                    f'in the UI below your message. Do NOT describe them — reply with one short sentence only.]'
+                )
+            else:
+                prop_context = '\n\n[SYSTEM: No matching properties found. Let the user know politely.]'
+
+        prompt = _build_system_prompt(request.user, live_data) + prop_context
+        return history, prompt, prop_results, conv.id
+
+    @sync_to_async
+    def save_session(history, conv_id):
+        from .models import ChatConversation, ChatMessage
+        max_turns = getattr(settings, 'POE_MAX_HISTORY', 20)
+        if len(history) > max_turns:
+            history = history[-max_turns:]
+        request.session['ai_chat_history'] = history
+        request.session.modified = True
+        # Persist the latest user+bot pair to DB
+        try:
+            if conv_id and len(history) >= 2:
+                conv = ChatConversation.objects.get(id=conv_id)
+                ChatMessage.objects.create(
+                    conversation=conv, role='user', content=history[-2]['content']
+                )
+                ChatMessage.objects.create(
+                    conversation=conv, role='bot', content=history[-1]['content']
+                )
+                conv.save()  # refresh updated_at
+        except Exception as exc:
+            _chatbot_logger.error("Failed to persist chat messages: %s", exc)
+
+    if clear_history:
+        await get_context()
+        return JsonResponse({'reply': '', 'cleared': True, 'history_length': 0})
+
+    api_key = getattr(settings, 'ANTHROPIC_API_KEY', '')
+    model = getattr(settings, 'CLAUDE_MODEL', 'claude-haiku-4-5-20251001')
+
+    if not api_key:
+        return JsonResponse(
+            {'error': 'AI service is not configured. Please contact the administrator.'},
+            status=503
+        )
+
+    history, system_prompt, prop_results, conv_id = await get_context()
+
+    messages_payload = [{"role": "system", "content": system_prompt}]
+    messages_payload.extend(history)
+    messages_payload.append({"role": "user", "content": user_message})
+
+    # Run sync Claude client in a thread pool (thread_sensitive=False so it
+    # gets its own thread, avoiding conflicts with Django's ORM thread-local state)
+    call_claude_async = sync_to_async(_call_claude, thread_sensitive=False)
+
+    try:
+        ai_reply = await call_claude_async(messages_payload, api_key, model)
+    except Exception as exc:
+        _chatbot_logger.error("Claude API error: %s", exc)
+        return JsonResponse(
+            {'error': 'The AI assistant is temporarily unavailable. Please try again later.'},
+            status=502
+        )
+
+    history.append({"role": "user", "content": user_message})
+    history.append({"role": "bot", "content": ai_reply})
+    await save_session(history, conv_id)
+
+    return JsonResponse({
+        'reply': ai_reply,
+        'properties': prop_results,
+        'conversation_id': conv_id,
+        'history_length': len(history) // 2,
+    })
+
+
+@csrf_exempt
+async def chatbot_history(request):
+    """GET /chatbot/history/ — list past conversations for this user/session."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    @sync_to_async
+    def get_conversations():
+        from .models import ChatConversation
+        if request.user.is_authenticated:
+            qs = ChatConversation.objects.filter(user=request.user)[:30]
+        else:
+            sk = request.session.session_key
+            if not sk:
+                return []
+            qs = ChatConversation.objects.filter(session_key=sk)[:30]
+        return [
+            {
+                'id': c.id,
+                'title': c.title,
+                'date': c.updated_at.strftime('%b %d, %Y'),
+                'time': c.updated_at.strftime('%H:%M'),
+                'message_count': c.chat_messages.count(),
+            }
+            for c in qs
+        ]
+
+    conversations = await get_conversations()
+    return JsonResponse({'conversations': conversations})
+
+
+@csrf_exempt
+async def chatbot_history_detail(request, conv_id):
+    """GET /chatbot/history/<id>/ — load all messages for a conversation."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    @sync_to_async
+    def get_messages():
+        from .models import ChatConversation
+        try:
+            conv = ChatConversation.objects.get(id=conv_id)
+        except ChatConversation.DoesNotExist:
+            return None, None
+        # Security: only the owner can view
+        if request.user.is_authenticated:
+            if conv.user_id and conv.user_id != request.user.id:
+                return None, None
+        else:
+            if conv.session_key != request.session.session_key:
+                return None, None
+        msgs = conv.chat_messages.all()
+        return conv.title, [
+            {'role': m.role, 'content': m.content, 'time': m.created_at.strftime('%H:%M')}
+            for m in msgs
+        ]
+
+    title, messages = await get_messages()
+    if messages is None:
+        return JsonResponse({'error': 'Conversation not found'}, status=404)
+    return JsonResponse({'title': title, 'messages': messages, 'conversation_id': conv_id})
+
+
+# ─── System Logs (Admin) ───────────────────────────────────────────────────────
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def system_logs_view(request):
+    """
+    Admin-only view — displays SystemLog entries with filtering,
+    search, pagination, and live stat cards.
+    """
+    from .models import SystemLog
+    from django.db.models import Count
+    from django.utils import timezone
+    from datetime import timedelta
+
+    qs = SystemLog.objects.select_related('user').all()
+
+    # ── Filters ───────────────────────────────────────────────────────────────
+    level_filter    = request.GET.get('level', '')
+    category_filter = request.GET.get('category', '')
+    search_query    = request.GET.get('q', '').strip()
+    date_range      = request.GET.get('range', '7')  # days
+
+    if level_filter:
+        qs = qs.filter(level=level_filter)
+    if category_filter:
+        qs = qs.filter(category=category_filter)
+    if search_query:
+        qs = qs.filter(
+            Q(message__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(path__icontains=search_query)
+        )
+    try:
+        days = int(date_range)
+    except ValueError:
+        days = 7
+    if days > 0:
+        since = timezone.now() - timedelta(days=days)
+        qs = qs.filter(timestamp__gte=since)
+
+    # ── Stats ─────────────────────────────────────────────────────────────────
+    total_logs     = qs.count()
+    error_count    = qs.filter(level__in=['ERROR', 'CRITICAL']).count()
+    warning_count  = qs.filter(level='WARNING').count()
+    info_count     = qs.filter(level='INFO').count()
+
+    level_breakdown = (
+        qs.values('level')
+          .annotate(cnt=Count('id'))
+          .order_by('-cnt')
+    )
+    category_breakdown = (
+        qs.values('category')
+          .annotate(cnt=Count('id'))
+          .order_by('-cnt')[:8]
+    )
+
+    # ── Pagination ────────────────────────────────────────────────────────────
+    from django.core.paginator import Paginator
+    paginator   = Paginator(qs, 50)
+    page_number = request.GET.get('page', 1)
+    page_obj    = paginator.get_page(page_number)
+
+    context = {
+        'page_obj':           page_obj,
+        'total_logs':         total_logs,
+        'error_count':        error_count,
+        'warning_count':      warning_count,
+        'info_count':         info_count,
+        'level_breakdown':    level_breakdown,
+        'category_breakdown': category_breakdown,
+        # filter state for template
+        'level_filter':       level_filter,
+        'category_filter':    category_filter,
+        'search_query':       search_query,
+        'date_range':         str(days),
+        # choices for dropdowns
+        'log_levels':         SystemLog.LOG_LEVELS,
+        'log_categories':     SystemLog.LOG_CATEGORIES,
+    }
+    return render(request, 'admin/system_logs/system_logs.html', context)
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def system_logs_clear(request):
+    """POST — clear all system logs (admin only)."""
+    if request.method == 'POST':
+        from .models import SystemLog
+        from .log_service import syslog
+        count = SystemLog.objects.count()
+        SystemLog.objects.all().delete()
+        syslog('SYSTEM', f"Admin cleared {count} system log entries",
+               level='WARNING', user=request.user)
+        messages_fw = __import__('django.contrib.messages', fromlist=['success'])
+        from django.contrib import messages as dj_messages
+        dj_messages.success(request, f"Cleared {count} log entries.")
+    return redirect('system_logs')
+
+# ── Announcements Admin ────────────────────────────────────────────────────────
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def announcements_admin(request):
+    announcements = Announcement.objects.all()
+    return render(request, 'admin/announcements/announcements.html', {
+        'announcements': announcements,
+    })
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def announcement_create(request):
+    if request.method == 'POST':
+        text    = request.POST.get('text', '').strip()
+        icon    = request.POST.get('icon', 'campaign')
+        order   = request.POST.get('order', 0)
+        active  = request.POST.get('is_active') == 'on'
+        if text:
+            Announcement.objects.create(text=text, icon=icon, order=order, is_active=active)
+            from django.contrib import messages as dj_messages
+            dj_messages.success(request, 'Announcement added.')
+    return redirect('announcements_admin')
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def announcement_edit(request, pk):
+    ann = get_object_or_404(Announcement, pk=pk)
+    if request.method == 'POST':
+        ann.text      = request.POST.get('text', ann.text).strip()
+        ann.icon      = request.POST.get('icon', ann.icon)
+        ann.order     = request.POST.get('order', ann.order)
+        ann.is_active = request.POST.get('is_active') == 'on'
+        ann.save()
+        from django.contrib import messages as dj_messages
+        dj_messages.success(request, 'Announcement updated.')
+    return redirect('announcements_admin')
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def announcement_delete(request, pk):
+    ann = get_object_or_404(Announcement, pk=pk)
+    ann.delete()
+    from django.contrib import messages as dj_messages
+    dj_messages.success(request, 'Announcement deleted.')
+    return redirect('announcements_admin')
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def announcement_toggle(request, pk):
+    ann = get_object_or_404(Announcement, pk=pk)
+    ann.is_active = not ann.is_active
+    ann.save()
+    return redirect('announcements_admin')
+
+
+# ═══════════════════════════════════════════════════════════════════
+# REPORTS
+# ═══════════════════════════════════════════════════════════════════
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def admin_reports(request):
+    from django.db.models import Count, Avg
+    from django.db.models.functions import TruncMonth
+    from datetime import date
+
+    today = date.today()
+
+    # ── Financial ──────────────────────────────────────────────────
+    total_revenue = Payment.objects.aggregate(t=Sum('amount'))['t'] or 0
+    monthly_payments = (
+        Payment.objects.annotate(month=TruncMonth('date_paid'))
+        .values('month')
+        .annotate(total=Sum('amount'), count=Count('id'))
+        .order_by('month')
+    )
+    revenue_labels = [p['month'].strftime('%b %Y') for p in monthly_payments]
+    revenue_data   = [float(p['total']) for p in monthly_payments]
+
+    # top 5 revenue properties
+    top_properties = (
+        Payment.objects.values('property__name')
+        .annotate(total=Sum('amount'))
+        .order_by('-total')[:5]
+    )
+
+    # ── Properties ─────────────────────────────────────────────────
+    total_properties  = Property.objects.count()
+    avail_properties  = Property.objects.filter(status='Available').count()
+    rented_properties = Property.objects.filter(status='Rented').count()
+    prop_by_type = (
+        Property.objects.values('types')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+    prop_type_labels = [p['types'] for p in prop_by_type]
+    prop_type_data   = [p['count'] for p in prop_by_type]
+
+    # ── Tenants & Leases ───────────────────────────────────────────
+    total_tenants   = Tenant.objects.count()
+    total_leases    = Lease.objects.count()
+    active_leases   = Lease.objects.filter(end_date__gte=today).count()
+    expiring_soon   = Lease.objects.filter(
+        end_date__gte=today,
+        end_date__lte=today + timezone.timedelta(days=30)
+    ).count()
+
+    # ── Maintenance ────────────────────────────────────────────────
+    maint_open        = MaintenanceRequest.objects.filter(status='open').count()
+    maint_in_progress = MaintenanceRequest.objects.filter(status='in_progress').count()
+    maint_completed   = MaintenanceRequest.objects.filter(status='completed').count()
+    maint_total       = maint_open + maint_in_progress + maint_completed
+
+    # ── Marketplace ────────────────────────────────────────────────
+    sale_listed    = SaleProperty.objects.filter(status='listed').count()
+    sale_sold      = SaleProperty.objects.filter(status='sold').count()
+    sale_pending   = SaleProperty.objects.filter(status='pending').count()
+    offers_pending = Offer.objects.filter(status='pending').count()
+    offers_accepted= Offer.objects.filter(status='accepted').count()
+    offers_rejected= Offer.objects.filter(status='rejected').count()
+
+    # ── User Growth ────────────────────────────────────────────────
+    user_growth = (
+        User.objects.annotate(month=TruncMonth('date_joined'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+    user_labels = [u['month'].strftime('%b %Y') for u in user_growth]
+    user_data   = [u['count'] for u in user_growth]
+
+    # ── Enquiries & Messages ───────────────────────────────────────
+    total_enquiries = CustRequest.objects.count()
+    unread_enquiries = CustRequest.objects.filter(is_read=False).count()
+    total_messages  = CustomerMessage.objects.count()
+
+    # ── Visits ─────────────────────────────────────────────────────
+    total_visits = Visit.objects.count()
+
+    context = {
+        'total_revenue': total_revenue,
+        'revenue_labels': json.dumps(revenue_labels),
+        'revenue_data': json.dumps(revenue_data),
+        'top_properties': top_properties,
+        'monthly_payments': monthly_payments,
+
+        'total_properties': total_properties,
+        'avail_properties': avail_properties,
+        'rented_properties': rented_properties,
+        'prop_type_labels': json.dumps(prop_type_labels),
+        'prop_type_data': json.dumps(prop_type_data),
+
+        'total_tenants': total_tenants,
+        'total_leases': total_leases,
+        'active_leases': active_leases,
+        'expiring_soon': expiring_soon,
+
+        'maint_open': maint_open,
+        'maint_in_progress': maint_in_progress,
+        'maint_completed': maint_completed,
+        'maint_total': maint_total,
+
+        'sale_listed': sale_listed,
+        'sale_sold': sale_sold,
+        'sale_pending': sale_pending,
+        'offers_pending': offers_pending,
+        'offers_accepted': offers_accepted,
+        'offers_rejected': offers_rejected,
+
+        'user_labels': json.dumps(user_labels),
+        'user_data': json.dumps(user_data),
+
+        'total_enquiries': total_enquiries,
+        'unread_enquiries': unread_enquiries,
+        'total_messages': total_messages,
+        'total_visits': total_visits,
+
+        'today': today,
+    }
+    return render(request, 'admin/reports/reports.html', context)
+
+
+@login_required(login_url='user_login')
+@user_passes_test(is_admin, login_url='../')
+def admin_reports_export(request, report_type):
+    """Export report data as CSV."""
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{report_type}_report.csv"'
+    writer = csv.writer(response)
+
+    if report_type == 'payments':
+        writer.writerow(['Date', 'Property', 'Tenant', 'Amount (Frw)'])
+        for p in Payment.objects.select_related('property', 'tenant').order_by('-date_paid'):
+            writer.writerow([
+                p.date_paid.strftime('%Y-%m-%d') if p.date_paid else '',
+                p.property.name if p.property else '',
+                p.tenant.name if p.tenant else '',
+                p.amount,
+            ])
+
+    elif report_type == 'properties':
+        writer.writerow(['ID', 'Name', 'Address', 'Type', 'Status', 'Price (Frw)', 'Units', 'Date Added'])
+        for p in Property.objects.all().order_by('name'):
+            writer.writerow([p.id, p.name, p.address, p.get_types_display(), p.status, p.price, p.number_of_units, p.date_added.strftime('%Y-%m-%d')])
+
+    elif report_type == 'tenants':
+        writer.writerow(['ID', 'Name', 'Email', 'Phone', 'Active Leases'])
+        for t in Tenant.objects.all().order_by('name'):
+            active = Lease.objects.filter(tenant=t, end_date__gte=timezone.now().date()).count()
+            writer.writerow([t.id, t.name, t.email, t.phone_number, active])
+
+    elif report_type == 'maintenance':
+        writer.writerow(['ID', 'Property', 'Tenant', 'Title', 'Status', 'Date Requested', 'Completion Date'])
+        for m in MaintenanceRequest.objects.select_related('property', 'tenant').order_by('-request_date'):
+            writer.writerow([
+                m.id, m.property.name if m.property else '', m.tenant.name if m.tenant else '',
+                m.title, m.status,
+                m.request_date.strftime('%Y-%m-%d') if m.request_date else '',
+                m.completion_date.strftime('%Y-%m-%d') if m.completion_date else '',
+            ])
+
+    elif report_type == 'leases':
+        writer.writerow(['ID', 'Property', 'Tenant', 'Start Date', 'End Date', 'Rent (Frw)', 'Status'])
+        for l in Lease.objects.select_related('property', 'tenant').order_by('-start_date'):
+            status = 'Active' if l.end_date and l.end_date >= timezone.now().date() else 'Expired'
+            writer.writerow([
+                l.id, l.property.name if l.property else '', l.tenant.name if l.tenant else '',
+                l.start_date, l.end_date, l.rent_amount, status,
+            ])
+
+    else:
+        writer.writerow(['No data for this report type.'])
+
+    return response
+
+
+# ── FB-style Chat API ──────────────────────────────────────────────────────────
+
+@login_required
+def chat_contacts_api(request):
+    """JSON: list of recent conversations with unread counts."""
+    from django.http import JsonResponse
+    from django.db.models import Q
+    convos = _get_conversations(request.user)
+    data = []
+    for c in convos:
+        contact = c['contact']
+        lm = c['last_message']
+        data.append({
+            'user_id':      contact.id,
+            'name':         contact.get_full_name() or contact.username,
+            'initial':      contact.username[0].upper(),
+            'role':         contact.role,
+            'room_id':      f"{min(request.user.id, contact.id)}_{max(request.user.id, contact.id)}",
+            'last_message': lm.content[:60] if lm else '',
+            'last_time':    lm.sent_date.strftime('%H:%M') if lm else '',
+            'unread':       c['unread'],
+        })
+    total_unread = sum(c['unread'] for c in convos)
+    return JsonResponse({'contacts': data, 'total_unread': total_unread})
+
+
+@login_required
+def chat_history_api(request, contact_id):
+    """JSON: message history between current user and contact; marks messages read."""
+    from django.http import JsonResponse
+    from django.db.models import Q
+    contact = get_object_or_404(User, id=contact_id)
+    qs = Message.objects.filter(
+        Q(sender=request.user, recipient=contact) |
+        Q(sender=contact,       recipient=request.user)
+    ).order_by('sent_date')
+    # mark as read
+    qs.filter(recipient=request.user, is_read=False).update(is_read=True)
+    msgs = list(qs[:80])
+    data = [{
+        'id':        m.id,
+        'sender_id': m.sender_id,
+        'content':   m.content,
+        'time':      m.sent_date.strftime('%H:%M'),
+        'date':      m.sent_date.strftime('%b %d'),
+    } for m in msgs]
+    return JsonResponse({
+        'messages': data,
+        'me_id':    request.user.id,
+        'contact':  {
+            'id':      contact.id,
+            'name':    contact.get_full_name() or contact.username,
+            'initial': contact.username[0].upper(),
+            'role':    contact.role,
+        },
+    })
+
+
+@login_required
+def chat_send_api(request):
+    """POST: send a message, return saved message JSON."""
+    from django.http import JsonResponse
+    import json
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+    try:
+        body    = json.loads(request.body)
+        to_id   = int(body.get('to_id', 0))
+        content = body.get('content', '').strip()
+    except Exception:
+        return JsonResponse({'error': 'Bad request'}, status=400)
+    if not content or not to_id:
+        return JsonResponse({'error': 'Missing fields'}, status=400)
+    recipient = get_object_or_404(User, id=to_id)
+    msg = Message.objects.create(sender=request.user, recipient=recipient, content=content)
+    return JsonResponse({
+        'ok':      True,
+        'id':      msg.id,
+        'content': msg.content,
+        'time':    msg.sent_date.strftime('%H:%M'),
+    })

@@ -66,6 +66,45 @@
     .m3-stitle{font:700 2.1rem/1.2 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:14px;letter-spacing:-.3px}
     .m3-ssub{color:var(--hp-muted);font:400 1rem/1.7 'Inter',sans-serif;max-width:560px;margin:0 auto}
 
+    /* ===== Quick Path Cards ===== */
+    .qp-card{border-radius:20px;overflow:hidden;position:relative;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;transition:all 320ms cubic-bezier(.4,0,.2,1);border:1px solid transparent}
+    .qp-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.15)}
+    .qp-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s ease}
+    .qp-card:hover .qp-card-bg{transform:scale(1.06)}
+    .qp-card-overlay{position:absolute;inset:0;transition:opacity .3s}
+    .qp-buy .qp-card-overlay{background:linear-gradient(160deg,rgba(27,94,32,.55) 0%,rgba(27,94,32,.85) 100%)}
+    .qp-rent .qp-card-overlay{background:linear-gradient(160deg,rgba(13,71,161,.55) 0%,rgba(13,71,161,.85) 100%)}
+    .qp-sell .qp-card-overlay{background:linear-gradient(160deg,rgba(230,81,0,.55) 0%,rgba(230,81,0,.85) 100%)}
+    .qp-content{position:relative;z-index:2}
+    .qp-icon{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1.5px solid rgba(255,255,255,.3)}
+    .qp-icon .material-symbols-outlined{font-size:26px;color:#fff}
+    .qp-card h3{font:700 1.3rem/1.2 'Inter',sans-serif;color:#fff;margin-bottom:6px}
+    .qp-card p{font:.85rem/1.5 'Inter',sans-serif;color:rgba(255,255,255,.8);margin-bottom:16px}
+    .qp-cta{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);color:#fff;padding:8px 18px;border-radius:100px;font:600 .82rem/1 'Inter',sans-serif;border:1px solid rgba(255,255,255,.35);transition:all 250ms}
+    .qp-card:hover .qp-cta{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.6)}
+    .qp-cta .material-symbols-outlined{font-size:16px}
+
+    /* ===== How It Works ===== */
+    .hiw-step{text-align:center;position:relative;padding:0 16px}
+    .hiw-step:not(:last-child)::after{content:'';position:absolute;top:36px;right:-20px;width:40px;height:2px;background:linear-gradient(90deg,var(--hp-lt),transparent);display:block}
+    .hiw-num{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--hp-dk),var(--hp));color:#fff;font:700 1.5rem/1 'Inter',sans-serif;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(46,125,50,.3);position:relative;z-index:1}
+    .hiw-num::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(46,125,50,.2)}
+    .hiw-step h4{font:600 1rem/1.3 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:10px}
+    .hiw-step p{font:.875rem/1.65 'Inter',sans-serif;color:var(--hp-muted);margin:0}
+
+    /* ===== Property Type Browse ===== */
+    .pt-card{background:var(--hp-white);border-radius:16px;border:1px solid var(--hp-border);padding:24px 20px;text-align:center;transition:all 280ms cubic-bezier(.4,0,.2,1);text-decoration:none;display:block;position:relative;overflow:hidden}
+    .pt-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--hp-dk),var(--hp));opacity:0;transition:opacity .28s}
+    .pt-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(46,125,50,.15);border-color:transparent}
+    .pt-card:hover::before{opacity:1}
+    .pt-icon{width:64px;height:64px;border-radius:16px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;transition:all .28s;position:relative;z-index:1}
+    .pt-icon .material-symbols-outlined{font-size:30px;color:var(--hp);transition:color .28s}
+    .pt-card:hover .pt-icon{background:rgba(255,255,255,.2)}
+    .pt-card:hover .pt-icon .material-symbols-outlined{color:#fff}
+    .pt-card h4{font:600 1rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px;position:relative;z-index:1;transition:color .28s}
+    .pt-card .pt-label{font:.8rem/1 'Inter',sans-serif;color:var(--hp-muted);position:relative;z-index:1;transition:color .28s;display:block}
+    .pt-card:hover h4,.pt-card:hover .pt-label{color:#fff}
+
     /* ===== Service Cards ===== */
     .m3-svc{background:var(--hp-white);border-radius:var(--hp-r);padding:32px 24px;border:1px solid var(--hp-border);transition:all 280ms;height:100%;position:relative;overflow:hidden}
     .m3-svc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--hp);transition:width 280ms;border-radius:var(--hp-r) 0 0 var(--hp-r)}
@@ -157,6 +196,28 @@
     .m3-ac-link{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#E8F5E9;color:var(--hp);border:none;border-radius:100px;font:600 .85rem/1 'Inter',sans-serif;transition:all 250ms;text-decoration:none;margin-top:auto}
     .m3-ac-link:hover{background:var(--hp);color:#fff}
 
+    /* ===== Testimonials Carousel ===== */
+    .tc-wrap{position:relative;overflow:hidden}
+    .tc-track{display:flex;gap:24px;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+    .m3-tc{background:var(--hp-white);border-radius:var(--hp-r);padding:32px 28px;border:1px solid var(--hp-border);transition:all 280ms;flex:0 0 calc(33.333% - 16px);position:relative;min-width:0}
+    .m3-tc::before{content:'\201C';position:absolute;top:16px;right:20px;font-size:4.5rem;color:#E8F5E9;font-family:Georgia,serif;line-height:1}
+    .m3-tc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-md);border-color:transparent}
+    .m3-tc-stars{margin-bottom:14px}
+    .m3-tc-txt{font:.9rem/1.75 'Inter',sans-serif;color:var(--hp-muted);font-style:italic;margin-bottom:24px;min-height:80px}
+    .m3-tc-author{display:flex;align-items:center;gap:12px}
+    .m3-tc-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #A5D6A7}
+    .m3-tc-name{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:3px}
+    .m3-tc-role{font:.78rem/1 'Inter',sans-serif;color:var(--hp)}
+    .tc-dots{display:flex;justify-content:center;gap:8px;margin-top:28px}
+    .tc-dot{width:8px;height:8px;border-radius:100px;background:var(--hp-border);border:none;padding:0;cursor:pointer;transition:all .25s}
+    .tc-dot.active{background:var(--hp);width:24px}
+
+    /* ===== Trust Strip ===== */
+    .trust-strip{background:linear-gradient(135deg,#1B5E20,#2E7D32,#43A047);padding:24px 0}
+    .trust-item{display:flex;align-items:center;gap:10px;color:#fff}
+    .trust-item .material-symbols-outlined{font-size:22px;color:#A5D6A7}
+    .trust-item span{font:500 .88rem/1.3 'Inter',sans-serif}
+
     /* ===== About Preview ===== */
     .m3-about-preview{padding:80px 0;background:var(--hp-white)}
     .about-preview-img{width:100%;border-radius:16px;object-fit:cover;height:400px;box-shadow:var(--hp-shadow-lg)}
@@ -168,29 +229,6 @@
     .about-feature-icon .material-symbols-outlined{font-size:18px}
     .about-feature-text strong{font:600 .9rem/1 'Inter',sans-serif;color:var(--hp-txt);display:block;margin-bottom:3px}
     .about-feature-text span{font:.82rem/1.5 'Inter',sans-serif;color:var(--hp-muted)}
-
-    /* ===== Testimonials ===== */
-    .m3-tc{background:var(--hp-white);border-radius:var(--hp-r);padding:28px;border:1px solid var(--hp-border);transition:all 280ms;height:100%;position:relative}
-    .m3-tc::before{content:'\201C';position:absolute;top:16px;right:20px;font-size:4rem;color:#E8F5E9;font-family:Georgia,serif;line-height:1}
-    .m3-tc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-md);border-color:transparent}
-    .m3-tc-stars{margin-bottom:14px}
-    .m3-tc-txt{font:.9rem/1.7 'Inter',sans-serif;color:var(--hp-muted);font-style:italic;margin-bottom:22px}
-    .m3-tc-author{display:flex;align-items:center;gap:12px}
-    .m3-tc-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #A5D6A7}
-    .m3-tc-name{font:600 .88rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:2px}
-    .m3-tc-role{font:.78rem/1 'Inter',sans-serif;color:var(--hp)}
-
-    /* ===== News Cards ===== */
-    .m3-nc{background:var(--hp-white);border-radius:var(--hp-r);overflow:hidden;border:1px solid var(--hp-border);transition:all 280ms;height:100%;display:flex;flex-direction:column}
-    .m3-nc:hover{transform:translateY(-4px);box-shadow:var(--hp-shadow-md);border-color:transparent}
-    .m3-nc-top{position:relative}
-    .m3-nc-img{height:190px;overflow:hidden}
-    .m3-nc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-    .m3-nc:hover .m3-nc-img img{transform:scale(1.05)}
-    .m3-nc-chip{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.95);padding:4px 12px;border-radius:100px;font:600 .72rem/1 'Inter',sans-serif;color:var(--hp);box-shadow:var(--hp-shadow);display:inline-flex;align-items:center;gap:4px}
-    .m3-nc-body{padding:18px;flex:1;display:flex;flex-direction:column}
-    .m3-nc-body h5{font:600 .95rem/1.4 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:8px}
-    .m3-nc-body p{font:.84rem/1.65 'Inter',sans-serif;color:var(--hp-muted);flex:1;margin:0}
 
     /* ===== CTA ===== */
     .m3-cta{padding:80px 0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hp-dk) 0%,var(--hp) 100%)}
@@ -205,9 +243,32 @@
     .m3-btn-o:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);color:#fff}
 
     /* ===== Responsive ===== */
-    @media(max-width:992px){.m3-hero-title{font-size:2.6rem}.m3-stats-inner{grid-template-columns:repeat(2,1fr)}.m3-stat:nth-child(2)::after{display:none}.m3-hv{margin-top:40px}.about-preview-text{padding-left:24px}.about-preview-img{height:300px}}
-    @media(max-width:768px){.m3-hero-title{font-size:2.1rem}.m3-stats-inner{margin:0 0 0}.m3-stat-val{font-size:1.7rem}.m3-sec{padding:60px 0}.m3-stitle{font-size:1.65rem}.m3-cta h2{font-size:1.8rem}.about-preview-text{padding-left:0;margin-top:32px}.m3-hero-search{max-width:100%}}
-    @media(max-width:576px){.m3-hero-title{font-size:1.9rem}.m3-stats-inner{grid-template-columns:1fr 1fr}.m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}}
+    @media(max-width:992px){
+        .m3-hero-title{font-size:2.6rem}
+        .m3-stats-inner{grid-template-columns:repeat(2,1fr)}
+        .m3-stat:nth-child(2)::after{display:none}
+        .m3-hv{margin-top:40px}
+        .about-preview-text{padding-left:24px}
+        .about-preview-img{height:300px}
+        .m3-tc{flex:0 0 calc(50% - 12px)}
+    }
+    @media(max-width:768px){
+        .m3-hero-title{font-size:2.1rem}
+        .m3-stats-inner{margin:0 0 0}
+        .m3-stat-val{font-size:1.7rem}
+        .m3-sec{padding:60px 0}
+        .m3-stitle{font-size:1.65rem}
+        .m3-cta h2{font-size:1.8rem}
+        .about-preview-text{padding-left:0;margin-top:32px}
+        .m3-hero-search{max-width:100%}
+        .m3-tc{flex:0 0 calc(100% - 0px)}
+        .hiw-step:not(:last-child)::after{display:none}
+    }
+    @media(max-width:576px){
+        .m3-hero-title{font-size:1.9rem}
+        .m3-stats-inner{grid-template-columns:1fr 1fr}
+        .m3-hero-btns,.m3-cta-btns{flex-direction:column;align-items:center}
+    }
 </style>
 
 <!-- ===== Hero ===== -->
@@ -248,7 +309,7 @@
     </div>
 </section>
 
-<!-- Pagelet: Stats -->
+<!-- ===== Stats Strip ===== -->
 <div class="pagelet" data-pagelet="stats">
 <div class="container">
 <section class="m3-stats"><div class="m3-stats-inner">
@@ -258,37 +319,158 @@
     <div class="m3-stat md-reveal"><div class="m3-stat-icon"><span class="material-symbols-outlined">military_tech</span></div><div class="m3-stat-val" data-count="3">0</div><div class="m3-stat-lbl">Years of Excellence</div></div>
 </div></section>
 </div>
-</div><!-- /pagelet:stats -->
+</div>
 
-<!-- Pagelet: Services -->
-<div class="pagelet" data-pagelet="services">
-<section id="services" class="m3-sec m3-sec-g" style="padding-top:100px"><div class="container">
-    <div class="m3-sh">
-        <div class="m3-tag"><span class="material-symbols-outlined">star</span>Why PropertyHub</div>
-        <h2 class="m3-stitle">Everything You Need</h2>
-        <p class="m3-ssub">Comprehensive tools for property owners, tenants, and real estate professionals — all in one place.</p>
+<!-- ===== Choose Your Path ===== -->
+<section class="m3-sec m3-sec-w" style="padding-top:72px;padding-bottom:72px">
+    <div class="container">
+        <div class="m3-sh">
+            <div class="m3-tag"><span class="material-symbols-outlined">explore</span>What Are You Looking For?</div>
+            <h2 class="m3-stitle">Your Property Journey Starts Here</h2>
+            <p class="m3-ssub">Whether you want to buy, rent, or sell — we make it simple, fast, and reliable in Rwanda.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-12">
+                <a href="{% url 'sale_listings' %}" class="qp-card qp-buy">
+                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p1.jpg' %}&quot;)"></div>
+                    <div class="qp-card-overlay"></div>
+                    <div class="qp-content">
+                        <div class="qp-icon"><span class="material-symbols-outlined">home</span></div>
+                        <h3>Buy a Property</h3>
+                        <p>Browse verified homes, land, and apartments available for purchase across Rwanda.</p>
+                        <span class="qp-cta">Explore Listings <span class="material-symbols-outlined">arrow_forward</span></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <a href="{% url 'property_list' %}" class="qp-card qp-rent">
+                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p2.webp' %}&quot;)"></div>
+                    <div class="qp-card-overlay"></div>
+                    <div class="qp-content">
+                        <div class="qp-icon"><span class="material-symbols-outlined">apartment</span></div>
+                        <h3>Rent a Property</h3>
+                        <p>Find quality rentals with flexible terms — apartments, houses, and commercial spaces.</p>
+                        <span class="qp-cta">View Rentals <span class="material-symbols-outlined">arrow_forward</span></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <a href="{% url 'register' %}" class="qp-card qp-sell">
+                    <div class="qp-card-bg" style="background-image:url(&quot;{% static 'images/p3.jpeg' %}&quot;)"></div>
+                    <div class="qp-card-overlay"></div>
+                    <div class="qp-content">
+                        <div class="qp-icon"><span class="material-symbols-outlined">sell</span></div>
+                        <h3>Sell or List</h3>
+                        <p>List your property and reach thousands of verified buyers and renters instantly.</p>
+                        <span class="qp-cta">List Property <span class="material-symbols-outlined">arrow_forward</span></span>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="row g-4">
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">home</span></div><h3>Property Listings</h3><p>Manage and list properties with our intuitive interface for quick uploads and modifications.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">how_to_reg</span></div><h3>Tenant Management</h3><p>Comprehensive screening, background checks, and lease tracking in one dashboard.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">notifications_active</span></div><h3>Real-time Updates</h3><p>Stay informed with instant notifications through our integrated communication system.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">support_agent</span></div><h3>24/7 Support</h3><p>Our dedicated support team ensures all your queries are resolved promptly and professionally.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">shield</span></div><h3>Secure Transactions</h3><p>All transactions and data protected with advanced encryption and security measures.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">trending_up</span></div><h3>Market Insights</h3><p>Gain valuable real estate market insights with advanced analytics and reporting tools.</p></div></div>
-    </div>
-</div></section>
-</div><!-- /pagelet:services -->
+</section>
 
-<!-- Pagelet: Featured Properties -->
+<!-- ===== How It Works ===== -->
+<section class="m3-sec m3-sec-g">
+    <div class="container">
+        <div class="m3-sh">
+            <div class="m3-tag"><span class="material-symbols-outlined">lightbulb</span>Simple Process</div>
+            <h2 class="m3-stitle">How PropertyHub Works</h2>
+            <p class="m3-ssub">From search to keys in hand — three simple steps to your next property.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-3 col-md-6">
+                <div class="hiw-step md-reveal">
+                    <div class="hiw-num">1</div>
+                    <h4>Search & Discover</h4>
+                    <p>Browse thousands of verified properties for sale and rent across Rwanda. Filter by location, price, and type.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="hiw-step md-reveal">
+                    <div class="hiw-num">2</div>
+                    <h4>Connect with Agents</h4>
+                    <p>Chat directly with our verified agents or property owners. Schedule viewings and get expert advice at no cost.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="hiw-step md-reveal">
+                    <div class="hiw-num">3</div>
+                    <h4>Move In or Close Deal</h4>
+                    <p>Sign securely, make payments, and move in — or close your sale with full support from our team every step.</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'about' %}" class="m3-btn-outline-g"><span class="material-symbols-outlined" style="font-size:18px">info</span>Learn More About Us</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Browse by Property Type ===== -->
+<section class="m3-sec m3-sec-w" style="padding-bottom:60px">
+    <div class="container">
+        <div class="m3-sh" style="margin-bottom:40px">
+            <div class="m3-tag"><span class="material-symbols-outlined">category</span>Property Types</div>
+            <h2 class="m3-stitle">Browse by Type</h2>
+            <p class="m3-ssub">Find exactly what you need — from cozy apartments to expansive land plots.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'property_list' %}?type=apartment" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">apartment</span></div>
+                    <h4>Apartments</h4>
+                    <span class="pt-label">For Rent</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'sale_listings' %}?property_type=house" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">home</span></div>
+                    <h4>Houses</h4>
+                    <span class="pt-label">Buy or Rent</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'sale_listings' %}?property_type=land" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">landscape</span></div>
+                    <h4>Land</h4>
+                    <span class="pt-label">For Sale</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'property_list' %}?type=commercial" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">store</span></div>
+                    <h4>Commercial</h4>
+                    <span class="pt-label">For Rent</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'sale_listings' %}?property_type=villa" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">villa</span></div>
+                    <h4>Villas</h4>
+                    <span class="pt-label">Luxury</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="{% url 'sale_listings' %}" class="pt-card md-reveal">
+                    <div class="pt-icon"><span class="material-symbols-outlined">grid_view</span></div>
+                    <h4>All Types</h4>
+                    <span class="pt-label">Browse All</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Featured Properties for Rent ===== -->
 <div class="pagelet" data-pagelet="featured">
-<section id="featured" class="m3-sec m3-sec-w"><div class="container">
+<section id="featured" class="m3-sec m3-sec-g"><div class="container">
     <div class="m3-sh">
-        <div class="m3-tag"><span class="material-symbols-outlined">apartment</span>Featured</div>
-        <h2 class="m3-stitle">Featured Properties</h2>
-        <p class="m3-ssub">Discover our handpicked selection of premium verified properties across Rwanda.</p>
+        <div class="m3-tag"><span class="material-symbols-outlined">apartment</span>Rentals</div>
+        <h2 class="m3-stitle">Featured Rental Properties</h2>
+        <p class="m3-ssub">Handpicked, verified rentals — move in ready across Rwanda's top locations.</p>
     </div>
     <div class="row g-4">
-        <!-- Skeleton placeholders (shown while loading) -->
         <div class="col-lg-4 col-md-6 skel-wrap">
             <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:220px;border-radius:0"></div><div style="padding:18px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div class="skeleton skeleton-btn" style="margin-top:16px"></div></div></div>
         </div>
@@ -298,7 +480,6 @@
         <div class="col-lg-4 col-md-6 skel-wrap">
             <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:220px;border-radius:0"></div><div style="padding:18px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div class="skeleton skeleton-btn" style="margin-top:16px"></div></div></div>
         </div>
-        <!-- Real property cards -->
         {% for property in featured_properties %}
         <div class="col-lg-4 col-md-6 real-card"><div class="m3-pc md-reveal">
             <div class="m3-pc-img">
@@ -322,18 +503,17 @@
     </div>
     <div class="text-center mt-5"><a href="{% url 'property_list' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">search</span>View All Rentals</a></div>
 </div></section>
-</div><!-- /pagelet:featured -->
+</div>
 
-<!-- Properties For Sale -->
+<!-- ===== Properties For Sale ===== -->
 <div class="pagelet" data-pagelet="for-sale">
-<section id="for-sale" class="m3-sec m3-sec-g"><div class="container">
+<section id="for-sale" class="m3-sec m3-sec-w"><div class="container">
     <div class="m3-sh">
         <div class="m3-tag"><span class="material-symbols-outlined">real_estate_agent</span>Marketplace</div>
         <h2 class="m3-stitle">Properties For Sale</h2>
         <p class="m3-ssub">Browse houses, apartments, and land available for purchase across Rwanda.</p>
     </div>
     <div class="row g-4">
-        <!-- Skeleton placeholders -->
         <div class="col-lg-4 col-md-6 skel-wrap">
             <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:200px;border-radius:0"></div><div style="padding:16px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="skeleton skeleton-text w50" style="height:20px;margin:0"></div><div class="skeleton skeleton-btn" style="width:80px"></div></div></div></div>
         </div>
@@ -343,7 +523,6 @@
         <div class="col-lg-4 col-md-6 skel-wrap">
             <div class="m3-skel-card"><div class="skeleton skeleton-card" style="height:200px;border-radius:0"></div><div style="padding:16px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text w75"></div><div class="skeleton skeleton-text w50"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="skeleton skeleton-text w50" style="height:20px;margin:0"></div><div class="skeleton skeleton-btn" style="width:80px"></div></div></div></div>
         </div>
-        <!-- Real cards -->
         {% for sp in sale_properties_featured %}
         <div class="col-md-6 col-lg-4 real-card md-reveal">
             <div class="m3-sp">
@@ -368,7 +547,7 @@
         </div>
         {% empty %}
         <div class="col-12 real-card">
-            <div style="text-align:center;padding:48px 20px;background:var(--hp-white);border-radius:16px;border:2px dashed var(--hp-border)">
+            <div style="text-align:center;padding:48px 20px;background:var(--hp-bg);border-radius:16px;border:2px dashed var(--hp-border)">
                 <span class="material-symbols-outlined" style="font-size:48px;color:var(--hp-lt);margin-bottom:12px;display:block">real_estate_agent</span>
                 <p style="font:500 1rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px">No properties for sale yet</p>
                 <p style="font:.85rem/1.5 'Inter',sans-serif;color:var(--hp-muted);margin:0">Check back soon — new listings are added daily!</p>
@@ -378,23 +557,52 @@
     </div>
     <div class="text-center mt-5"><a href="{% url 'sale_listings' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">storefront</span>Browse All For Sale</a></div>
 </div></section>
-</div><!-- /pagelet:for-sale -->
+</div>
 
-<!-- Our Agents -->
+<!-- ===== Why Choose Us ===== -->
+<div class="pagelet" data-pagelet="services">
+<section id="services" class="m3-sec m3-sec-g"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">verified</span>Why PropertyHub</div>
+        <h2 class="m3-stitle">Everything You Need, In One Place</h2>
+        <p class="m3-ssub">We take the stress out of property — for owners, buyers, renters, and real estate professionals.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">verified_user</span></div><h3>Verified Listings Only</h3><p>Every property is inspected and verified by our team before going live — no scams, no surprises.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">price_check</span></div><h3>Best Price Guarantee</h3><p>We compare market prices to ensure you're always getting a fair deal on every listing.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">support_agent</span></div><h3>Dedicated Support 24/7</h3><p>Our team is always available to answer questions, resolve issues, and guide your property journey.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">contract</span></div><h3>Paperless Agreements</h3><p>Sign leases and agreements digitally — fast, secure, and legally valid from any device.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">trending_up</span></div><h3>Market Insights</h3><p>Access real-time data and analytics to make smarter buying, renting, or selling decisions.</p></div></div>
+        <div class="col-lg-4 col-md-6"><div class="m3-svc md-reveal"><div class="m3-svc-icon"><span class="material-symbols-outlined">forum</span></div><h3>Direct Agent Chat</h3><p>Message agents and property owners directly — no middlemen, no delays, just clear communication.</p></div></div>
+    </div>
+</div></section>
+</div>
+
+<!-- ===== Trust Strip ===== -->
+<div class="trust-strip">
+    <div class="container">
+        <div class="row g-3 justify-content-center text-center">
+            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">shield_lock</span><span>100% Secure Transactions</span></div></div>
+            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">verified</span><span>All Properties Verified</span></div></div>
+            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">star</span><span>4.8 / 5 Customer Rating</span></div></div>
+            <div class="col-6 col-md-3"><div class="trust-item justify-content-center"><span class="material-symbols-outlined">support_agent</span><span>24/7 Live Support</span></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Our Agents ===== -->
 <div class="pagelet" data-pagelet="agents">
 <section id="agents" class="m3-sec m3-sec-w"><div class="container">
     <div class="m3-sh">
         <div class="m3-tag"><span class="material-symbols-outlined">badge</span>Professionals</div>
-        <h2 class="m3-stitle">Our Trusted Agents</h2>
-        <p class="m3-ssub">Experienced agents ready to help you buy, sell, or negotiate with confidence.</p>
+        <h2 class="m3-stitle">Meet Our Trusted Agents</h2>
+        <p class="m3-ssub">Experienced agents ready to help you buy, sell, or negotiate with full confidence.</p>
     </div>
     <div class="row g-4">
-        <!-- Skeleton placeholders -->
         <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
         <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
         <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
         <div class="col-md-6 col-lg-3 skel-wrap"><div class="m3-skel-card" style="border-radius:16px;overflow:hidden;text-align:center"><div class="skeleton" style="height:130px;border-radius:0"></div><div style="padding:20px"><div class="skeleton skeleton-circle" style="margin:0 auto 12px"></div><div class="skeleton skeleton-title" style="width:60%;margin:0 auto 10px"></div><div class="skeleton skeleton-text w75" style="margin:0 auto 8px"></div><div class="skeleton skeleton-text w50" style="margin:0 auto"></div></div></div></div>
-        <!-- Real cards -->
         {% for ag in featured_agents %}
         <div class="col-md-6 col-lg-3 real-card md-reveal">
             <div class="m3-ac">
@@ -423,7 +631,7 @@
         </div>
         {% empty %}
         <div class="col-12 real-card">
-            <div style="text-align:center;padding:48px 20px;background:var(--hp-white);border-radius:16px;border:2px dashed var(--hp-border)">
+            <div style="text-align:center;padding:48px 20px;background:var(--hp-bg);border-radius:16px;border:2px dashed var(--hp-border)">
                 <span class="material-symbols-outlined" style="font-size:48px;color:var(--hp-lt);margin-bottom:12px;display:block">groups</span>
                 <p style="font:500 1rem/1 'Inter',sans-serif;color:var(--hp-txt);margin-bottom:6px">Our agent network is growing</p>
                 <p style="font:.85rem/1.5 'Inter',sans-serif;color:var(--hp-muted);margin:0">Stay tuned — experienced agents are joining weekly!</p>
@@ -433,9 +641,44 @@
     </div>
     <div class="text-center mt-5"><a href="{% url 'agent_directory' %}" class="m3-btn-outline-g" style="font-size:.95rem"><span class="material-symbols-outlined" style="font-size:20px">groups</span>View All Agents</a></div>
 </div></section>
-</div><!-- /pagelet:agents -->
+</div>
 
-<!-- About Preview -->
+<!-- ===== Testimonials ===== -->
+<div class="pagelet" data-pagelet="testimonials">
+<section id="testimonials" class="m3-sec m3-sec-g"><div class="container">
+    <div class="m3-sh">
+        <div class="m3-tag"><span class="material-symbols-outlined">format_quote</span>Client Reviews</div>
+        <h2 class="m3-stitle">Trusted by Hundreds Across Rwanda</h2>
+        <p class="m3-ssub">Real stories from real clients — property owners, tenants, and buyers who found their match.</p>
+    </div>
+    <div class="tc-wrap">
+        <div class="tc-track" id="tcTrack">
+            <div class="m3-tc">
+                <div class="m3-tc-stars">{% for i in "12345" %}<span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span>{% endfor %}</div>
+                <p class="m3-tc-txt">"PropertyHub has completely transformed how I manage my rental properties. Everything is streamlined and efficient — I save hours every week!"</p>
+                <div class="m3-tc-author"><img src="{% static 'images/man5.jpeg' %}" alt="Sarah K." class="m3-tc-avatar"><div><div class="m3-tc-name">Sarah K.</div><div class="m3-tc-role">Property Owner, Kigali</div></div></div>
+            </div>
+            <div class="m3-tc">
+                <div class="m3-tc-stars">{% for i in "12345" %}<span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span>{% endfor %}</div>
+                <p class="m3-tc-txt">"I found my apartment in 3 days. The listings are real, the agents are responsive, and the process was smooth from search to signing."</p>
+                <div class="m3-tc-author"><img src="{% static 'images/man0.jpeg' %}" alt="Mike T." class="m3-tc-avatar"><div><div class="m3-tc-name">Mike T.</div><div class="m3-tc-role">Tenant, Musanze</div></div></div>
+            </div>
+            <div class="m3-tc">
+                <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px;font-variation-settings:'FILL' 1">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star_half</span></div>
+                <p class="m3-tc-txt">"The market insights helped me close 3 properties in one quarter. This platform is a genuine game-changer for real estate professionals."</p>
+                <div class="m3-tc-author"><img src="{% static 'images/man3.jpeg' %}" alt="Lisa M." class="m3-tc-avatar"><div><div class="m3-tc-name">Lisa M.</div><div class="m3-tc-role">Real Estate Agent</div></div></div>
+            </div>
+        </div>
+        <div class="tc-dots">
+            <button class="tc-dot active" data-idx="0"></button>
+            <button class="tc-dot" data-idx="1"></button>
+            <button class="tc-dot" data-idx="2"></button>
+        </div>
+    </div>
+</div></section>
+</div>
+
+<!-- ===== About Preview ===== -->
 <div class="pagelet" data-pagelet="about-preview">
 <section class="m3-about-preview"><div class="container">
     <div class="row align-items-center">
@@ -455,64 +698,20 @@
         </div>
     </div>
 </div></section>
-</div><!-- /pagelet:about-preview -->
+</div>
 
-<!-- Pagelet: Testimonials -->
-<div class="pagelet" data-pagelet="testimonials">
-<section id="testimonials" class="m3-sec m3-sec-g"><div class="container">
-    <div class="m3-sh">
-        <div class="m3-tag"><span class="material-symbols-outlined">format_quote</span>Testimonials</div>
-        <h2 class="m3-stitle">What Our Clients Say</h2>
-        <p class="m3-ssub">Hear from property owners and tenants who transformed their experience with PropertyHub.</p>
-    </div>
-    <div class="row g-4">
-        <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span></div>
-            <p class="m3-tc-txt">"PropertyHub has completely transformed how I manage my rental properties. Everything is streamlined and efficient!"</p>
-            <div class="m3-tc-author"><img src="{% static 'images/man5.jpeg' %}" alt="Sarah K." class="m3-tc-avatar"><div><div class="m3-tc-name">Sarah K.</div><div class="m3-tc-role">Property Owner</div></div></div>
-        </div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span></div>
-            <p class="m3-tc-txt">"The customer support team is exceptional! Always responsive and helpful with any questions I have."</p>
-            <div class="m3-tc-author"><img src="{% static 'images/man0.jpeg' %}" alt="Mike T." class="m3-tc-avatar"><div><div class="m3-tc-name">Mike T.</div><div class="m3-tc-role">Tenant</div></div></div>
-        </div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-tc md-reveal">
-            <div class="m3-tc-stars"><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star</span><span class="material-symbols-outlined" style="color:#FBBF24;font-size:18px">star_half</span></div>
-            <p class="m3-tc-txt">"The market insights feature has helped me make smarter investment decisions. This platform is a game-changer!"</p>
-            <div class="m3-tc-author"><img src="{% static 'images/man3.jpeg' %}" alt="Lisa M." class="m3-tc-avatar"><div><div class="m3-tc-name">Lisa M.</div><div class="m3-tc-role">Real Estate Pro</div></div></div>
-        </div></div>
-    </div>
-</div></section>
-</div><!-- /pagelet:testimonials -->
-
-<!-- Pagelet: News -->
-<div class="pagelet" data-pagelet="news">
-<section class="m3-sec m3-sec-w"><div class="container">
-    <div class="m3-sh">
-        <div class="m3-tag"><span class="material-symbols-outlined">newspaper</span>Latest News</div>
-        <h2 class="m3-stitle">News & Updates</h2>
-        <p class="m3-ssub">Stay informed with the latest trends and updates in property management.</p>
-    </div>
-    <div class="row g-4">
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p1.jpg' %}" alt="Market Trends" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 15, 2023</span></div><div class="m3-nc-body"><h5>Property Market Trends in 2023</h5><p>Discover the latest trends shaping the property market, including rising demand in urban areas.</p></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p2.webp' %}" alt="New Features" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 10, 2023</span></div><div class="m3-nc-body"><h5>New Features Added to PropertyHub</h5><p>We've enhanced our platform with advanced analytics and improved tenant communication tools.</p></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-nc md-reveal"><div class="m3-nc-top"><div class="m3-nc-img"><img src="{% static 'images/p3.jpeg' %}" alt="Investment" loading="lazy"></div><span class="m3-nc-chip"><span class="material-symbols-outlined" style="font-size:13px">calendar_today</span>Oct 5, 2023</span></div><div class="m3-nc-body"><h5>Investment Opportunities in Real Estate</h5><p>Explore emerging markets and investment strategies to maximize returns in the current landscape.</p></div></div></div>
-    </div>
-    <div class="text-center mt-5"><a href="{% url 'updates' %}" class="m3-btn-outline-g"><span class="material-symbols-outlined" style="font-size:18px">newspaper</span>View All Updates</a></div>
-</div></section>
-</div><!-- /pagelet:news -->
-
-<!-- Pagelet: CTA -->
+<!-- ===== CTA ===== -->
 <div class="pagelet" data-pagelet="cta">
 <section class="m3-cta"><div class="container"><div class="m3-cta-inner md-reveal">
-    <h2>Start Finding Your Dream Home Today</h2>
-    <p>Join thousands of satisfied property owners and tenants who have simplified their real estate journey with PropertyHub.</p>
+    <div class="m3-tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);margin-bottom:20px"><span class="material-symbols-outlined">rocket_launch</span>Get Started Today</div>
+    <h2>Ready to Find Your Perfect Property?</h2>
+    <p>Join thousands of satisfied clients who found their dream home or made their best investment through PropertyHub.</p>
     <div class="m3-cta-btns">
-        <a href="{% url 'register' %}" class="m3-btn-w"><span class="material-symbols-outlined" style="font-size:20px">person_add</span>Sign Up Free</a>
-        <a href="{% url 'property_list' %}" class="m3-btn-o"><span class="material-symbols-outlined" style="font-size:20px">search</span>Browse Properties</a>
+        <a href="{% url 'register' %}" class="m3-btn-w"><span class="material-symbols-outlined" style="font-size:20px">person_add</span>Create Free Account</a>
+        <a href="{% url 'sale_listings' %}" class="m3-btn-o"><span class="material-symbols-outlined" style="font-size:20px">search</span>Browse Properties</a>
     </div>
 </div></div></section>
-</div><!-- /pagelet:cta -->
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded',function(){
@@ -520,19 +719,32 @@ document.addEventListener('DOMContentLoaded',function(){
     var counters=document.querySelectorAll('.m3-stat-val[data-count]');
     var cObs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){counters.forEach(function(c){var target=parseInt(c.dataset.count),current=0,inc=target/60;var timer=setInterval(function(){current+=inc;if(current>=target){c.textContent=target.toLocaleString();clearInterval(timer)}else c.textContent=Math.floor(current).toLocaleString()},25)});cObs.unobserve(entry.target)}})},{threshold:.5});
     var s=document.querySelector('.m3-stats-inner');if(s)cObs.observe(s);
+
     /* Smooth scroll for anchor links */
     document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=this.getAttribute('href');if(t==='#')return;var el=document.querySelector(t);if(el)window.scrollTo({top:el.offsetTop-80,behavior:'smooth'})})});
+
+    /* Testimonial carousel */
+    var track=document.getElementById('tcTrack');
+    var dots=document.querySelectorAll('.tc-dot');
+    var cards=track?track.querySelectorAll('.m3-tc'):[];
+    var cur=0;
+    function goTo(idx){
+        if(!track||!cards.length)return;
+        var cardW=cards[0].offsetWidth+24;
+        track.style.transform='translateX(-'+(idx*cardW)+'px)';
+        dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
+        cur=idx;
+    }
+    dots.forEach(function(d){d.addEventListener('click',function(){goTo(parseInt(this.dataset.idx))})});
+    /* Auto-advance */
+    setInterval(function(){goTo((cur+1)%dots.length)},5000);
 });
 </script>
 <script>
-/* ===== Welcome Splash Logic ===== */
 function dismissSplash(){
     var s=document.getElementById('welcomeSplash');
     if(s){s.classList.add('ws-out');setTimeout(function(){s.style.display='none'},900)}
 }
-(function(){
-    /* Show on every page load/refresh */
-    setTimeout(dismissSplash,4800);
-})();
+(function(){setTimeout(dismissSplash,4800)})();
 </script>
 {% endblock %}
