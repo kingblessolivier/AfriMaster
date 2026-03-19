@@ -3,104 +3,759 @@
 {% block title %}Contact Us - PropertyHub Ltd{% endblock %}
 {% block content %}
 <style>
-    .m3-contact-hero{color:#fff;padding:100px 0 80px;margin-top:112px;text-align:center;position:relative;overflow:hidden}
-    .m3-contact-hero::before{content:'';position:absolute;width:400px;height:400px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .m3-contact-hero-inner{position:relative;z-index:1}
-    .m3-contact-hero h1{font:500 2.8rem/1.2 'Inter',sans-serif;margin-bottom:1rem}
-    .m3-contact-hero p{font:var(--md-sys-typescale-body-large);opacity:.8;max-width:600px;margin:0 auto}
-    .m3-contact-sec{padding:80px 0 60px;background:var(--md-sys-color-surface-container)}
-    .m3-contact-title{position:relative;margin-bottom:50px;font:var(--md-sys-typescale-headline-medium);color:var(--md-sys-color-on-surface);text-align:center}
-    .m3-contact-title::after{content:'';position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);width:60px;height:3px;background:var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-full)}
-    .m3-cc{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:36px 28px;text-align:center;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%}
-    .m3-cc:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-cc-icon{width:56px;height:56px;background:var(--md-sys-color-primary-container);border-radius:var(--md-sys-shape-corner-full);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--md-sys-color-on-primary-container);transition:all 300ms}
-    .m3-cc:hover .m3-cc-icon{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);transform:scale(1.1)}
-    .m3-cc h3{font:var(--md-sys-typescale-title-medium);color:var(--md-sys-color-on-surface);margin-bottom:10px}
-    .m3-cc p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin-bottom:16px;line-height:1.6}
-    .m3-cc a{color:var(--md-sys-color-primary);text-decoration:none;font:var(--md-sys-typescale-label-large);display:inline-flex;align-items:center;gap:4px;transition:all 200ms}
-    .m3-cc a:hover{gap:8px}
-    .m3-form-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-1);overflow:hidden}
-    .m3-form-header{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);padding:20px 28px;font:var(--md-sys-typescale-title-medium);display:flex;align-items:center;gap:10px}
-    .m3-form-body{padding:28px}
-    .m3-form-body .form-control{border:1.5px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:14px 16px;font:var(--md-sys-typescale-body-large);transition:all 200ms;background:var(--md-sys-color-surface)}
-    .m3-form-body .form-control:focus{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 4px rgba(40,167,69,.08)}
-    .m3-form-body label{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-    .m3-form-body label .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:18px}
-    .m3-btn-submit{width:100%;height:48px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-large);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 200ms}
-    .m3-btn-submit:hover{box-shadow:var(--md-sys-elevation-1)}
-    .m3-info-card{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);border:1px solid var(--md-sys-color-outline-variant);padding:28px;height:100%}
-    .m3-info-sec{margin-bottom:28px}
-    .m3-info-sec h4{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-    .m3-info-sec h4 .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:20px}
-    .m3-info-item{display:flex;align-items:flex-start;margin-bottom:14px;gap:12px}
-    .m3-info-icon{width:40px;height:40px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-surface-container-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--md-sys-color-primary)}
-    .m3-info-icon .material-symbols-outlined{font-size:20px}
-    .m3-info-content{flex:1}.m3-info-content strong{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface);display:block;margin-bottom:4px}
-    .m3-info-content a,.m3-info-content span{color:var(--md-sys-color-on-surface-variant);text-decoration:none;font:var(--md-sys-typescale-body-medium)}
-    .m3-info-content a:hover{color:var(--md-sys-color-primary)}
-    .m3-hours{list-style:none;padding:0}.m3-hours li{padding:8px 0;border-bottom:1px solid var(--md-sys-color-outline-variant);display:flex;justify-content:space-between;font:var(--md-sys-typescale-body-medium)}
-    .m3-hours li:last-child{border-bottom:none}.m3-hours .day{font-weight:600;color:var(--md-sys-color-on-surface)}.m3-hours .time{color:var(--md-sys-color-on-surface-variant)}
-    .m3-map-sec{padding:80px 0;background:var(--md-sys-color-surface)}
-    .m3-map-box{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-1);overflow:hidden;height:400px}
-    .m3-map-placeholder{width:100%;height:100%;background-color:#0d2415;background-image:linear-gradient(rgba(40,167,69,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.10) 1px,transparent 1px);background-size:50px 50px;display:flex;align-items:center;justify-content:center;color:#fff;font:var(--md-sys-typescale-body-large)}
-    @media(max-width:768px){.m3-contact-hero h1{font-size:2.2rem}.m3-contact-sec{padding:60px 0}}
+/* ─── HERO ─────────────────────────────────────────────────────────────────── */
+.ph-hero {
+    margin-top: 0;
+    background: linear-gradient(135deg, #0d2415 0%, #1a3d25 60%, #0d2415 100%);
+    overflow: hidden;
+    position: relative;
+    padding: 80px 0 60px;
+}
+.ph-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(40,167,69,.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+.ph-hero-content { position: relative; z-index: 2; color: #fff; }
+.ph-hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(40,167,69,.18); border: 1px solid rgba(40,167,69,.35);
+    color: #6fcf97; border-radius: 100px; padding: 6px 16px;
+    font-size: .8rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.ph-hero-badge .material-symbols-outlined { font-size: 16px; }
+.ph-hero h1 {
+    font: 600 3rem/1.15 'Inter', sans-serif; margin-bottom: 18px;
+    background: linear-gradient(135deg, #fff 40%, #6fcf97 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.ph-hero p { font-size: 1.05rem; opacity: .75; max-width: 520px; line-height: 1.7; margin-bottom: 32px; }
+.ph-hero-pills { display: flex; flex-wrap: wrap; gap: 12px; }
+.ph-hero-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.85); border-radius: 100px; padding: 8px 18px;
+    font-size: .85rem; font-weight: 500; backdrop-filter: blur(4px);
+}
+.ph-hero-pill .material-symbols-outlined { font-size: 16px; color: #6fcf97; }
+/* illustration */
+.ph-hero-illo { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
+.ph-hero-illo svg { max-width: 420px; width: 100%; filter: drop-shadow(0 20px 60px rgba(40,167,69,.25)); }
+
+/* floating decoratives */
+.ph-blob {
+    position: absolute; border-radius: 50%; filter: blur(60px);
+    opacity: .12; pointer-events: none;
+}
+.ph-blob--1 { width: 300px; height: 300px; background: #28a745; top: -80px; left: -80px; }
+.ph-blob--2 { width: 200px; height: 200px; background: #6fcf97; bottom: -60px; right: 10%; }
+
+/* ─── QUICK CONTACT CARDS ──────────────────────────────────────────────────── */
+.ph-quick { background: var(--md-sys-color-surface); padding: 0; }
+.ph-quick-inner {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-large);
+    box-shadow: 0 4px 32px rgba(0,0,0,.08);
+    margin-top: -40px; position: relative; z-index: 10;
+    overflow: hidden;
+}
+.ph-qc {
+    padding: 32px 28px; text-align: center; border-right: 1px solid var(--md-sys-color-outline-variant);
+    transition: background 200ms;
+}
+.ph-qc:last-child { border-right: none; }
+.ph-qc:hover { background: var(--md-sys-color-surface-container-low); }
+.ph-qc-icon {
+    width: 60px; height: 60px; border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; color: var(--md-sys-color-on-primary-container);
+    transition: all 250ms;
+}
+.ph-qc:hover .ph-qc-icon {
+    background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+    transform: scale(1.08);
+}
+.ph-qc h4 { font: 600 1rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 6px; }
+.ph-qc p { font-size: .85rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 12px; line-height: 1.5; }
+.ph-qc a {
+    color: var(--md-sys-color-primary); font-size: .875rem; font-weight: 600;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    transition: gap 150ms;
+}
+.ph-qc a:hover { gap: 8px; }
+.ph-qc a .material-symbols-outlined { font-size: 15px; }
+
+/* ─── MAIN CONTACT SECTION ─────────────────────────────────────────────────── */
+.ph-main { padding: 80px 0 60px; background: var(--md-sys-color-surface-container); }
+.ph-section-label {
+    text-align: center; margin-bottom: 50px;
+}
+.ph-section-label .overline {
+    font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--md-sys-color-primary); display: block; margin-bottom: 10px;
+}
+.ph-section-label h2 {
+    font: 500 2.2rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface);
+    margin-bottom: 0; position: relative; display: inline-block;
+}
+.ph-section-label h2::after {
+    content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+    width: 48px; height: 3px; background: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-full);
+}
+
+/* form card */
+.ph-form-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-large);
+    box-shadow: var(--md-sys-elevation-1); overflow: hidden;
+}
+.ph-form-head {
+    background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1a7a32 100%);
+    color: #fff; padding: 22px 28px;
+    display: flex; align-items: center; gap: 12px;
+}
+.ph-form-head .material-symbols-outlined { font-size: 22px; opacity: .9; }
+.ph-form-head h3 { font: 600 1.1rem/1 'Inter',sans-serif; margin: 0; }
+.ph-form-head p { font-size: .8rem; opacity: .75; margin: 0; }
+.ph-form-body { padding: 28px; }
+.ph-form-body .form-control {
+    border: 1.5px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 13px 16px; font-size: .95rem;
+    background: var(--md-sys-color-surface); transition: all 200ms;
+    color: var(--md-sys-color-on-surface);
+}
+.ph-form-body .form-control:focus {
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px rgba(40,167,69,.1); outline: none;
+}
+.ph-form-body label {
+    font-size: .85rem; font-weight: 600; color: var(--md-sys-color-on-surface);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.ph-form-body label .material-symbols-outlined { color: var(--md-sys-color-primary); font-size: 17px; }
+.ph-subject-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.ph-chip {
+    padding: 6px 14px; border-radius: 100px; font-size: .8rem; font-weight: 500;
+    border: 1.5px solid var(--md-sys-color-outline-variant);
+    color: var(--md-sys-color-on-surface-variant); cursor: pointer;
+    background: transparent; transition: all 180ms;
+}
+.ph-chip:hover, .ph-chip.active {
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary-container);
+}
+.ph-btn-submit {
+    width: 100%; height: 52px; background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary); border: none;
+    border-radius: var(--md-sys-shape-corner-full);
+    font: 600 1rem/1 'Inter',sans-serif; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 200ms; box-shadow: 0 2px 12px rgba(40,167,69,.3);
+}
+.ph-btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(40,167,69,.4); }
+.ph-btn-submit .material-symbols-outlined { font-size: 20px; }
+
+/* info sidebar */
+.ph-info-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    overflow: hidden; height: 100%;
+}
+.ph-info-head {
+    background: linear-gradient(135deg, #0d2415, #1a3d25);
+    padding: 24px; color: #fff;
+}
+.ph-info-head h3 { font: 600 1.1rem/1.2 'Inter',sans-serif; margin-bottom: 4px; color: #fff; }
+.ph-info-head p { font-size: .8rem; opacity: .65; margin: 0; }
+.ph-info-body { padding: 22px; }
+.ph-info-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+.ph-info-item:last-child { margin-bottom: 0; }
+.ph-info-icon {
+    width: 42px; height: 42px; border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary-container);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    color: var(--md-sys-color-on-primary-container);
+}
+.ph-info-icon .material-symbols-outlined { font-size: 20px; }
+.ph-info-text strong { font: 600 .85rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); display: block; margin-bottom: 3px; }
+.ph-info-text a, .ph-info-text span { font-size: .82rem; color: var(--md-sys-color-on-surface-variant); text-decoration: none; line-height: 1.5; }
+.ph-info-text a:hover { color: var(--md-sys-color-primary); }
+
+.ph-divider { border: none; border-top: 1px solid var(--md-sys-color-outline-variant); margin: 18px 0; }
+
+/* hours */
+.ph-hours { list-style: none; padding: 0; margin: 0; }
+.ph-hours li {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    font-size: .83rem;
+}
+.ph-hours li:last-child { border-bottom: none; }
+.ph-hours .day { font-weight: 600; color: var(--md-sys-color-on-surface); }
+.ph-hours .time { color: var(--md-sys-color-on-surface-variant); }
+.ph-hours .closed { color: var(--md-sys-color-error, #d32f2f); font-weight: 600; }
+
+/* status badge */
+.ph-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 100px; font-size: .78rem; font-weight: 600;
+    margin-bottom: 18px;
+}
+.ph-status--open { background: rgba(40,167,69,.12); color: #1a7a32; }
+.ph-status--closed { background: rgba(211,47,47,.1); color: #c62828; }
+.ph-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 1.8s infinite; }
+@keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+
+/* social */
+.ph-socials { display: flex; gap: 10px; flex-wrap: wrap; }
+.ph-social-btn {
+    width: 38px; height: 38px; border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--md-sys-color-on-surface-variant); text-decoration: none;
+    transition: all 200ms; font-size: .9rem;
+}
+.ph-social-btn:hover { background: var(--md-sys-color-primary); color: #fff; border-color: var(--md-sys-color-primary); transform: translateY(-2px); }
+
+/* ─── MAP ──────────────────────────────────────────────────────────────────── */
+.ph-map-sec { padding: 70px 0; background: var(--md-sys-color-surface); }
+.ph-map-wrap {
+    border-radius: var(--md-sys-shape-corner-large);
+    overflow: hidden; box-shadow: var(--md-sys-elevation-2);
+    position: relative;
+}
+.ph-map-wrap iframe { display: block; }
+.ph-map-overlay {
+    position: absolute; top: 20px; left: 20px; z-index: 5;
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-large);
+    padding: 16px 20px; box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    max-width: 260px;
+}
+.ph-map-overlay h4 { font: 600 .95rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.ph-map-overlay h4 .material-symbols-outlined { color: var(--md-sys-color-primary); font-size: 18px; }
+.ph-map-overlay p { font-size: .8rem; color: var(--md-sys-color-on-surface-variant); margin-bottom: 12px; line-height: 1.5; }
+.ph-map-overlay a {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--md-sys-color-primary); color: #fff;
+    padding: 8px 16px; border-radius: 100px; font-size: .8rem; font-weight: 600;
+    text-decoration: none; transition: all 180ms;
+}
+.ph-map-overlay a:hover { box-shadow: 0 4px 14px rgba(40,167,69,.4); color: #fff; }
+.ph-map-overlay a .material-symbols-outlined { font-size: 15px; }
+
+/* ─── FAQ ──────────────────────────────────────────────────────────────────── */
+.ph-faq { padding: 70px 0; background: var(--md-sys-color-surface-container); }
+.ph-accordion-item {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-corner-large) !important;
+    border: 1px solid var(--md-sys-color-outline-variant) !important;
+    margin-bottom: 12px; overflow: hidden;
+}
+.ph-accordion-item .accordion-button {
+    background: transparent; color: var(--md-sys-color-on-surface);
+    font: 600 .95rem/1.4 'Inter',sans-serif;
+    border-radius: var(--md-sys-shape-corner-large) !important;
+    box-shadow: none !important; padding: 18px 22px;
+}
+.ph-accordion-item .accordion-button:not(.collapsed) {
+    color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-primary-container);
+}
+.ph-accordion-item .accordion-button::after { filter: none; }
+.ph-accordion-item .accordion-body {
+    font-size: .9rem; color: var(--md-sys-color-on-surface-variant);
+    padding: 16px 22px 20px; line-height: 1.7;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* ─── MOBILE ───────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .ph-hero { padding: 60px 0 120px; }
+    .ph-hero h1 { font-size: 2rem; }
+    .ph-hero-illo { margin-top: 40px; }
+    .ph-hero-illo svg { max-width: 280px; }
+    .ph-quick-inner { margin-top: -50px; }
+    .ph-qc { border-right: none; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+    .ph-qc:last-child { border-bottom: none; }
+    .ph-map-overlay { max-width: 200px; }
+    .ph-map-overlay h4 { font-size: .85rem; }
+}
 </style>
 
-<section class="m3-contact-hero hero-lattice"><div class="container"><div class="m3-contact-hero-inner">
-    <!-- Floating squares -->
-    <div class="floating-sq floating-sq--sm floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:15%;left:8%"></div>
-    <div class="floating-sq floating-sq--md floating-sq--c2 floating-sq--a3 floating-sq--d3" style="top:50%;right:5%"></div>
-    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a4 floating-sq--d5" style="top:-20px;right:-20px;transform:rotate(15deg)"></div>
-    <h1>Contact Us</h1>
-    <p>We're here to help! Get in touch with our team for any questions or inquiries about our properties and services.</p>
-</div></div></section>
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section class="ph-hero">
+    <div class="ph-blob ph-blob--1"></div>
+    <div class="ph-blob ph-blob--2"></div>
+    <div class="container">
+        <div class="row align-items-center g-4">
 
-<section class="m3-contact-sec"><div class="container">
-    <h2 class="m3-contact-title">Get in Touch</h2>
-    <div class="row mb-5">
-        <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">email</span></div><h3>Email Us</h3><p>Send us an email and we'll respond quickly</p><a href="mailto:support@PropertyHubproperties.com">support@PropertyHubproperties.com <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
-        <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">call</span></div><h3>Call Us</h3><p>Speak directly with our support team</p><a href="tel:+250788123456">+250 788 123 456 <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
-        <div class="col-md-4"><div class="m3-cc"><div class="m3-cc-icon"><span class="material-symbols-outlined" style="font-size:28px">location_on</span></div><h3>Visit Us</h3><p>Come visit our office during business hours</p><a href="#map">View Location <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></a></div></div>
+            <!-- Text -->
+            <div class="col-lg-6 ph-hero-content">
+                <span class="ph-hero-badge">
+                    <span class="material-symbols-outlined">support_agent</span>
+                    We're always available
+                </span>
+                <h1>Let's Start a Conversation</h1>
+                <p>Have a question about a property, need support, or just want to say hello? Our friendly team is ready to help you every step of the way.</p>
+                <div class="ph-hero-pills">
+                    <span class="ph-hero-pill"><span class="material-symbols-outlined">bolt</span>Reply within 2 hours</span>
+                    <span class="ph-hero-pill"><span class="material-symbols-outlined">verified</span>Trusted support team</span>
+                    <span class="ph-hero-pill"><span class="material-symbols-outlined">location_on</span>Kigali, Rwanda</span>
+                </div>
+            </div>
+
+            <!-- Illustration -->
+            <div class="col-lg-6 ph-hero-illo">
+                <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a3d25"/>
+                            <stop offset="100%" style="stop-color:#0d2415"/>
+                        </linearGradient>
+                        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#28a745"/>
+                            <stop offset="100%" style="stop-color:#1a7a32"/>
+                        </linearGradient>
+                        <linearGradient id="g3" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.12"/>
+                            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.04"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Background card -->
+                    <rect x="30" y="30" width="420" height="340" rx="24" fill="url(#g1)" opacity=".8"/>
+
+                    <!-- Building / property icon -->
+                    <rect x="60" y="200" width="160" height="140" rx="8" fill="url(#g2)" opacity=".9"/>
+                    <rect x="80" y="220" width="35" height="35" rx="4" fill="rgba(255,255,255,.25)"/>
+                    <rect x="130" y="220" width="35" height="35" rx="4" fill="rgba(255,255,255,.25)"/>
+                    <rect x="80" y="270" width="35" height="35" rx="4" fill="rgba(255,255,255,.25)"/>
+                    <rect x="130" y="270" width="35" height="35" rx="4" fill="rgba(255,255,255,.25)"/>
+                    <!-- door -->
+                    <rect x="168" y="305" width="32" height="35" rx="3" fill="rgba(255,255,255,.18)"/>
+                    <circle cx="177" cy="322" r="3" fill="rgba(255,255,255,.5)"/>
+                    <!-- Roof -->
+                    <polygon points="48,200 220,200 134,140" fill="#1a7a32" opacity=".95"/>
+                    <polygon points="60,200 208,200 134,148" fill="url(#g2)" opacity=".7"/>
+
+                    <!-- Chat / message bubbles -->
+                    <rect x="250" y="60" width="190" height="70" rx="16" fill="url(#g2)"/>
+                    <text x="272" y="90" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="600">How can we help?</text>
+                    <text x="272" y="110" fill="rgba(255,255,255,.7)" font-family="Inter,sans-serif" font-size="11">Our team replies fast ⚡</text>
+                    <polygon points="266,130 290,130 278,148" fill="url(#g2)"/>
+
+                    <rect x="270" y="165" width="155" height="55" rx="12" fill="rgba(255,255,255,.1)"/>
+                    <circle cx="292" cy="192" r="14" fill="#28a745" opacity=".8"/>
+                    <text x="289" y="197" fill="#fff" font-family="Inter,sans-serif" font-size="14">✓</text>
+                    <text x="312" y="187" fill="rgba(255,255,255,.85)" font-family="Inter,sans-serif" font-size="11" font-weight="600">Message sent!</text>
+                    <text x="312" y="203" fill="rgba(255,255,255,.5)" font-family="Inter,sans-serif" font-size="10">We'll be in touch shortly</text>
+
+                    <!-- Phone device -->
+                    <rect x="300" y="240" width="90" height="150" rx="14" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+                    <rect x="308" y="252" width="74" height="112" rx="6" fill="rgba(255,255,255,.05)"/>
+                    <!-- screen content lines -->
+                    <rect x="315" y="262" width="60" height="6" rx="3" fill="rgba(40,167,69,.6)"/>
+                    <rect x="315" y="274" width="48" height="5" rx="2.5" fill="rgba(255,255,255,.2)"/>
+                    <rect x="315" y="284" width="54" height="5" rx="2.5" fill="rgba(255,255,255,.2)"/>
+                    <rect x="315" y="298" width="60" height="24" rx="4" fill="#28a745" opacity=".7"/>
+                    <text x="342" y="314" fill="#fff" font-family="Inter,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Send ➜</text>
+                    <!-- phone dot -->
+                    <circle cx="345" cy="380" r="5" fill="rgba(255,255,255,.25)"/>
+
+                    <!-- Floating accent dots -->
+                    <circle cx="80" cy="75" r="22" fill="rgba(40,167,69,.18)"/>
+                    <circle cx="80" cy="75" r="10" fill="rgba(40,167,69,.35)"/>
+                    <circle cx="420" cy="340" r="16" fill="rgba(40,167,69,.15)"/>
+                    <circle cx="420" cy="340" r="7" fill="rgba(40,167,69,.3)"/>
+
+                    <!-- location pin -->
+                    <ellipse cx="140" cy="130" rx="16" ry="24" fill="#fff" opacity=".9"/>
+                    <circle cx="140" cy="124" r="8" fill="url(#g2)"/>
+                    <ellipse cx="140" cy="155" rx="8" ry="4" fill="rgba(0,0,0,.15)"/>
+
+                    <!-- Stars / sparkle -->
+                    <text x="235" y="55" fill="#6fcf97" font-family="Inter" font-size="20" opacity=".6">✦</text>
+                    <text x="395" y="175" fill="#6fcf97" font-family="Inter" font-size="14" opacity=".4">✦</text>
+                    <text x="55" y="165" fill="#6fcf97" font-family="Inter" font-size="11" opacity=".5">✦</text>
+                </svg>
+            </div>
+
+        </div>
     </div>
-    <div class="row">
-        <div class="col-lg-8 mb-4"><div class="m3-form-card">
-            <div class="m3-form-header"><span class="material-symbols-outlined">send</span>Send us a Message</div>
-            <div class="m3-form-body">
-                {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags }} alert-dismissible fade show" style="border-radius:var(--md-sys-shape-corner-medium);border:none"><span class="material-symbols-outlined" style="font-size:20px">{% if message.tags == 'success' %}check_circle{% else %}warning{% endif %}</span> {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
-                <form action="customer_message" method="POST">{% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6 mb-3"><label for="name"><span class="material-symbols-outlined">person</span>Full Name</label><input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required></div>
-                        <div class="col-md-6 mb-3"><label for="email"><span class="material-symbols-outlined">email</span>Email Address</label><input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required></div>
+</section>
+
+<!-- ═══ QUICK CONTACT CARDS ══════════════════════════════════════════════════ -->
+<section class="ph-quick">
+    <div class="container">
+        <div class="ph-quick-inner">
+            <div class="row g-0">
+                <div class="col-md-3 col-6">
+                    <div class="ph-qc">
+                        <div class="ph-qc-icon"><span class="material-symbols-outlined" style="font-size:26px">email</span></div>
+                        <h4>Email Us</h4>
+                        <p>Drop us a message anytime</p>
+                        <a href="mailto:support@PropertyHubproperties.com">Write to us <span class="material-symbols-outlined">arrow_forward</span></a>
                     </div>
-                    <div class="mb-3"><label for="message"><span class="material-symbols-outlined">chat</span>Your Message</label><textarea class="form-control" id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required></textarea></div>
-                    <button type="submit" class="m3-btn-submit"><span class="material-symbols-outlined" style="font-size:20px">send</span>Send Message</button>
-                </form>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="ph-qc">
+                        <div class="ph-qc-icon"><span class="material-symbols-outlined" style="font-size:26px">call</span></div>
+                        <h4>Call Us</h4>
+                        <p>Speak with our team directly</p>
+                        <a href="tel:+250788123456">+250 788 123 456 <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="ph-qc">
+                        <div class="ph-qc-icon"><span class="material-symbols-outlined" style="font-size:26px">location_on</span></div>
+                        <h4>Visit Us</h4>
+                        <p>Kigali Heights, Kigali</p>
+                        <a href="#ph-map">View on map <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="ph-qc">
+                        <div class="ph-qc-icon"><span class="material-symbols-outlined" style="font-size:26px">chat</span></div>
+                        <h4>Live Chat</h4>
+                        <p>Instant answers, 9 AM – 6 PM</p>
+                        <a href="#contact-form">Start chat <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                </div>
             </div>
-        </div></div>
-        <div class="col-lg-4"><div class="m3-info-card">
-            <div class="m3-info-sec"><h4><span class="material-symbols-outlined">info</span>Contact Information</h4>
-                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">email</span></div><div class="m3-info-content"><strong>Email</strong><a href="mailto:support@PropertyHubproperties.com">support@PropertyHubproperties.com</a></div></div>
-                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">call</span></div><div class="m3-info-content"><strong>Phone</strong><a href="tel:+250788123456">+250 788 123 456</a></div></div>
-                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">location_on</span></div><div class="m3-info-content"><strong>Address</strong><span>KG 123 St, Kigali Heights<br>Kigali, Rwanda</span></div></div>
-            </div>
-            <div class="m3-info-sec"><h4><span class="material-symbols-outlined">schedule</span>Support Hours</h4>
-                <ul class="m3-hours"><li><span class="day">Monday - Friday</span><span class="time">9:00 AM - 6:00 PM</span></li><li><span class="day">Saturday</span><span class="time">10:00 AM - 2:00 PM</span></li><li><span class="day">Sunday</span><span class="time">Closed</span></li></ul>
-            </div>
-            <div class="m3-info-sec"><h4><span class="material-symbols-outlined">emergency</span>Emergency Support</h4>
-                <p style="font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)">For urgent property-related issues outside business hours:</p>
-                <div class="m3-info-item"><div class="m3-info-icon"><span class="material-symbols-outlined">phone_in_talk</span></div><div class="m3-info-content"><strong>Emergency Line</strong><a href="tel:+250788999999">+250 788 999 999</a></div></div>
-            </div>
-        </div></div>
+        </div>
     </div>
-</div></section>
+</section>
 
-<section class="m3-map-sec" id="map"><div class="container">
-    <h2 class="m3-contact-title">Find Us</h2>
-    <div class="m3-map-box"><div class="m3-map-placeholder"><div class="text-center">
-        <span class="material-symbols-outlined" style="font-size:3rem;display:block;margin-bottom:12px">map</span>
-        <h4 style="font:var(--md-sys-typescale-title-large)">Our Location</h4>
-        <p>KG 123 St, Kigali Heights, Kigali, Rwanda</p>
-        <a href="https://maps.google.com?q=KG+123+St,+Kigali+Heights,+Kigali,+Rwanda" target="_blank" class="md-btn-filled" style="margin-top:16px"><span class="material-symbols-outlined" style="font-size:18px">open_in_new</span>Open in Google Maps</a>
-    </div></div></div>
-</div></section>
+<!-- ═══ MAIN CONTACT FORM + SIDEBAR ══════════════════════════════════════════ -->
+<section class="ph-main" id="contact-form">
+    <div class="container">
+        <div class="ph-section-label">
+            <span class="overline">Get in touch</span>
+            <h2>Send Us a Message</h2>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Form -->
+            <div class="col-lg-8">
+                <div class="ph-form-card">
+                    <div class="ph-form-head">
+                        <span class="material-symbols-outlined">send</span>
+                        <div>
+                            <h3>We'd love to hear from you</h3>
+                            <p>Fill in the form and we'll get back to you within 2 hours.</p>
+                        </div>
+                    </div>
+                    <div class="ph-form-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4"
+                                 style="border-radius:var(--md-sys-shape-corner-medium);border:none;display:flex;align-items:center;gap:10px">
+                                <span class="material-symbols-outlined" style="font-size:20px;flex-shrink:0">
+                                    {% if message.tags == 'success' %}check_circle{% else %}warning{% endif %}
+                                </span>
+                                <span>{{ message }}</span>
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Subject chips -->
+                        <div class="mb-4">
+                            <label style="margin-bottom:10px"><span class="material-symbols-outlined">label</span>Topic (optional)</label>
+                            <div class="ph-subject-chips">
+                                <button type="button" class="ph-chip">General Inquiry</button>
+                                <button type="button" class="ph-chip">Property Rental</button>
+                                <button type="button" class="ph-chip">Property Sale</button>
+                                <button type="button" class="ph-chip">Technical Support</button>
+                                <button type="button" class="ph-chip">Partnership</button>
+                            </div>
+                        </div>
+
+                        <form action="customer_message" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" id="subject-hidden" name="subject" value="">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name"><span class="material-symbols-outlined">person</span>Full Name <span style="color:var(--md-sys-color-error,#d32f2f)">*</span></label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Jean Bosco Niyonzima" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email"><span class="material-symbols-outlined">email</span>Email Address <span style="color:var(--md-sys-color-error,#d32f2f)">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone"><span class="material-symbols-outlined">call</span>Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone_number" placeholder="+250 7XX XXX XXX">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="pref"><span class="material-symbols-outlined">notifications</span>Preferred Contact</label>
+                                    <select class="form-control" id="pref" name="preferred_contact">
+                                        <option value="email">Email</option>
+                                        <option value="phone">Phone</option>
+                                        <option value="any">Either</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="message"><span class="material-symbols-outlined">chat</span>Your Message <span style="color:var(--md-sys-color-error,#d32f2f)">*</span></label>
+                                <textarea class="form-control" id="message" name="message" rows="6"
+                                    placeholder="Tell us how we can help you. The more detail, the better!" required></textarea>
+                            </div>
+                            <button type="submit" class="ph-btn-submit">
+                                <span class="material-symbols-outlined">send</span>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="ph-info-card">
+                    <div class="ph-info-head">
+                        <h3>Contact Details</h3>
+                        <p>Reach us through any channel below</p>
+                    </div>
+                    <div class="ph-info-body">
+
+                        <!-- Status -->
+                        <div id="ph-open-status"></div>
+
+                        <!-- Contact info -->
+                        <div class="ph-info-item">
+                            <div class="ph-info-icon"><span class="material-symbols-outlined">email</span></div>
+                            <div class="ph-info-text">
+                                <strong>Email</strong>
+                                <a href="mailto:support@PropertyHubproperties.com">support@PropertyHub<wbr>properties.com</a>
+                            </div>
+                        </div>
+                        <div class="ph-info-item">
+                            <div class="ph-info-icon"><span class="material-symbols-outlined">call</span></div>
+                            <div class="ph-info-text">
+                                <strong>Main Line</strong>
+                                <a href="tel:+250788123456">+250 788 123 456</a>
+                            </div>
+                        </div>
+                        <div class="ph-info-item">
+                            <div class="ph-info-icon"><span class="material-symbols-outlined">phone_in_talk</span></div>
+                            <div class="ph-info-text">
+                                <strong>Emergency (24/7)</strong>
+                                <a href="tel:+250788999999">+250 788 999 999</a>
+                            </div>
+                        </div>
+                        <div class="ph-info-item">
+                            <div class="ph-info-icon"><span class="material-symbols-outlined">location_on</span></div>
+                            <div class="ph-info-text">
+                                <strong>Office Address</strong>
+                                <span>KG 123 St, Kigali Heights<br>Kigali, Rwanda</span>
+                            </div>
+                        </div>
+
+                        <hr class="ph-divider">
+
+                        <!-- Hours -->
+                        <p style="font:600 .85rem/1 'Inter',sans-serif;color:var(--md-sys-color-on-surface);margin-bottom:12px;display:flex;align-items:center;gap:6px">
+                            <span class="material-symbols-outlined" style="color:var(--md-sys-color-primary);font-size:18px">schedule</span>
+                            Business Hours
+                        </p>
+                        <ul class="ph-hours">
+                            <li><span class="day">Mon – Fri</span><span class="time">9:00 AM – 6:00 PM</span></li>
+                            <li><span class="day">Saturday</span><span class="time">10:00 AM – 2:00 PM</span></li>
+                            <li><span class="day">Sunday</span><span class="closed">Closed</span></li>
+                        </ul>
+
+                        <hr class="ph-divider">
+
+                        <!-- Social links -->
+                        <p style="font:600 .85rem/1 'Inter',sans-serif;color:var(--md-sys-color-on-surface);margin-bottom:12px;display:flex;align-items:center;gap:6px">
+                            <span class="material-symbols-outlined" style="color:var(--md-sys-color-primary);font-size:18px">share</span>
+                            Follow Us
+                        </p>
+                        <div class="ph-socials">
+                            <a href="#" class="ph-social-btn" title="Facebook" aria-label="Facebook">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                            </a>
+                            <a href="#" class="ph-social-btn" title="Twitter / X" aria-label="Twitter">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            </a>
+                            <a href="#" class="ph-social-btn" title="LinkedIn" aria-label="LinkedIn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                            </a>
+                            <a href="#" class="ph-social-btn" title="Instagram" aria-label="Instagram">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                            </a>
+                            <a href="#" class="ph-social-btn" title="WhatsApp" aria-label="WhatsApp">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ MAP ══════════════════════════════════════════════════════════════════ -->
+<section class="ph-map-sec" id="ph-map">
+    <div class="container">
+        <div class="ph-section-label" style="margin-bottom:36px">
+            <span class="overline">Location</span>
+            <h2>Find Us</h2>
+        </div>
+        <div class="ph-map-wrap" style="position:relative">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.488607658506!2d30.05892481475389!3d-1.944155537023753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca5f64fe39f0b%3A0xba52ab8e5de7c69e!2sKigali%2C%20Rwanda!5e0!3m2!1sen!2srw!4v1710800000000!5m2!1sen!2srw"
+                width="100%"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="PropertyHub office location – Kigali, Rwanda">
+            </iframe>
+            <!-- Overlay card -->
+            <div class="ph-map-overlay">
+                <h4><span class="material-symbols-outlined">apartment</span>PropertyHub Ltd</h4>
+                <p>KG 123 St, Kigali Heights<br>Kigali, Rwanda</p>
+                <a href="https://maps.google.com?q=Kigali+Heights+Kigali+Rwanda" target="_blank" rel="noopener">
+                    <span class="material-symbols-outlined">open_in_new</span> Open in Maps
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FAQ ═══════════════════════════════════════════════════════════════════ -->
+<section class="ph-faq">
+    <div class="container">
+        <div class="ph-section-label" style="margin-bottom:40px">
+            <span class="overline">FAQ</span>
+            <h2>Common Questions</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+
+                    <div class="accordion-item ph-accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How quickly will I get a response?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We aim to respond to all inquiries within <strong>2 business hours</strong> during office hours (Monday–Friday, 9 AM–6 PM). Emails sent outside business hours are answered on the next working day.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item ph-accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How can I schedule a property viewing?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can request a viewing directly from any property listing page, or contact us using the form above and mention the property you are interested in. Our agents will arrange a convenient time with you.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item ph-accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                I'm a landlord — how do I list my property?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Register as an owner or agent on PropertyHub, then use your dashboard to list properties. Our team reviews listings within 24 hours. Reach out to us if you need assistance with the process.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item ph-accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Is there an emergency support line?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! For urgent property-related issues outside business hours, call our 24/7 emergency line: <strong><a href="tel:+250788999999">+250 788 999 999</a></strong>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item ph-accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                Do you serve areas outside Kigali?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our primary market is Kigali, but we also handle properties in Musanze, Rubavu, Huye, and other major Rwandan cities. Contact us to discuss your specific location.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- chip interaction script -->
+<script>
+(function () {
+    var chips = document.querySelectorAll('.ph-chip');
+    var hidden = document.getElementById('subject-hidden');
+    chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+            var wasActive = chip.classList.contains('active');
+            chips.forEach(function (c) { c.classList.remove('active'); });
+            if (!wasActive) {
+                chip.classList.add('active');
+                if (hidden) hidden.value = chip.textContent.trim();
+            } else {
+                if (hidden) hidden.value = '';
+            }
+        });
+    });
+
+    /* live open/closed badge */
+    var statusEl = document.getElementById('ph-open-status');
+    if (statusEl) {
+        var now = new Date();
+        var day = now.getDay(); // 0=Sun
+        var hour = now.getHours() + now.getMinutes() / 60;
+        var open = false;
+        if (day >= 1 && day <= 5 && hour >= 9 && hour < 18) open = true;
+        if (day === 6 && hour >= 10 && hour < 14) open = true;
+        statusEl.innerHTML = open
+            ? '<span class="ph-status ph-status--open"><span class="ph-status-dot"></span>We\'re open now</span>'
+            : '<span class="ph-status ph-status--closed"><span class="ph-status-dot"></span>Currently closed</span>';
+    }
+}());
+</script>
 {% endblock %}

@@ -3,129 +3,773 @@
 {% block title %}About Us - PropertyHub Ltd{% endblock %}
 {% block content %}
 <style>
-    .m3-about-hero{margin-top:112px;padding:80px 0 70px;position:relative;overflow:hidden;text-align:center;color:#fff}
-    .m3-about-hero::before{content:'';position:absolute;width:400px;height:400px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(40,167,69,.15) 0%,transparent 70%);border-radius:50%}
-    .m3-about-hero::after{content:'';position:absolute;width:300px;height:300px;bottom:-80px;left:-80px;background:radial-gradient(circle,rgba(32,201,151,.12) 0%,transparent 70%);border-radius:50%}
-    .m3-about-hero-inner{position:relative;z-index:2}
-    .m3-about-hero h1{font:500 2.8rem/1.2 'Inter',sans-serif;margin-bottom:16px}
-    .m3-about-hero p{color:rgba(255,255,255,.65);font:var(--md-sys-typescale-body-large);max-width:550px;margin:0 auto;line-height:1.7}
-    .m3-sec{padding:80px 0}.m3-sec-s{background:var(--md-sys-color-surface)}.m3-sec-c{background:var(--md-sys-color-surface-container)}
-    .m3-sh{text-align:center;margin-bottom:50px}
-    .m3-tag{display:inline-flex;align-items:center;gap:8px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);padding:6px 16px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
-    .m3-tag .material-symbols-outlined{font-size:16px}
-    .m3-stitle{font:var(--md-sys-typescale-headline-large);color:var(--md-sys-color-on-surface);margin-bottom:14px}
-    .m3-ssub{color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-body-large);max-width:520px;margin:0 auto;line-height:1.7}
-    .m3-story{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms var(--md-sys-motion-easing-emphasized)}
-    .m3-story:hover{box-shadow:var(--md-sys-elevation-2);border-color:transparent;transform:translateY(-4px)}
-    .m3-story-img{height:280px;overflow:hidden}
-    .m3-story-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-    .m3-story:hover .m3-story-img img{transform:scale(1.05)}
-    .m3-story-body{padding:28px}
-    .m3-story-body h3{font:var(--md-sys-typescale-title-large);color:var(--md-sys-color-on-surface);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-    .m3-story-body h3 .material-symbols-outlined{color:var(--md-sys-color-primary)}
-    .m3-story-body p{color:var(--md-sys-color-on-surface-variant);line-height:1.8;font:var(--md-sys-typescale-body-medium);margin:0}
-    .m3-tl{position:relative;padding:20px 0}
-    .m3-tl::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--md-sys-color-outline-variant);transform:translateX(-50%)}
-    .m3-tl-item{position:relative;margin-bottom:40px;width:50%;padding-right:40px}
-    .m3-tl-item:nth-child(even){margin-left:50%;padding-right:0;padding-left:40px}
-    .m3-tl-dot{position:absolute;top:8px;width:14px;height:14px;border-radius:50%;background:var(--md-sys-color-primary);border:3px solid var(--md-sys-color-surface);box-shadow:0 0 0 3px var(--md-sys-color-primary-container);z-index:2}
-    .m3-tl-item:nth-child(odd) .m3-tl-dot{right:-7px}
-    .m3-tl-item:nth-child(even) .m3-tl-dot{left:-7px}
-    .m3-tl-year{display:inline-block;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);padding:4px 14px;border-radius:var(--md-sys-shape-corner-full);font:var(--md-sys-typescale-label-medium);margin-bottom:10px}
-    .m3-tl-content{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-medium);padding:20px;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms}
-    .m3-tl-content:hover{box-shadow:var(--md-sys-elevation-1)}
-    .m3-tl-content h4{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:8px}
-    .m3-tl-content p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);margin:0;line-height:1.6}
-    .m3-about-stats{padding:60px 0;position:relative;overflow:hidden;background-color:#0d2415;background-image:linear-gradient(135deg,rgba(26,42,26,.98),rgba(13,74,37,.95)),linear-gradient(rgba(40,167,69,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(40,167,69,.08) 1px,transparent 1px);background-size:100% 100%,50px 50px,50px 50px;background-attachment:scroll,fixed,fixed}
-    .m3-as{text-align:center;position:relative;z-index:2;padding:20px}
-    .m3-as-val{font:500 2.4rem/1 'Inter',sans-serif;color:#fff;margin-bottom:4px}
-    .m3-as-lbl{color:rgba(255,255,255,.6);font:var(--md-sys-typescale-label-medium)}
-    .m3-val{background:var(--md-sys-color-surface-container-lowest);border-radius:var(--md-sys-shape-corner-large);padding:28px;border:1px solid var(--md-sys-color-outline-variant);transition:all 300ms;height:100%;overflow:hidden}
-    .m3-val:hover{transform:translateY(-4px);box-shadow:var(--md-sys-elevation-2);border-color:transparent}
-    .m3-val-icon{width:52px;height:52px;border-radius:var(--md-sys-shape-corner-large);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-primary-container);margin-bottom:18px;transition:all 300ms}
-    .m3-val:hover .m3-val-icon{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);transform:scale(1.1)}
-    .m3-val h4{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:8px}
-    .m3-val p{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);line-height:1.65;margin:0}
-    .m3-team{text-align:center;transition:all 300ms}
-    .m3-team:hover{transform:translateY(-8px)}
-    .m3-team-img{position:relative;width:140px;height:140px;margin:0 auto 20px;border-radius:var(--md-sys-shape-corner-full);overflow:hidden;border:4px solid var(--md-sys-color-outline-variant);transition:all 300ms}
-    .m3-team:hover .m3-team-img{border-color:var(--md-sys-color-primary)}
-    .m3-team-img img{width:100%;height:100%;object-fit:cover}
-    .m3-team h4{font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface);margin-bottom:4px}
-    .m3-team p{color:var(--md-sys-color-primary);font:var(--md-sys-typescale-label-medium);margin-bottom:12px}
-    .m3-team-socials{display:flex;justify-content:center;gap:8px}
-    .m3-team-socials a{width:34px;height:34px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-surface-container-high);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-surface-variant);font-size:.85rem;transition:all 200ms;text-decoration:none}
-    .m3-team-socials a:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);transform:translateY(-2px)}
-    .m3-about-cta{padding:80px 0;text-align:center;background:var(--md-sys-color-surface-container)}
-    .m3-about-cta h3{font:var(--md-sys-typescale-headline-medium);color:var(--md-sys-color-on-surface);margin-bottom:14px}
-    .m3-about-cta p{color:var(--md-sys-color-on-surface-variant);max-width:500px;margin:0 auto 30px;line-height:1.7;font:var(--md-sys-typescale-body-large)}
-    @media(max-width:768px){
-        .m3-about-hero h1{font-size:2rem}
-        .m3-tl::before{left:20px}
-        .m3-tl-item,.m3-tl-item:nth-child(even){width:100%;padding-left:50px;padding-right:0;margin-left:0}
-        .m3-tl-item .m3-tl-dot,.m3-tl-item:nth-child(even) .m3-tl-dot{left:13px;right:auto}
-        .m3-sec{padding:50px 0}.m3-as-val{font-size:1.8rem}
+/* ─── TOKENS ────────────────────────────────────────────────────────────────── */
+:root {
+    --ab-green: #28a745;
+    --ab-green-dark: #1a7a32;
+    --ab-dark: #0d2415;
+    --ab-dark2: #1a3d25;
+    --ab-radius: var(--md-sys-shape-corner-large, 16px);
+    --ab-radius-xl: 24px;
+}
+
+/* ─── HERO ──────────────────────────────────────────────────────────────────── */
+.ab-hero {
+    margin-top: 0;
+    background: linear-gradient(135deg, var(--ab-dark) 0%, var(--ab-dark2) 55%, var(--ab-dark) 100%);
+    position: relative; overflow: hidden; padding: 88px 0 64px;
+}
+.ab-hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 55% 70% at 75% 50%, rgba(40,167,69,.16) 0%, transparent 70%);
+    pointer-events: none;
+}
+.ab-blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .1; pointer-events: none; }
+.ab-blob--a { width: 380px; height: 380px; background: var(--ab-green); top: -100px; left: -100px; }
+.ab-blob--b { width: 260px; height: 260px; background: #6fcf97; bottom: -80px; right: 5%; }
+
+.ab-hero-content { position: relative; z-index: 2; color: #fff; }
+.ab-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(40,167,69,.18); border: 1px solid rgba(40,167,69,.35);
+    color: #6fcf97; border-radius: 100px; padding: 6px 18px;
+    font-size: .78rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+    margin-bottom: 22px;
+}
+.ab-badge .material-symbols-outlined { font-size: 15px; }
+.ab-hero h1 {
+    font: 700 3.2rem/1.1 'Inter', sans-serif; margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 30%, #6fcf97 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.ab-hero p { font-size: 1.05rem; opacity: .7; max-width: 500px; line-height: 1.75; margin-bottom: 36px; }
+.ab-hero-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.ab-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.8); border-radius: 100px; padding: 8px 18px;
+    font-size: .82rem; font-weight: 500; backdrop-filter: blur(4px);
+}
+.ab-chip .material-symbols-outlined { font-size: 15px; color: #6fcf97; }
+
+/* hero illustration */
+.ab-hero-illo { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
+.ab-hero-illo svg { max-width: 440px; width: 100%; filter: drop-shadow(0 24px 64px rgba(40,167,69,.22)); }
+
+/* ─── SECTION HELPERS ───────────────────────────────────────────────────────── */
+.ab-sec { padding: 80px 0; }
+.ab-sec--surface { background: var(--md-sys-color-surface); }
+.ab-sec--container { background: var(--md-sys-color-surface-container); }
+.ab-heading { text-align: center; margin-bottom: 52px; }
+.ab-heading .overline {
+    display: block; font-size: .72rem; font-weight: 800; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--ab-green); margin-bottom: 10px;
+}
+.ab-heading h2 {
+    font: 600 2.2rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface);
+    margin-bottom: 12px; position: relative; display: inline-block;
+}
+.ab-heading h2::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 44px; height: 3px; background: var(--ab-green);
+    border-radius: 100px;
+}
+.ab-heading p { font-size: .95rem; color: var(--md-sys-color-on-surface-variant); max-width: 520px; margin: 18px auto 0; line-height: 1.75; }
+
+/* ─── MISSION / WHO WE ARE ──────────────────────────────────────────────────── */
+.ab-story-split { display: flex; flex-direction: column; height: 100%; }
+.ab-story-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--ab-radius-xl); overflow: hidden;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    transition: all 280ms; height: 100%;
+    display: flex; flex-direction: column;
+}
+.ab-story-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,.1); border-color: transparent; }
+.ab-story-img { height: 260px; overflow: hidden; position: relative; }
+.ab-story-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.ab-story-card:hover .ab-story-img img { transform: scale(1.06); }
+.ab-story-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,36,21,.7) 0%, transparent 60%);
+}
+.ab-story-icon {
+    position: absolute; bottom: 16px; left: 20px;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--ab-green); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+}
+.ab-story-icon .material-symbols-outlined { font-size: 24px; }
+.ab-story-body { padding: 26px; flex: 1; }
+.ab-story-body h3 { font: 600 1.15rem/1.3 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 12px; }
+.ab-story-body p { font-size: .9rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.8; margin: 0; }
+
+/* vision / why us split */
+.ab-why-row { display: flex; align-items: center; gap: 48px; }
+.ab-why-illo { flex: 0 0 42%; }
+.ab-why-illo svg { width: 100%; }
+.ab-why-text { flex: 1; }
+.ab-why-text h2 { font: 700 2rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 16px; }
+.ab-why-text p { font-size: .93rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.8; margin-bottom: 24px; }
+.ab-why-points { list-style: none; padding: 0; margin: 0; }
+.ab-why-points li {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 16px; font-size: .9rem; color: var(--md-sys-color-on-surface);
+}
+.ab-why-points li .material-symbols-outlined {
+    color: var(--ab-green); font-size: 20px; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ─── STATS ─────────────────────────────────────────────────────────────────── */
+.ab-stats {
+    background: linear-gradient(135deg, var(--ab-dark) 0%, var(--ab-dark2) 60%, var(--ab-dark) 100%);
+    padding: 70px 0; position: relative; overflow: hidden;
+}
+.ab-stats::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(40,167,69,.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+.ab-stat-card {
+    position: relative; z-index: 2; text-align: center; padding: 28px 20px;
+    border-right: 1px solid rgba(255,255,255,.08);
+}
+.ab-stat-card:last-child { border-right: none; }
+.ab-stat-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(40,167,69,.2); border: 1px solid rgba(40,167,69,.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; color: #6fcf97;
+}
+.ab-stat-icon .material-symbols-outlined { font-size: 24px; }
+.ab-stat-val { font: 700 2.6rem/1 'Inter',sans-serif; color: #fff; margin-bottom: 6px; }
+.ab-stat-val span { color: var(--ab-green); }
+.ab-stat-lbl { font-size: .82rem; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+/* ─── TIMELINE ──────────────────────────────────────────────────────────────── */
+.ab-timeline { position: relative; padding: 20px 0; }
+.ab-timeline::before {
+    content: ''; position: absolute;
+    top: 0; bottom: 0; left: 50%; width: 2px;
+    background: var(--md-sys-color-outline-variant);
+    transform: translateX(-50%);
+}
+.ab-tl-item { position: relative; width: 50%; padding-right: 48px; margin-bottom: 48px; }
+.ab-tl-item:nth-child(even) { margin-left: 50%; padding-right: 0; padding-left: 48px; }
+.ab-tl-dot {
+    position: absolute; top: 12px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--ab-green); border: 3px solid var(--md-sys-color-surface);
+    box-shadow: 0 0 0 4px rgba(40,167,69,.25);
+    z-index: 2;
+}
+.ab-tl-item:nth-child(odd) .ab-tl-dot { right: -9px; }
+.ab-tl-item:nth-child(even) .ab-tl-dot { left: -9px; }
+.ab-tl-year {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--ab-green); color: #fff;
+    padding: 5px 16px; border-radius: 100px;
+    font-size: .78rem; font-weight: 700; letter-spacing: .5px;
+    margin-bottom: 12px;
+}
+.ab-tl-year .material-symbols-outlined { font-size: 14px; }
+.ab-tl-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--ab-radius); padding: 22px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    transition: all 260ms;
+}
+.ab-tl-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); border-color: var(--ab-green); }
+.ab-tl-card h4 { font: 600 1rem/1.3 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.ab-tl-card h4 .material-symbols-outlined { color: var(--ab-green); font-size: 18px; }
+.ab-tl-card p { font-size: .875rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.65; margin: 0; }
+
+/* ─── VALUES ────────────────────────────────────────────────────────────────── */
+.ab-val-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--ab-radius); padding: 30px 24px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    transition: all 280ms; height: 100%;
+    position: relative; overflow: hidden;
+}
+.ab-val-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--ab-green), #6fcf97);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 280ms;
+}
+.ab-val-card:hover::before { transform: scaleX(1); }
+.ab-val-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.08); border-color: transparent; }
+.ab-val-icon {
+    width: 54px; height: 54px; border-radius: 14px;
+    background: var(--md-sys-color-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--md-sys-color-on-primary-container);
+    margin-bottom: 20px; transition: all 280ms;
+}
+.ab-val-card:hover .ab-val-icon { background: var(--ab-green); color: #fff; transform: rotate(5deg) scale(1.08); }
+.ab-val-card h4 { font: 600 1rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 10px; }
+.ab-val-card p { font-size: .875rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.7; margin: 0; }
+
+/* ─── TEAM ──────────────────────────────────────────────────────────────────── */
+.ab-team-card {
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--ab-radius-xl); overflow: hidden;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    transition: all 280ms; text-align: center;
+}
+.ab-team-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.1); border-color: transparent; }
+.ab-team-img-wrap {
+    position: relative; overflow: hidden; height: 220px;
+    background: linear-gradient(135deg, var(--ab-dark), var(--ab-dark2));
+}
+.ab-team-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.ab-team-card:hover .ab-team-img-wrap img { transform: scale(1.07); }
+.ab-team-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,36,21,.85) 0%, transparent 55%);
+    display: flex; align-items: flex-end; padding: 18px;
+    opacity: 0; transition: opacity 280ms;
+}
+.ab-team-card:hover .ab-team-overlay { opacity: 1; }
+.ab-team-socials-hover { display: flex; gap: 10px; }
+.ab-team-socials-hover a {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,.15); backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; text-decoration: none; font-size: .9rem;
+    transition: background 180ms;
+}
+.ab-team-socials-hover a:hover { background: var(--ab-green); }
+.ab-team-body { padding: 22px 20px; }
+.ab-team-body h4 { font: 600 1rem/1.2 'Inter',sans-serif; color: var(--md-sys-color-on-surface); margin-bottom: 4px; }
+.ab-team-role { font-size: .8rem; font-weight: 600; color: var(--ab-green); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 10px; }
+.ab-team-bio { font-size: .83rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; margin: 0; }
+
+/* ─── CTA ───────────────────────────────────────────────────────────────────── */
+.ab-cta {
+    padding: 90px 0;
+    background: linear-gradient(135deg, var(--ab-dark) 0%, var(--ab-dark2) 60%, var(--ab-dark) 100%);
+    position: relative; overflow: hidden; text-align: center;
+}
+.ab-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(40,167,69,.1) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+.ab-cta-inner { position: relative; z-index: 2; }
+.ab-cta h2 {
+    font: 700 2.4rem/1.2 'Inter',sans-serif;
+    background: linear-gradient(135deg, #fff 30%, #6fcf97 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 16px;
+}
+.ab-cta p { font-size: 1rem; color: rgba(255,255,255,.6); max-width: 500px; margin: 0 auto 36px; line-height: 1.75; }
+.ab-cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.ab-btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ab-green); color: #fff;
+    padding: 0 30px; height: 50px; border-radius: 100px;
+    font: 600 .95rem/1 'Inter',sans-serif; text-decoration: none;
+    transition: all 200ms; box-shadow: 0 4px 20px rgba(40,167,69,.35);
+}
+.ab-btn-primary:hover { background: var(--ab-green-dark); transform: translateY(-1px); color: #fff; box-shadow: 0 8px 28px rgba(40,167,69,.45); }
+.ab-btn-primary .material-symbols-outlined { font-size: 20px; }
+.ab-btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: rgba(255,255,255,.8);
+    padding: 0 30px; height: 50px; border-radius: 100px;
+    font: 600 .95rem/1 'Inter',sans-serif; text-decoration: none;
+    border: 1.5px solid rgba(255,255,255,.25); transition: all 200ms;
+}
+.ab-btn-outline:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,.07); }
+.ab-btn-outline .material-symbols-outlined { font-size: 20px; }
+
+/* ─── MOBILE ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+    .ab-why-row { flex-direction: column; gap: 32px; }
+    .ab-why-illo { flex: none; width: 100%; max-width: 320px; margin: 0 auto; }
+}
+@media (max-width: 768px) {
+    .ab-hero { padding: 64px 0 100px; }
+    .ab-hero h1 { font-size: 2.1rem; }
+    .ab-hero-illo { margin-top: 36px; }
+    .ab-hero-illo svg { max-width: 300px; }
+    .ab-sec { padding: 56px 0; }
+    .ab-timeline::before { left: 18px; }
+    .ab-tl-item, .ab-tl-item:nth-child(even) {
+        width: 100%; padding-left: 46px; padding-right: 0; margin-left: 0;
     }
+    .ab-tl-item .ab-tl-dot, .ab-tl-item:nth-child(even) .ab-tl-dot { left: 9px; right: auto; }
+    .ab-stat-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .ab-stat-card:last-child { border-bottom: none; }
+    .ab-cta h2 { font-size: 1.8rem; }
+}
 </style>
 
-<section class="m3-about-hero hero-lattice"><div class="container"><div class="m3-about-hero-inner">
-    <!-- Floating squares -->
-    <div class="floating-sq floating-sq--md floating-sq--c1 floating-sq--a1 floating-sq--d1" style="top:12%;left:5%"></div>
-    <div class="floating-sq floating-sq--lg floating-sq--c3 floating-sq--a3 floating-sq--d2" style="top:15%;right:10%"></div>
-    <div class="floating-sq floating-sq--xl floating-sq--c5 floating-sq--a5 floating-sq--d5" style="bottom:-30px;left:-30px;transform:rotate(20deg)"></div>
-    <h1>About PropertyHub</h1>
-    <p>Revolutionizing property management with innovative solutions for owners, tenants, and real estate professionals across Rwanda.</p>
-</div></div></section>
+<!-- ═══════════════════ HERO ════════════════════════════════════════════════ -->
+<section class="ab-hero">
+    <div class="ab-blob ab-blob--a"></div>
+    <div class="ab-blob ab-blob--b"></div>
+    <div class="container">
+        <div class="row align-items-center g-4">
 
-<section class="m3-sec m3-sec-c"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">auto_stories</span>Our Story</div><h2 class="m3-stitle">Who We Are</h2><p class="m3-ssub">A user-friendly platform that streamlines property management with efficiency, transparency, and innovation.</p></div>
-    <div class="row g-4">
-        <div class="col-lg-6 md-reveal"><div class="m3-story"><div class="m3-story-img"><img src="{% static 'images/mission.jpg' %}" alt="Our Mission" loading="lazy"></div><div class="m3-story-body"><h3><span class="material-symbols-outlined">target</span>Our Mission</h3><p>To simplify property management and create a seamless experience for everyone involved. We foster trust and transparency in real estate transactions, equipping users with essential tools for success.</p></div></div></div>
-        <div class="col-lg-6 md-reveal"><div class="m3-story"><div class="m3-story-img"><img src="{% static 'images/history.jpg' %}" alt="Our History" loading="lazy"></div><div class="m3-story-body"><h3><span class="material-symbols-outlined">history</span>Our History</h3><p>Founded in 2020, PropertyHub bridges the gap between property management and technology. Our founders recognized the challenges faced by property owners and tenants, creating innovative solutions.</p></div></div></div>
+            <div class="col-lg-6 ab-hero-content">
+                <span class="ab-badge"><span class="material-symbols-outlined">apartment</span>Est. 2020 · Kigali, Rwanda</span>
+                <h1>Building Rwanda's Property Future</h1>
+                <p>We're a passionate team on a mission to make property management smarter, simpler, and more transparent for everyone — owners, tenants, and agents alike.</p>
+                <div class="ab-hero-chips">
+                    <span class="ab-chip"><span class="material-symbols-outlined">home_work</span>1,500+ Properties</span>
+                    <span class="ab-chip"><span class="material-symbols-outlined">groups</span>500+ Happy Clients</span>
+                    <span class="ab-chip"><span class="material-symbols-outlined">star</span>4.8 ★ Rating</span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 ab-hero-illo">
+                <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="ag1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a3d25"/>
+                            <stop offset="100%" style="stop-color:#0d2415"/>
+                        </linearGradient>
+                        <linearGradient id="ag2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#28a745"/>
+                            <stop offset="100%" style="stop-color:#1a7a32"/>
+                        </linearGradient>
+                        <linearGradient id="ag3" x1="0%" y1="100%" x2="0%" y2="0%">
+                            <stop offset="0%" style="stop-color:#28a745;stop-opacity:0.9"/>
+                            <stop offset="100%" style="stop-color:#6fcf97;stop-opacity:0.7"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- main bg card -->
+                    <rect x="20" y="20" width="440" height="380" rx="28" fill="url(#ag1)" opacity=".75"/>
+
+                    <!-- large building left -->
+                    <rect x="50" y="180" width="130" height="210" rx="6" fill="url(#ag2)" opacity=".9"/>
+                    <!-- windows -->
+                    <rect x="64" y="198" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="102" y="198" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="140" y="198" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="64" y="238" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="102" y="238" width="28" height="28" rx="3" fill="rgba(255,255,255,.5)"/>
+                    <rect x="140" y="238" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="64" y="278" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="102" y="278" width="28" height="28" rx="3" fill="rgba(255,255,255,.22)"/>
+                    <rect x="140" y="278" width="28" height="28" rx="3" fill="rgba(255,255,255,.5)"/>
+                    <!-- door -->
+                    <rect x="100" y="348" width="30" height="42" rx="4" fill="rgba(255,255,255,.18)"/>
+                    <!-- roof -->
+                    <polygon points="38,180 192,180 115,115" fill="#1a7a32"/>
+                    <polygon points="50,180 180,180 115,122" fill="url(#ag3)" opacity=".8"/>
+
+                    <!-- mid building -->
+                    <rect x="195" y="230" width="80" height="160" rx="5" fill="rgba(40,167,69,.5)"/>
+                    <rect x="206" y="244" width="20" height="20" rx="2" fill="rgba(255,255,255,.2)"/>
+                    <rect x="234" y="244" width="20" height="20" rx="2" fill="rgba(255,255,255,.2)"/>
+                    <rect x="206" y="272" width="20" height="20" rx="2" fill="rgba(255,255,255,.35)"/>
+                    <rect x="234" y="272" width="20" height="20" rx="2" fill="rgba(255,255,255,.2)"/>
+                    <rect x="206" y="300" width="20" height="20" rx="2" fill="rgba(255,255,255,.2)"/>
+                    <rect x="234" y="300" width="20" height="20" rx="2" fill="rgba(255,255,255,.35)"/>
+                    <rect x="218" y="350" width="18" height="40" rx="3" fill="rgba(255,255,255,.15)"/>
+
+                    <!-- chart / dashboard card (top right) -->
+                    <rect x="285" y="40" width="170" height="120" rx="14" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+                    <text x="300" y="65" fill="#6fcf97" font-family="Inter,sans-serif" font-size="11" font-weight="700">PERFORMANCE</text>
+                    <!-- bar chart -->
+                    <rect x="300" y="120" width="18" height="30" rx="3" fill="rgba(40,167,69,.4)"/>
+                    <rect x="324" y="105" width="18" height="45" rx="3" fill="rgba(40,167,69,.55)"/>
+                    <rect x="348" y="88" width="18" height="62" rx="3" fill="rgba(40,167,69,.7)"/>
+                    <rect x="372" y="95" width="18" height="55" rx="3" fill="rgba(40,167,69,.6)"/>
+                    <rect x="396" y="78" width="18" height="72" rx="3" fill="url(#ag2)"/>
+                    <!-- trend line -->
+                    <polyline points="309,118 333,103 357,86 381,93 405,76" fill="none" stroke="#6fcf97" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="405" cy="76" r="4" fill="#6fcf97"/>
+
+                    <!-- stat cards bottom right -->
+                    <rect x="285" y="175" width="78" height="64" rx="10" fill="rgba(40,167,69,.18)" stroke="rgba(40,167,69,.3)" stroke-width="1"/>
+                    <text x="296" y="198" fill="rgba(255,255,255,.5)" font-family="Inter,sans-serif" font-size="9" font-weight="600">PROPERTIES</text>
+                    <text x="296" y="218" fill="#fff" font-family="Inter,sans-serif" font-size="18" font-weight="700">1.5K</text>
+                    <text x="316" y="230" fill="#6fcf97" font-family="Inter,sans-serif" font-size="9">▲ 12%</text>
+
+                    <rect x="375" y="175" width="78" height="64" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                    <text x="386" y="198" fill="rgba(255,255,255,.5)" font-family="Inter,sans-serif" font-size="9" font-weight="600">CLIENTS</text>
+                    <text x="386" y="218" fill="#fff" font-family="Inter,sans-serif" font-size="18" font-weight="700">500+</text>
+                    <text x="400" y="230" fill="#6fcf97" font-family="Inter,sans-serif" font-size="9">▲ 8%</text>
+
+                    <!-- map pin on building -->
+                    <ellipse cx="115" cy="105" rx="20" ry="30" fill="#fff" opacity=".85"/>
+                    <circle cx="115" cy="98" r="10" fill="url(#ag2)"/>
+                    <ellipse cx="115" cy="136" rx="10" ry="5" fill="rgba(0,0,0,.12)"/>
+
+                    <!-- team avatar cluster -->
+                    <circle cx="300" cy="270" r="22" fill="url(#ag2)" opacity=".8"/>
+                    <text x="300" y="276" fill="#fff" font-family="Inter,sans-serif" font-size="16" text-anchor="middle">👤</text>
+                    <circle cx="336" cy="270" r="22" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+                    <text x="336" y="276" fill="#fff" font-family="Inter,sans-serif" font-size="16" text-anchor="middle">👤</text>
+                    <circle cx="372" cy="270" r="22" fill="rgba(40,167,69,.3)" stroke="rgba(40,167,69,.4)" stroke-width="1"/>
+                    <text x="372" y="276" fill="#fff" font-family="Inter,sans-serif" font-size="16" text-anchor="middle">👤</text>
+                    <rect x="284" y="300" width="122" height="28" rx="6" fill="rgba(255,255,255,.05)"/>
+                    <text x="345" y="319" fill="rgba(255,255,255,.6)" font-family="Inter,sans-serif" font-size="10" text-anchor="middle" font-weight="600">Our Team · Kigali</text>
+
+                    <!-- floating sparkles -->
+                    <text x="248" y="50" fill="#6fcf97" font-size="22" opacity=".5">✦</text>
+                    <text x="45" y="100" fill="#6fcf97" font-size="14" opacity=".4">✦</text>
+                    <text x="458" y="330" fill="#6fcf97" font-size="18" opacity=".35">✦</text>
+                </svg>
+            </div>
+
+        </div>
     </div>
-</div></section>
+</section>
 
-<section class="m3-sec m3-sec-s"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">route</span>Our Journey</div><h2 class="m3-stitle">Key Milestones</h2></div>
-    <div class="m3-tl">
-        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2020</div><div class="m3-tl-content"><h4>Company Founded</h4><p>PropertyHub Ltd was born from a vision to transform property management in Rwanda.</p></div></div>
-        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2021</div><div class="m3-tl-content"><h4>Platform Launch</h4><p>Launched our digital platform with core features for property listing and tenant management.</p></div></div>
-        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2022</div><div class="m3-tl-content"><h4>Rapid Growth</h4><p>Reached 1,000+ properties and became the fastest growing property management platform.</p></div></div>
-        <div class="m3-tl-item md-reveal"><div class="m3-tl-dot"></div><div class="m3-tl-year">2023</div><div class="m3-tl-content"><h4>Advanced Analytics</h4><p>Introduced market insights, secure payments, and real-time communication tools.</p></div></div>
+<!-- ═══════════════════ WHO WE ARE ══════════════════════════════════════════ -->
+<section class="ab-sec ab-sec--container">
+    <div class="container">
+        <div class="ab-heading">
+            <span class="overline">Our Story</span>
+            <h2>Who We Are</h2>
+            <p>A user-friendly platform that streamlines property management with efficiency, transparency, and innovation — built right here in Rwanda.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="ab-story-card">
+                    <div class="ab-story-img">
+                        <img src="{% static 'images/mission.jpg' %}" alt="Our Mission" loading="lazy">
+                        <div class="ab-story-img-overlay"></div>
+                        <div class="ab-story-icon"><span class="material-symbols-outlined">target</span></div>
+                    </div>
+                    <div class="ab-story-body">
+                        <h3>Our Mission</h3>
+                        <p>To simplify property management and create a seamless experience for every stakeholder. We foster trust and transparency in real estate, equipping owners, tenants, and agents with the tools they need to succeed — all in one place.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ab-story-card">
+                    <div class="ab-story-img">
+                        <img src="{% static 'images/history.jpg' %}" alt="Our History" loading="lazy">
+                        <div class="ab-story-img-overlay"></div>
+                        <div class="ab-story-icon"><span class="material-symbols-outlined">history</span></div>
+                    </div>
+                    <div class="ab-story-body">
+                        <h3>Our Story</h3>
+                        <p>Founded in 2020, PropertyHub was born from a simple observation: property management in Rwanda was fragmented, opaque, and frustrating for everyone involved. Our founders built a better way — and haven't stopped improving it since.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div></section>
+</section>
 
-<section class="m3-about-stats"><div class="container"><div class="row">
-    <div class="col-md-3 col-6"><div class="m3-as md-reveal"><div class="m3-as-val">1,500+</div><div class="m3-as-lbl">Properties Managed</div></div></div>
-    <div class="col-md-3 col-6"><div class="m3-as md-reveal"><div class="m3-as-val">500+</div><div class="m3-as-lbl">Happy Clients</div></div></div>
-    <div class="col-md-3 col-6"><div class="m3-as md-reveal"><div class="m3-as-val">50+</div><div class="m3-as-lbl">RE Partners</div></div></div>
-    <div class="col-md-3 col-6"><div class="m3-as md-reveal"><div class="m3-as-val">4.8★</div><div class="m3-as-lbl">User Rating</div></div></div>
-</div></div></section>
+<!-- ═══════════════════ WHY US ══════════════════════════════════════════════ -->
+<section class="ab-sec ab-sec--surface">
+    <div class="container">
+        <div class="ab-why-row">
+            <!-- Illustration -->
+            <div class="ab-why-illo">
+                <svg viewBox="0 0 340 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f5e9"/>
+                            <stop offset="100%" style="stop-color:#c8e6c9"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="340" height="320" rx="20" fill="url(#wg1)"/>
+                    <!-- Shield -->
+                    <path d="M170 40 L230 68 L230 148 Q230 200 170 220 Q110 200 110 148 L110 68 Z" fill="#28a745" opacity=".9"/>
+                    <path d="M170 55 L218 79 L218 148 Q218 192 170 208 Q122 192 122 148 L122 79 Z" fill="#fff" opacity=".15"/>
+                    <!-- check -->
+                    <polyline points="148,138 164,154 196,120" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- orbiting dots -->
+                    <circle cx="80" cy="120" r="8" fill="#28a745" opacity=".4"/>
+                    <circle cx="260" cy="100" r="6" fill="#28a745" opacity=".35"/>
+                    <circle cx="90" cy="220" r="5" fill="#28a745" opacity=".3"/>
+                    <circle cx="255" cy="230" r="9" fill="#28a745" opacity=".35"/>
+                    <!-- labels -->
+                    <rect x="30" y="160" width="70" height="30" rx="8" fill="#28a745" opacity=".15"/>
+                    <text x="65" y="180" fill="#1a7a32" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Secure</text>
+                    <rect x="240" y="155" width="72" height="30" rx="8" fill="#28a745" opacity=".15"/>
+                    <text x="276" y="175" fill="#1a7a32" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Trusted</text>
+                    <rect x="95" y="255" width="72" height="30" rx="8" fill="#28a745" opacity=".15"/>
+                    <text x="131" y="275" fill="#1a7a32" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Fast</text>
+                    <rect x="175" y="255" width="72" height="30" rx="8" fill="#28a745" opacity=".15"/>
+                    <text x="211" y="275" fill="#1a7a32" font-family="Inter,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Innovative</text>
+                </svg>
+            </div>
 
-<section class="m3-sec m3-sec-c"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">favorite</span>Core Values</div><h2 class="m3-stitle">What We Stand For</h2></div>
-    <div class="row g-4">
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">diamond</span></div><h4>Integrity</h4><p>We operate with honesty and transparency in all our dealings, building trust with every interaction.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">lightbulb</span></div><h4>Innovation</h4><p>Continuously improving our platform with cutting-edge technology to stay ahead of the curve.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">groups</span></div><h4>Customer Focus</h4><p>Our users' success is our primary measure of achievement. We build for you.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">handshake</span></div><h4>Collaboration</h4><p>Building strong partnerships with all stakeholders in the real estate ecosystem.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">verified</span></div><h4>Excellence</h4><p>Striving for the highest standards in everything we do, from code to customer care.</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-val md-reveal"><div class="m3-val-icon"><span class="material-symbols-outlined">public</span></div><h4>Community</h4><p>Contributing to the growth and development of communities across Rwanda and beyond.</p></div></div>
+            <!-- Text -->
+            <div class="ab-why-text">
+                <span style="display:block;font-size:.72rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--ab-green);margin-bottom:10px">Why Choose Us</span>
+                <h2>A Platform Built with You in Mind</h2>
+                <p>We understand the challenges of the Rwandan real estate market. PropertyHub was designed from the ground up to address them — combining local expertise with world-class technology.</p>
+                <ul class="ab-why-points">
+                    <li><span class="material-symbols-outlined">check_circle</span><span><strong>All-in-one dashboard</strong> — manage listings, tenants, payments, and maintenance from one place.</span></li>
+                    <li><span class="material-symbols-outlined">check_circle</span><span><strong>Real-time communication</strong> — instant messaging between owners, tenants, and agents.</span></li>
+                    <li><span class="material-symbols-outlined">check_circle</span><span><strong>Secure & transparent</strong> — every transaction and document is tracked and auditable.</span></li>
+                    <li><span class="material-symbols-outlined">check_circle</span><span><strong>Mobile-first</strong> — manage your properties from anywhere in Rwanda, on any device.</span></li>
+                    <li><span class="material-symbols-outlined">check_circle</span><span><strong>Local support team</strong> — based in Kigali, we understand your market.</span></li>
+                </ul>
+            </div>
+        </div>
     </div>
-</div></section>
+</section>
 
-<section class="m3-sec m3-sec-s"><div class="container">
-    <div class="m3-sh"><div class="m3-tag"><span class="material-symbols-outlined">badge</span>Leadership</div><h2 class="m3-stitle">Our Team</h2><p class="m3-ssub">Meet the passionate professionals driving innovation in property management.</p></div>
-    <div class="row g-4 justify-content-center">
-        <div class="col-lg-4 col-md-6"><div class="m3-team md-reveal"><div class="m3-team-img"><img src="{% static 'images/elbost.jpg' %}" alt="Elbost UZWINAYO"></div><h4>Elbost UZWINAYO</h4><p>CEO & Founder</p><div class="m3-team-socials"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fas fa-envelope"></i></a></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-team md-reveal"><div class="m3-team-img"><img src="{% static 'images/olivier.jpg' %}" alt="NSENGIMANA Olivier"></div><h4>NSENGIMANA Olivier</h4><p>CTO</p><div class="m3-team-socials"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fas fa-envelope"></i></a></div></div></div>
-        <div class="col-lg-4 col-md-6"><div class="m3-team md-reveal"><div class="m3-team-img"><img src="{% static 'images/ismail.jpg' %}" alt="GIHOZO Ismail"></div><h4>GIHOZO Ismail</h4><p>Head of Operations</p><div class="m3-team-socials"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fas fa-envelope"></i></a></div></div></div>
+<!-- ═══════════════════ STATS ════════════════════════════════════════════════ -->
+<section class="ab-stats">
+    <div class="container">
+        <div class="row g-0">
+            <div class="col-md-3 col-6">
+                <div class="ab-stat-card">
+                    <div class="ab-stat-icon"><span class="material-symbols-outlined">home_work</span></div>
+                    <div class="ab-stat-val">1,500<span>+</span></div>
+                    <div class="ab-stat-lbl">Properties Managed</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="ab-stat-card">
+                    <div class="ab-stat-icon"><span class="material-symbols-outlined">groups</span></div>
+                    <div class="ab-stat-val">500<span>+</span></div>
+                    <div class="ab-stat-lbl">Happy Clients</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="ab-stat-card">
+                    <div class="ab-stat-icon"><span class="material-symbols-outlined">handshake</span></div>
+                    <div class="ab-stat-val">50<span>+</span></div>
+                    <div class="ab-stat-lbl">RE Partners</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="ab-stat-card">
+                    <div class="ab-stat-icon"><span class="material-symbols-outlined">star</span></div>
+                    <div class="ab-stat-val">4.8<span>★</span></div>
+                    <div class="ab-stat-lbl">User Rating</div>
+                </div>
+            </div>
+        </div>
     </div>
-</div></section>
+</section>
 
-<section class="m3-about-cta"><div class="container">
-    <h3>Join Us on Our Journey!</h3>
-    <p>We're always looking for fresh talent and innovative ideas. If you're passionate about property management and technology, get in touch!</p>
-    <a href="{% url 'contact' %}" class="md-btn-filled" style="height:48px;padding:0 28px"><span class="material-symbols-outlined" style="font-size:20px">mail</span>Contact Us</a>
-</div></section>
+<!-- ═══════════════════ TIMELINE ════════════════════════════════════════════ -->
+<section class="ab-sec ab-sec--surface">
+    <div class="container">
+        <div class="ab-heading">
+            <span class="overline">Our Journey</span>
+            <h2>Key Milestones</h2>
+            <p>From a bold idea in 2020 to Rwanda's leading property management platform.</p>
+        </div>
+        <div class="ab-timeline">
+            <div class="ab-tl-item">
+                <div class="ab-tl-dot"></div>
+                <div class="ab-tl-year"><span class="material-symbols-outlined">flag</span>2020</div>
+                <div class="ab-tl-card">
+                    <h4><span class="material-symbols-outlined">rocket_launch</span>Company Founded</h4>
+                    <p>PropertyHub Ltd was born from a vision to transform property management in Rwanda. Our founders recognized the fragmented market and set out to fix it.</p>
+                </div>
+            </div>
+            <div class="ab-tl-item">
+                <div class="ab-tl-dot"></div>
+                <div class="ab-tl-year"><span class="material-symbols-outlined">flag</span>2021</div>
+                <div class="ab-tl-card">
+                    <h4><span class="material-symbols-outlined">launch</span>Platform Launch</h4>
+                    <p>Launched our digital platform with core features for property listing, tenant onboarding, and lease management — 200 properties in the first 3 months.</p>
+                </div>
+            </div>
+            <div class="ab-tl-item">
+                <div class="ab-tl-dot"></div>
+                <div class="ab-tl-year"><span class="material-symbols-outlined">flag</span>2022</div>
+                <div class="ab-tl-card">
+                    <h4><span class="material-symbols-outlined">trending_up</span>Rapid Growth</h4>
+                    <p>Crossed 1,000 properties and became the fastest-growing property management platform in Rwanda. Expanded to Musanze and Rubavu.</p>
+                </div>
+            </div>
+            <div class="ab-tl-item">
+                <div class="ab-tl-dot"></div>
+                <div class="ab-tl-year"><span class="material-symbols-outlined">flag</span>2023</div>
+                <div class="ab-tl-card">
+                    <h4><span class="material-symbols-outlined">analytics</span>Advanced Features</h4>
+                    <p>Introduced real-time messaging, secure payment tracking, market analytics, and a mobile-first redesign serving 500+ clients nationwide.</p>
+                </div>
+            </div>
+            <div class="ab-tl-item">
+                <div class="ab-tl-dot"></div>
+                <div class="ab-tl-year"><span class="material-symbols-outlined">flag</span>2024+</div>
+                <div class="ab-tl-card">
+                    <h4><span class="material-symbols-outlined">auto_awesome</span>The Future</h4>
+                    <p>AI-powered property recommendations, automated maintenance workflows, and expansion across East Africa — the journey continues.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ CORE VALUES ═════════════════════════════════════════ -->
+<section class="ab-sec ab-sec--container">
+    <div class="container">
+        <div class="ab-heading">
+            <span class="overline">Core Values</span>
+            <h2>What We Stand For</h2>
+            <p>Our values aren't just words on a wall — they guide every decision, product, and interaction at PropertyHub.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">diamond</span></div>
+                    <h4>Integrity</h4>
+                    <p>We operate with honesty and full transparency in every deal. If we make a mistake, we own it and fix it — no excuses.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+                    <h4>Innovation</h4>
+                    <p>We ship improvements every week. Complacency is our biggest competitor, so we keep asking: "how can this be better?"</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">favorite</span></div>
+                    <h4>Customer Focus</h4>
+                    <p>Our users' success is the only measure of ours. We listen first, build second, and never stop iterating based on feedback.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">handshake</span></div>
+                    <h4>Collaboration</h4>
+                    <p>Great property management is a team sport. We build strong partnerships with all stakeholders in the real estate ecosystem.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">verified</span></div>
+                    <h4>Excellence</h4>
+                    <p>Good enough isn't. We hold ourselves to the highest standards — from product quality to how we respond to a support ticket.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-val-card">
+                    <div class="ab-val-icon"><span class="material-symbols-outlined">public</span></div>
+                    <h4>Community</h4>
+                    <p>We're Rwandan, and proud of it. We invest in the communities where our clients live and work — because their growth is our growth.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ TEAM ═════════════════════════════════════════════════ -->
+<section class="ab-sec ab-sec--surface">
+    <div class="container">
+        <div class="ab-heading">
+            <span class="overline">Leadership</span>
+            <h2>Meet Our Team</h2>
+            <p>Passionate professionals driving innovation in property management across Rwanda.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-team-card">
+                    <div class="ab-team-img-wrap">
+                        <img src="{% static 'images/elbost.jpg' %}" alt="Elbost UZWINAYO" loading="lazy">
+                        <div class="ab-team-overlay">
+                            <div class="ab-team-socials-hover">
+                                <a href="#" aria-label="LinkedIn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                                </a>
+                                <a href="#" aria-label="Twitter">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </a>
+                                <a href="mailto:ceo@propertyhub.rw" aria-label="Email">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ab-team-body">
+                        <h4>Elbost UZWINAYO</h4>
+                        <div class="ab-team-role">CEO &amp; Founder</div>
+                        <p class="ab-team-bio">Visionary leader with a passion for real estate technology and building products that make a real difference in people's lives.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-team-card">
+                    <div class="ab-team-img-wrap">
+                        <img src="{% static 'images/olivier.jpg' %}" alt="NSENGIMANA Olivier" loading="lazy">
+                        <div class="ab-team-overlay">
+                            <div class="ab-team-socials-hover">
+                                <a href="#" aria-label="LinkedIn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                                </a>
+                                <a href="#" aria-label="GitHub">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+                                </a>
+                                <a href="mailto:cto@propertyhub.rw" aria-label="Email">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ab-team-body">
+                        <h4>NSENGIMANA Olivier</h4>
+                        <div class="ab-team-role">Chief Technology Officer</div>
+                        <p class="ab-team-bio">Full-stack engineer and architect behind PropertyHub's platform — obsessed with performance, security, and clean code.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ab-team-card">
+                    <div class="ab-team-img-wrap">
+                        <img src="{% static 'images/ismail.jpg' %}" alt="GIHOZO Ismail" loading="lazy">
+                        <div class="ab-team-overlay">
+                            <div class="ab-team-socials-hover">
+                                <a href="#" aria-label="LinkedIn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                                </a>
+                                <a href="#" aria-label="Twitter">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </a>
+                                <a href="mailto:ops@propertyhub.rw" aria-label="Email">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ab-team-body">
+                        <h4>GIHOZO Ismail</h4>
+                        <div class="ab-team-role">Head of Operations</div>
+                        <p class="ab-team-bio">Keeps PropertyHub running like clockwork — from client relationships to partner coordination across Rwanda's cities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ CTA ══════════════════════════════════════════════════ -->
+<section class="ab-cta">
+    <div class="ab-cta-inner">
+        <span style="display:inline-flex;align-items:center;gap:7px;background:rgba(40,167,69,.18);border:1px solid rgba(40,167,69,.35);color:#6fcf97;border-radius:100px;padding:6px 18px;font-size:.75rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:24px">
+            <span class="material-symbols-outlined" style="font-size:15px">waving_hand</span>
+            Join the PropertyHub Family
+        </span>
+        <h2>Ready to Transform Your<br>Property Experience?</h2>
+        <p>Whether you're a landlord listing your first property, a tenant looking for a home, or an agent growing your business — PropertyHub is built for you.</p>
+        <div class="ab-cta-btns">
+            <a href="{% url 'contact' %}" class="ab-btn-primary">
+                <span class="material-symbols-outlined">mail</span>Get in Touch
+            </a>
+            <a href="{% url 'properties' %}" class="ab-btn-outline">
+                <span class="material-symbols-outlined">search</span>Browse Properties
+            </a>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

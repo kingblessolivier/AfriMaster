@@ -4,7 +4,8 @@
       "Bash(python manage.py migrate PropApp 0034)",
       "Bash(python manage.py migrate)",
       "Bash(grep -r \"new PHChat\\\\|window._chat\\\\|chat_contacts_api\\\\|chat_history_api\" c:UsersUSERDocumentsYear2Year2_IT_ProjectsEnhenced_systemsProperty_managementimproved-property-management-system-with-ui-hackers-_team --include=*.html --include=*.js)",
-      "Bash(grep -rn \"runserver\\\\|daphne\\\\|uvicorn\\\\|manage.py\" c:/Users/USER/Documents/Year2/Year2_IT_Projects/Enhenced_systems/Property_management/improved-property-management-system-with-ui-hackers-_team/ --include=*.txt --include=*.sh --include=*.bat --include=*.md)"
+      "Bash(grep -rn \"runserver\\\\|daphne\\\\|uvicorn\\\\|manage.py\" c:/Users/USER/Documents/Year2/Year2_IT_Projects/Enhenced_systems/Property_management/improved-property-management-system-with-ui-hackers-_team/ --include=*.txt --include=*.sh --include=*.bat --include=*.md)",
+      "Read(//c/Users/USER/AppData/Roaming/Code/User/History/**)"
     ]
   }
 }
