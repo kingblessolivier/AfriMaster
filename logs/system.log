@@ -132,3 +132,8 @@
 [2026-03-19 02:00:07] INFO     propertyhub.system | [PROPERTY] Property updated: 'CHIC' (id=7) | user=admin | ip=127.0.0.1 | path=POST /edit_property/7
 [2026-03-19 02:32:18] INFO     propertyhub.system | [AUTH] User 'admin' logged out | user=admin | ip=127.0.0.1 | path=GET /logout
 [2026-03-19 02:32:32] INFO     propertyhub.system | [AUTH] User 'Esther' logged in (role: Owner) | user=Esther | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 09:12:33] INFO     propertyhub.system | [AUTH] User 'Esther' logged out | user=Esther | ip=127.0.0.1 | path=GET /logout
+[2026-03-19 09:12:50] INFO     propertyhub.system | [AUTH] User 'admin' logged in (role: Admin) | user=admin | ip=127.0.0.1 | path=POST /logins
+[2026-03-19 09:43:46] INFO     propertyhub.system | [AUTH] User 'admin' logged in (role: Admin) | user=admin | ip=197.157.187.83 | path=POST /logins
+[2026-03-19 09:45:02] INFO     propertyhub.system | [AUTH] User 'admin' logged out | user=admin | ip=127.0.0.1 | path=GET /logout
+[2026-03-19 09:45:22] INFO     propertyhub.system | [AUTH] User 'Esther' logged in (role: Owner) | user=Esther | ip=127.0.0.1 | path=POST /logins

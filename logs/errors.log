@@ -398,3 +398,4 @@ Traceback (most recent call last):
     return super().execute(query, params)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 django.db.utils.OperationalError: no such table: PropApp_propertyimage
+[2026-03-19 09:41:45] ERROR    django.request | Service Unavailable: /chatbot/chat/

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/m3-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile-responsive.css' %}">
     <style>
     /* ===== Top Info Bar ===== */
     .top-infobar{
@@ -313,7 +314,7 @@
     {% block extra_css %}{% endblock %}
     <!-- PropBot AI Chatbot Styles -->
     <style>
-    #ai-chatbot-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;box-shadow:0 4px 12px rgba(40,167,69,.4);cursor:pointer;z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform 200ms cubic-bezier(.05,.7,.1,1),box-shadow 200ms,background 200ms}
+    #ai-chatbot-fab{position:fixed;bottom:24px;right:24px;cursor:grab;width:56px;height:56px;border-radius:50%;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border:none;box-shadow:0 4px 12px rgba(40,167,69,.4);cursor:pointer;z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform 200ms cubic-bezier(.05,.7,.1,1),box-shadow 200ms,background 200ms}
     #ai-chatbot-fab:hover{background:#1B5E20;box-shadow:0 6px 20px rgba(40,167,69,.5);transform:scale(1.05)}
     #ai-chatbot-fab .fab-icon-open,#ai-chatbot-fab .fab-icon-close{transition:opacity 150ms,transform 150ms}
     #ai-chatbot-fab.open .fab-icon-open{opacity:0;transform:rotate(90deg);position:absolute}
@@ -1082,12 +1083,39 @@ window.PROPBOT_CONFIG = {
 }
 .ph-cp-search-wrap .material-symbols-outlined{font-size:16px;color:#9CA3AF;flex-shrink:0}
 .ph-cp-search-wrap:focus-within .material-symbols-outlined{color:var(--mg3)}
-#phContactSearch{
+#phContactSearch,#phNewChatSearch{
   flex:1;border:none;background:transparent;
   font-size:.85rem;font-family:'Inter',sans-serif;
   outline:none;color:#111827;
 }
-#phContactSearch::placeholder{color:#B0BEC5}
+#phContactSearch::placeholder,#phNewChatSearch::placeholder{color:#B0BEC5}
+
+/* New chat panel layout */
+#phCpMain{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+#phNewChatPanel{flex:1;overflow:hidden;min-height:0}
+#phNewChatPanel .ph-cp-list{max-height:none}
+
+/* New chat back button */
+#phNewChatBack{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;transition:background .15s,transform .15s;
+  flex-shrink:0;
+}
+#phNewChatBack:hover{background:rgba(255,255,255,.22);transform:translateX(-2px)}
+#phNewChatBack .material-symbols-outlined{font-size:17px}
+
+/* New chat icon button */
+#phNewChatBtn{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;transition:background .15s;
+  flex-shrink:0;
+}
+#phNewChatBtn:hover{background:rgba(255,255,255,.22)}
+#phNewChatBtn .material-symbols-outlined{font-size:17px}
 
 .ph-cp-list{overflow-y:auto;flex:1;padding:4px 0}
 .ph-cp-list::-webkit-scrollbar{width:3px}
@@ -1166,6 +1194,7 @@ window.PROPBOT_CONFIG = {
 /* ─── Single Chat Window ─── */
 .ph-win{
   width:var(--mg-w);
+  height:var(--mg-h);
   background:#fff;
   border-radius:18px 18px 0 0;
   box-shadow:var(--mg-shadow);
@@ -1236,10 +1265,9 @@ window.PROPBOT_CONFIG = {
 
 /* Messages area */
 .ph-win-msgs{
-  flex:1;overflow-y:auto;
+  flex:1;min-height:0;overflow-y:auto;
   padding:14px 12px 6px;
   display:flex;flex-direction:column;gap:4px;
-  height:calc(var(--mg-h) - 110px);
   background:linear-gradient(180deg,#F9FBF9 0%,#fff 100%);
 }
 .ph-win-msgs::-webkit-scrollbar{width:3px}
@@ -1247,7 +1275,7 @@ window.PROPBOT_CONFIG = {
 .ph-win-msgs::-webkit-scrollbar-thumb{background:#C8E6C9;border-radius:3px}
 
 /* Message bubbles */
-.ph-msg{display:flex;align-items:flex-end;gap:7px;max-width:88%}
+.ph-msg{display:flex;align-items:flex-start;gap:7px;max-width:88%}
 .ph-msg.me{flex-direction:row-reverse;align-self:flex-end}
 .ph-msg.them{align-self:flex-start}
 .ph-msg-av{
@@ -1257,9 +1285,7 @@ window.PROPBOT_CONFIG = {
   font-size:.62rem;font-weight:700;flex-shrink:0;
   font-family:'Inter',sans-serif;
 }
-.ph-bubble-wrap{display:flex;flex-direction:column}
-.ph-msg.me .ph-bubble-wrap{align-items:flex-end}
-.ph-msg.them .ph-bubble-wrap{align-items:flex-start}
+.ph-bubble-wrap{display:flex;flex-direction:row;align-items:flex-end;gap:5px}
 .ph-bubble{
   padding:9px 13px;
   border-radius:18px;
@@ -1386,29 +1412,65 @@ window.PROPBOT_CONFIG = {
 
 <!-- ── Contacts Panel ── -->
 <div id="phContactsPanel">
-    <div class="ph-cp-head">
-        <div class="ph-cp-head-title">
-            <span class="material-symbols-outlined">forum</span>
-            <div>
-                Messages
-                <span class="ph-cp-head-sub">Your conversations</span>
+    <!-- Main view -->
+    <div id="phCpMain">
+        <div class="ph-cp-head">
+            <div class="ph-cp-head-title">
+                <span class="material-symbols-outlined">forum</span>
+                <div>
+                    Messages
+                    <span class="ph-cp-head-sub">Your conversations</span>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <button id="phNewChatBtn" title="New chat" aria-label="New chat">
+                    <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button class="ph-cp-close" id="phCpClose" aria-label="Close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
         </div>
-        <button class="ph-cp-close" id="phCpClose" aria-label="Close">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-    </div>
-    <div class="ph-cp-search">
-        <div class="ph-cp-search-wrap">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" id="phContactSearch" placeholder="Search conversations..." autocomplete="off">
+        <div class="ph-cp-search">
+            <div class="ph-cp-search-wrap">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="phContactSearch" placeholder="Search conversations..." autocomplete="off">
+            </div>
+        </div>
+        <div class="ph-cp-list" id="phContactList">
+            <div class="ph-cp-empty">
+                <span class="material-symbols-outlined">forum</span>
+                <strong>Loading…</strong>
+                Fetching your conversations
+            </div>
         </div>
     </div>
-    <div class="ph-cp-list" id="phContactList">
-        <div class="ph-cp-empty">
-            <span class="material-symbols-outlined">forum</span>
-            <strong>Loading…</strong>
-            Fetching your conversations
+
+    <!-- New Chat panel (slides in) -->
+    <div id="phNewChatPanel" style="display:none">
+        <div class="ph-cp-head">
+            <button id="phNewChatBack" aria-label="Back">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div class="ph-cp-head-title" style="margin-left:8px">
+                <span class="material-symbols-outlined">person_add</span>
+                <div>
+                    New Chat
+                    <span class="ph-cp-head-sub">Select a person to message</span>
+                </div>
+            </div>
+        </div>
+        <div class="ph-cp-search">
+            <div class="ph-cp-search-wrap">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="phNewChatSearch" placeholder="Search people..." autocomplete="off">
+            </div>
+        </div>
+        <div class="ph-cp-list" id="phNewChatList">
+            <div class="ph-cp-empty">
+                <span class="material-symbols-outlined" style="font-size:28px;display:block;margin-bottom:8px">hourglass_top</span>
+                Loading…
+            </div>
         </div>
     </div>
 </div>
@@ -1510,6 +1572,86 @@ messengerBtn.addEventListener('click', () => {
 });
 cpClose.addEventListener('click', () => contactsPanel.classList.remove('open'));
 
+/* ── New Chat Panel ── */
+const newChatBtn   = document.getElementById('phNewChatBtn');
+const newChatPanel = document.getElementById('phNewChatPanel');
+const cpMain       = document.getElementById('phCpMain');
+const newChatBack  = document.getElementById('phNewChatBack');
+const newChatList  = document.getElementById('phNewChatList');
+const newChatSearch = document.getElementById('phNewChatSearch');
+let allUsers = [];
+
+function showNewChatPanel(){
+    cpMain.style.display = 'none';
+    newChatPanel.style.display = 'flex';
+    newChatPanel.style.flexDirection = 'column';
+    newChatPanel.style.flex = '1';
+    newChatPanel.style.overflow = 'hidden';
+    newChatSearch.value = '';
+    loadAllUsers('');
+    setTimeout(() => newChatSearch.focus(), 50);
+}
+
+function hideNewChatPanel(){
+    newChatPanel.style.display = 'none';
+    cpMain.style.display = 'flex';
+    cpMain.style.flexDirection = 'column';
+    cpMain.style.flex = '1';
+    cpMain.style.overflow = 'hidden';
+}
+
+function loadAllUsers(q){
+    newChatList.innerHTML = '<div class="ph-cp-empty"><span class="material-symbols-outlined" style="font-size:28px;display:block;margin-bottom:6px;color:#C8E6C9">hourglass_top</span>Loading people…</div>';
+    fetch('/api/chat/new-users/?q=' + encodeURIComponent(q), {credentials:'same-origin', headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(r => {
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
+    .then(data => {
+        allUsers = data.users || [];
+        renderAllUsers(allUsers);
+    }).catch(err => {
+        newChatList.innerHTML = '<div class="ph-cp-empty"><span class="material-symbols-outlined" style="color:#E53935">wifi_off</span>Could not load users.<br><small style="color:#9CA3AF">Check your connection.</small></div>';
+    });
+}
+
+function renderAllUsers(list){
+    if(!list.length){
+        newChatList.innerHTML = '<div class="ph-cp-empty"><span class="material-symbols-outlined" style="font-size:28px;display:block;margin-bottom:6px">person_off</span>No users found.</div>';
+        return;
+    }
+    newChatList.innerHTML = list.map(u => `
+        <div class="ph-contact-item" data-id="${u.user_id}" data-name="${escapeHtml(u.name)}" data-init="${escapeHtml(u.initial)}" data-role="${escapeHtml(u.role)}">
+            <div class="ph-c-av">${escapeHtml(u.initial)}</div>
+            <div class="ph-c-info">
+                <div class="ph-c-name">${escapeHtml(u.name)}</div>
+                <div class="ph-c-role">${escapeHtml(u.role)}</div>
+                <div class="ph-c-last">Tap to start chatting</div>
+            </div>
+            <div class="ph-c-meta">
+                <span class="material-symbols-outlined" style="font-size:18px;color:#2E7D32">chevron_right</span>
+            </div>
+        </div>
+    `).join('');
+    newChatList.querySelectorAll('.ph-contact-item').forEach(el => {
+        el.addEventListener('click', () => {
+            openChat(parseInt(el.dataset.id), el.dataset.name, el.dataset.init, el.dataset.role);
+            contactsPanel.classList.remove('open');
+            hideNewChatPanel();
+        });
+    });
+}
+
+let newChatSearchTimer;
+newChatSearch.addEventListener('input', function(){
+    clearTimeout(newChatSearchTimer);
+    const q = this.value.trim();
+    newChatSearchTimer = setTimeout(() => loadAllUsers(q), 300);
+});
+
+newChatBtn.addEventListener('click', showNewChatPanel);
+newChatBack.addEventListener('click', hideNewChatPanel);
+
 /* ── Open Chat Window ── */
 function openChat(contactId, name, initial, role){
     if(openWindows[contactId]){
@@ -1530,7 +1672,6 @@ function openChat(contactId, name, initial, role){
 function buildWindow(contactId, name, initial, role){
     const win = document.createElement('div');
     win.className = 'ph-win';
-    win.style.height = 'var(--ch-h)';
     win.innerHTML = `
         <div class="ph-win-head" title="Click to minimize">
             <div class="ph-win-av-wrap">
@@ -1574,6 +1715,7 @@ function buildWindow(contactId, name, initial, role){
     });
     win.querySelector('.ph-min-btn').addEventListener('click', () => win.classList.toggle('minimized'));
     win.querySelector('.ph-cls-btn').addEventListener('click', () => {
+        if(win._pollTimer) clearInterval(win._pollTimer);
         if(win._ws){ try{ win._ws.close(); }catch(e){} }
         win.remove();
         delete openWindows[contactId];
@@ -1588,15 +1730,49 @@ function buildWindow(contactId, name, initial, role){
     return win;
 }
 
-/* ── Load Message History ── */
+/* ── Build Message Bubble ── */
+function buildBubble(isMe, meInit, themInit, content, time){
+    const wrap = document.createElement('div');
+    wrap.className = 'ph-msg ' + (isMe ? 'me' : 'them');
+    wrap.innerHTML = `
+        ${!isMe ? `<div class="ph-msg-av">${escapeHtml(themInit)}</div>` : ''}
+        <div class="ph-bubble-wrap">
+            <div class="ph-bubble">${escapeHtml(content)}</div>
+            <div class="ph-msg-time">${escapeHtml(time)}</div>
+        </div>
+    `;
+    return wrap;
+}
+
+/* ── Append a new message bubble to window (dedup by id) ── */
+function appendMsg(win, contactId, isMe, contactInitial, content, time, msgId){
+    // Deduplicate: if we already showed this message id, skip
+    if(msgId && win._shownIds && win._shownIds.has(msgId)) return;
+    if(msgId){
+        if(!win._shownIds) win._shownIds = new Set();
+        win._shownIds.add(msgId);
+        win._lastMsgId = Math.max(win._lastMsgId || 0, msgId);
+    }
+    const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
+    if(!msgsEl) return;
+    const ph = msgsEl.querySelector('[data-placeholder]');
+    if(ph) ph.remove();
+    msgsEl.appendChild(buildBubble(isMe, ME_INIT, contactInitial, content, time));
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+/* ── Load full message history ── */
 function loadHistory(contactId, win){
-    fetch(`/api/chat/history/${contactId}/`, {headers:{'X-Requested-With':'XMLHttpRequest'}})
+    fetch(`/api/chat/history/${contactId}/`, {credentials:'same-origin', headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r => r.json())
     .then(data => {
+        win._shownIds  = new Set();
+        win._lastMsgId = 0;
+        win._contactInitial = data.contact.initial;
         const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
         msgsEl.innerHTML = '';
         if(!data.messages.length){
-            msgsEl.innerHTML = '<div style="text-align:center;color:#9CA3AF;font-size:.8rem;margin-top:20px">No messages yet. Say hello!</div>';
+            msgsEl.innerHTML = '<div data-placeholder style="text-align:center;color:#9CA3AF;font-size:.8rem;margin-top:20px">No messages yet. Say hello!</div>';
         } else {
             let lastDate = '';
             data.messages.forEach(m => {
@@ -1607,134 +1783,185 @@ function loadHistory(contactId, win){
                     msgsEl.appendChild(sep);
                     lastDate = m.date;
                 }
+                win._shownIds.add(m.id);
+                win._lastMsgId = Math.max(win._lastMsgId, m.id);
                 msgsEl.appendChild(buildBubble(m.sender_id === ME_ID, ME_INIT, data.contact.initial, m.content, m.time));
             });
         }
         msgsEl.scrollTop = msgsEl.scrollHeight;
-        // update unread badge
         loadContacts();
+        // Start polling after history loaded
+        startPolling(contactId, win);
     });
 }
 
-/* ── Build Message Bubble ── */
-function buildBubble(isMe, meInit, themInit, content, time){
-    const wrap = document.createElement('div');
-    wrap.className = 'ph-msg ' + (isMe ? 'me' : 'them');
-    wrap.innerHTML = `
-        ${!isMe ? `<div class="ph-msg-av">${themInit}</div>` : ''}
-        <div>
-            <div class="ph-bubble">${escapeHtml(content)}</div>
-            <div class="ph-msg-time">${time}</div>
-        </div>
-        ${isMe ? `<div class="ph-msg-av">${meInit}</div>` : ''}
-    `;
-    return wrap;
+/* ── Polling fallback: fetch messages newer than _lastMsgId every 2s ── */
+function startPolling(contactId, win){
+    // Clear any existing poll timer
+    if(win._pollTimer) clearInterval(win._pollTimer);
+    win._pollTimer = setInterval(() => {
+        // Always poll — WS handles instant delivery, poll catches any gaps
+        const since = win._lastMsgId || 0;
+        fetch(`/api/chat/history/${contactId}/?since_id=${since}`, {
+            credentials: 'same-origin',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(!data.messages || !data.messages.length) return;
+            let hasNew = false;
+            data.messages.forEach(m => {
+                if(!win._shownIds || !win._shownIds.has(m.id)){
+                    appendMsg(win, contactId, m.sender_id === ME_ID, data.contact.initial, m.content, m.time, m.id);
+                    hasNew = true;
+                }
+            });
+            if(hasNew) loadContacts();
+        })
+        .catch(() => {});
+    }, 2000);
 }
 
-/* ── Send Message via REST (fallback if WS unavailable) ── */
+/* ── Send Message ── */
 function sendMsg(contactId, win){
     const input = win.querySelector(`#phInput_${contactId}`);
     const content = input.value.trim();
     if(!content) return;
     input.value = '';
 
-    // Optimistic UI
-    const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
-    const c = contacts.find(c => c.user_id === contactId);
-    const themInit = c ? c.initial : '?';
+    // Optimistic bubble (no id yet — polling will deduplicate via real id)
+    const cEntry = contacts.find(c => c.user_id === contactId) || allUsers.find(u => u.user_id === contactId);
+    const contactInitial = win._contactInitial || (cEntry ? cEntry.initial : '?');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    const bubble = buildBubble(true, ME_INIT, themInit, content, timeStr);
-    msgsEl.appendChild(bubble);
-    msgsEl.scrollTop = msgsEl.scrollHeight;
+    const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
+    const ph = msgsEl ? msgsEl.querySelector('[data-placeholder]') : null;
+    if(ph) ph.remove();
+    if(msgsEl){
+        msgsEl.appendChild(buildBubble(true, ME_INIT, contactInitial, content, timeStr));
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
 
-    // Send via WebSocket if open, otherwise REST
+    // Send via WebSocket if available, otherwise REST
     if(win._ws && win._ws.readyState === WebSocket.OPEN){
-        win._ws.send(JSON.stringify({type:'message', content}));
+        win._ws.send(JSON.stringify({message: content}));
     } else {
         fetch('/api/chat/send/', {
             method: 'POST',
-            headers: {'Content-Type':'application/json','X-CSRFToken': CSRF},
+            credentials: 'same-origin',
+            headers: {'Content-Type':'application/json', 'X-CSRFToken': CSRF},
             body: JSON.stringify({to_id: contactId, content})
-        });
+        })
+        .then(r => r.json())
+        .then(data => {
+            // Register the real message id so polling doesn't duplicate it
+            if(data.id && win._shownIds){
+                win._shownIds.add(data.id);
+                win._lastMsgId = Math.max(win._lastMsgId || 0, data.id);
+            }
+        })
+        .catch(() => {});
     }
 }
 
 /* ── WebSocket connection per window ── */
 function connectWS(contactId, name, initial, win){
+    if(win._ws && win._ws.readyState === WebSocket.OPEN) return; // already connected
     const lo = Math.min(ME_ID, contactId);
     const hi = Math.max(ME_ID, contactId);
     const roomId = `${lo}_${hi}`;
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${proto}://${location.host}/ws/chat/${roomId}/`);
     win._ws = ws;
-    win._wsContactInitial = initial;
 
     ws.onopen = () => {
-        ws.send(JSON.stringify({type: 'mark_read', user_id: ME_ID}));
+        ws.send(JSON.stringify({action: 'mark_read'}));
+        // Update status dot
+        const dot  = win.querySelector('.ph-win-status-dot');
+        const txt  = win.querySelector('.ph-win-status-text');
+        if(dot) dot.classList.add('online');
+        if(txt) txt.textContent = 'Connected';
     };
 
     ws.onmessage = e => {
         let d;
         try { d = JSON.parse(e.data); } catch(ex){ return; }
+
         if(d.type === 'message' && d.sender_id !== ME_ID){
-            const msgsEl = win.querySelector(`#phMsgs_${contactId}`);
-            if(msgsEl){
-                const bubble = buildBubble(false, ME_INIT, initial, d.content, d.timestamp || '');
-                msgsEl.appendChild(bubble);
-                msgsEl.scrollTop = msgsEl.scrollHeight;
-            }
+            // Use appendMsg so polling can't duplicate it
+            appendMsg(win, contactId, false, win._contactInitial || initial, d.message || '', d.timestamp || '', d.message_id || null);
             loadContacts();
         }
+
         if(d.type === 'typing'){
             const typingEl = win.querySelector(`#phTyping_${contactId}`);
-            if(typingEl){
-                typingEl.classList.toggle('show', d.is_typing && d.sender_id !== ME_ID);
-            }
+            if(typingEl) typingEl.classList.toggle('show', !!d.is_typing);
+        }
+
+        if(d.type === 'status'){
+            const dot  = win.querySelector('.ph-win-status-dot');
+            const txt  = win.querySelector('.ph-win-status-text');
+            if(dot) dot.classList.toggle('online', d.status === 'online');
+            if(txt) txt.textContent = d.status === 'online' ? 'Active now' : 'Offline';
         }
     };
 
     ws.onclose = () => {
-        // reconnect after 3s
+        const dot = win.querySelector('.ph-win-status-dot');
+        const txt = win.querySelector('.ph-win-status-text');
+        if(dot) dot.classList.remove('online');
+        if(txt) txt.textContent = 'Reconnecting…';
+        // Reconnect after 3s — polling already covers the gap
         setTimeout(() => {
             if(openWindows[contactId]) connectWS(contactId, name, initial, win);
         }, 3000);
     };
 
-    // Typing indicator emit
-    const input = win.querySelector(`#phInput_${contactId}`);
-    let typingTimer;
-    let wasTyping = false;
-    input.addEventListener('input', () => {
-        if(!wasTyping && ws.readyState === WebSocket.OPEN){
-            ws.send(JSON.stringify({type:'typing', is_typing:true, sender_id: ME_ID}));
-            wasTyping = true;
-        }
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-            if(ws.readyState === WebSocket.OPEN){
-                ws.send(JSON.stringify({type:'typing', is_typing:false, sender_id: ME_ID}));
+    ws.onerror = () => { try{ ws.close(); }catch(ex){} };
+
+    // Typing indicator — only attach once
+    if(!win._typingBound){
+        win._typingBound = true;
+        const input = win.querySelector(`#phInput_${contactId}`);
+        let typingTimer, wasTyping = false;
+        input.addEventListener('input', () => {
+            if(!wasTyping && win._ws && win._ws.readyState === WebSocket.OPEN){
+                win._ws.send(JSON.stringify({action:'typing', is_typing: true}));
+                wasTyping = true;
             }
-            wasTyping = false;
-        }, 1500);
-    });
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                if(win._ws && win._ws.readyState === WebSocket.OPEN){
+                    win._ws.send(JSON.stringify({action:'typing', is_typing: false}));
+                }
+                wasTyping = false;
+            }, 1500);
+        });
+    }
 }
 
-/* ── Incoming WS notification → update badge + show in window ── */
+/* ── Global notification handler ── */
 function handleGlobalNotif(data){
     if(data.notification_type === 'message'){
         loadContacts();
-        // if window is open for that sender, messages handled in that window's WS
+        // Polling handles new messages in open windows
     }
 }
 window._phHandleNotif = handleGlobalNotif;
 
 /* ── Helpers ── */
 function escapeHtml(s){
+    s = String(s || '');
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ── Init: load unread count ── */
+/* ── Cleanup polls when window is closed ── */
+const _origClose = win => {
+    if(win._pollTimer) clearInterval(win._pollTimer);
+    if(win._ws){ try{ win._ws.close(); }catch(e){} }
+};
+
+/* ── Init ── */
 loadContacts();
 setInterval(loadContacts, 30000);
 

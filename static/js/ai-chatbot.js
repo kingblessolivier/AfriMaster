@@ -35,12 +35,116 @@
     var currentConvId   = null;  // active conversation ID
     var historyVisible  = false;
 
+    /* ── Draggable FAB ────────────────────────────────────────── */
+    var dragging = false;
+    var dragMoved = false;
+    var dragStartX, dragStartY, fabStartX, fabStartY;
+
+    function getFabPos() {
+        var r = fab.getBoundingClientRect();
+        return { x: r.left, y: r.top };
+    }
+
+    function applyFabPos(x, y) {
+        // clamp inside viewport
+        x = Math.max(0, Math.min(window.innerWidth  - fab.offsetWidth,  x));
+        y = Math.max(0, Math.min(window.innerHeight - fab.offsetHeight, y));
+        fab.style.right  = 'auto';
+        fab.style.bottom = 'auto';
+        fab.style.left   = x + 'px';
+        fab.style.top    = y + 'px';
+        positionWindow(x, y);
+        try { localStorage.setItem('propbot_fab_pos', JSON.stringify({x:x,y:y})); } catch(e){}
+    }
+
+    function positionWindow(fabX, fabY) {
+        if(!win) return;
+        var ww = window.innerWidth, wh = window.innerHeight;
+        var winW = win.offsetWidth  || 380;
+        var winH = win.offsetHeight || 520;
+        var gap  = 12;
+        // try above first
+        var wx = Math.max(gap, Math.min(ww - winW - gap, fabX - winW + fab.offsetWidth));
+        var wy = fabY - winH - gap;
+        if(wy < gap){ wy = fabY + fab.offsetHeight + gap; } // place below if no space above
+        if(wy + winH > wh - gap){ wy = wh - winH - gap; }
+        win.style.right  = 'auto';
+        win.style.bottom = 'auto';
+        win.style.left   = wx + 'px';
+        win.style.top    = wy + 'px';
+    }
+
+    // Restore saved position
+    try {
+        var saved = JSON.parse(localStorage.getItem('propbot_fab_pos') || 'null');
+        if(saved){ applyFabPos(saved.x, saved.y); }
+    } catch(e){}
+
+    fab.addEventListener('mousedown', function(e) {
+        if(e.button !== 0) return;
+        dragging  = true;
+        dragMoved = false;
+        var pos   = getFabPos();
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        fabStartX  = pos.x;
+        fabStartY  = pos.y;
+        fab.style.transition = 'none';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if(!dragging) return;
+        var dx = e.clientX - dragStartX;
+        var dy = e.clientY - dragStartY;
+        if(Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
+        if(dragMoved) applyFabPos(fabStartX + dx, fabStartY + dy);
+    });
+
+    document.addEventListener('mouseup', function() {
+        if(!dragging) return;
+        dragging = false;
+        fab.style.transition = '';
+    });
+
+    // Touch support
+    fab.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        dragging  = true;
+        dragMoved = false;
+        var pos   = getFabPos();
+        dragStartX = t.clientX;
+        dragStartY = t.clientY;
+        fabStartX  = pos.x;
+        fabStartY  = pos.y;
+        fab.style.transition = 'none';
+    }, {passive:true});
+
+    document.addEventListener('touchmove', function(e) {
+        if(!dragging) return;
+        var t  = e.touches[0];
+        var dx = t.clientX - dragStartX;
+        var dy = t.clientY - dragStartY;
+        if(Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
+        if(dragMoved){ applyFabPos(fabStartX + dx, fabStartY + dy); e.preventDefault(); }
+    }, {passive:false});
+
+    document.addEventListener('touchend', function() {
+        dragging = false;
+        fab.style.transition = '';
+    });
+
     /* ── Toggle open/close ────────────────────────────────────── */
     fab.addEventListener('click', function () {
+        if(dragMoved) return; // ignore click after drag
         isOpen = !isOpen;
         fab.classList.toggle('open', isOpen);
         win.classList.toggle('hidden', !isOpen);
-        if (isOpen && input) setTimeout(function () { input.focus(); }, 200);
+        if(isOpen){
+            var pos = getFabPos();
+            positionWindow(pos.x, pos.y);
+            if(input) setTimeout(function(){ input.focus(); }, 200);
+        }
     });
 
     document.addEventListener('keydown', function (e) {

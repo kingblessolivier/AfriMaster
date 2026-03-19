@@ -4812,7 +4812,9 @@ def chat_contacts_api(request):
 
 @login_required
 def chat_history_api(request, contact_id):
-    """JSON: message history between current user and contact; marks messages read."""
+    """JSON: message history between current user and contact; marks messages read.
+    Optional ?since_id=N returns only messages with id > N (for polling).
+    """
     from django.http import JsonResponse
     from django.db.models import Q
     contact = get_object_or_404(User, id=contact_id)
@@ -4820,8 +4822,15 @@ def chat_history_api(request, contact_id):
         Q(sender=request.user, recipient=contact) |
         Q(sender=contact,       recipient=request.user)
     ).order_by('sent_date')
-    # mark as read
-    qs.filter(recipient=request.user, is_read=False).update(is_read=True)
+    since_id = request.GET.get('since_id')
+    if since_id:
+        try:
+            qs = qs.filter(id__gt=int(since_id))
+        except (ValueError, TypeError):
+            pass
+    else:
+        # mark as read only on full history load
+        qs.filter(recipient=request.user, is_read=False).update(is_read=True)
     msgs = list(qs[:80])
     data = [{
         'id':        m.id,
@@ -4836,7 +4845,7 @@ def chat_history_api(request, contact_id):
         'contact':  {
             'id':      contact.id,
             'name':    contact.get_full_name() or contact.username,
-            'initial': contact.username[0].upper(),
+            'initial': contact.username[0].upper() if contact.username else '?',
             'role':    contact.role,
         },
     })
@@ -4865,3 +4874,29 @@ def chat_send_api(request):
         'content': msg.content,
         'time':    msg.sent_date.strftime('%H:%M'),
     })
+
+
+def chat_new_users_api(request):
+    """JSON: list of all users the current user can start a new chat with."""
+    from django.http import JsonResponse
+    if not request.user.is_authenticated:
+        return JsonResponse({'users': []}, status=200)
+    try:
+        q = request.GET.get('q', '').strip()
+        qs = User.objects.exclude(id=request.user.id).order_by('username')
+        if q:
+            qs = qs.filter(
+                Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q)
+            )
+        data = []
+        for u in qs[:40]:
+            uname = u.username or ''
+            data.append({
+                'user_id': u.id,
+                'name':    u.get_full_name() or uname,
+                'initial': uname[0].upper() if uname else '?',
+                'role':    u.role if hasattr(u, 'role') and u.role else 'User',
+            })
+        return JsonResponse({'users': data})
+    except Exception as e:
+        return JsonResponse({'users': [], 'error': str(e)}, status=200)

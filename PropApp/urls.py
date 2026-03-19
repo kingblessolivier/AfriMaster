@@ -213,6 +213,7 @@ urlpatterns = [
     path('api/chat/contacts/',              views.chat_contacts_api,  name='chat_contacts_api'),
     path('api/chat/history/<int:contact_id>/', views.chat_history_api, name='chat_history_api'),
     path('api/chat/send/',                  views.chat_send_api,      name='chat_send_api'),
+    path('api/chat/new-users/',             views.chat_new_users_api, name='chat_new_users_api'),
 ]
 
 
