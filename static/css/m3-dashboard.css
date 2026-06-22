@@ -517,3 +517,203 @@ body.m3-dash{background:var(--md-sys-color-surface);color:var(--md-sys-color-on-
     display:inline-flex;align-items:center;gap:8px;transition:all .2s
 }
 .modal-footer .btn-warning:hover{background:#bf360c;box-shadow:var(--md-sys-elevation-1)}
+
+/* ============================================================
+   ENTERPRISE DASHBOARD EXTENSIONS v2
+   Dark mode + improved metric cards + accessibility
+   ============================================================ */
+
+/* ── Import enterprise system ── */
+/* (enterprise.css is loaded separately; we extend m3-dashboard here) */
+
+/* ── Dark mode for dashboard ── */
+[data-theme="dark"] body.m3-dash {
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+}
+[data-theme="dark"] .m3-topbar {
+    background: rgba(17,20,16,.88);
+    border-bottom-color: var(--md-sys-color-outline-variant);
+}
+[data-theme="dark"] .m3-card,
+[data-theme="dark"] .m3-metric {
+    background: var(--md-sys-color-surface-container-low);
+    border-color: var(--md-sys-color-outline-variant);
+}
+[data-theme="dark"] .m3-table thead th {
+    background: var(--md-sys-color-surface-container);
+}
+[data-theme="dark"] .m3-dash-footer {
+    background: var(--md-sys-color-surface-container-low);
+    border-top-color: var(--md-sys-color-outline-variant);
+}
+
+/* ── Enterprise metric card (upgrade of .m3-metric) ── */
+.m3-metric-ent {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 22px;
+    background: var(--md-sys-color-surface-container-lowest);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    position: relative;
+    overflow: hidden;
+}
+.m3-metric-ent:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.07);
+    border-color: transparent;
+}
+.m3-metric-ent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.m3-metric-ent-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.m3-metric-ent-icon .material-symbols-outlined { font-size: 22px; }
+.m3-metric-ent-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+}
+.m3-metric-ent-trend.up { background: rgba(76,175,80,.12); color: #2e7d32; }
+.m3-metric-ent-trend.down { background: rgba(186,26,26,.1); color: #ba1a1a; }
+.m3-metric-ent-trend.flat { background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface-variant); }
+.m3-metric-ent-trend .material-symbols-outlined { font-size: 14px; }
+.m3-metric-ent-val {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    letter-spacing: -.02em;
+    line-height: 1;
+}
+.m3-metric-ent-label {
+    font-size: .8125rem;
+    color: var(--md-sys-color-on-surface-variant);
+    font-weight: 500;
+}
+.m3-metric-ent-sub {
+    font-size: .75rem;
+    color: var(--md-sys-color-on-surface-variant);
+    opacity: .7;
+    margin-top: -4px;
+}
+
+/* ── Improved empty state ── */
+.m3-empty-ent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 64px 24px;
+    gap: 16px;
+}
+.m3-empty-ent-icon {
+    width: 68px; height: 68px;
+    border-radius: 20px;
+    background: var(--md-sys-color-surface-container);
+    display: flex; align-items: center; justify-content: center;
+}
+.m3-empty-ent-icon .material-symbols-outlined { font-size: 34px; color: var(--md-sys-color-on-surface-variant); opacity: .55; }
+.m3-empty-ent-title { font-size: 1rem; font-weight: 600; color: var(--md-sys-color-on-surface); }
+.m3-empty-ent-desc { font-size: .875rem; color: var(--md-sys-color-on-surface-variant); max-width: 300px; }
+
+/* ── Better focus states for dashboard ── */
+.m3-sidebar-link:focus-visible,
+.m3-btn-filled:focus-visible,
+.m3-btn-outlined:focus-visible,
+.m3-btn-tonal:focus-visible {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+}
+
+/* ── Dashboard section header ── */
+.m3-section-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.m3-section-hd-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    display: flex; align-items: center; gap: 8px;
+}
+.m3-section-hd-title .material-symbols-outlined { font-size: 20px; color: var(--md-sys-color-primary); }
+
+/* ── Inline status pill ── */
+.m3-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: .72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.m3-status::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+.m3-status-success { background: rgba(76,175,80,.12); color: #2e7d32; }
+.m3-status-warning { background: rgba(255,152,0,.12); color: #e65100; }
+.m3-status-error   { background: rgba(186,26,26,.1);  color: #ba1a1a; }
+.m3-status-info    { background: rgba(3,169,244,.1);   color: #0277bd; }
+.m3-status-neutral { background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface-variant); }
+
+/* ── Dashboard tabs ── */
+.m3-dash-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    margin-bottom: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.m3-dash-tabs::-webkit-scrollbar { display: none; }
+.m3-dash-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    font-size: .875rem; font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    border-bottom: 2px solid transparent;
+    cursor: pointer; background: none;
+    border-left: none; border-right: none; border-top: none;
+    text-decoration: none;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+    font-family: 'Inter',sans-serif;
+    margin-bottom: -1px;
+}
+.m3-dash-tab:hover { color: var(--md-sys-color-on-surface); }
+.m3-dash-tab.active { color: var(--md-sys-color-primary); border-bottom-color: var(--md-sys-color-primary); font-weight: 600; }
+.m3-dash-tab .material-symbols-outlined { font-size: 18px; }
+.m3-dash-tab-count {
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: .72rem; font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 20px;
+}
+.m3-dash-tab.active .m3-dash-tab-count {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
